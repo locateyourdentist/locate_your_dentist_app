@@ -102,6 +102,7 @@ import 'package:flutter_quill/flutter_quill.dart';
     final size = MediaQuery.of(context).size.width;
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
     final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
+    final user = loginController.userData.isNotEmpty ? loginController.userData.first : null;
     //print('ff${AppConstants.baseUrl + loginController.userData.first.images[0]}');
     if (loginController.userData.isNotEmpty &&
         loginController.userData.first.images.isNotEmpty) {
@@ -112,30 +113,6 @@ import 'package:flutter_quill/flutter_quill.dart';
     String userId=Api.userInfo.read('userId')??"";
     String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
     return Scaffold(
-      // appBar: AppBar(
-      //     centerTitle: true,backgroundColor: AppColors.white,
-      //     // title: Text(loginController.userData.isNotEmpty ? "${loginController.userData.first.userType.split(" ").last} Profile" : "Profile",
-      //     //   style: AppTextStyles.subtitle(context,color: AppColors.black),),automaticallyImplyLeading: true,
-      //     iconTheme: IconThemeData(color: AppColors.black,size: size*0.05),
-      //     actions: [
-      //       if(userType=='admin'||userType=='superAdmin'||userId==editUserId)
-      //         GestureDetector(
-      //           onTap: ()async{
-      //            //await loginController.getProfileByUserId(loginController.userData.first.userId??"", context);
-      //             Get.toNamed('/clinicEditProfile');
-      //             //Get.toNamed('/clinicEditProfile',arguments: {"userId":loginController.userData.first.userId??""});
-      //           },
-      //           child: Row(
-      //             mainAxisAlignment: MainAxisAlignment.center,
-      //             crossAxisAlignment: CrossAxisAlignment.center,
-      //             children: [
-      //               Icon(Icons.edit,color: AppColors.primary,size: size*0.05,),
-      //               SizedBox(height: size * 0.03),
-      //               Text('Edit',style: TextStyle(color: AppColors.primary,fontSize: size*0.04,fontWeight: FontWeight.bold),)
-      //             ],
-      //           ),
-      //         ),]
-      // ),
       body: GetBuilder<LoginController>(
         builder: (controller) {
           return SafeArea(
@@ -143,26 +120,64 @@ import 'package:flutter_quill/flutter_quill.dart';
               children: [
                 //const SizedBox(height: 15,),
                 if(loginController.userData.isEmpty)
+                  // Column(
+                  //   children: [
+                  //     const SizedBox(height: 15,),
+                  //     Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
+                  //   ],
+                  // ),
                   Column(
                     children: [
-                      const SizedBox(height: 15,),
-                      Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
+                      shimmerBox(height: size * 0.35, radius: 0),
+
+                      SizedBox(height: size * 0.02),
+
+                      shimmerBox(
+                        height: 20,
+                        width: size * 0.5,
+                      ),
+
+                      SizedBox(height: 10),
+
+                      shimmerBox(
+                        height: 16,
+                        width: size * 0.3,
+                      ),
+
+                      SizedBox(height: size * 0.03),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          shimmerBox(height: 50, width: 90),
+                          shimmerBox(height: 50, width: 90),
+                          shimmerBox(height: 50, width: 90),
+                        ],
+                      ),
+
+                      SizedBox(height: size * 0.03),
+
+                      ListView.builder(
+                        itemCount: 3,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (_, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: shimmerBox(
+                              height: size * 0.25,
+                              radius: 12,
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
-                if(loginController.isLoading)
-                  const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
+                // if(loginController.isLoading)
+                //   const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
                 if(loginController.userData.isNotEmpty)
                 Column(
                   children: [
-                    // MediaCarousel(
-                    //   images: loginController.editImages.isNotEmpty
-                    //       ? loginController.editImages
-                    //       .where((img) =>
-                    //   img.url != null &&
-                    //       img.url!.startsWith('http') &&
-                    //       !img.url!.contains('undefined'))
-                    //       .toList() : [],
-                    // ),
                     Stack(
                       children: [
 
@@ -254,6 +269,7 @@ import 'package:flutter_quill/flutter_quill.dart';
                                     ),
                                   ),
                                 ),
+                                if(userId != editUserId)
                                 Container(
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
@@ -294,9 +310,21 @@ import 'package:flutter_quill/flutter_quill.dart';
                             const SizedBox(height: 5),
                                     Center(
                                     child: Text(
-                                    loginController.userData.isNotEmpty && loginController.userData.first.address != null
-                                    ? "${loginController.userData.first.address['state'] ?? ''}, ${loginController.userData.first.address['district'] ?? ''},${loginController.userData.first.address['city'] ?? ''}"
-                                        : "",  style: const TextStyle(color: Colors.grey),
+                                    // loginController.userData.isNotEmpty && loginController.userData.first.address != null
+                                    // ? "${loginController.userData.first.address['state'] ?? ''}, ${loginController.userData.first.address['district'] ?? ''},${loginController.userData.first.address['city'] ?? ''}"
+                                    //     : "",
+                                      [
+                                        user?.address?['state'],
+                                        user?.address?['district'],
+                                        user?.address?['city'],
+                                      ]
+                                          .where((e) =>
+                                      e != null && e.toString().trim().isNotEmpty)
+                                          .join(", "),
+
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style:  AppTextStyles.caption(context,color: Colors.grey),
                                     ),
                                     ),
 

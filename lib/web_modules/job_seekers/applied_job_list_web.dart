@@ -3,6 +3,7 @@ import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:get/get.dart';
@@ -17,120 +18,98 @@ class AppliedJobListsWeb extends StatefulWidget {
   @override
   State<AppliedJobListsWeb> createState() => _AppliedJobListsWebState();
 }
+
 class _AppliedJobListsWebState extends State<AppliedJobListsWeb> {
-  final jobController=Get.put(JobController());
+  final GlobalKey<ScaffoldState> _scaffoldKeyApplied = GlobalKey<ScaffoldState>();
+  final jobController = Get.put(JobController());
   String selectedTab = "All";
+
   @override
   void initState() {
     super.initState();
-    jobController.getJobSeekersAppliedLists(Api.userInfo.read('userId')??"",context);
-    final titles = [
-      "All",
-      ...{
-        for (var n in jobController.jobSeekersAppliedLists)
-          n.status.toString().trim()
-      }
-    ];
-    final filteredList = selectedTab == "All"
-        ? jobController.jobSeekersAppliedLists
-        : jobController.jobSeekersAppliedLists
-        .where((n) =>
-    n.status.toString().trim()==
-        selectedTab)
-        .toList();
+    jobController.getJobSeekersAppliedLists(Api.userInfo.read('userId') ?? "", context);
   }
+
   @override
   Widget build(BuildContext context) {
-    double size=MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isMobile = width < 700;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+
     String getFirstLetter(String text) {
       if (text.isEmpty) return "";
       return text[0].toUpperCase();
     }
+
     return Scaffold(
+      key: _scaffoldKeyApplied,
       backgroundColor: AppColors.scaffoldBg,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
-        height: size * 0.03,
+        height: isMobile ? 60 : 80,
         title: "LYD",
-        onLogout: () {
-        },
-        onNotification: () {
-        },
+        onLogout: () {},
+        onNotification: () {},
       ),
-      body:  GetBuilder<JobController>(
-          builder: (controller) {
-            if (controller.isLoading == true) {
-              return const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              );
-            }
-            if (controller.jobSeekersAppliedLists.isEmpty) {
-              return Center(
-                child: Text(
-                  'No data found',
-                  style: AppTextStyles.caption(context),
-                ),
-              );
-            }
-            final titles = [
-              "All",
-              ...{
-                for (var n in controller.jobSeekersAppliedLists)
-                  n.status.toString().trim()
-              }
-            ];
-            final filteredList = selectedTab == "All"
-                ? controller.jobSeekersAppliedLists
-                : controller.jobSeekersAppliedLists
-                .where((n) =>
-            n.status.toString().trim()==
-                selectedTab)
+      body: GetBuilder<JobController>(builder: (controller) {
+
+        if (controller.isLoading == true) {
+          return _buildAppliedJobsShimmer(width, isMobile);
+        }
+
+        if (controller.jobSeekersAppliedLists.isEmpty) {
+          return _buildEmptyAppliedState(context);
+        }
+
+        final titles = [
+          "All",
+          ...{for (var n in controller.jobSeekersAppliedLists) n.status.toString().trim()}
+        ];
+
+        final filteredList = selectedTab == "All"
+            ? controller.jobSeekersAppliedLists
+            : controller.jobSeekersAppliedLists
+                .where((n) => n.status.toString().trim() == selectedTab)
                 .toList();
-            return Row(
-              children: [
-                const AdminSideBar(),
 
-                Expanded(
-
-                  child: Center(
+        return Row(
+          children: [
+            if (isLoggedIn && isDesktop) const AdminSideBar(),
+            Expanded(
+              child: Stack(
+                children: [
+                  if (isLoggedIn && !isDesktop)
+                    Positioned(top: 10, left: 10, child: IconButton(icon: const Icon(Icons.menu), onPressed: () => _scaffoldKeyApplied.currentState?.openDrawer())),
+                  Center(
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 1100),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(isMobile ? 10.0 : 20.0),
                         child: Container(
                           decoration: BoxDecoration(
                             color: AppColors.white,
                             borderRadius: BorderRadius.circular(12),
-                            boxShadow: const [
-                              BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
-                            ],
+                            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
                           ),
                           child: Column(
                             children: [
-                              AnimationLimiter(
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 20),
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Column(
                                     children: [
-                                      SizedBox(height: size*0.01,),
-                              if (controller.isLoading == true)
-                         const Center(
-                        child: CircularProgressIndicator(color: AppColors.primary),
-                        ),
-
-                            if (controller.jobSeekersAppliedLists.isEmpty)
-                       Center(
-                      child: Text(
-                      'No data found',
-                      style: AppTextStyles.caption(context),
-                      ),
-                      ),
-
-                                      Text("MY JOBS",style: AppTextStyles.body(context,fontWeight: FontWeight.bold,color: Colors.black),),
-                                        SizedBox(height: size*0.01,),
+                                      if (isLoggedIn && !isDesktop) const SizedBox(height: 30),
+                                      Text(
+                                        "MY JOBS",
+                                        style: AppTextStyles.body(context, fontWeight: FontWeight.bold, color: Colors.black),
+                                      ),
+                                      const SizedBox(height: 15),
                                       Row(
                                         children: titles.map((t) {
                                           final isSelected = selectedTab == t;
-
+                
                                           return GestureDetector(
                                             onTap: () {
                                               setState(() {
@@ -138,22 +117,16 @@ class _AppliedJobListsWebState extends State<AppliedJobListsWeb> {
                                               });
                                             },
                                             child: Container(
-                                              margin: const EdgeInsets.symmetric(
-                                                  horizontal: 6, vertical: 10),
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 18, vertical: 8),
+                                              margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+                                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                                               decoration: BoxDecoration(
-                                                color: isSelected
-                                                    ? AppColors.primary
-                                                    : AppColors.greyLight,
+                                                color: isSelected ? AppColors.primary : AppColors.greyLight,
                                                 borderRadius: BorderRadius.circular(20),
                                               ),
-                                              child: Text(t,
-                                                // t.toUpperCase(),
+                                              child: Text(
+                                                t,
                                                 style: AppTextStyles.caption(context,
-                                                  color: isSelected ? Colors.white : Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
+                                                    color: isSelected ? Colors.white : Colors.black, fontWeight: FontWeight.w600),
                                               ),
                                             ),
                                           );
@@ -163,38 +136,31 @@ class _AppliedJobListsWebState extends State<AppliedJobListsWeb> {
                                   ),
                                 ),
                               ),
-                              AnimationLimiter(
+                              Expanded(
                                 child: ListView.builder(
                                     itemCount: filteredList.length,
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemBuilder: ( BuildContext context,int index) {
-                                      //final appliedJobs=jobController.jobSeekersAppliedLists[index];
-                                      final appliedJobs=filteredList[index];
+                                    padding: EdgeInsets.symmetric(horizontal: isMobile ? 10 : 30),
+                                    itemBuilder: (BuildContext context, int index) {
+                                      final appliedJobs = filteredList[index];
                                       final logoUrl = (appliedJobs.logoImage != null && appliedJobs.logoImage!.isNotEmpty)
                                           ? appliedJobs.logoImage!.first
                                           : null;
-                                      print('logo url$logoUrl');
+                
                                       return AnimationConfiguration.staggeredList(
                                         position: index,
-                                        duration: const Duration(milliseconds: 1300),
+                                        duration: const Duration(milliseconds: 500),
                                         child: SlideAnimation(
-                                          verticalOffset: 120.0,
-                                          curve: Curves.easeOutBack,
+                                          verticalOffset: 50.0,
                                           child: FadeInAnimation(
                                             child: Padding(
-                                              padding: const EdgeInsets.all(30.0),
+                                              padding: const EdgeInsets.symmetric(vertical: 10),
                                               child: GestureDetector(
-                                                onTap: (){
-                                                  Api.userInfo.write('selectJobId',appliedJobs.jobId.toString());
-                                                  Api.userInfo.write('activeStatus',appliedJobs.isActive.toString());
-                                                  //jobController.getJobsById(appliedJobs.jobId!, context);
+                                                onTap: () {
+                                                  Api.userInfo.write('selectJobId', appliedJobs.jobId.toString());
+                                                  Api.userInfo.write('activeStatus', appliedJobs.isActive.toString());
                                                   Get.toNamed('/viewJobDetailWebPage');
                                                 },
                                                 child: Container(
-                                                  height: size*0.1,
-                                                  width: size,
                                                   decoration: BoxDecoration(
                                                     color: AppColors.white,
                                                     borderRadius: BorderRadius.circular(12),
@@ -202,107 +168,69 @@ class _AppliedJobListsWebState extends State<AppliedJobListsWeb> {
                                                       BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
                                                     ],
                                                   ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(12.0),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Container(
-                                                                width: size * 0.04,
-                                                                height: size * 0.04,
-                                                                clipBehavior: Clip.hardEdge,
-                                                                decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(10),
-                                                                  color: Colors.white,
-                                                                  border: Border.all(
-                                                                    //color: getRandomColor(Jobs.orgName.toString()),
-                                                                      color: Colors.grey.shade300,
-                                                                      width: 1.5),
-                                                                ),
-                                                                child: Image.network(
-                                                                  logoUrl??"",
-                                                                  //"${AppConstants.baseUrl}${appliedJobs.image ?? ""}",
-                                                                  fit: BoxFit.cover,    width: size * 0.04,
-                                                                  height: size * 0.04,
-                                                                  errorBuilder: (context, error, stackTrace) {
-                                                                    return Container(
-                                                                      decoration: BoxDecoration(color:
-                                                                      AppColors.white,
-                                                                        borderRadius: BorderRadius.circular(10),
-
-                                                                        //getRandomColor(appliedJobs.orgName.toString()
-                                                                      ),
-                                                                      //'assets/images/hospital.jpg',
-                                                                      //fit: BoxFit.cover,
-                                                                      width: size * 0.04,
-                                                                      height: size * 0.04,
-                                                                      child: Center(
-                                                                        child: Text(getFirstLetter(appliedJobs.orgName.toString(),),style: AppTextStyles.headline(context,color: getRandomColor(appliedJobs.orgName.toString())),
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  },)
-                                                            ),
-
-                                                            //
-                                                            const SizedBox(width: 10,),
-                                                            Expanded(
-                                                              child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Text(appliedJobs.orgName.toString()??"N/A",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: Colors.black),),
-                                                                  Text(appliedJobs.jobType.toString()??"N/A",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: Colors.grey),),
-                                                                  Container(
-                                                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                                    decoration: BoxDecoration(
-                                                                      color: getStatusColor(appliedJobs.status ?? ""),
-                                                                      borderRadius: BorderRadius.circular(20),
-                                                                      // border: Border.all(
-                                                                      //   color: getStatusColor(Jobs.status ?? ""),
-                                                                      //   width: 1,
-                                                                      // ),
-                                                                    ),
-                                                                    child: Text(
-                                                                      appliedJobs.status ?? "Not Applied",
-                                                                      style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,  color: AppColors.white,),
-                                                                  ),),
-                                                                  const SizedBox(height: 5,),
-                                                                  Text(appliedJobs.jobTitle.toString()??"N/A",softWrap:true,
-                                                                    style: AppTextStyles.caption(context,fontWeight: FontWeight.w400,color: Colors.black),),
-                                                                  const SizedBox(height: 5),
-
-                                                                  Row(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    children: [
-                                                                      Icon(Icons.location_on_rounded, color: Colors.grey,size: size*0.01,),
-                                                                      const SizedBox(width: 5,),
-                                                                      Text("${appliedJobs.city.toString()??"N/A"},${appliedJobs.district.toString()??"N/A"}",   style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: Colors.grey),),
-                                                                    ],
-                                                                  ),
-                                                                  Row(
-                                                                    children: [
-                                                                      Icon(Icons.currency_rupee_rounded, color: Colors.grey,size: size*0.012,),
-                                                                      Text(appliedJobs.salary.toString()??"N/A",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
-                                                                    ],
-                                                                  ),
-                                                                  Align(
-                                                                    alignment:Alignment.bottomRight,
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.all(5.0),
-                                                                      child:    Text('Posted On ${  DateFormat('MMM dd, yyyy').format(DateTime.parse(appliedJobs.createdDate.toString()))}',   style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: Colors.black54),),
-                                                                    ),
-                                                                  )
-                                                                ],
+                                                  padding: const EdgeInsets.all(15),
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                          width: 50,
+                                                          height: 50,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            color: Colors.grey.shade100,
+                                                            border: Border.all(color: Colors.grey.shade300),
+                                                          ),
+                                                          child: ClipRRect(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            child: Image.network(
+                                                              logoUrl ?? "",
+                                                              fit: BoxFit.cover,
+                                                              errorBuilder: (context, error, stackTrace) => Center(
+                                                                child: Text(getFirstLetter(appliedJobs.orgName.toString()),
+                                                                    style: TextStyle(
+                                                                        fontSize: 20,
+                                                                        fontWeight: FontWeight.bold,
+                                                                        color: getRandomColor(appliedJobs.orgName.toString()))),
                                                               ),
+                                                            ),
+                                                          )),
+                                                      const SizedBox(width: 15),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Flexible(
+                                                                  child: Text(appliedJobs.orgName ?? "N/A",
+                                                                      style: AppTextStyles.caption(context, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis,),
+                                                                ),
+                                                                Container(
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                                  decoration: BoxDecoration(
+                                                                      color: getStatusColor(appliedJobs.status ?? ""),
+                                                                      borderRadius: BorderRadius.circular(20)),
+                                                                  child: Text(appliedJobs.status ?? "Applied",
+                                                                      style: const TextStyle(color: Colors.white, fontSize: 10)),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Text(appliedJobs.jobTitle ?? "N/A", style: AppTextStyles.caption(context), maxLines: 1, overflow: TextOverflow.ellipsis,),
+                                                            const SizedBox(height: 5),
+                                                            Row(
+                                                              children: [
+                                                                const Icon(Icons.location_on, size: 14, color: Colors.grey),
+                                                                const SizedBox(width: 4),
+                                                                Expanded(
+                                                                  child: Text("${appliedJobs.city}, ${appliedJobs.district}",
+                                                                      style: const TextStyle(fontSize: 12, color: Colors.grey), maxLines: 1, overflow: TextOverflow.ellipsis,),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ],
                                                         ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ),
@@ -310,19 +238,54 @@ class _AppliedJobListsWebState extends State<AppliedJobListsWeb> {
                                           ),
                                         ),
                                       );
-
                                     }),
                               ),
                             ],
                           ),
-                        ),
+                        )
                       ),
                     ),
                   ),
-                ),
-              ],
-            );
-          }
+                ],
+              ),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _buildAppliedJobsShimmer(double size, bool isMobile) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Row(
+        children: [
+          if (size >= 1100) Container(width: 250, height: double.infinity, color: Colors.white),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 5,
+              itemBuilder: (context, index) => Container(
+                height: 120,
+                margin: const EdgeInsets.all(20),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyAppliedState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.history_outlined, size: 80, color: Colors.grey),
+          const SizedBox(height: 15),
+          Text('You haven\'t applied to any jobs yet', style: AppTextStyles.subtitle(context, color: Colors.grey)),
+        ],
       ),
     );
   }

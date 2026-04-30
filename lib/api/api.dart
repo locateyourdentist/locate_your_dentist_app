@@ -1153,6 +1153,7 @@ class Api {
       String userId, String userType,String imageId,String preference,String startDate,String endDate,String isActive, List<Uint8List> images) async {
     String url = "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants.uploadImagesUrl}";
     print('API uploadImagesUrl $url');
+    print('FIELDS: userId=$userId, userType=$userType, imageId=$imageId, isActive=$isActive');
     String token = Api.userInfo.read('token') ?? "";
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -1180,7 +1181,7 @@ class Api {
         http.MultipartFile.fromBytes(
           'posterImages',
           images.first,
-         // filename: 'image_${DateTime.now().millisecondsSinceEpoch}.jpg',
+          filename: 'image_${DateTime.now().millisecondsSinceEpoch}.jpg',
         ),
       );
     }
@@ -2954,26 +2955,20 @@ class Api {
     }
   }
 
-  Future<http.Response> getJobByJobId(
-      String jobId,
-      ) async {
-    String url =
-        "${AppConstants.baseUrl}${AppConstants.jobUrl}${AppConstants.getJobById}";
+  Future<http.Response> getJobByJobId(String jobId) async {
+    String url = "${AppConstants.baseUrl}${AppConstants.jobUrl}${AppConstants.getJobById}";
     print('API getJob id Url $url');
     String? token = Api.userInfo.read('token');
     try {
       final headers = <String, String>{
         'Content-Type': 'application/json',
       };
-
       if (token != null) {
         headers['Authorization'] = 'Bearer $token';
       }
       Uri uri = Uri.parse("$url/$jobId");
       print('Full API URL: $uri');
-
       final response = await http.get(uri, headers: headers);
-
       print('request$jobId');
       print('API response: ${response.body}');
       return response;

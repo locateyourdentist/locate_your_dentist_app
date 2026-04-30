@@ -11,6 +11,7 @@ import '../../api/api.dart';
 import '../../common_widgets/color_code.dart';
 import '../../common_widgets/common_widget_all.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SuperAdminDashboardPage extends StatefulWidget {
   const SuperAdminDashboardPage({super.key});
@@ -219,12 +220,15 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                     if(loginController.profileList.isEmpty)
                       Column(
                         children: [
-                          const SizedBox(height: 15),
-                          Center(child: Text('No data found',style: AppTextStyles.caption(context),),),
+                          dashboardShimmer()
+                          // const SizedBox(height: 15),
+                          // Center(child: Text('No data found',style: AppTextStyles.caption(context),),),
                         ],
                       ),
                     if(loginController.isLoading)
-                      const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
+                      dashboardShimmer(),
+
+                    //  const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
                     if(loginController.profileList.isNotEmpty)
                       AdminDashboardWidget(profiles: controller.profileList),
                     Padding(
@@ -235,7 +239,11 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                             'Latest Users List',textAlign: TextAlign.start,
                              style: AppTextStyles.body(context,fontWeight: FontWeight.bold),
                                 ),
-                            AnimationLimiter(
+                          if(controller.profileList.isEmpty)
+                          buildShimmerEmptyWidget(size),
+                          if(controller.profileList.isNotEmpty)
+
+                          AnimationLimiter(
                             child: Column(
                             children: controller.profileList.asMap().entries.map((entry) {
                             final index = entry.key;
@@ -292,7 +300,21 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
 
 }
 
-
+Widget dashboardShimmer() {
+  return Shimmer.fromColors(
+    baseColor: Colors.grey.shade300,
+    highlightColor: Colors.grey.shade100,
+    child: Container(
+      height: 220,
+      width: double.infinity,
+      margin: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+    ),
+  );
+}
 
 class SuperAdminProfileCard extends StatelessWidget {
   final ProfileModel profile;

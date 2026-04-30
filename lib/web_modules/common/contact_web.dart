@@ -28,6 +28,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
   final contactController=Get.put(ContactController());
   final _formKeyPublicContactProfile = GlobalKey<FormState>();
   final loginController=Get.put(LoginController());
+  final GlobalKey<ScaffoldState> _scaffoldKeyContactView = GlobalKey<ScaffoldState>();
 
   List<Map<String, dynamic>> contacts = [];
   @override
@@ -38,11 +39,14 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isMobile = width < 600;
+    final bool isTablet = width >= 600 && width < 1024;
+    final bool isDesktop = width >= 1100;
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
-          height: width * 0.03,
+          height: width * 0.03 > 60 ? width * 0.032 : 65,
           title: "LYD",
           onLogout: () {},
           onNotification: () {},
@@ -51,13 +55,15 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
         return CommonHeader();
       }
     }
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
+      key: _scaffoldKeyContactView,
       appBar: buildAppBar(),
       body: GetBuilder<LoginController>(
         builder: (controller) {
           return Row(
             children: [
-              Api.userInfo.read('token') != null?AdminSideBar():SizedBox(),
+              if (isDesktop&&isLoggedIn) const AdminSideBar(),
 
               Expanded(
                 child: SingleChildScrollView(
@@ -73,11 +79,20 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
                             fit: BoxFit.cover,
                           ),
                         ),
+
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-
+                            if (!isDesktop)
+                              Positioned(
+                                top: 10,
+                                left: 10,
+                                child: IconButton(
+                                  icon: const Icon(Icons.menu,color: AppColors.black,),
+                                  onPressed: () => _scaffoldKeyContactView.currentState?.openDrawer(),
+                                ),
+                              ),
                             Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Text(
@@ -156,8 +171,9 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
     );
   }
   Widget _buildContactList(LoginController controller) {
-    double width = MediaQuery.of(context).size.width;
-
+    final double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isMobile = width < 700;
     int crossAxisCount = 3;
     if (width < 1000) crossAxisCount = 2;
     if (width < 600) crossAxisCount = 1;
@@ -172,7 +188,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 2,
+          childAspectRatio: 1.8,
         ),
         itemBuilder: (context, index) {
           return _modernContactCard(controller.contactListApi[index]);
@@ -275,7 +291,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
   Widget _modernContactCard(ContactApiModel contact) {
     final size = MediaQuery.of(context).size.width;
     return Container(
-      width: size*0.13,
+      //width: size*0.13,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

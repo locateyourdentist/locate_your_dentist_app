@@ -504,7 +504,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                           headerStyle: AppTextStyles.caption(context, color: Colors.black),
                                           listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
                                         items: controller.states.map((s) => s.toString()).toList(),
-                                        //initialItem: controller.selectedState,
+                                        initialItem: controller.states.contains(controller.selectedState) ? controller.selectedState : null,
                                         onChanged: (val) {
                                           if (val != null) {
                                             controller.selectedState = val;
@@ -529,7 +529,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       return CustomDropdown<String>.search(
                                         hintText: "Select District",
                                         items: controller.districts.map((d) => d.toString()).toList(),
-                                        //initialItem: controller.selectedDistrict,
+                                        initialItem: controller.districts.contains(controller.selectedDistrict) ? controller.selectedDistrict : null,
                                         decoration: CustomDropdownDecoration(
                                           hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
                                           headerStyle: AppTextStyles.caption(context, color: Colors.black),
@@ -565,11 +565,15 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                   GetBuilder<LoginController>(
                                       builder: (controller) {
+                                        final items = loginController.talukas.map((t) => t.toString()).toList();
+                                        final initialItem = items.contains(loginController.selectedTaluka) ? loginController.selectedTaluka : null;
                                         return  DefaultTextStyle(
                                           style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
                                           child: CustomDropdown<String>.search(
-                                          hintText: "Select  taluka/town",
-                                          items: loginController.talukas.map((t) => t.toString()).toList(),
+                                            hintText: "Select  taluka/town",
+                                            items: items,
+                                            initialItem: initialItem,
+
                                             decoration: CustomDropdownDecoration(
                                               hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
                                               headerStyle: AppTextStyles.caption(context, color: Colors.black),
@@ -585,33 +589,32 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 width: 1.5,
                                               ),
                                             ),
-                                            //initialItem: loginController.selectedTaluka,
-                                            excludeSelected: false,
-                                          onChanged: (val) {
-                                          setState(() => loginController.selectedTaluka = val);
-                                          if (val != null) {
-                                            final taluka =
-                                            loginController. talukas.firstWhere((t) => t == val);
-                                            controller.villages.clear();
-                                            loginController.fetchVillages(taluka.toString());
-                                            loginController.update();
-                                            print('taluka${loginController.selectedTaluka}');
-                                          }
-                                          },),
+                                            onChanged: (val) {
+                                              setState(() => loginController.selectedTaluka = val);
+                                              if (val != null) {
+                                                final taluka = loginController.talukas.firstWhere((t) => t == val);
+                                                controller.villages.clear();
+                                                loginController.fetchVillages(taluka.toString());
+                                                loginController.update();
+                                                print('taluka${loginController.selectedTaluka}');
+                                              }
+                                            },
+                                          ),
                                         );
-                                    }
+                                      }
                                   ),
 
                                   SizedBox(height: size * 0.03),
                                   GetBuilder<LoginController>(
                                       builder: (controller) {
                                         final items = controller.villages.map((v) => v.toString()).toList();
+                                        final initialItem = items.contains(controller.selectedVillage) ? controller.selectedVillage : null;
                                         return DefaultTextStyle(
                                           style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
                                           child: CustomDropdown<String>.search(
                                             hintText: "Select Area",
-                                           // items: loginController.villages.map((v) => v['name'].toString()).toList(),
                                             items: items,
+                                            initialItem: initialItem,
                                             decoration: CustomDropdownDecoration(
                                               hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
                                               headerStyle: AppTextStyles.caption(context, color: Colors.black),
@@ -626,20 +629,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 color: AppColors.primary,
                                                 width: 1.5,
                                               ),
-
                                             ),
-                                            // initialItem: items.contains(controller.selectedVillage)
-                                            //     ? controller.selectedVillage
-                                            //     : null,
-                                            excludeSelected: false,
                                             onChanged: (val) {
-                                          setState(() => loginController.selectedVillage = val);
-                                          loginController.update();
-                                          print('Area${loginController.selectedArea}');
-                                                                                        },
+                                              setState(() => loginController.selectedVillage = val);
+                                              loginController.update();
+                                              print('Area${loginController.selectedArea}');
+                                            },
                                           ),
                                         );
-                                    }
+                                      }
                                   ),
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
@@ -937,97 +935,101 @@ class _RegisterPageState extends State<RegisterPage> {
                                     end: Alignment.bottomRight,
                                     ),
                                     ),
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          if (_formKeyRegister.currentState!.validate()) {
-                                          final position = await LocationService.getCurrentLocation();
-                                          if (position == null) {
-                                          return;
-                                          }
-                                          debugPrint('User location: Lat ${position.latitude}, Lng ${position.longitude}');
-                                          print("FULL NAME = ${loginController.fullNameController.text}");
-                                            print("MOBILE = ${loginController.mobileController.text}");
-                                            print("EMAIL = ${loginController.emailController.text}");
-                                            print("STATE = ${loginController.selectedState.toString()}");
-                                            print("DISTRICT = ${loginController.selectedDistrict.toString()}");
-                                            print("CITY = ${loginController.selectedTaluka.toString()}");
-                                            print("PINCODE = ${loginController.selectedVillage.toString()}");
-                                            print("LAB NAME = ${loginController.typeNameController.text}");
-                                            print("IMAGES = ${loginController.images}");
-                                            print('logo${loginController.logoImages}');
-                                            print("CERTIFICATES = ${loginController.certificates}");
-                                            print('dob ${loginController.dobController}');
-                                            if(loginController.selectedUserType==null){
-                                              showCustomToast(context,"Please Select usertype",);
-                                            }
-                                          if(loginController.selectedState==null){
-                                            showCustomToast(context,"Please  Select State",);
-                                          }
-                                          if(loginController.selectedDistrict==null){
-                                            showCustomToast(context,"Please Select District",);
-                                          }
-                                          if(loginController.selectedTaluka==null){
-                                            showCustomToast(context,"Please Select Taluka",);
-                                          }
-                                          if(loginController.selectedVillage==null){
-                                            showCustomToast(context,"Please Select Village",);
-                                          }
-                                          Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
-                                            return await Future.wait(files.map((file) => file.readAsBytes()));
-                                          }
-                                          final imageBytes = loginController.selectedUserType == "Job Seekers"
-                                              ? await convertFilesToBytes(controller.logoImages)
-                                              : await convertFilesToBytes(loginController.images);
+                                      child: GetBuilder<LoginController>(
+                                          builder: (controller) {
+                                            return ElevatedButton(
+                                            onPressed: () async {
+                                              if (_formKeyRegister.currentState!.validate()) {
+                                              final position = await LocationService.getCurrentLocation();
+                                              if (position == null) {
+                                              return;
+                                              }
+                                              debugPrint('User location: Lat ${position.latitude}, Lng ${position.longitude}');
+                                              print("FULL NAME = ${loginController.fullNameController.text}");
+                                                print("MOBILE = ${loginController.mobileController.text}");
+                                                print("EMAIL = ${loginController.emailController.text}");
+                                                print("STATE = ${loginController.selectedState.toString()}");
+                                                print("DISTRICT = ${loginController.selectedDistrict.toString()}");
+                                                print("CITY = ${loginController.selectedTaluka.toString()}");
+                                                print("PINCODE = ${loginController.selectedVillage.toString()}");
+                                                print("LAB NAME = ${loginController.typeNameController.text}");
+                                                print("IMAGES = ${loginController.images}");
+                                                print('logo${loginController.logoImages}');
+                                                print("CERTIFICATES = ${loginController.certificates}");
+                                                print('dob ${loginController.dobController}');
+                                                if(loginController.selectedUserType==null){
+                                                  showCustomToast(context,"Please Select usertype",);
+                                                }
+                                              if(loginController.selectedState==null){
+                                                showCustomToast(context,"Please  Select State",);
+                                              }
+                                              if(loginController.selectedDistrict==null){
+                                                showCustomToast(context,"Please Select District",);
+                                              }
+                                              if(loginController.selectedTaluka==null){
+                                                showCustomToast(context,"Please Select Taluka",);
+                                              }
+                                              if(loginController.selectedVillage==null){
+                                                showCustomToast(context,"Please Select Village",);
+                                              }
+                                              Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
+                                                return await Future.wait(files.map((file) => file.readAsBytes()));
+                                              }
+                                              final imageBytes = loginController.selectedUserType == "Job Seekers"
+                                                  ? await convertFilesToBytes(controller.logoImages)
+                                                  : await convertFilesToBytes(loginController.images);
 
-                                          final logoBytes = loginController.selectedUserType != "Job Seekers"
-                                              ? await convertFilesToBytes(controller.logoImages)
-                                              : [];
-                                          final certBytes = await convertFilesToBytes(loginController.certificates);
+                                              final logoBytes = loginController.selectedUserType != "Job Seekers"
+                                                  ? await convertFilesToBytes(controller.logoImages)
+                                                  : [];
+                                              final certBytes = await convertFilesToBytes(loginController.certificates);
 
-                                            //print('usertype${loginController.selectedUserType} married${loginController.selectedMartialStatus!}');
-                                            await loginController.registerUser(
-                                              userId: "0",
-                                              userType: loginController.selectedUserType!,
-                                              //martialStatus: loginController.selectedMartialStatus!,
-                                              fullName: loginController.fullNameController.text,
-                                              dob: loginController.dobController.text,
-                                              mobile: loginController.mobileController.text,
-                                              email: loginController.emailController.text,
-                                              confirmPassword: loginController.confirmPasswordController.text,
-                                              taluk: loginController.selectedState ?? '',
-                                              district: loginController.selectedDistrict ?? '',
-                                              city: loginController.selectedTaluka ?? '',
-                                              area: loginController.selectedVillage ?? '',
-                                              pinCode: loginController.pinCodeController.text,
-                                              typeName: loginController.typeNameController.text??"",
-                                              //image: loginController.selectedUserType=="Job Seekers"?controller.logoImages ?? []:loginController.images ?? [],
-                                              image: loginController.selectedUserType=="Job Seekers"?logoBytes ?? []:imageBytes ?? [],
-                                              certificate: certBytes,
-                                              //loginController.certificates ?? [],
-                                              location: loginController.locationController.text,
-                                              website: loginController.websiteController.text,
-                                              description: loginController.descriptionController.text??"N/A",
-                                              //logoImage: loginController.selectedUserType!="Job Seekers"?controller.logoImages ?? []:[],
-                                              logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
-                                              latitude: loginController.latitude.toString()??"",
-                                              longitude: loginController.longitude.toString()??"",
-                                              jobCategory:loginController.selectedCategories,
-                                              isAdmin: "false",
-                                              context: context,
-                                            );
+                                                //print('usertype${loginController.selectedUserType} married${loginController.selectedMartialStatus!}');
+                                                await loginController.registerUser(
+                                                  userId: "0",
+                                                  userType: loginController.selectedUserType!,
+                                                  //martialStatus: loginController.selectedMartialStatus!,
+                                                  fullName: loginController.fullNameController.text,
+                                                  dob: loginController.dobController.text,
+                                                  mobile: loginController.mobileController.text,
+                                                  email: loginController.emailController.text,
+                                                  confirmPassword: loginController.confirmPasswordController.text,
+                                                  taluk: loginController.selectedState ?? '',
+                                                  district: loginController.selectedDistrict ?? '',
+                                                  city: loginController.selectedTaluka ?? '',
+                                                  area: loginController.selectedVillage ?? '',
+                                                  pinCode: loginController.pinCodeController.text,
+                                                  typeName: loginController.typeNameController.text??"",
+                                                  //image: loginController.selectedUserType=="Job Seekers"?controller.logoImages ?? []:loginController.images ?? [],
+                                                  image: loginController.selectedUserType=="Job Seekers"?logoBytes ?? []:imageBytes ?? [],
+                                                  certificate: certBytes,
+                                                  //loginController.certificates ?? [],
+                                                  location: loginController.locationController.text,
+                                                  website: loginController.websiteController.text,
+                                                  description: loginController.descriptionController.text??"N/A",
+                                                  //logoImage: loginController.selectedUserType!="Job Seekers"?controller.logoImages ?? []:[],
+                                                  logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
+                                                  latitude: loginController.latitude.toString()??"",
+                                                  longitude: loginController.longitude.toString()??"",
+                                                  jobCategory:loginController.selectedCategories,
+                                                  isAdmin: "false",
+                                                  context: context,
+                                                );
 
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          backgroundColor: AppColors.transparent,
-                                        ),
-                                        child: Text(
-                                          "Create Account",
-                                          style: AppTextStyles.body(context, color: AppColors.white,fontWeight: FontWeight.bold),
-                                        ),
+                                              }
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              backgroundColor: AppColors.transparent,
+                                            ),
+                                            child: Text(
+                                              "Create Account",
+                                              style: AppTextStyles.body(context, color: AppColors.white,fontWeight: FontWeight.bold),
+                                            ),
+                                          );
+                                        }
                                       ),
                                     ),
                                   ),

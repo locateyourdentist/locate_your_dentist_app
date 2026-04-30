@@ -14,64 +14,56 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:locate_your_dentist/web_modules/common/filter_side_bar.dart';
 import 'package:excel/excel.dart';
 
-
 class ModernUserTable extends StatefulWidget {
   @override
   State<ModernUserTable> createState() => _ModernUserTableState();
 }
 
 class _ModernUserTableState extends State<ModernUserTable> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
-  String?userType;
-  List<ProfileModel> filteredProfiles = [];
+  String? userType;
   final TextEditingController searchController = TextEditingController();
-
-  List<ProfileModel> getFilteredProfiles() {
-    if (userType == null || userType!.isEmpty) {
-      print('length web userlist${loginController.profileList.length}');
-      return loginController.profileList;
-    }
-    print('length web userlist${loginController.profileList.length}');
-    return loginController.profileList
-        .where((p) => p.userType.toLowerCase() == userType!.toLowerCase())
-        .toList();
-  }
+  final ScrollController _horizontalScrollController = ScrollController();
   bool isExporting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _refresh();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    _horizontalScrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    await loginController.getProfileDetails(
+      Api.userInfo.read('sUserType1'), '', '', '', 'true', '', '', '', '', context,
+    );
+    await loginController.fetchStates();
+    loginController.selectedState = null;
+    loginController.selectedDistrict = null;
+    loginController.selectedTaluka = null;
+  }
+
   List<int>? generateExcel(List profiles) {
     final excel = Excel.createExcel();
     const sheetName = "Users";
     excel.rename('Sheet1', sheetName);
-
     final sheet = excel[sheetName];
+    final titleStyle = CellStyle(bold: true, fontSize: 16, horizontalAlign: HorizontalAlign.Center);
+    final headerStyle = CellStyle(bold: true);
 
-    final titleStyle = CellStyle(
-      bold: true,
-      fontSize: 16,
-      horizontalAlign: HorizontalAlign.Center,
-    );
-
-    final headerStyle = CellStyle(
-      bold: true,
-    );
-
-    sheet.appendRow([
-      TextCellValue("User Report"),
-    ]);
-
-    sheet.merge(
-      CellIndex.indexByString("A1"),
-      CellIndex.indexByString("F1"),
-    );
-
+    sheet.appendRow([TextCellValue("User Report")]);
+    sheet.merge(CellIndex.indexByString("A1"), CellIndex.indexByString("F1"));
     sheet.cell(CellIndex.indexByString("A1")).cellStyle = titleStyle;
-
     sheet.appendRow([
-      TextCellValue("S.No"),
-      TextCellValue("Name"),
-      TextCellValue("User ID"),
-      TextCellValue("User Type"),
-      TextCellValue("Mobile"),
-      TextCellValue("Email Id"),
+      TextCellValue("S.No"), TextCellValue("Name"), TextCellValue("User ID"),
+      TextCellValue("User Type"), TextCellValue("Mobile"), TextCellValue("Email Id"),
     ]);
 
     for (var col in ["A2", "B2", "C2", "D2", "E2", "F2"]) {
@@ -80,540 +72,304 @@ class _ModernUserTableState extends State<ModernUserTable> {
 
     for (int i = 0; i < profiles.length; i++) {
       final user = profiles[i];
-
       sheet.appendRow([
-        TextCellValue("${i + 1}"),
-        TextCellValue(user.name ?? ""),
-        TextCellValue(user.userId ?? ""),
-        TextCellValue(user.userType ?? ""),
-        TextCellValue(user.mobileNumber ?? ""),
-        TextCellValue(user.email ?? ""),
+        TextCellValue("${i + 1}"), TextCellValue(user.name ?? ""), TextCellValue(user.userId ?? ""),
+        TextCellValue(user.userType ?? ""), TextCellValue(user.mobileNumber ?? ""), TextCellValue(user.email ?? ""),
       ]);
     }
-
     return excel.encode();
   }
-  @override
-  void initState(){
-    super.initState();
-    _refresh();
-    getFilteredProfiles();
-  }
-  Future<void> _refresh() async {
-    await  loginController.getProfileDetails(
-      Api.userInfo.read('sUserType1'),
-      '',
-      '',
-      '','true',
-      '','','','',
-      context,
-    );
-   await loginController.fetchStates();
-    loginController.selectedState=null;
-    loginController.selectedDistrict=null;
-    loginController.selectedTaluka=null;
-  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
+    final bool isDesktop = size >= 1100;
+    final bool isTablet = size >= 700 && size < 1100;
+    final bool isMobile = size < 700;
+
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
-          height: size * 0.03,
+          height: isMobile ? 60 : (isTablet ? 70 : 80),
           title: "LYD",
           onLogout: () {},
           onNotification: () {},
         );
       } else {
-        return CommonHeader();
+        return const CommonHeader();
       }
     }
-      return WillPopScope(
+
+    return WillPopScope(
       onWillPop: () async {
         Get.toNamed('/${pageUserTypeWeb(Api.userInfo.read('userType') ?? "")}');
-        if( Api.userInfo.read('userType')=="superAdmin") {
-          loginController.getProfileDetails('', '', '', '', '','','','','',  context);
+        if (Api.userInfo.read('userType') == "superAdmin") {
+          loginController.getProfileDetails('', '', '', '', '', '', '', '', '', context);
         }
-        if( Api.userInfo.read('userType')=="admin") {
-          loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
+        if (Api.userInfo.read('userType') == "admin") {
+          loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '', '', '', '', '', context);
         }
         return true;
       },
       child: Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: Colors.white,
+        drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+        endDrawer: isMobile ? const Drawer(width: 300, child: FilterSidebar()) : null,
         appBar: buildAppBar(),
         body: GetBuilder<LoginController>(
-            builder: (controller) {
-              final filteredProfiles = (userType == null || userType!.isEmpty)
-                  ? controller.profileList
-                  : controller.profileList
-                  .where((p) => p.userType.toLowerCase() == userType!.toLowerCase())
-                  .toList();
-              print("Filtered profiles length: ${filteredProfiles.length}");
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const AdminSideBar(),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(40.0),
-                      child:Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 1300),
-                          child: Container(
+          builder: (controller) {
+            final filteredProfiles = (userType == null || userType!.isEmpty)
+                ? controller.profileList
+                : controller.profileList.where((p) => p.userType.toLowerCase() == userType!.toLowerCase()).toList();
+            return Row(
+              children: [
+                if (isDesktop) const AdminSideBar(),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(isMobile ? 15.0 : 40.0),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 1300),
+                        child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
-                            boxShadow: const [
-                              BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
-                            ],
+                            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
                           ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              GetBuilder<LoginController>(
-                                  builder: (controller) {
-                                  return SizedBox(
-                                    width: size*0.15,
-                                    child: FilterSidebar(),
-                                  );
-                                }
-                              ),
+                              if (!isMobile)
+                                SizedBox(width: isDesktop ? size * 0.15 : 250, child: const FilterSidebar()),
                               Expanded(
                                 child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-
-                                      Align(
-                                        alignment: Alignment.topRight,
-                                        child:   Padding(
-                                          padding: const EdgeInsets.all(30.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Container(
-                                                width: size * 0.35,
-                                                padding: const EdgeInsets.symmetric(horizontal: 15),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey.shade100,
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey.withOpacity(0.15),
-                                                      blurRadius: 6,
-                                                    )
-                                                  ],
-                                                ),
-                                                child: TextField(
-                                                  controller: searchController,
-                                                  onChanged: (value)async {
-                                                    if (loginController.selectedDistance != null) {
-                                                      final position = await LocationService.getCurrentLocation();
-
-                                                      if (position == null) {
-                                                        return;
-                                                      }
-
-                                                      loginController.latitude = position.latitude;
-                                                      loginController.longitude = position.longitude;
-
-                                                      print("LAT: ${loginController.latitude}");
-                                                      print("LNG: ${loginController.longitude}");
-                                                    }
-                                                    String distance = loginController.selectedDistance ?? "";
-                                                    String safeLat = (loginController.latitude == null) ? "" : loginController.latitude.toString();
-                                                    String safeLng = (loginController.longitude == null) ? "" : loginController.longitude.toString();
-                                                    if( Api.userInfo.read('userType')=="superAdmin") {
-                                                      await   loginController.getProfileDetails('',  loginController.selectedState,
-                                                          loginController.selectedDistrict,
-                                                          loginController.selectedTaluka, '',safeLat,
-                                                          safeLng,distance,searchController.text.toString(),  context);
-                                                    }
-                                                    else if( Api.userInfo.read('userType')=="admin") {
-                                                      await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict,
-                                                          loginController.selectedTaluka, '',safeLat,
-                                                          safeLng,distance,searchController.text.toString(), context);
-                                                    }
-                                                    else{
-                                                      await  loginController.getProfileDetails(
-                                                        userType,
-                                                        loginController.selectedState,
-                                                        loginController.selectedDistrict,
-                                                        loginController.selectedTaluka,'true',safeLat,
-                                                        safeLng,distance, searchController.text.toString(),
-                                                        context,
-                                                      );
-                                                    }
-                                                  },
-                                                  decoration: InputDecoration(
-                                                    icon: Icon(
-                                                      Icons.search,
-                                                      color: AppColors.grey,
-                                                      size: size * 0.008,
-                                                    ),
-                                                    hintText: "Search by name, userId, mobile number...",
-                                                    hintStyle:
-                                                    AppTextStyles.caption(context, color: AppColors.grey),
-                                                    border: InputBorder.none,
-                                                  ),
-                                                ),
-                                              ),
-
-                                              const SizedBox(width: 10),
-
-
-                                            //   Container(
-                                            //     height: 45,
-                                            //     width: 45,
-                                            //     decoration: BoxDecoration(
-                                            //       color: AppColors.primary,
-                                            //       borderRadius: BorderRadius.circular(10),
-                                            //       boxShadow: [
-                                            //         BoxShadow(
-                                            //           color: AppColors.primary.withOpacity(0.3),
-                                            //           blurRadius: 6,
-                                            //         )
-                                            //       ],
-                                            //     ),
-                                            //     child: IconButton(
-                                            //       icon:  Icon(Icons.filter_list, color: Colors.white,size: size*0.012,),
-                                            //       onPressed: () {
-                                            //
-                                            // showFilterDialog(context,onApply: ()async{
-                                            //
-                                            //   print("Selected State: ${loginController.selectedState}");
-                                            //   print("Selected District: ${loginController.selectedDistrict}");
-                                            //   print("Selected Area: ${loginController.selectedArea}");
-                                            //
-                                            //   print("ssuser$userType");
-                                            //   filteredProfiles.map((e) => searchController.text.toString());
-                                            //   await loginController.getProfileDetails(
-                                            //     Api.userInfo.read('selectedUserType1'),
-                                            //     loginController.selectedState,
-                                            //     loginController.selectedDistrict,
-                                            //     loginController.selectedTaluka,"",'','','','',
-                                            //     context,
-                                            //   );
-                                            //   Get.back();
-                                            // },onReset: (){
-                                            //
-                                            //   loginController.selectedArea = null;
-                                            //   loginController.selectedUserType=null;
-                                            //   loginController.selectedState=null;
-                                            //   loginController.selectedDistrict=null;
-                                            // });
-                                            //
-                                            //       },
-                                            //     ),
-                                            //   ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10,),
-                                      if (loginController.selectedDistance != null ||loginController.selectedState != null||
-                                      loginController.selectedDistrict != null ||
-                                          loginController.selectedTaluka != null ||
-                                          loginController.selectedJobType != null ||
-                                          loginController.selectedSalary != null ||
-                                          loginController.selectedCategories.isNotEmpty)
-                                        GetBuilder<LoginController>(
-                                            builder: (_) {
-                                              return  Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                                                child: Wrap(
-                                                  spacing: 8,
-                                                  runSpacing: 8,
-                                                  children: [
-                                                    if (loginController.selectedState != null)
-                                                      InputChip(
-                                                        label: Text(loginController.selectedState!),
-                                                        onDeleted: () {
-                                                          loginController.selectedState = null;
-                                                          loginController.update();
-                                                        },
-                                                      ),
-                                                    if (loginController.selectedDistrict != null)
-                                                      InputChip(
-                                                        label: Text(loginController.selectedDistrict!),
-                                                        onDeleted: () {
-                                                          loginController.selectedDistrict = null;
-                                                          loginController.update();
-                                                        },
-                                                      ),
-                                                    if (loginController.selectedTaluka != null)
-                                                      InputChip(
-                                                        label: Text(loginController.selectedTaluka!),
-                                                        onDeleted: () {
-                                                          loginController.selectedTaluka = null;
-                                                          loginController.update();
-                                                        },
-                                                      ),
-                                                    if (loginController.selectedJobType != null)
-                                                      InputChip(
-                                                        label: Text(loginController.selectedJobType!),
-                                                        onDeleted: () {
-                                                          loginController.selectedJobType = null;
-                                                          loginController.update();
-                                                        },
-                                                      ),
-                                                    if (loginController.selectedSalary != null)
-                                                      InputChip(
-                                                        label: Text(loginController.selectedSalary!),
-                                                        onDeleted: () {
-                                                          loginController.selectedSalary = null;
-                                                          loginController.update();
-                                                        },
-                                                      ),
-                                                    for (var category in loginController.selectedCategories)
-                                                      InputChip(
-                                                        label: Text(category,style: AppTextStyles.caption(context),),
-                                                        onDeleted: () {
-                                                          loginController.selectedCategories.remove(category);
-                                                          loginController.update();
-                                                        },
-                                                      ),
-                                                    TextButton(
-                                                      onPressed: () async{
-                                                        loginController.selectedCategories.clear();
-                                                        loginController.selectedArea = null;
-                                                        loginController.selectedUserType = null;
-                                                        loginController.selectedState = null;
-                                                        loginController.selectedDistrict = null;
-                                                        loginController.selectedDistance = null;
-                                                        loginController.selectedTaluka = null;
-                                                        loginController.selectedJobType = null;
-                                                        loginController.selectedSalary = null;
-                                                        loginController.update();
-                                                            await loginController.getProfileDetails(
-                                                          "",
-                                                          "",
-                                                          "",
-                                                          "",
-                                                          "",
-                                                          "",
-                                                          "",
-                                                          "",
-                                                          "",
-                                                          context,
-                                                        );
-
-
-                                                      },
-                                                      child: const Text(
-                                                        "Clear All",
-                                                        style: TextStyle(
-                                                          color: Colors.red,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            }
-                                        ),
-
-                                      Align(
-                                        alignment: Alignment.topRight,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: SizedBox(
-                                            height: size * 0.016,
-                                            child: ElevatedButton.icon(
-                                              onPressed: isExporting
-                                                  ? null
-                                                  : () async {
-                                                setState(() {
-                                                  isExporting = true;
-                                                });
-
-                                                final listToExport = (userType == null || userType!.isEmpty)
-                                                    ? loginController.profileList
-                                                    : loginController.profileList
-                                                    .where((p) =>
-                                                (p.userType ?? '').toLowerCase() ==
-                                                    userType!.toLowerCase())
-                                                    .toList();
-
-                                                print("EXPORT LENGTH: ${listToExport.length}");
-
-                                                try {
-                                                  await generateExcel(listToExport);
-                                                } catch (e) {
-                                                  print("Export error: $e");
-                                                }
-
-                                                setState(() {
-                                                  isExporting = false;
-                                                });
-                                              },
-
-                                              icon: isExporting
-                                                  ? const SizedBox(
-                                                height: 16,
-                                                width: 16,
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  color: Colors.white,
-                                                ),
-                                              )
-                                                  : const Icon(Icons.download, size: 18, color: Colors.white),
-
-                                              label: Text(
-                                                isExporting ? "Exporting..." : "Export Excel",
-                                                style: const TextStyle(color: Colors.white),
-                                              ),
-
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: AppColors.primary,
-                                                elevation: 4,
-                                                padding: const EdgeInsets.symmetric(horizontal: 14),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      if(filteredProfiles.length==0)
-                                        Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Center(child: Text('No data found',style: AppTextStyles.caption(context),)),
-                                        ),
-                                      if(filteredProfiles.length>0)
-
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 35.0,right: 35),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.primary.withOpacity(0.85),
-                                            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Expanded(flex: 1, child: Center(child: Text("S.No", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold)))),
-                                              Expanded(flex: 2, child: Center(child: Text("Name", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold)))),
-                                              Expanded(flex: 2, child: Center(child: Text("User ID",style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold)))),
-                                              Expanded(flex: 2, child: Center(child: Text("User Type",style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold)))),
-                                              Expanded(flex: 2, child: Center(child: Text("Mobile", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold)))),
-                                              Expanded(flex: 1, child: Center(child: Text("View", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold)))),
-                                              Expanded(flex: 1, child: Center(child: Text("Status", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold)))),
-                                              Expanded(flex: 1, child: Center(child: Text("Actions", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold)))),
-
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-
-                                      AnimationLimiter(
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount:filteredProfiles.length,
-                                          //users.length,
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          itemBuilder: (context, index) {
-                                            final user = filteredProfiles[index];
-                                            final isEven = index % 2 == 0;
-                                            return AnimationConfiguration.staggeredList(
-                                              position: index,
-                                              duration: const Duration(milliseconds: 1300),
-                                              child: SlideAnimation(
-                                                verticalOffset: 120.0,
-                                                curve: Curves.linear,
-                                                child: FadeInAnimation(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(left: 35.0,right: 35),
-                                                    child: Container(
-                                                      color: isEven ? Colors.grey[100] : Colors.white,
-                                                      padding:  const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                                                      child: Row(
-                                                        children: [
-                                                          Expanded(flex: 1, child: Center(child: Text( "${index + 1}", style: AppTextStyles.caption(context)))),
-                                                          Expanded(flex: 2, child: Center(child: Text(user.name, style: AppTextStyles.caption(context)))),
-                                                          Expanded(flex: 2, child: Center(child: Text(user.userId, style: AppTextStyles.caption(context)))),
-                                                          Expanded(flex: 2, child: Center(child: Text(user.userType, style: AppTextStyles.caption(context)))),
-                                                          Expanded(flex: 2, child: Center(child: Text(user.mobileNumber, style: AppTextStyles.caption(context)))),
-                                                          Expanded(
-                                                            flex: 1,
-                                                            child: Center(
-                                                              child: IconButton(
-                                                              icon: Icon(Icons.remove_red_eye, color: Colors.grey, size: size * 0.012),
-                                                              onPressed: ()async {
-                                                                Api.userInfo.write('selectUId',user.userId.toString());
-                                                              await  loginController.getProfileByUserId(user.userId.toString(), context);
-                                                              Get.toNamed('/clinicProfileWebPage');
-                                                               }),
-                                                            )
-                                                          ),
-                                                          Expanded(
-                                                            flex: 1,
-                                                            child: Container(
-                                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                                              decoration: BoxDecoration(
-                                                                color: user.isActive ? Colors.green : Colors.red,
-                                                                borderRadius: BorderRadius.circular(20),
-                                                              ),
-                                                              child: Text(
-                                                                user.isActive ? "Active" : "Inactive",
-                                                                textAlign: TextAlign.center,
-                                                                style: AppTextStyles.caption(context),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            flex: 1,
-                                                            child: IconButton(
-                                                              icon: Icon(Icons.delete, color: Colors.red, size: size * 0.012),
-                                                              onPressed: ()async {
-                                                                showDeleteDialog(
-                                                                  context: context,
-                                                                  title: "Want to Deactivate User?",
-                                                                  message: "This User will be permanently removed.",
-                                                                  onConfirm: () async {
-                                                                    user.isActive==true?
-                                                                    await  loginController.deactivateUserAdmin(user.userId,false,context)
-                                                                        : await  loginController.deactivateUserAdmin(user.userId,true,context);
-                                                                    await loginController.getProfileDetails(
-                                                                        '', '', '', '', "", '', '', '', '', context);
-                                                                    loginController.update();
-                                                                  },
-                                                                );
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(height: 40,)
-                                    ],
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _buildHeaderActions(isDesktop, isMobile),
+                                        const SizedBox(height: 20),
+                                        _buildActiveFilters(isMobile),
+                                        _buildExportButton(filteredProfiles),
+                                        const SizedBox(height: 20),
+                                        if (filteredProfiles.isEmpty)
+                                          _buildEmptyState()
+                                        else
+                                          _buildUserTable(filteredProfiles, isMobile, isTablet),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                                  ),
                         ),
                       ),
                     ),
                   ),
-                ],
-              );
-          }
+                ),
+              ],
+            );
+          },
         ),
       ),
+    );
+  }
+
+  Widget _buildHeaderActions(bool isDesktop, bool isMobile) {
+    return Row(
+      children: [
+        if (!isDesktop)
+          IconButton(icon: const Icon(Icons.menu), onPressed: () => _scaffoldKey.currentState?.openDrawer()),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: TextField(
+              controller: searchController,
+              onChanged: (value) => _performSearch(),
+              decoration: const InputDecoration(
+                icon: Icon(Icons.search, color: Colors.grey),
+                hintText: "Search...",
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ),
+        if (isMobile)
+          IconButton(icon: const Icon(Icons.filter_list, color: AppColors.primary), onPressed: () => _scaffoldKey.currentState?.openEndDrawer()),
+      ],
+    );
+  }
+
+  Future<void> _performSearch() async {
+    if (loginController.selectedDistance != null) {
+      final position = await LocationService.getCurrentLocation();
+      if (position != null) {
+        loginController.latitude = position.latitude;
+        loginController.longitude = position.longitude;
+      }
+    }
+    String distance = loginController.selectedDistance ?? "";
+    String safeLat = loginController.latitude?.toString() ?? "";
+    String safeLng = loginController.longitude?.toString() ?? "";
+    
+    if (Api.userInfo.read('userType') == "superAdmin") {
+      await loginController.getProfileDetails('', loginController.selectedState, loginController.selectedDistrict, loginController.selectedTaluka, '', safeLat, safeLng, distance, searchController.text, context);
+    } else if (Api.userInfo.read('userType') == "admin") {
+      await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict, loginController.selectedTaluka, '', safeLat, safeLng, distance, searchController.text, context);
+    } else {
+      await loginController.getProfileDetails(userType, loginController.selectedState, loginController.selectedDistrict, loginController.selectedTaluka, 'true', safeLat, safeLng, distance, searchController.text, context);
+    }
+  }
+
+  Widget _buildActiveFilters(bool isMobile) {
+    bool hasFilters = loginController.selectedDistance != null || loginController.selectedState != null || loginController.selectedDistrict != null || loginController.selectedTaluka != null || loginController.selectedJobType != null || loginController.selectedSalary != null || loginController.selectedCategories.isNotEmpty;
+    if (!hasFilters) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Wrap(
+        spacing: 8, runSpacing: 8,
+        children: [
+          if (loginController.selectedState != null) InputChip(label: Text(loginController.selectedState!), onDeleted: () { loginController.selectedState = null; loginController.update(); }),
+          if (loginController.selectedDistrict != null) InputChip(label: Text(loginController.selectedDistrict!), onDeleted: () { loginController.selectedDistrict = null; loginController.update(); }),
+          if (loginController.selectedTaluka != null) InputChip(label: Text(loginController.selectedTaluka!), onDeleted: () { loginController.selectedTaluka = null; loginController.update(); }),
+          TextButton(onPressed: () => _clearAllFilters(), child: const Text("Clear All", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
+        ],
+      ),
+    );
+  }
+
+  void _clearAllFilters() async {
+    loginController.selectedCategories.clear();
+    loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedArea = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
+    loginController.update();
+    await loginController.getProfileDetails("", "", "", "", "", "", "", "", "", context);
+  }
+
+  Widget _buildExportButton(List filteredProfiles) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: ElevatedButton.icon(
+        onPressed: isExporting ? null : () async {
+          setState(() => isExporting = true);
+          try { await generateExcel(filteredProfiles); } finally { setState(() => isExporting = false); }
+        },
+        icon: isExporting ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Icon(Icons.download, size: 18),
+        label: Text(isExporting ? "Exporting..." : "Export Excel"),
+        style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(child: Padding(padding: const EdgeInsets.all(40.0), child: Text('No data found', style: AppTextStyles.caption(context))));
+  }
+  Widget _buildUserTable(
+      List<ProfileModel> profiles,
+      bool isMobile,
+      bool isTablet,
+      ) {
+    return Scrollbar(
+      controller: _horizontalScrollController,
+      thumbVisibility: true,
+      trackVisibility: true,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        controller: _horizontalScrollController,
+        physics: const BouncingScrollPhysics(),
+        child: SizedBox(
+          width: isMobile ? 900 : (isTablet ? 1100 : 1200),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 15,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(12),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    _headerCell("S.No", 1),
+                    _headerCell("Name", 2),
+                    _headerCell("User ID", 2),
+                    _headerCell("User Type", 2),
+                    _headerCell("Mobile", 2),
+                    _headerCell("View", 1),
+                    _headerCell("Status", 1),
+                    _headerCell("Actions", 1),
+                  ],
+                ),
+              ),
+              AnimationLimiter(
+                child: Column(
+                  children: List.generate(profiles.length, (index) {
+                    final user = profiles[index];
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      duration: const Duration(milliseconds: 500),
+                      child: FadeInAnimation(
+                        child: _buildDataRow(user, index),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  Widget _headerCell(String text, int flex) {
+    return Expanded(flex: flex, child: Center(child: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12))));
+  }
+
+  Widget _buildDataRow(ProfileModel user, int index) {
+    final isEven = index % 2 == 0;
+    return Container(
+      color: isEven ? Colors.grey[50] : Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      child: Row(
+        children: [
+          Expanded(flex: 1, child: Center(child: Text("${index + 1}", style: const TextStyle(fontSize: 12)))),
+          Expanded(flex: 2, child: Center(child: Text(user.name, style: const TextStyle(fontSize: 12)))),
+          Expanded(flex: 2, child: Center(child: Text(user.userId, style: const TextStyle(fontSize: 12)))),
+          Expanded(flex: 2, child: Center(child: Text(user.userType, style: const TextStyle(fontSize: 12)))),
+          Expanded(flex: 2, child: Center(child: Text(user.mobileNumber, style: const TextStyle(fontSize: 12)))),
+          Expanded(flex: 1, child: Center(child: IconButton(icon: const Icon(Icons.remove_red_eye, color: Colors.grey, size: 18), onPressed: () async {
+            Api.userInfo.write('selectUId', user.userId.toString());
+            await loginController.getProfileByUserId(user.userId.toString(), context);
+            Get.toNamed('/clinicProfileWebPage');
+          }))),
+          Expanded(flex: 1, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: user.isActive ? Colors.green : Colors.red, borderRadius: BorderRadius.circular(12)), child: Text(user.isActive ? "Active" : "Inactive", textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 10)))),
+          Expanded(flex: 1, child: Center(child: IconButton(icon: const Icon(Icons.delete, color: Colors.red, size: 18), onPressed: () => _showDeleteDialog(user)))),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(ProfileModel user) {
+    showDeleteDialog(
+      context: context, title: "Toggle User Status?", message: "Do you want to change this user's active status?",
+      onConfirm: () async {
+        await loginController.deactivateUserAdmin(user.userId, !user.isActive, context);
+        await loginController.getProfileDetails('', '', '', '', "", '', '', '', '', context);
+        loginController.update();
+      },
     );
   }
 }

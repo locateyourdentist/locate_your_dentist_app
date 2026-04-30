@@ -26,6 +26,7 @@ class CreateNotificationWeb extends StatefulWidget {
 
 class _CreateNotificationWebState extends State<CreateNotificationWeb> {
   final notificationController=Get.put(NotificationController());
+  final GlobalKey<ScaffoldState> _scaffoldKeyNotification = GlobalKey<ScaffoldState>();
   final loginController=Get.put(LoginController());
   final ImagePicker _picker = ImagePicker();
   File? selectedImageFile;
@@ -102,23 +103,35 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
   @override
   Widget build(BuildContext context) {
     double s=MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;
+    PreferredSizeWidget buildAppBar() {
+      if (Api.userInfo.read('token') != null) {
+        return CommonWebAppBar(
+          height: isMobile ? 60 : (isTablet ? 70 : 80),
+          title: "LYD",
+          onLogout: () {},
+          onNotification: () {},
+        );
+      } else {
+        return CommonHeader();
+      }
+    }
     return Scaffold(
+      key:_scaffoldKeyNotification,
+      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
       backgroundColor: AppColors.scaffoldBg,
-      appBar: CommonWebAppBar(
-        height: s * 0.03,
-        title: "LYD",
-        onLogout: () {
-        },
-        onNotification: () {
-        },
-      ),
+      appBar: buildAppBar(),
       body: GetBuilder<NotificationController>(
           builder: (controller) {
             return Form(
               key: _formKeyCreateNotificationWeb,
               child: Row(
                 children: [
-                  const AdminSideBar(),
+                  if (isDesktop && isLoggedIn) const AdminSideBar(),
                   Expanded(
                     child: Center(
                       child: Padding(
@@ -136,13 +149,34 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                               ],
                             ),
                             child: SingleChildScrollView(
-                              child: Padding(
-                                padding: const EdgeInsets.all(25.0),
-                                child: Column(
-                                    children: [
-                                      SizedBox(height: s*0.01,),
-                                      Text('Create Notification',style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                                      SizedBox(height: s*0.01,),
+                              child: Stack(
+                                children: [
+                                  if (!isDesktop)
+                                    Positioned(
+                                      top: 15,
+                                      left: 15,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4, offset: const Offset(0, 2))],
+                                        ),
+                                        child: IconButton(
+                                          icon: const Icon(Icons.menu, color: AppColors.primary),
+                                          onPressed: () => _scaffoldKeyNotification.currentState?.openDrawer(),
+                                        ),
+                                      ),
+                                    ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(25.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          if (!isDesktop) const SizedBox(height: 50),
+                                          SizedBox(height: s*0.01,),
+                                          Text('Create Notification',style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
+                                          const SizedBox(height: 15),
 
                                       Row(
                                         children: [
@@ -469,51 +503,53 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                           ),
                                           const SizedBox(height: 20),
 
-                                          Container(
-                                            width: s*0.35,
-                                            height: s*0.02,
-                                            decoration: BoxDecoration(
-                                              gradient: const LinearGradient(
-                                                colors: [AppColors.primary, AppColors.secondary],
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
+                                          Center(
+                                            child: Container(
+                                              width: s*0.35,
+                                              height: s*0.025,
+                                              decoration: BoxDecoration(
+                                                gradient: const LinearGradient(
+                                                  colors: [AppColors.primary, AppColors.secondary],
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
+                                                ),
+                                                borderRadius: BorderRadius.circular(10),
                                               ),
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(backgroundColor:Colors.transparent,shadowColor: Colors.transparent),
-                                              onPressed: () async {
-                                                //if (_formKeyCreateNotification.currentState!.validate()) {
-                                                if(notificationController.selectedUserType==null){
-                                                  showCustomToast(context,  "Please Choose user Type",);
-                                                  return;
-                                                }
-                                                if(notificationController.selectedTitle==null){
-                                                  showCustomToast(context,  "Please Give title",);
-                                                  return;
-                                                }
-                                                if(notificationController.messageController.text.isEmpty){
-                                                  showCustomToast(context,  "Please Give message",);
-                                                  return;
-                                                }
-                                                  notificationController.createNotification(
-                                                  Api.userInfo.read('userId'),
-                                                  notificationController.selectedUserType!,
-                                                  notificationController.selectedTitle=="Others"? notificationController.titleController.text:notificationController.selectedTitle.toString(),
-                                                  notificationController.messageController.text,
-                                                  loginController.selectedState.toString(),
-                                                  loginController.selectedDistrict.toString(),
-                                                  loginController.selectedTaluka.toString(),
-                                                  loginController.selectedVillage.toString(),
-                                                  context,
-                                                  // notificationImage1: notificationController
-                                                  //     .notificationImage.isNotEmpty
-                                                  //     ? notificationController.notificationImage
-                                                  //     : [],
-                                                    notificationImage1: notificationWebImage
-                                                  );
-                                              },
-                                              child: Text("Create Post",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white),),
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(backgroundColor:Colors.transparent,shadowColor: Colors.transparent),
+                                                onPressed: () async {
+                                                  //if (_formKeyCreateNotification.currentState!.validate()) {
+                                                  if(notificationController.selectedUserType==null){
+                                                    showCustomToast(context,  "Please Choose user Type",);
+                                                    return;
+                                                  }
+                                                  if(notificationController.selectedTitle==null){
+                                                    showCustomToast(context,  "Please Give title",);
+                                                    return;
+                                                  }
+                                                  if(notificationController.messageController.text.isEmpty){
+                                                    showCustomToast(context,  "Please Give message",);
+                                                    return;
+                                                  }
+                                                    notificationController.createNotification(
+                                                    Api.userInfo.read('userId'),
+                                                    notificationController.selectedUserType!,
+                                                    notificationController.selectedTitle=="Others"? notificationController.titleController.text:notificationController.selectedTitle.toString(),
+                                                    notificationController.messageController.text,
+                                                    loginController.selectedState.toString(),
+                                                    loginController.selectedDistrict.toString(),
+                                                    loginController.selectedTaluka.toString(),
+                                                    loginController.selectedVillage.toString(),
+                                                    context,
+                                                    // notificationImage1: notificationController
+                                                    //     .notificationImage.isNotEmpty
+                                                    //     ? notificationController.notificationImage
+                                                    //     : [],
+                                                      notificationImage1: notificationWebImage
+                                                    );
+                                                },
+                                                child: Text("Create Post",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white),),
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(height: 30,)
@@ -521,7 +557,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                       ),
                                     ]),
                               ),
-                            ),
+                            ])),
                           ),
                         ),
                       ),

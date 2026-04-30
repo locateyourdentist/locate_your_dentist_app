@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
@@ -11,10 +12,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:locate_your_dentist/modules/profiles/clinic_edit_profile.dart';
 import 'package:locate_your_dentist/modules/profiles/pdf_path_view_page.dart';
-import 'package:locate_your_dentist/utills/constants.dart';
 import '../../common_widgets/color_code.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -368,30 +369,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
               // const SizedBox(height: 20),
           
               sectionTitle("Location Details", size),
-              CustomTextField(
-                hint: "State",
-                icon: Icons.map,
-                controller: loginController.stateController,
-              ),
-              SizedBox(height: size * 0.03),
-          
-              CustomTextField(
-                hint: "District",
-                icon: Icons.location_city,
-                controller: loginController.districtController,
-              ),
-              SizedBox(height: size * 0.03),
-              CustomTextField(
-                hint: "City",
-                icon: Icons.location_city,
-                controller: loginController.cityController,
-              ),
-              SizedBox(height: size * 0.03),
-              CustomTextField(
-                hint: "Area",
-                icon: Icons.location_city,
-                controller: loginController.areaController,
-              ),
+              // CustomTextField(
+              //   hint: "State",
+              //   icon: Icons.map,
+              //   controller: loginController.stateController,
+              // ),
+              // SizedBox(height: size * 0.03),
+              //
+              // CustomTextField(
+              //   hint: "District",
+              //   icon: Icons.location_city,
+              //   controller: loginController.districtController,
+              // ),
+              // SizedBox(height: size * 0.03),
+              // CustomTextField(
+              //   hint: "City",
+              //   icon: Icons.location_city,
+              //   controller: loginController.cityController,
+              // ),
+              // SizedBox(height: size * 0.03),
+              // CustomTextField(
+              //   hint: "Area",
+              //   icon: Icons.location_city,
+              //   controller: loginController.areaController,
+              // ),
               SizedBox(height: size * 0.03),
               CustomTextField(
                 hint: "Pincode",
@@ -520,6 +521,176 @@ class _EditProfilePageState extends State<EditProfilePage> {
               //   hint: "Percentage",
               //   controller: loginController.pgPercentage,
               // ),
+              GetBuilder<LoginController>(
+                builder: (controller) {
+                  final items = controller.states.map((v) => v.toString()).toList();
+                  return CustomDropdown<String>.search(
+                    hintText: "Select State",
+                    decoration: CustomDropdownDecoration(
+                      closedFillColor: Colors.grey[100],
+                      expandedFillColor: Colors.white,
+                      closedBorder: Border.all(
+                        color: AppColors.white,
+                        width: 1.5,
+                      ),
+                      expandedBorder: Border.all(
+                        color: AppColors.primary,
+                        width: 1.5,
+                      ),
+                      closedBorderRadius: BorderRadius.circular(10),
+                      expandedBorderRadius: BorderRadius.circular(10),
+                      hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                      headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                      listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
+                    items: controller.states.map((s) => s.toString()).toList(),
+                    //initialItem: controller.selectedState,
+                    initialItem: items.contains(controller.selectedState) ? controller.selectedState : null,
+                    onChanged: (val) {
+                      if (val != null) {
+                        controller.selectedState = val;
+                        controller.districts.clear();
+                        controller.selectedDistrict = null;
+                        controller.selectedTaluka = null;
+                        controller.selectedVillage = null;
+                        final state = controller.states.firstWhere((s) => s == val);
+                        print('state  selected$state');
+                        controller.fetchDistricts(state.toString());
+                        controller.update();
+                      }
+                    },
+                  );
+                },
+              ),
+
+              SizedBox(height: size * 0.03),
+
+              GetBuilder<LoginController>(
+                builder: (controller) {
+                  final items = controller.districts.map((v) => v.toString()).toList();
+                  return CustomDropdown<String>.search(
+                    hintText: "Select District",
+                    items: controller.districts.map((d) => d.toString()).toList(),
+                    //initialItem: controller.selectedDistrict,
+                    initialItem: items.contains(controller.selectedDistrict)
+                        ? controller.selectedDistrict
+                        : null,
+                    decoration: CustomDropdownDecoration(
+                      hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                      headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                      listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                      closedFillColor: Colors.grey[100],
+                      expandedFillColor: Colors.white,
+                      closedBorder: Border.all(
+                        color: AppColors.white,
+                        width: 1.5,
+                      ),
+                      expandedBorder: Border.all(
+                        color: AppColors.primary,
+                        width: 1.5,
+                      ),
+                    ),
+                    onChanged: (val) {
+                      if (val != null) {
+                        controller.selectedDistrict = val;
+                        controller.talukas.clear();
+                        controller.villages.clear();
+                        controller.selectedTaluka = null;
+                        controller.selectedVillage = null;
+                        final district = controller.districts.firstWhere((d) => d == val);
+                        print('sub district selected$district');
+                        controller.fetchTalukas(district.toString());
+                        controller.update();
+                      }
+                    },
+                  );
+                },
+              ),
+
+              SizedBox(height: size * 0.03),
+
+              GetBuilder<LoginController>(
+                  builder: (controller) {
+                    final items = controller.talukas.map((v) => v.toString()).toList();
+                    return  DefaultTextStyle(
+                      style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
+                      child: CustomDropdown<String>.search(
+                        hintText: "Select  taluka/town",
+                        items: loginController.talukas.map((t) => t.toString()).toList(),
+                        decoration: CustomDropdownDecoration(
+                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                          closedFillColor: Colors.grey[100],
+                          expandedFillColor: Colors.white,
+                          closedBorder: Border.all(
+                            color: AppColors.white,
+                            width: 1.5,
+                          ),
+                          expandedBorder: Border.all(
+                            color: AppColors.primary,
+                            width: 1.5,
+                          ),
+                        ),
+                        //initialItem: loginController.selectedTaluka,
+                        initialItem: items.contains(controller.selectedTaluka)
+                            ? controller.selectedTaluka
+                            : null,
+                        excludeSelected: false,
+                        onChanged: (val) {
+                          setState(() => loginController.selectedTaluka = val);
+                          if (val != null) {
+                            final taluka =
+                            loginController. talukas.firstWhere((t) => t == val);
+                            loginController.villages.clear();
+                            loginController.fetchVillages(taluka.toString());
+                            loginController.update();
+                            print('taluka${loginController.selectedTaluka}');
+                          }
+                        },),
+                    );
+                  }
+              ),
+
+              SizedBox(height: size * 0.03),
+              GetBuilder<LoginController>(
+                  builder: (controller) {
+                    final items = controller.villages.map((v) => v.toString()).toList();
+                    return DefaultTextStyle(
+                      style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
+                      child: CustomDropdown<String>.search(
+                        hintText: "Select Area",
+                        // items: loginController.villages.map((v) => v['name'].toString()).toList(),
+                        items: items,
+                        decoration: CustomDropdownDecoration(
+                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                          closedFillColor: Colors.grey[100],
+                          expandedFillColor: Colors.white,
+                          closedBorder: Border.all(
+                            color: AppColors.white,
+                            width: 1.5,
+                          ),
+                          expandedBorder: Border.all(
+                            color: AppColors.primary,
+                            width: 1.5,
+                          ),
+
+                        ),
+                        initialItem: items.contains(controller.selectedVillage)
+                            ? controller.selectedVillage
+                            : null,
+                        excludeSelected: false,
+                        onChanged: (val) {
+                          setState(() => loginController.selectedVillage = val);
+                          loginController.update();
+                          print('Area${loginController.selectedArea}');
+                        },
+                      ),
+                    );
+                  }
+              ),
+              SizedBox(height: size * 0.03),
               GetBuilder<LoginController>(
                   builder: (controller) {
                     return  Column(
@@ -711,7 +882,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     }).toList();
 
                     Map<String, dynamic> finalJson = {
-                      "details": {
                         "collegeDetails": {
                           "ugDegree": {
                             "name": loginController.ugCollege.text ?? "",
@@ -725,7 +895,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           },
                         },
                         "experienceDetails": expJson,
-                      }
                     };
                     print("Details JSON: $finalJson");
                     final userType = "${Api.userInfo.read('userType')}";
@@ -735,6 +904,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     }
                       print('userid${Api.userInfo.read('userId')} ');
                     try {
+                      Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
+                        return await Future.wait(files.map((file) => file.readAsBytes()));
+                      }
+                      final imageBytes = loginController.selectedUserType == "Job Seekers"
+                          ? await convertFilesToBytes(loginController.logoImages)
+                          : await convertFilesToBytes(loginController.images);
+
+                      final logoBytes = loginController.selectedUserType != "Job Seekers"
+                          ? await convertFilesToBytes(loginController.logoImages)
+                          : [];
+                      final certBytes = await convertFilesToBytes(loginController.certificates);
+
                       await loginController.registerUser(
                         userId: Api.userInfo.read('userId') ?? "",
                         userType: userType,
@@ -743,15 +924,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         dob: loginController.dobController.text??"",
                         mobile: loginController.mobileController.text ?? "",
                         email: loginController.emailController.text ?? "",
+                        taluk: loginController.selectedState ?? '',
+                        district: loginController.selectedDistrict ?? '',
+                        city: loginController.selectedTaluka ?? '',
+                        area: loginController.selectedVillage ?? '',
                         // address: loginController.addressController.text ?? "",
                         // confirmPassword: loginController.confirmPasswordController.text ?? "",
-                        taluk: loginController.stateController.text ?? "",
-                        district: loginController.districtController.text ?? "",
-                        city: loginController.cityController.text ?? "",area: loginController.areaController.text??"",
+                        // taluk: loginController.stateController.text ?? "",
+                        // district: loginController.districtController.text ?? "",
+                        // city: loginController.cityController.text ?? "",area: loginController.areaController.text??"",
                         pinCode: loginController.pinCodeController.text ?? "",
                         typeName: loginController.typeNameController.text ?? "",
-                        image: loginController.images.isNotEmpty ? loginController.images : [],
-                        certificate: loginController.certificates.isNotEmpty ? loginController.certificates : [],
+                        //: loginController.images.isNotEmpty ? loginController.images : [],
+                        //certificate: loginController.certificates.isNotEmpty ? loginController.certificates : [],
+                        image: loginController.selectedUserType=="Job Seekers"?logoBytes ?? []:imageBytes ?? [],
+                        certificate: certBytes,
+                        logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
                         description: loginController.descriptionController.text,
                         jobCategory:loginController.selectedCategories,
                         details: finalJson,

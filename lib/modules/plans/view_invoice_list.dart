@@ -3,6 +3,7 @@ import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
+import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/job_pages/view_webinar_page.dart';
 import 'package:locate_your_dentist/modules/plans/payment_pdf.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
@@ -63,12 +64,14 @@ class _InvoiceListPageState extends State<InvoiceListPage> {
       body:GetBuilder<PlanController>(
           builder: (controller) {
             return planController.invoiceList.isEmpty
-              ? const Center(
-            child: Text(
-              "No invoices available",
-              style: TextStyle(fontSize: 16),
-            ),
-          )
+              ?                  buildShimmerEmptyWidget(size)
+
+            //   const Center(
+          //   child: Text(
+          //     "No invoices available",
+          //     style: TextStyle(fontSize: 16),
+          //   ),
+          // )
               : ListView.builder(
             padding:  const EdgeInsets.all(16),
             itemCount: planController.invoiceList.length,

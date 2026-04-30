@@ -16,8 +16,11 @@ class ViewWebProfilePage extends StatefulWidget {
   State<ViewWebProfilePage> createState() => _ViewWebProfilePageState();
 }
 class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKeyProfile = GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _quillScrollController = ScrollController();
+  final FocusNode _focusNode = FocusNode();
   late QuillController _controller;
   void loadJobDescription(dynamic data) {
     try {
@@ -73,31 +76,41 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     loadJobDescription(data);
   }
   @override
+  void dispose() {
+    _scrollController.dispose();
+    _quillScrollController.dispose();
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isMobile = width < 700;
+
     final hasData = loginController.userData.isNotEmpty;
     final user = hasData ? loginController.userData.first : null;
     final collegeDetails = (hasData) ? user!.details['collegeDetails'] ?? {} : {};
     final ug = collegeDetails['ugDegree'] ?? {};
     final pg = collegeDetails['pgDegree'] ?? {};
     final experiences = (hasData) ? user!.details['experienceDetails'] ?? [] : [];
-    // final description = (hasData && user!.details["description"] != null)
-    //     ? user.details["description"].toString() : "";
-    loadJobDescription(user?.details["description"]);
-    // final categoryString = (user?.details['jobCategory'] as List<dynamic>?)?.join(", ")
-    //     ?? user?.details['jobCategory']?.toString()
-    //     ?? "";
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+
     return Scaffold(
+      key: _scaffoldKeyProfile,
+      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
-        height: size * 0.03,
+        height: isMobile ? 60 : 80,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
       ),
       body: Row(
         children: [
-          const AdminSideBar(),
+          if (isDesktop && isLoggedIn) const AdminSideBar(),
 
           Expanded(
             child: Container(
@@ -106,15 +119,68 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 1200),
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                    padding: EdgeInsets.symmetric(vertical: isMobile ? 15 : 30, horizontal: isMobile ? 10 : 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (!isDesktop)
+                          IconButton(
+                            icon: const Icon(Icons.menu,color: AppColors.black,),
+                            onPressed: () => _scaffoldKeyProfile.currentState?.openDrawer(),
+                          ),
 
-                        _headerHero(user, size,context),
+                        _headerHero(user, width, context),
 
-                         SizedBox(height: size*0.03),
+                         const SizedBox(height: 50),
 
+                        if (isMobile) ...[
+                           _card(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _sectionTitle("About", width, context),
+                                Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child:  IgnorePointer(
+                                      child: QuillEditor(
+                                        controller: _controller,
+                                        scrollController: _quillScrollController,
+                                        focusNode: _focusNode,
+                                        config: const QuillEditorConfig(
+                                          showCursor: false,
+                                          expands: false,
+                                        ),
+                                      ),
+                                    )
+                                ),
+                                if(Api.userInfo.read('userType')=='Job Seekers')
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      _sectionTitle("Resume", width, context),
+                                      const SizedBox(height: 10),
+                                      _resumeTile(user, width, context),
+                                    ],
+                                  )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          _card(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _sectionTitle("Contact Info", width, context),
+                                const SizedBox(height: 10),
+                                _contactTile(Icons.email, "Email", user?.email ?? "", width, context),
+                                _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
+                                _contactTile(Icons.cake, "DOB", user?.dob ?? "", width, context),
+                                _contactTile(Icons.location_on, "Location",
+                                    "${user?.address['city'] ?? ''}, ${user?.address['state'] ?? ''}", width, context),
+                              ],
+                            ),
+                          ),
+                        ] else
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -124,9 +190,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _sectionTitle("About",size),
-                                    // const SizedBox(height: 10),
-                                    // Text(description, style: AppTextStyles.caption(context)),
+                                    _sectionTitle("About", width, context),
                                     Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child:  IgnorePointer(
@@ -148,9 +212,9 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                      _sectionTitle("Resume",size),
+                                      _sectionTitle("Resume", width, context),
                                     const SizedBox(height: 10),
-                                    _resumeTile(user, size, context),
+                                    _resumeTile(user, width, context),
                   ])
                                   ],
                                 ),
@@ -163,13 +227,13 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _sectionTitle("Contact Info",size),
+                                    _sectionTitle("Contact Info", width, context),
                                     const SizedBox(height: 10),
-                                    _contactTile(Icons.email, "Email", user?.email ?? "", size),
-                                    _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", size),
-                                    _contactTile(Icons.cake, "DOB", user?.dob ?? "", size),
+                                    _contactTile(Icons.email, "Email", user?.email ?? "", width, context),
+                                    _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
+                                    _contactTile(Icons.cake, "DOB", user?.dob ?? "", width, context),
                                     _contactTile(Icons.location_on, "Location",
-                                        "${user?.address['city'] ?? ''}, ${user?.address['state'] ?? ''}", size),
+                                        "${user?.address['city'] ?? ''}, ${user?.address['state'] ?? ''}", width, context),
                                   ],
                                 ),
                               ),
@@ -177,8 +241,29 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                           ],
                         ),
 
-                        SizedBox(height: size*0.01),
+                        const SizedBox(height: 20),
 
+                        if (isMobile) ...[
+                          if (ug.isNotEmpty)
+                            _card(
+                              child: _infoPanel(
+                                icon: Icons.school,
+                                title: "UG Degree",
+                                desc: "${ug['degree']} - ${ug['name']}\n${ug['percentage']}%",
+                                size: width, context: context
+                              ),
+                            ),
+                          const SizedBox(height: 20),
+                          if (pg.isNotEmpty)
+                            _card(
+                              child: _infoPanel(
+                                icon: Icons.school,
+                                title: "PG Degree",
+                                desc: "${pg['degree']} - ${pg['name']}\n${pg['percentage']}",
+                                size: width, context: context
+                              ),
+                            ),
+                        ] else
                         Row(
                           children: [
                             if (ug.isNotEmpty)
@@ -188,7 +273,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                                     icon: Icons.school,
                                     title: "UG Degree",
                                     desc: "${ug['degree']} - ${ug['name']}\n${ug['percentage']}%",
-                                    size: size,
+                                    size: width, context: context
                                   ),
                                 ),
                               ),
@@ -200,27 +285,27 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                                     icon: Icons.school,
                                     title: "PG Degree",
                                     desc: "${pg['degree']} - ${pg['name']}\n${pg['percentage']}",
-                                    size: size,
+                                    size: width, context: context
                                   ),
                                 ),
                               ),
                           ],
                         ),
 
-                        SizedBox(height: size*0.01),
+                        const SizedBox(height: 20),
                       if(Api.userInfo.read('userType')=='Job Seekers')
                         _card(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _sectionTitle("Experience",size),
+                              _sectionTitle("Experience", width, context),
                               const SizedBox(height: 10),
                               if (experiences.isNotEmpty)
                                 ...experiences.map((exp) => _infoPanel(
                                   icon: Icons.work_outline,
                                   title: exp['companyName'] ?? "",
                                   desc: "${exp['experience']}\n${exp['jobDescription']}",
-                                  size: size,
+                                  size: width, context: context
                                 ))
                               else
                                 const Text("No experience available"),
@@ -240,7 +325,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     );
   }
 
-  Widget _sectionTitle(String title, double size) {
+  Widget _sectionTitle(String title, double width, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: Align(
@@ -253,13 +338,13 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     );
   }
 
-  Widget _contactTile(IconData icon, String label, String value, double size) {
+  Widget _contactTile(IconData icon, String label, String value, double width, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: size * 0.012, color: Colors.grey),
+          Icon(icon, size: 20, color: Colors.grey),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -282,6 +367,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     required String title,
     required String desc,
     required double size,
+    required BuildContext context
   }) {
     return Container(
       width: double.infinity,
@@ -293,7 +379,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
       ),
       child: Row(
         children: [
-          Icon(icon, size: size * 0.012, color: Colors.black54),
+          Icon(icon, size: 24, color: Colors.black54),
           const SizedBox(width: 15),
           Expanded(
               child: Column(
@@ -308,64 +394,6 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
       ),
     );
   }
-}
-Widget _profileHeader(user, double size,dynamic context) {
-  double size=MediaQuery.of(context).size.width;
-  final loginController=Get.put(LoginController());
-  return Container(
-    padding: const EdgeInsets.all(24),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      gradient: const LinearGradient(
-        colors: [AppColors.primary, AppColors.secondary],
-      ),
-    ),
-    child: Row(
-      children: [
-        CircleAvatar(
-          radius: size*0.15,
-          backgroundImage: (user?.images.isNotEmpty ?? false)
-              ? NetworkImage(user.images[0])
-              : null,
-          child: (user?.images.isEmpty ?? true)
-              ? const Icon(Icons.person, size: 40)
-              : null,
-        ),
-
-        const SizedBox(width: 20),
-
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(user?.name ?? "",
-                  style: AppTextStyles.caption(context)),
-
-              const SizedBox(height: 6),
-
-              Text(user?.email ?? "",
-                  style: AppTextStyles.caption(context)),
-
-              const SizedBox(height: 10),
-
-              ElevatedButton(
-                onPressed: () async{
-                 await loginController.getProfileByUserId(user?.userId??"", context);
-
-                  Get.toNamed('/registerPageWeb');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: AppColors.primary,
-                ),
-                child:  Text("Edit Profile",style: AppTextStyles.caption(context),),
-              )
-            ],
-          ),
-        )
-      ],
-    ),
-  );
 }
 Widget _card({required Widget child}) {
   return Container(
@@ -392,7 +420,7 @@ Widget _title(String text) {
     ),
   );
 }
-Widget _resumeTile(user, double size,context) {
+Widget _resumeTile(user, double width, context) {
   return GestureDetector(
     onTap: () {
       print(user.certificates[0]);
@@ -402,23 +430,24 @@ Widget _resumeTile(user, double size,context) {
     },
     child:  Row(
       children: [
-        Icon(Icons.picture_as_pdf, color: Colors.red,size: size*0.014,),
+        const Icon(Icons.picture_as_pdf, color: Colors.red, size: 24,),
         const SizedBox(width: 10),
         Text("View Resume",style: AppTextStyles.caption(context),),
       ],
     ),
   );
 }
-Widget _headerHero(user, double size,context) {
+Widget _headerHero(user, double width, context) {
+  final bool isMobile = width < 700;
   final loginController=Get.put(LoginController());
   return SizedBox(
-    height: size*0.11,
+    height: isMobile ? 220 : 150,
     child: Stack(
       clipBehavior: Clip.none,
       children: [
         Container(
           width: double.infinity,
-          height: size*0.11,
+          height: isMobile ? 120 : 150,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             gradient: const LinearGradient(
@@ -453,7 +482,7 @@ Widget _headerHero(user, double size,context) {
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
-                icon:  Icon(Icons.edit, size: size*0.01,color: AppColors.grey,),
+                icon:  const Icon(Icons.edit, size: 18, color: AppColors.grey,),
                 label:  Text("Edit Profile",style: AppTextStyles.caption(context),),
               ),
             ],
@@ -461,8 +490,8 @@ Widget _headerHero(user, double size,context) {
         ),
 
         Positioned(
-          bottom: -30,
-          left: 30,
+          bottom: isMobile ? -10 : -30,
+          left: isMobile ? 15 : 30,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -481,12 +510,12 @@ Widget _headerHero(user, double size,context) {
                   ],
                 ),
                 child: CircleAvatar(
-                  radius: size*0.023,
+                  radius: isMobile ? 40 : 60,
                   backgroundImage: (user?.images.isNotEmpty ?? false)
                       ? NetworkImage(user.images[0])
                       : null,
                   child: (user?.images.isEmpty ?? true)
-                      ?  Icon(Icons.person, size: size*0.012)
+                      ?  const Icon(Icons.person, size: 40)
                       : null,
                 ),
               ),
@@ -496,34 +525,17 @@ Widget _headerHero(user, double size,context) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 10),
                   Text(user?.name ?? "",
                       style: AppTextStyles.body(context,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: isMobile ? AppColors.black : Colors.white,
                       )),
-                  // const SizedBox(height: 6),
                   Text(user?.userId ?? "",
                    style:   AppTextStyles.body(context,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white
+                          color: isMobile ? AppColors.black : Colors.white
                       )),
-                  // const SizedBox(height: 4),
-                  // if (user?.mobileNumber != null)
-                  //   OutlinedButton.icon(
-                  //     onPressed: () {
-                  //       // Launch Call or WhatsApp
-                  //     },
-                  //     style: OutlinedButton.styleFrom(
-                  //       side: const BorderSide(color: AppColors.white),
-                  //       foregroundColor: AppColors.primary,backgroundColor: AppColors.primary,
-                  //       shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(12),
-                  //       ),
-                  //       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  //     ),
-                  //     icon:  Icon(Icons.phone, size: size*0.01,color: AppColors.white,),
-                  //     label:  Center(child: Text("Contact",style: AppTextStyles.caption(context,color: AppColors.white),)),
-                  //   ),
                 ],
               ),
             ],

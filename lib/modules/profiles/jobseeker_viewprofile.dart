@@ -70,16 +70,17 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
     String userType=Api.userInfo.read('userType')??"";
     final hasData = loginController.userData.isNotEmpty;
     final user = hasData ? loginController.userData.first : null;
-    final collegeDetails = (hasData) ? user!.details['collegeDetails'] ?? {} : {};
+    final collegeDetails =
+    hasData ? (user?.details['collegeDetails'] ?? {}) : {};
     final ug = collegeDetails['ugDegree'] ?? {};
     final pg = collegeDetails['pgDegree'] ?? {};
-    final experiences = (hasData) ? user!.details['experienceDetails'] ?? [] : [];
-    final description = (hasData && user!.details["description"] != null)
-        ? user.details["description"].toString() : "";
-    final categoryString = (user!.details['jobCategory'] is List)
-        ? (user.details['jobCategory'] as List).join(", ")
-        : user.details['jobCategory']?.toString() ?? "";
-    return Scaffold(
+    final experiences = hasData ? (user?.details['experienceDetails'] ?? []) : [];
+    final description = hasData ? user?.details["description"]?.toString() ?? "" : "";
+    final categoryString =
+    (hasData && user?.details['jobCategory'] is List)
+        ? (user!.details['jobCategory'] as List).join(", ")
+        : user?.details['jobCategory']?.toString() ?? "";
+        return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -268,7 +269,7 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                           ],
                         ),
                       ),
-        
+
                        const SizedBox(height: 20),
                       _sectionTitle("Contact Information", size),
                       // _contactTile(Icons.email_rounded, "Email", user!.email ?? "", size),
@@ -308,7 +309,7 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                             : "",
                         size,
                       ),
-        
+
                       const SizedBox(height: 10),
                       _sectionTitle("Job Category", size),
                       _contactTile(
@@ -338,7 +339,7 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                             desc:
                             "College: ${pg['name'] ?? ""}\nDegree: ${pg['degree'] ?? ""}\nPercentage: ${pg['percentage'] ?? ""}",
                             size: size),
-        
+
                       const SizedBox(height: 20),
                       _sectionTitle("Experience", size),
                       if (experiences.isNotEmpty)
@@ -356,7 +357,7 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                       else
                         Text("No experience available",
                             style: TextStyle(fontSize: size * 0.038, color: Colors.grey[700])),
-        
+
                       const SizedBox(height: 30),
                     ],
                   ),

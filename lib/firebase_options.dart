@@ -44,13 +44,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAXxg4D1aX6vQg1s19r5Pb_uO9OuIAvNNk',
-    appId: '1:540179202432:web:aa86d1a145377eae3b8165',
-    messagingSenderId: '540179202432',
-    projectId: 'locate-your-dentist',
-    authDomain: 'locate-your-dentist.firebaseapp.com',
-    storageBucket: 'locate-your-dentist.firebasestorage.app',
-    measurementId: 'G-DZZCQNYSGQ',
+    apiKey: 'AIzaSyD0lcg8qsEarpbjiWJkUODu53EF7lT9ajU',
+    appId: '1:831601657278:web:d39cd0bca707c6b917a5ef',
+    messagingSenderId: '831601657278',
+    projectId: 'locateyourdentist-5c2ca',
+    authDomain: 'locateyourdentist-5c2ca.firebaseapp.com',
+    storageBucket: 'locateyourdentist-5c2ca.firebasestorage.app',
+    measurementId: 'G-4L5K3C4TWL',
   );
 
   static const FirebaseOptions android = FirebaseOptions(

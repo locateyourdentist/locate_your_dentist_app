@@ -225,8 +225,6 @@ class LoginController extends GetxController {
     pgCollege.clear();
     pgDegree.clear();
     pgPercentage.clear();
-
-    // Clear selected values
     selectedMartialStatus = "";
     selectUserId = "";
     experienceList.clear();
@@ -806,8 +804,11 @@ class LoginController extends GetxController {
         print("namw${user.details["name"] ?? ""}");
         servicesOfferedController.text = user.details["services"] ?? "";
         websiteController.text = user.details["website"] ?? "";
+        print('dfghweb${websiteController.text}');
         typeNameController.text = user.details["name"] ?? "";
         selectedState = user.address["state"] ?? "";
+        print('state $selectedDistrict');
+
         selectedDistrict = user.address["district"] ?? "";
         print('district $selectedDistrict');
         selectedTaluka = user.address["city"] ?? "";
@@ -818,6 +819,17 @@ class LoginController extends GetxController {
         addressController.text = user.address["address"] ?? "";
         selectedMartialStatus=user.martialStatus??"";
         locationController.text=user.location??"";
+
+        // Fetch cascading lists for dropdowns
+        if (selectedState != null && selectedState!.isNotEmpty) {
+          await fetchDistricts(selectedState!);
+        }
+        if (selectedDistrict != null && selectedDistrict!.isNotEmpty) {
+          await fetchTalukas(selectedDistrict!);
+        }
+        if (selectedTaluka != null && selectedTaluka!.isNotEmpty) {
+          await fetchVillages(selectedTaluka!);
+        }
 
 
         // if (user.details["jobCategory"] != null) {
@@ -990,8 +1002,67 @@ class LoginController extends GetxController {
     }
     isLoading=true;
     try {
-      final response = await api.registerUser( userId, userType,fullName,martialStatus,dob, mobile, email, confirmPassword, taluk, district, city,area, pinCode, typeName, jobCategory,logoImage, image,certificate,
-           oldImageUrl, oldCertificatesUrl,  logoUrl,details,description, location,website, latitude, longitude,adminId,isAdmin);
+      Future<List<Uint8List>?> convertToBytes(dynamic input) async {
+        if (input == null) return null;
+        if (input is List<Uint8List>) return input;
+        
+        if (input is List<File>) {
+          List<Uint8List> result = [];
+          for (var f in input) {
+            result.add(await f.readAsBytes());
+          }
+          return result;
+        }
+
+        if (input is List) {
+          List<Uint8List> bytesList = [];
+          for (var item in input) {
+            if (item is File) {
+              bytesList.add(await item.readAsBytes());
+            } else if (item is Uint8List) {
+              bytesList.add(item);
+            }
+          }
+          return bytesList;
+        }
+        return null;
+      }
+
+      final logoImageBytes = await convertToBytes(logoImage);
+      final imageBytes = await convertToBytes(image);
+      final certificateBytes = await convertToBytes(certificate);
+
+      final response = await api.registerUser(
+        userId,
+        userType,
+        fullName,
+        martialStatus,
+        dob,
+        mobile,
+        email,
+        confirmPassword,
+        taluk,
+        district,
+        city,
+        area,
+        pinCode,
+        typeName,
+        jobCategory,
+        logoImageBytes,
+        imageBytes,
+        certificateBytes,
+        oldImageUrl,
+        oldCertificatesUrl,
+        logoUrl,
+        details,
+        description,
+        location,
+        website,
+        latitude,
+        longitude,
+        adminId,
+        isAdmin,
+      );
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
         print('update status ${data["status"]}$userId uid');

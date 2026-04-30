@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -13,6 +15,7 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/clinic_image_caurosel.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:video_player/video_player.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LandingPage extends StatefulWidget {
@@ -29,7 +32,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
  // final notificationController = Get.put(NotificationController());
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
-  VideoPlayerController? _controller;
+  //VideoPlayerController? _controller;
   @override
   void initState() {
     super.initState();
@@ -40,39 +43,145 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
 
     _fadeController.forward();
     _refresh();
-    _controller = VideoPlayerController.asset('assets/images/welcome1.mp4')
-      ..initialize().then((_) {
-        if (mounted) {
-          setState(() {});
-          _controller!.setLooping(true);
-          _controller!.setVolume(0);
-          _controller!.play();
-        }
-      });
+    // _controller = VideoPlayerController.asset('assets/images/welcome1.mp4')
+    //   ..initialize().then((_) {
+    //     if (mounted) {
+    //       setState(() {});
+    //       _controller!.setLooping(true);
+    //       _controller!.setVolume(0);
+    //       _controller!.play();
+    //     }
+    //   });
   }
   Future<void> _refresh() async {
-    await getLocation();
-    await loginController.getProfileDetails('Dental Clinic', '', '', '', "true", '', '', '', '', context);
+    if (!kIsWeb) {
+      await getLocation();
+    }    await loginController.getProfileDetails('Dental Clinic', '', '', '', "true", '', '', '', '', context);
     await loginController.fetchStates();
     await loginController.getAppLogoImage(context);
     await planController.getUploadImages(userType: "Dental Clinic", context: context);
   }
-  Future<void> getLocation() async {
-    final position = await LocationService.getCurrentLocation();
-    if (position != null) {
-      final address = await getAddressFromLatLng(position.latitude, position.longitude);
+  // Future<void> getLocation() async {
+  //   final position = await LocationService.getCurrentLocation();
+  //   if (position != null) {
+  //     final address = await getAddressFromLatLng(position.latitude, position.longitude);
+  //     planController.currentLocation = address;
+  //   } else {
+  //     Get.snackbar('Location', 'Unable to get location');
+  //   }
+  // }
+  //
+  // Future<String> getAddressFromLatLng(double lat, double lng) async {
+  //   try {
+  //     List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+  //     Placemark place = placemarks.first;
+  //     return '${place.subLocality}, ${place.locality} ${place.postalCode}';
+  //   } catch (e) {
+  //     return '';
+  //   }
+  // }
+    Future<void> getLocation() async {
+
+    try {
+
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+      if (!serviceEnabled) {
+
+        Get.snackbar(
+          'Location',
+          'Location services are disabled',
+        );
+
+        return;
+      }
+
+      /// Check permission
+      permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied) {
+
+        permission = await Geolocator.requestPermission();
+
+        if (permission == LocationPermission.denied) {
+
+          Get.snackbar(
+            'Location',
+            'Location permission denied',
+          );
+
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+
+        Get.snackbar(
+          'Location',
+          'Location permission permanently denied',
+        );
+
+        return;
+      }
+
+      /// Get current position
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      print("Latitude: ${position.latitude}");
+      print("Longitude: ${position.longitude}");
+
+      /// Get address
+      String address = await getAddressFromLatLng(
+        position.latitude,
+        position.longitude,
+      );
+
       planController.currentLocation = address;
-    } else {
-      Get.snackbar('Location', 'Unable to get location');
+
+      print("Address: $address");
+
+    } catch (e) {
+
+      print("Location Error: $e");
+
+      Get.snackbar(
+        'Error',
+        'Unable to get location',
+      );
     }
   }
 
-  Future<String> getAddressFromLatLng(double lat, double lng) async {
+  Future<String> getAddressFromLatLng(
+      double lat,
+      double lng,
+      ) async {
+
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
-      Placemark place = placemarks.first;
-      return '${place.subLocality}, ${place.locality} ${place.postalCode}';
+
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(lat, lng);
+
+      if (placemarks.isNotEmpty) {
+
+        Placemark place = placemarks.first;
+
+        return
+          "${place.subLocality ?? ''}, "
+              "${place.locality ?? ''}, "
+              "${place.postalCode ?? ''}";
+      }
+
+      return '';
+
     } catch (e) {
+
+      print("Address Error: $e");
+
       return '';
     }
   }
@@ -209,26 +318,6 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // ClipRRect(
-                            //   child: SizedBox(
-                            //     width: double.infinity,
-                            //     height: size * 0.32,
-                            //     child: (_controller != null && _controller!.value.isInitialized)
-                            //         ? FittedBox(
-                            //       fit: BoxFit.cover,
-                            //       child: SizedBox(
-                            //         width: _controller!.value.size.width,
-                            //         height: _controller!.value.size.height,
-                            //         child: VideoPlayer(_controller!),
-                            //       ),
-                            //     )
-                            //         : Image.asset(
-                            //       'images/welcome.png',
-                            //       fit: BoxFit.cover,
-                            //       width: double.infinity,
-                            //     ),
-                            //   ),
-                            // ),
 
                             AnimationLimiter(
                               child: Column(
@@ -245,27 +334,6 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                     ),
                                   ),
 
-                                  // AnimationConfiguration.staggeredList(
-                                  //   position: 1,
-                                  //   duration: const Duration(milliseconds: 800),
-                                  //   child: SlideAnimation(
-                                  //     verticalOffset: 50.0,
-                                  //     child: FadeInAnimation(
-                                  //       child: TweenAnimationBuilder<double>(
-                                  //         tween: Tween(begin: 1.2, end: 1.0),
-                                  //         duration: const Duration(milliseconds: 800),
-                                  //         curve: Curves.easeOut,
-                                  //         builder: (context, scale, child) {
-                                  //           return Transform.scale(
-                                  //             scale: scale,
-                                  //             child: child,
-                                  //           );
-                                  //         },
-                                  //         child: HeroBanner(),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ),
                                   HeroBanner(),
                                 ],
                               ),
@@ -283,9 +351,14 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                               GetBuilder<PlanController>(
                                 builder: (controller) {
                                   final imageUrls = controller.editUploadImage1
-                                      .map((clinic) => clinic.url ?? "")
+                                      .where((img) => img.isActive == true)
+                                      .map((img) => img.url ?? "")
                                       .where((url) => url.isNotEmpty)
                                       .toList();
+                                  // final imageUrls = controller.editUploadImage1
+                                  //     .map((clinic) => clinic.url ?? "")
+                                  //     .where((url) => url.isNotEmpty)
+                                  //     .toList();
                                   return Padding(
                                     padding: const EdgeInsets.all(20.0),
                                     child: ClinicImageCarousel(imageUrls: imageUrls),
@@ -434,31 +507,36 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                           ],
                                         ),
                                         const SizedBox(height: 10),
-                                        AnimationLimiter(
-                                          child: GridView.builder(
-                                            shrinkWrap: true,
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            itemCount: loginController.profileList.length > 10
-                                                ? 10
-                                                : loginController.profileList.length,
-                                            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                              maxCrossAxisExtent: 280,
-                                              mainAxisSpacing: 20,
-                                              crossAxisSpacing: 20,
-                                              childAspectRatio: 0.9,
+                                        if (loginController.isLoading)
+                                          _buildClinicShimmerGrid(context)
+                                        else if (loginController.profileList.isEmpty)
+                                          _buildEmptyStateWithShimmer(context)
+                                        else
+                                          AnimationLimiter(
+                                            child: GridView.builder(
+                                              shrinkWrap: true,
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              itemCount: loginController.profileList.length > 10
+                                                  ? 10
+                                                  : loginController.profileList.length,
+                                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                maxCrossAxisExtent: 280,
+                                                mainAxisSpacing: 20,
+                                                crossAxisSpacing: 20,
+                                                childAspectRatio: 0.9,
+                                              ),
+                                              itemBuilder: (context, index) {
+                                                return AnimationConfiguration.staggeredList(
+                                                    position: index,
+                                                    duration: const Duration(milliseconds: 700),
+                                                    child: SlideAnimation(
+                                                        horizontalOffset: 80.0,
+                                                        curve: Curves.easeOutCubic,
+                                                        child: FadeInAnimation(
+                                                            child: EnlargeOnTapCard(child: clinicCard(loginController.profileList[index])))));
+                                              },
                                             ),
-                                            itemBuilder: (context, index) {
-                                              return AnimationConfiguration.staggeredList(
-                                                  position: index,
-                                                  duration: const Duration(milliseconds: 700),
-                                                  child: SlideAnimation(
-                                                      horizontalOffset: 80.0,
-                                                      curve: Curves.easeOutCubic,
-                                                      child: FadeInAnimation(
-                                                          child: EnlargeOnTapCard(child: clinicCard(loginController.profileList[index])))));
-                                            },
                                           ),
-                                        ),
                                       ]),
                                 ),
                               ),
@@ -1155,6 +1233,47 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
   //  _controller.dispose();
     super.dispose();
   }
+
+  Widget _buildClinicShimmerGrid(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 8,
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 280,
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
+          childAspectRatio: 0.9,
+        ),
+        itemBuilder: (context, index) => Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyStateWithShimmer(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Center(
+        child: Column(
+          children: [
+            Icon(Icons.search_off_outlined, size: 80, color: Colors.grey[300]),
+            const SizedBox(height: 15),
+            Text('No clinics found matching your location', 
+              style: AppTextStyles.subtitle(context, color: Colors.grey)),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 
@@ -1174,7 +1293,7 @@ class _HeroBannerState extends State<HeroBanner>
 
   final List<Map<String, String>> banners = [
     {
-      "image": "images/welcome.png",
+      "image": "images/1.png",
       "title": "Find Your Dental Clinic near you",
       "button": "Enquire Now",
       "route": "/userTypeListWeb",
@@ -1254,10 +1373,11 @@ class _HeroBannerState extends State<HeroBanner>
 
   @override
   Widget build(BuildContext context) {
-    final double size = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isMobile = width < 700;
 
     return SizedBox(
-      height: size * 0.5,
+      height: isMobile ? 300 : width * 0.4,
       width: double.infinity,
       child: Stack(
         children: [
@@ -1299,54 +1419,57 @@ class _HeroBannerState extends State<HeroBanner>
 
           /// 🔹 Animated Text Content
           Center(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 600),
-              transitionBuilder: (child, animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0, 0.3),
-                      end: Offset.zero,
-                    ).animate(animation),
-                    child: child,
-                  ),
-                );
-              },
-              child: Column(
-                key: ValueKey(currentPage),
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-
-                  AnimatedText(
-                    banners[currentPage]["title"]!,
-                    size,
-                  ),
-                  const SizedBox(height: 20),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      final route = banners[currentPage]["route"];
-                      if (route != null) {
-                        Get.toNamed(route);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 25,
-                        vertical: 15,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 600),
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.3),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Column(
+                  key: ValueKey(currentPage),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+  
+                    AnimatedText(
+                      banners[currentPage]["title"]!,
+                      width,
+                    ),
+                    const SizedBox(height: 20),
+  
+                    ElevatedButton(
+                      onPressed: () {
+                        final route = banners[currentPage]["route"];
+                        if (route != null) {
+                          Get.toNamed(route);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isMobile ? 20 : 25,
+                          vertical: isMobile ? 12 : 15,
+                        ),
+                      ),
+                      child: Text(
+                        banners[currentPage]["button"]!,
+                        style: AppTextStyles.body(
+                          context,
+                          color: AppColors.white,
+                        ),
                       ),
                     ),
-                    child: Text(
-                      banners[currentPage]["button"]!,
-                      style: AppTextStyles.body(
-                        context,
-                        color: AppColors.white,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -1357,12 +1480,13 @@ class _HeroBannerState extends State<HeroBanner>
 }
 class AnimatedText extends StatelessWidget {
   final String text;
-  final double size;
+  final double width;
 
-  const AnimatedText(this.text, this.size);
+  const AnimatedText(this.text, this.width);
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = width < 700;
     return Wrap(
       alignment: WrapAlignment.center,
       children: List.generate(text.length, (index) {
@@ -1388,7 +1512,7 @@ class AnimatedText extends StatelessWidget {
             char,
             style: GoogleFonts.poppins( // change font here
               color: AppColors.white,
-              fontSize: size * 0.03,
+              fontSize: isMobile ? 22 : width * 0.03,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -1438,7 +1562,6 @@ class AboutUsSection extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
 
-      /// ❌ REMOVED extra Center + maxWidth from here
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

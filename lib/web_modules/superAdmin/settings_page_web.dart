@@ -23,6 +23,7 @@ class SettingsPageWeb extends StatefulWidget {
 class _SettingsPageWebState extends State<SettingsPageWeb> {
   @override
   final TextEditingController emailController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKeySetting = GlobalKey<ScaffoldState>();
 
   final TextEditingController passwordController = TextEditingController();
   final loginController=Get.put(LoginController());
@@ -122,9 +123,14 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
   }
   Widget build(BuildContext context) {
     double s=MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isMobile = width < 600;
+    final bool isTablet = width >= 600 && width < 1024;
+    final bool isDesktop = width >= 1100;
     return DefaultTabController(
       length: 5,
       child: Scaffold(
+        key: _scaffoldKeySetting,
         //backgroundColor: const Color(0xffF5F7FB),
         backgroundColor: AppColors.scaffoldBg,
         appBar: CommonWebAppBar(
@@ -137,7 +143,7 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
          ),
         body:  Row(
           children: [
-            const AdminSideBar(),
+            if (isDesktop) const AdminSideBar(),
 
             Expanded(
               child: Padding(
@@ -149,6 +155,15 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (!isDesktop)
+                          Positioned(
+                            top: 10,
+                            left: 10,
+                            child: IconButton(
+                              icon: const Icon(Icons.menu,color: AppColors.black,),
+                              onPressed: () => _scaffoldKeySetting.currentState?.openDrawer(),
+                            ),
+                          ),
                         Text('Settings',style: AppTextStyles.subtitle(context),),
                          SizedBox(height: s*0.005,),
                         Text(

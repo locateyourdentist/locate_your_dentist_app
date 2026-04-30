@@ -98,9 +98,10 @@ Future<void> _refresh() async {
                 child: Column(
                   children: [
                     if(serviceController.serviceList.isEmpty)
-                      Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
-                    if(serviceController.isLoading)
-                      const CircularProgressIndicator(color: AppColors.primary,),
+                      buildShimmerEmptyWidget(size),
+                    //   Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
+                    // if(serviceController.isLoading)
+                    //   const CircularProgressIndicator(color: AppColors.primary,),
 
                       if(serviceController.serviceList.isNotEmpty)
                     AnimationLimiter(

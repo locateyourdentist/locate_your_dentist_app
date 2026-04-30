@@ -16,9 +16,7 @@ import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.d
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
-import 'package:locate_your_dentist/modules/profiles/vedio_plays.dart';
 import 'package:path/path.dart' as path;
-// import 'package:country_state_city_pro/country_state_city_pro.dart';
 import 'package:video_compress/video_compress.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
@@ -213,18 +211,37 @@ import 'package:geocoding/geocoding.dart';
       ),
     );
     _refresh();
-
   }
     Future<void> _refresh() async {
       userId=Get.arguments?["userId"]??"";
       branchId = Get.arguments?['branchId'] ??"";
       countryCont!='India';
-      print('sd$userId');
-      //loginController.getProfileByUserId(userId!, context);
+      print('sd${Api.userInfo.read('selectUId')??""}');
+      await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
+      setProfileData(loginController.userData);
       await loginController.fetchStates();
       loadJobDescription(loginController.descriptionData);
-
       await getPlanLimits();
+    }
+    Future<void> setProfileData(user) async {
+
+      loginController.selectedState = user.address["state"] ?? "";
+      loginController.selectedDistrict = user.address["district"] ?? "";
+      loginController.selectedTaluka = user.address["city"] ?? "";
+      loginController.selectedVillage = user.address["area"] ?? "";
+      print('fgf${user.address["district"] ?? ""}');
+      await loginController.fetchStates();
+      if (loginController.selectedState != null && loginController.selectedState!.isNotEmpty) {
+        await loginController.fetchDistricts(loginController.selectedState!);
+      }
+      if (loginController.selectedDistrict != null && loginController.selectedDistrict!.isNotEmpty) {
+        await loginController.fetchTalukas(loginController.selectedDistrict!);
+      }
+      if (loginController.selectedTaluka != null && loginController.selectedTaluka!.isNotEmpty) {
+        await loginController.fetchVillages(loginController.selectedTaluka!);
+      }
+
+      loginController.update();
     }
     bool getPlanActive() {
       final userData = loginController.userData;
@@ -449,8 +466,8 @@ import 'package:geocoding/geocoding.dart';
                           headerStyle: AppTextStyles.caption(context, color: Colors.black),
                           listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
                         items: controller.states.map((s) => s.toString()).toList(),
-                        //initialItem: controller.selectedState,
-                        initialItem: items.contains(controller.selectedState) ? controller.selectedState : null,
+                        initialItem: controller.selectedState,
+                        //initialItem: items.contains(controller.selectedState) ? controller.selectedState : null,
                         onChanged: (val) {
                           if (val != null) {
                             controller.selectedState = val;
@@ -476,10 +493,10 @@ import 'package:geocoding/geocoding.dart';
                       return CustomDropdown<String>.search(
                         hintText: "Select District",
                         items: controller.districts.map((d) => d.toString()).toList(),
-                        //initialItem: controller.selectedDistrict,
-                        initialItem: items.contains(controller.selectedDistrict)
-                            ? controller.selectedDistrict
-                            : null,
+                        initialItem: controller.selectedDistrict,
+                        // initialItem: items.contains(controller.selectedDistrict)
+                        //     ? controller.selectedDistrict
+                        //     : null,
                         decoration: CustomDropdownDecoration(
                           hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
                           headerStyle: AppTextStyles.caption(context, color: Colors.black),
@@ -537,10 +554,10 @@ import 'package:geocoding/geocoding.dart';
                                 width: 1.5,
                               ),
                             ),
-                            //initialItem: loginController.selectedTaluka,
-                            initialItem: items.contains(controller.selectedTaluka)
-                                ? controller.selectedTaluka
-                                : null,
+                            initialItem: loginController.selectedTaluka,
+                            // initialItem: items.contains(controller.selectedTaluka)
+                            //     ? controller.selectedTaluka
+                            //     : null,
                             excludeSelected: false,
                             onChanged: (val) {
                               setState(() => loginController.selectedTaluka = val);
@@ -583,9 +600,10 @@ import 'package:geocoding/geocoding.dart';
                               ),
 
                             ),
-                            initialItem: items.contains(controller.selectedVillage)
-                                ? controller.selectedVillage
-                                : null,
+                            initialItem:controller.selectedVillage,
+                            // initialItem: items.contains(controller.selectedVillage)
+                            //     ? controller.selectedVillage
+                            //     : null,
                             excludeSelected: false,
                             onChanged: (val) {
                               setState(() => loginController.selectedVillage = val);
@@ -791,7 +809,7 @@ import 'package:geocoding/geocoding.dart';
                                color: Colors.grey.shade200,
                              ),
                              child:  Center(
-                               child: Icon(Icons.add, size: size*0.016, color: Colors.grey),
+                               child: Icon(Icons.add, size: size*0.03, color: Colors.grey),
                              ),
                            ),
                          );
@@ -829,7 +847,7 @@ import 'package:geocoding/geocoding.dart';
                                    color: Colors.grey.shade200,
                                  ),
                                  child:  Center(
-                                   child: Icon(Icons.add, size: size*0.016, color: Colors.grey),
+                                   child: Icon(Icons.add, size: size*0.03, color: Colors.grey),
                                  ),
                                ),
                              );
@@ -967,7 +985,9 @@ import 'package:geocoding/geocoding.dart';
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),),
-                              child: Text(
+                              child:loginController.isLoading
+                                  ? const CircularProgressIndicator(color: Colors.white)
+                                  : Text(
                                 'Update',style: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),)
 
                         ),
@@ -1167,11 +1187,14 @@ Widget buildMediaItem(AppImage media, double size, VoidCallback onDelete, BuildC
   Widget content;
 
   if (media.isVideo) {
-    content = Container(
-      height: size * 0.15,
-      width: size * 0.15,
-      color: Colors.black12,
-      child: const Center(child: Icon(Icons.play_circle_fill)),
+    content = Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        height: size * 0.3,
+        width: size * 0.3,
+        color: Colors.black12,
+        child: const Center(child: Icon(Icons.play_circle_fill)),
+      ),
     );
   }
 
@@ -1251,120 +1274,19 @@ Widget buildAddButton(VoidCallback onTap, double size) {
     onTap: onTap,
     child: Container(
       margin:  EdgeInsets.all(8),
-      width: size * 0.15,
-      height: size * 0.15,
+      width: size * 0.3,
+      height: size * 0.3,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey),
         color: Colors.grey.shade200,
       ),
       child:  Center(
-        child: Icon(Icons.add, size: size*0.016, color: Colors.grey),
+        child: Icon(Icons.add, size: size*0.03, color: Colors.grey),
       ),
     ),
   );
 }
-// class MediaPreviewWidget extends StatefulWidget {
-//   final AppImage media;
-//   final double size;
-//
-//   const MediaPreviewWidget({super.key, required this.media, required this.size});
-//
-//   @override
-//   State<MediaPreviewWidget> createState() => _MediaPreviewWidgetState();
-// }
-//
-// class _MediaPreviewWidgetState extends State<MediaPreviewWidget> {
-//   String? thumbnailPath;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     if (widget.media.isVideo && widget.media.file != null) {
-//       generateThumbnail();
-//     }
-//   }
-//
-//   Future<void> generateThumbnail() async {
-//     final thumb = await VideoThumbnail.thumbnailFile(
-//       video: widget.media.file!.path,
-//       imageFormat: ImageFormat.JPEG,
-//       maxWidth: 300,
-//       quality: 75,
-//     );
-//     setState(() {
-//       thumbnailPath = thumb;
-//     });
-//   }
-//
-//   // void _openMedia() {
-//   //   if (widget.media.isVideo) {
-//   //     print('vedeo file${widget.media}');
-//   //     Get.to(() => VideoPlayerScreen(media: widget.media));
-//   //   } else {
-//   //
-//   //     Get.toNamed('/viewImagePage',arguments: {'url': widget.media.url, 'file': widget.media.file});
-//   //    // Get.to(() => ViewImage(url: widget.media.url, file: widget.media.file));
-//   //   }
-//   // }
-//   void _openMedia() {
-//     print("Tapped media: isVideo=${widget.media.isVideo}, file=${widget.media.file}, url=${widget.media.url}");
-//     if (widget.media.isVideo) {
-//       if (widget.media.file != null || (widget.media.url != null && widget.media.url!.isNotEmpty)) {
-//         Get.to(() => VideoPlayerScreen(media: widget.media));
-//       } else {
-//         Get.snackbar("Error", "Video not available");
-//       }
-//     } else {
-//       Get.toNamed('/viewImagePage', arguments: {'url': widget.media.url, 'file': widget.media.file});
-//     }
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTap: _openMedia,
-//       child: ClipRRect(
-//         borderRadius: BorderRadius.circular(10),
-//         child: widget.media.isVideo
-//             ? Stack(
-//           children: [
-//             thumbnailPath == null
-//                 ? Container(
-//               width: widget.size,
-//               height: widget.size,
-//               color: Colors.black12,
-//               child: const Center(child: CircularProgressIndicator()),
-//             )
-//                 : Image.file(
-//               File(thumbnailPath!),
-//               width: widget.size,
-//               height: widget.size,
-//               fit: BoxFit.cover,
-//             ),
-//             const Positioned.fill(
-//               child: Center(
-//                 child: Icon(Icons.play_circle_fill, color: Colors.white, size: 50),
-//               ),
-//             ),
-//           ],
-//         )
-//             : widget.media.file != null
-//             ? Image.file(
-//           widget.media.file!,
-//           width: widget.size,
-//           height: widget.size,
-//           fit: BoxFit.cover,
-//         )
-//             : Image.network(
-//           widget.media.url ?? "",
-//           width: widget.size,
-//           height: widget.size,
-//           fit: BoxFit.cover,
-//         ),
-//       ),
-//     );
-//   }
-// }
 class MediaPreviewWidget extends StatefulWidget {
   final AppImage media;
   final double size;

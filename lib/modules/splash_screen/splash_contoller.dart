@@ -46,7 +46,7 @@ class SplashController extends GetxController with GetSingleTickerProviderStateM
         curve: Curves.easeInOut,
       ),);
     animationController.repeat(reverse: true);
-    simulateLoading();
+    //simulateLoading();
     checkToken();
     checkForUpdate();
   }

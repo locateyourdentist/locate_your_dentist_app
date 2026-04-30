@@ -97,7 +97,6 @@ class Media {
     _tabController1.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -110,6 +109,8 @@ class Media {
     Future<void> _refresh() async {
       _tabController1 = TabController(length: (userType=='superAdmin'||userType=='admin')? 2:1, vsync: this,);
       await serviceController.getServiceListAdmin(loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"", context);
+      await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
+
     }
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -125,17 +126,63 @@ class Media {
                   child: Column(
                   children: [
                     if(loginController.userData.isEmpty)
-                      Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
-                    if(loginController.isLoading)
-                      const CircularProgressIndicator(color: AppColors.primary,),
+                      //Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
+                   // if (loginController.isLoading)
+                      Column(
+                        children: [
+                          shimmerBox(height: size * 0.35, radius: 0),
+
+                          SizedBox(height: size * 0.02),
+
+                          shimmerBox(
+                            height: 20,
+                            width: size * 0.5,
+                          ),
+
+                          SizedBox(height: 10),
+
+                          shimmerBox(
+                            height: 16,
+                            width: size * 0.3,
+                          ),
+
+                          SizedBox(height: size * 0.03),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              shimmerBox(height: 50, width: 90),
+                              shimmerBox(height: 50, width: 90),
+                              shimmerBox(height: 50, width: 90),
+                            ],
+                          ),
+
+                          SizedBox(height: size * 0.03),
+
+                          ListView.builder(
+                            itemCount: 3,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (_, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: shimmerBox(
+                                  height: size * 0.25,
+                                  radius: 12,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    //if(loginController.isLoading)
+                      //const CircularProgressIndicator(color: AppColors.primary,),
                     if(loginController.userData.isNotEmpty)
                      Column(
                        crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Stack(
                           children: [
-
                             MediaCarousel(
                               images: loginController.editImages
                                   .where((img) =>
@@ -277,7 +324,7 @@ class Media {
                         SizedBox(height: size*0.01,),
                         Center(
                           child: Text(
-                         (user?.details["name"]??"").toString()??"",
+                              user?.details?["name"]?.toString() ?? "",
                             // "Catchy Dental Clinic",
                               textAlign: TextAlign.center,
                               style: AppTextStyles.subtitle(
@@ -303,12 +350,24 @@ class Media {
                             }
                           }, icon: Icon(Icons.place,color: AppColors.primary,size: size*0.05,)),
 
-
-                            Center(
+                            Expanded(
                               child: Text(
-                                loginController.userData.isNotEmpty && user?.address != null
-                                    ? "${user?.address['state'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['city'] ?? ''}"
-                                    : "",  style: const TextStyle(color: Colors.grey),
+                                [
+                                  user?.address?['state'],
+                                  user?.address?['district'],
+                                  user?.address?['city'],
+                                ]
+                                    .where((e) =>
+                                e != null && e.toString().trim().isNotEmpty)
+                                    .join(", "),
+
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                // loginController.userData.isNotEmpty && user?.address != null
+                                //     ? "${user?.address['state'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['city'] ?? ''}"
+                                //     : "", maxLines: 2,
+                                // overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: Colors.grey),
                               ),
                             ),
                           ],
@@ -354,7 +413,6 @@ class Media {
                               if (!planActive) return;
                               if (!isMobileAllowed && !isAdminUser) return;
 
-                              // WhatsApp call (single place)
                               WhatsAppUtils.openWhatsApp(
                               phoneNumber: userData.mobileNumber?.toString() ?? '',
                               message: "Hi Message From ${userData.details?["name"] ?? ''}",
@@ -453,10 +511,7 @@ class Media {
                        //    if (serviceController.serviceList.isNotEmpty && (
                        //        planActive == true && loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"] == true ||
                        //            isAdminUser == true || userId == editUserId))
-                        if (
-                        serviceController.serviceList.isNotEmpty &&
-                            ((planActive == true && user?.details["plan"]?["basePlan"]?["details"]["services"] == true)
-                                    || isAdminUser == true || userId == editUserId))
+
                        ListView(
                          // crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -466,8 +521,13 @@ class Media {
                                 return Column(
                                   children: [
                                     SizedBox(height: size*0.02,),
+
                                     if(serviceController.serviceList.isEmpty)
                                       Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
+                                    if (
+                                    serviceController.serviceList.isNotEmpty &&
+                                        ((planActive == true && user?.details["plan"]?["basePlan"]?["details"]["services"] == true)
+                                            || isAdminUser == true || userId == editUserId))
                                     if(serviceController.isLoading)
                                       const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
 

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_drawer.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
+import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 
 import '../../common_widgets/color_code.dart';
@@ -133,9 +134,10 @@ class _WebinarCardState extends State<WebinarCard> {
       body: Column(
         children: [
           if(jobController.webinarListJobSeekers.isEmpty)
-      Center(child: Text('No Job found',style: AppTextStyles.caption(context),),),
+     // Center(child: Text('No Job found',style: AppTextStyles.caption(context),),),
     //if(jobController.isLoading==true)
   //  const CircularProgressIndicator(color: AppColors.primary,),
+          buildShimmerEmptyWidget(size),
 
     if(jobController.webinarListJobSeekers.isNotEmpty)
       Expanded(

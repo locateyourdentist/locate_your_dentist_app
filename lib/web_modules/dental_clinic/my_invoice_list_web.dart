@@ -16,6 +16,7 @@ class InvoiceListPageWeb extends StatefulWidget {
 
 class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
   final planController=Get.put(PlanController());
+  final GlobalKey<ScaffoldState> _scaffoldKeyInvoice = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
@@ -24,9 +25,17 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isMobile = width < 600;
+    final bool isTablet = width >= 600 && width < 1024;
+    final bool isDesktop = width >= 1100;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
+      key: _scaffoldKeyInvoice,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+
       appBar: CommonWebAppBar(
-        height: size * 0.03,
+        height: width * 0.03 > 60 ? width * 0.03 : 60,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
@@ -35,7 +44,7 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
           builder: (controller) {
                 return Row(
                   children: [
-                    const AdminSideBar(),
+                    if (isLoggedIn && isDesktop) const AdminSideBar(),
 
                     Expanded(
                       child: Center(
@@ -44,9 +53,13 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(maxWidth: 1100),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                               if( planController.invoiceList.isEmpty)
+                                if (isLoggedIn && !isDesktop)
+                                  Positioned(top: 10, left: 10, child: IconButton(icon: const Icon(Icons.menu), onPressed: () => _scaffoldKeyInvoice.currentState?.openDrawer())),
+
+                                if( planController.invoiceList.isEmpty)
 
                                  Padding(
                                    padding: const EdgeInsets.all(15.0),
@@ -71,7 +84,6 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                                         padding: const EdgeInsets.all(20.0),
                                         child: Column(
                                           children: [
-
                                             Padding(
                                               padding: const EdgeInsets.all(12.0),
                                               child: Text("My Invoices", style: AppTextStyles.subtitle(color: Colors.black,context)),

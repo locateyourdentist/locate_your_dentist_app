@@ -195,7 +195,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.aboutUsWebPage,
-      page: () => const AboutUsWebPage(),
+      page: () =>  AboutUsWebPage(),
     ),
     GetPage(
       name: AppRoutes.scrollingAdsWebPage,

@@ -35,7 +35,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                 children: [
                   const SizedBox(height: 10,),
                   if (jobController.appliedWebinarList.isEmpty)
-               Center(child: Text('No data found', style: AppTextStyles.caption(context, color: AppColors.black,fontWeight: FontWeight.normal),)),
+               //Center(child: Text('No data found', style: AppTextStyles.caption(context, color: AppColors.black,fontWeight: FontWeight.normal),)),
+                  buildShimmerEmptyWidget(size),
 
                   if( jobController.appliedWebinarList.isNotEmpty)
               AnimationLimiter(

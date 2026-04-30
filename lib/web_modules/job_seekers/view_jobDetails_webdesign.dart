@@ -27,6 +27,7 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
   final loginController = Get.put(LoginController());
   final jobController = Get.put(JobController());
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey<ScaffoldState> _scaffoldKeyJobDetail = GlobalKey<ScaffoldState>();
   late QuillController _controller;
   void loadJobDescription(dynamic data) {
     try {
@@ -109,8 +110,15 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
+      key: _scaffoldKeyJobDetail,
       appBar: buildAppBar(context),
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: GetBuilder<JobController>(
@@ -139,8 +147,7 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if( Api.userInfo.read('token')!=null)
-                      const AdminSideBar(),
+                    if (isLoggedIn && isDesktop) const AdminSideBar(),
                     Expanded(
                       child: Center(
                         child: DefaultTabController(
@@ -161,6 +168,16 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      if (isLoggedIn && !isDesktop)
+                                        Positioned(
+                                          top: 10,
+                                          left: 10,
+                                          child: IconButton(
+                                            icon: const Icon(Icons.menu,color: AppColors.black,),
+                                            onPressed: () => _scaffoldKeyJobDetail.currentState?.openDrawer(),
+                                          ),
+                                        ),
+
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
                                         child: SizedBox(
@@ -211,22 +228,23 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                               Icon(Icons.place, color: AppColors.grey, size: screenWidth * 0.015),
                                               const SizedBox(width: 6),
                                               Flexible(child: Text("${job.city ?? ''}, ${job.district ?? ''}, ${job.state ?? ''}", style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.grey))),
+                                              Container(
+                                                decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(3.0),
+                                                  child: Text(job.jobType ?? '', style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: Colors.white)),
+                                                ),
+                                              ),
                                             ]),
                                   
                                             const SizedBox(height: 12),
                                   
                                             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                                               Text("Posted: ${job.createdDate != null ? DateFormat('MMM dd, yyyy').format(job.createdDate!) : ''}", style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.grey)),
-                                              const SizedBox(width: 12),
+                                              //const SizedBox(width: 5),
                                               Text("Applicants: ${job.totalApplicants ?? 0}", style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.grey)),
-                                              const SizedBox(width: 12),
-                                              Container(
-                                                decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(6.0),
-                                                  child: Text(job.jobType ?? '', style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: Colors.white)),
-                                                ),
-                                              ),
+                                              //const SizedBox(width: 5),
+
                                             ]),
                                   
                                             const SizedBox(height: 12),

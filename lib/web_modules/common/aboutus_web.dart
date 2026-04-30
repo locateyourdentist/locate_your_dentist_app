@@ -6,15 +6,18 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 
 class AboutUsWebPage extends StatelessWidget {
-  const AboutUsWebPage({super.key});
+   AboutUsWebPage({super.key});
+  final GlobalKey<ScaffoldState> _scaffoldKeyAbout = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    PreferredSizeWidget buildAppBar() {
+    final double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;    PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
-          height: width * 0.03,
+          height: isMobile ? 60 : (isTablet ? 70 : 80),
           title: "LYD",
           onLogout: () {},
           onNotification: () {},
@@ -23,14 +26,15 @@ class AboutUsWebPage extends StatelessWidget {
          return CommonHeader();
       }
     }
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      key: _scaffoldKeyAbout,
+      backgroundColor: Colors.white,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: buildAppBar(),
       body: Row(
         children: [
-          if( Api.userInfo.read('token')!=null)
-            const AdminSideBar(),
-
+          if (isDesktop&&isLoggedIn) const AdminSideBar(),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -46,17 +50,32 @@ class AboutUsWebPage extends StatelessWidget {
                       ),
                     ),
                     child:  Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "LOCATE YOUR DENTIST",
-                          style: AppTextStyles.subtitle(context,color: AppColors.white)
+                        if (!isDesktop)
+                          Positioned(
+                            top: 10,
+                            left: 10,
+                            child: IconButton(
+                              icon: const Icon(Icons.menu,color: AppColors.white,),
+                              onPressed: () => _scaffoldKeyAbout.currentState?.openDrawer(),
+                            ),
+                          ),
+                        Center(
+                          child: Text(
+                            "LOCATE YOUR DENTIST",
+                            style: AppTextStyles.subtitle(context,color: AppColors.white)
+                          ),
                         ),
                         const SizedBox(height: 15),
-                         Text(
-                          "Connecting Dental Clinics, Labs, Shops, Mechanics & Professionals",
-                          textAlign: TextAlign.center,
-                            style: AppTextStyles.body(context,color: AppColors.white)
-                        ),
+                         Center(
+                           child: Text(
+                            "Connecting Dental Clinics, Labs, Shops, Mechanics & Professionals",
+                            textAlign: TextAlign.center,
+                              style: AppTextStyles.body(context,color: AppColors.white)
+                                                   ),
+                         ),
                       ],
                     ),
                   ),

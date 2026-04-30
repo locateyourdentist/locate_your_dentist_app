@@ -14,6 +14,7 @@ import '../../common_widgets/common_bottom_navigation.dart';
 import '../../common_widgets/common_drawer.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:shimmer/shimmer.dart';
 
  class PatientDashboard extends StatefulWidget {
   const PatientDashboard({super.key});
@@ -56,6 +57,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
   }
   Future<void> _refresh() async {
     getLocation();
+    await loginController.fetchStates();
     await loginController.getProfileDetails('Dental Clinic', '', '', '',"true",'', '','','', context);
    // await loginController.getProfileDetails('Dental Clinic', '', '', '',"true",loginController.latitude.toString(), loginController.longitude.toString(),'','', context);
    await planController.getUploadImages(userType: "Dental Clinic",context: context);
@@ -274,12 +276,12 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                   Text(
                       "Popular Dental Clinics",
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.caption(
-                          context,color: AppColors.grey)
+                      style: AppTextStyles.caption(context,color: AppColors.grey)
                   ),
                   SizedBox(height: size * 0.01),
                   if(loginController.profileList.isEmpty)
-                    Center(child: Text('No data found',style: AppTextStyles.caption(context),),),
+                  //  Center(child: Text('No data found',style: AppTextStyles.caption(context),),),
+                  buildShimmerEmptyWidget(size),
                   if(loginController.isLoading)
                     const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
                   if(loginController.profileList.isNotEmpty)
@@ -522,4 +524,5 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
     );
   }
-}
+
+ }

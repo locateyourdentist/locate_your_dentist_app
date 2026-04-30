@@ -199,20 +199,20 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                   children: [
                                     Text('Contact Form',style: AppTextStyles.subtitle(context,),),
                                     SizedBox(height: size*0.02,),
-                                    Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                    Wrap(
+                                        alignment: WrapAlignment.center,
+                                        spacing: 15,
+                                        runSpacing: 15,
                                         children: [
                                           CommonContactContainer(
                                             icons: Icons.call,onTap: (){
                                             launchCall(mobileNumber);
                                           },
                                             title: 'Call Us',),
-                                          SizedBox(width: size*0.01,),
 
                                           CommonContactContainer(icons: Icons.email,onTap: (){
                                             //_launch('contact@catchytechnologies.com');
                                           },title: 'Email Us',),
-                                          SizedBox(width: size*0.01,),
 
                                           CommonContactContainer(icons: Icons.search,onTap: (){},title: 'Search FAQs',),
                                         ]),

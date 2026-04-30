@@ -87,6 +87,7 @@ class AddProductWebPage extends StatefulWidget {
 class _AddProductWebPageState extends State<AddProductWebPage> {
   final _formKeyAddProductWeb = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
+  final GlobalKey<ScaffoldState> _scaffoldKeyService = GlobalKey<ScaffoldState>();
 
   final serviceController = Get.put(ServiceController());
   final loginController = Get.put(LoginController());
@@ -191,7 +192,14 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     selectedUserType = Api.userInfo.read('userType') ?? "";
+
+    final double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
+      key: _scaffoldKeyService,
       appBar: CommonWebAppBar(
         height: size * 0.03,
         title: "LOCATE YOUR DENTIST",
@@ -202,7 +210,7 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
         onRefresh: _refresh,
         child: Row(
           children: [
-            const AdminSideBar(),
+            if (isDesktop) const AdminSideBar(),
             Expanded(
               child: Center(
                 child: Form(

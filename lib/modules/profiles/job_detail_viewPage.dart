@@ -61,7 +61,15 @@ class _ViewJobPageState extends State<ViewJobPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refresh());
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
+    _refresh();
   }
   Future<void> _refresh() async {
     final selectJobId = Api.userInfo.read('selectJobId') ?? "";
@@ -101,7 +109,55 @@ class _ViewJobPageState extends State<ViewJobPage> {
               }
               final job = controller.job.isNotEmpty ? controller.job[0] : null;
               if (job == null) {
-                return const Center(child: Text("No job data available"));
+                return                       Column(
+                  children: [
+                    shimmerBox(height: size * 0.35, radius: 0),
+
+                    SizedBox(height: size * 0.02),
+
+                    shimmerBox(
+                      height: 20,
+                      width: size * 0.5,
+                    ),
+
+                    SizedBox(height: 10),
+
+                    shimmerBox(
+                      height: 16,
+                      width: size * 0.3,
+                    ),
+
+                    SizedBox(height: size * 0.03),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        shimmerBox(height: 50, width: 90),
+                        shimmerBox(height: 50, width: 90),
+                        shimmerBox(height: 50, width: 90),
+                      ],
+                    ),
+
+                    SizedBox(height: size * 0.03),
+
+                    ListView.builder(
+                      itemCount: 3,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (_, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: shimmerBox(
+                            height: size * 0.25,
+                            radius: 12,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+
+              //const Center(child: Text("No job data available"));
               }
               final url = loginController.jobFileImages.isNotEmpty
                   ? loginController.jobFileImages.first.url.toString() : "";
@@ -352,14 +408,16 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                 children: [
                                   Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child:  IgnorePointer(
-                                        child: QuillEditor(
-                                          controller: _controller,
-                                          scrollController: _scrollController,
-                                          focusNode: FocusNode(),
-                                          config: const QuillEditorConfig(
-                                            showCursor: false,
-                                            expands: false,
+                                      child:  SingleChildScrollView(
+                                        child: IgnorePointer(
+                                          child: QuillEditor(
+                                            controller: _controller,
+                                            scrollController: _scrollController,
+                                            focusNode: FocusNode(),
+                                            config: const QuillEditorConfig(
+                                              showCursor: false,
+                                              expands: false,
+                                            ),
                                           ),
                                         ),
                                       )

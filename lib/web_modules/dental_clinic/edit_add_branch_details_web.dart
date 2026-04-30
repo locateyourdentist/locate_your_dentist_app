@@ -8,6 +8,7 @@ import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import '../../../common_widgets/color_code.dart';
 import '../common/common_side_bar.dart';
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 
 
 class AddBranchesWeb extends StatefulWidget {
@@ -19,15 +20,38 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
   final loginController=Get.put(LoginController());
   final planController=Get.put(PlanController());
   final _formKeyBranchProfileWeb = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyBranch= GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
     _refresh();
   }
+  Future<void> setProfileData(user) async {
+
+    loginController.selectedState = user.address["state"] ?? "";
+    loginController.selectedDistrict = user.address["district"] ?? "";
+    loginController.selectedTaluka = user.address["city"] ?? "";
+    loginController.selectedVillage = user.address["area"] ?? "";
+    print('fgf${user.address["district"] ?? ""}');
+    await loginController.fetchStates();
+    if (loginController.selectedState != null && loginController.selectedState!.isNotEmpty) {
+      await loginController.fetchDistricts(loginController.selectedState!);
+    }
+    if (loginController.selectedDistrict != null && loginController.selectedDistrict!.isNotEmpty) {
+      await loginController.fetchTalukas(loginController.selectedDistrict!);
+    }
+    if (loginController.selectedTaluka != null && loginController.selectedTaluka!.isNotEmpty) {
+      await loginController.fetchVillages(loginController.selectedTaluka!);
+    }
+
+    loginController.update();
+  }
+
   Future<void> _refresh() async {
   await  loginController.getBranchDetails(context);
     //loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
     final position = await LocationService.getCurrentLocation();
+      setProfileData(loginController.userData);
     if (position != null) {
       loginController.latitude = position.latitude;
       loginController.longitude = position.longitude;
@@ -38,10 +62,14 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
   }
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
+    final double size = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;
     return  Scaffold(
       appBar: CommonWebAppBar(
-        height: size * 0.03,
+        height: isMobile ? 60 : (isTablet ? 70 : 80),
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
@@ -53,7 +81,7 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
               onRefresh: _refresh,
               child: Row(
                 children: [
-                  const AdminSideBar(),
+                  if (isDesktop) const AdminSideBar(),
 
                   Expanded(
                     child: Center(
@@ -71,69 +99,83 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                   borderRadius: BorderRadius.circular(12),
                                   boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
                                 ),
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: size*0.01,),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: size*0.01,),
+                                      if (!isDesktop)
+                                        Positioned(
+                                          top: 10,
+                                          left: 10,
+                                          child: IconButton(
+                                            icon: const Icon(Icons.menu,color: AppColors.black),
+                                            onPressed: () => _scaffoldKeyBranch.currentState?.openDrawer(),
+                                          ),
+                                        ),
 
-                                    Text(
-                                      "Add Branches",
-                                      style: AppTextStyles.subtitle(context, color: AppColors.black),
-                                    ),
-                                    SizedBox(height: size*0.005,),
-                                    GetBuilder<LoginController>(
-                                        init: LoginController(),
-                                        builder: (controller) {
-                                          return Column(
-                                              children: [
-                                                for (int i = 0; i < loginController.branchList.length; i++)
-                                                  _branchListFields(i,size),
-                                                Container(
-                                                  height:size * 0.018,
+                                      Text(
+                                        "Add Branches",
+                                        style: AppTextStyles.subtitle(context, color: AppColors.black),
+                                      ),
+                                      SizedBox(height: size*0.005,),
+                                      GetBuilder<LoginController>(
+                                          init: LoginController(),
+                                          builder: (controller) {
+                                            return Column(
+                                                children: [
+                                                  for (int i = 0; i < loginController.branchList.length; i++)
+                                                    _branchListFields(i,size),
+                                                  Container(
+                                                    //height:size * 0.018,
                                                   width:size*0.12,
-                                                  decoration: BoxDecoration(
-                                                    gradient: const LinearGradient(
-                                                      colors: [AppColors.primary, AppColors.secondary],
-                                                      begin: Alignment.topLeft,
-                                                      end: Alignment.bottomRight,
-                                                    ),
-                                                    borderRadius: BorderRadius.circular(12),
-                                                  ),
-                                                  child: ElevatedButton(
-                                                    onPressed: ()async {
-                                                      loginController.userData.clear();
-                                                      loginController.clearProfileData();
-                                                      // loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-                                                      Get.toNamed('/registerPageWeb',arguments: {'branchId':'0'});
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: Colors.transparent,
-                                                      shadowColor:Colors.transparent,
-                                                      elevation: 4,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(12),
+                                                    decoration: BoxDecoration(
+                                                      gradient: const LinearGradient(
+                                                        colors: [AppColors.primary, AppColors.secondary],
+                                                        begin: Alignment.topLeft,
+                                                        end: Alignment.bottomRight,
                                                       ),
-                                                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                                                      borderRadius: BorderRadius.circular(12),
                                                     ),
-                                                    child: Center(
-                                                      child: Row(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: [
-                                                          Icon(Icons.add, size: size * 0.012, color: AppColors.white),
-                                                          const SizedBox(width: 8),
-                                                          Text(
-                                                            "Add Branches",
-                                                            style: AppTextStyles.caption(context, color: AppColors.white),
-                                                          ),
-                                                        ],
+                                                    child: ElevatedButton(
+                                                      onPressed: ()async {
+                                                        loginController.userData.clear();
+                                                        loginController.clearProfileData();
+                                                        // loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
+                                                        Get.toNamed('/registerPageWeb',arguments: {'branchId':'0'});
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: Colors.transparent,
+                                                        shadowColor:Colors.transparent,
+                                                        elevation: 4,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                                                      ),
+                                                      child: Center(
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            Icon(Icons.add, size: size * 0.012, color: AppColors.white),
+                                                            const SizedBox(width: 8),
+                                                            Text(
+                                                              "Add Branches",
+                                                              style: AppTextStyles.caption(context, color: AppColors.white),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ), ]);
-                                        }
-                                    ),
-                                    SizedBox(height: size*0.02,),
+                                                  ), ]);
+                                          }
+                                      ),
+                                      SizedBox(height: size*0.02,),
 
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -206,6 +248,15 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
               controller: exp.branchName,
             ),
             SizedBox(height: size * 0.01),
+            //   _buildStateDropdown(),
+            // SizedBox(height: size * 0.01),
+            //   _buildDistrictDropdown(),
+            // SizedBox(height: size * 0.01),
+            //   _buildTalukaDropdown(),
+            // SizedBox(height: size * 0.01),
+            //   _buildAreaDropdown(),
+            // SizedBox(height: size * 0.01),
+
             CustomTextField(
               hint: "State",
               controller: exp.state,
@@ -240,6 +291,120 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
           ],
         ),
       ),
+    );
+  }
+  Widget _buildStateDropdown() {
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        final stateItems = c.states.map((e) => e.toString()).toList();
+
+        return CustomDropdown<String>.search(
+          hintText: "State",
+          items: stateItems,
+          initialItem: stateItems.contains(c.selectedState)
+              ? c.selectedState
+              : null,
+          onChanged: (v) {
+            if (v != null) {
+              c.selectedState = v;
+
+              c.selectedDistrict = null;
+              c.selectedTaluka = null;
+
+              c.districts.clear();
+              c.talukas.clear();
+
+              c.fetchDistricts(v);
+              c.update();
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildDistrictDropdown() {
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        final districtItems =
+        c.districts.map((e) => e.toString()).toList();
+
+        return CustomDropdown<String>.search(
+          hintText: "District",
+          items: districtItems,
+          initialItem: districtItems.contains(c.selectedDistrict)
+              ? c.selectedDistrict
+              : null,
+          onChanged: (v) {
+            if (v != null) {
+              c.selectedDistrict = v;
+
+              c.selectedTaluka = null;
+
+              c.talukas.clear();
+
+              c.fetchTalukas(v);
+              c.update();
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildTalukaDropdown() {
+    return GetBuilder<LoginController>(
+      builder: (c) {
+
+        final talukaItems =
+        c.talukas.map((e) => e.toString()).toList();
+
+        final selectedTaluka =
+        talukaItems.contains(c.selectedTaluka)
+            ? c.selectedTaluka
+            : null;
+
+        return CustomDropdown<String>.search(
+          hintText: "Taluka",
+
+          items: talukaItems,
+
+          initialItem: selectedTaluka,
+
+          onChanged: (v) {
+            if (v != null) {
+              c.selectedTaluka = v;
+
+              c.villages.clear();
+              c.selectedVillage = null;
+
+              c.fetchVillages(v);
+
+              c.update();
+            }
+          },
+        );
+      },
+    );
+  }
+  Widget _buildAreaDropdown() {
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        final villageItems = c.villages.map((e) => e.toString()).toList();
+        final selectedVillage = villageItems.contains(c.selectedVillage) ? c.selectedVillage : null;
+
+        return CustomDropdown<String>.search(
+          hintText: "Area",
+          items: villageItems,
+          initialItem: selectedVillage,
+          onChanged: (v) {
+            if (v != null) {
+              c.selectedVillage = v;
+              c.update();
+            }
+          },
+        );
+      },
     );
   }
 

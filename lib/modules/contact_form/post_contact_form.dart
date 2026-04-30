@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
@@ -34,6 +35,19 @@ class _ContactFormState extends State<ContactForm> {
   String city = '';
   final ImagePicker _picker = ImagePicker();
   final _formKeyContactProfile = GlobalKey<FormState>();
+  Future<List<Uint8List>> getImageBytes() async {
+    List<Uint8List> imageBytes = [];
+
+    for (var img in loginController.contactImages) {
+      if (img.bytes != null) {
+        imageBytes.add(img.bytes!);
+      } else if (img.file != null) {
+        final bytes = await img.file!.readAsBytes();
+        imageBytes.add(bytes);
+      }
+    }
+    return imageBytes;
+  }
   Future<void> pickImages() async {
     if (loginController.contactImages.length >= 3) {
       Get.snackbar("Error", "Maximum 3 images allowed");
@@ -107,8 +121,10 @@ class _ContactFormState extends State<ContactForm> {
                     children: [
                       Text('Contact Form',style: AppTextStyles.subtitle(context,),),
                       SizedBox(height: size*0.02,),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 10,
+                          runSpacing: 10,
                           children: [
                             CommonContactContainer(icons: Icons.call,onTap: (){
                               launchCall(mobileNumber);
@@ -250,13 +266,19 @@ class _ContactFormState extends State<ContactForm> {
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,shadowColor: Colors.transparent,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                                  onPressed: () {
+                                  onPressed: ()async {
                                 if (_formKeyContactProfile.currentState!
                                     .validate()) {
-                                  List<File> fileImages = loginController.contactImages
+                                  // List<Uint8List> fileImages = loginController.contactImages
+                                  //     .where((img) => img.file != null)
+                                  //     .map((img) => img.file!)
+                                  //     .toList();
+                                  final newImageFiles = loginController.contactImages
                                       .where((img) => img.file != null)
                                       .map((img) => img.file!)
                                       .toList();
+                                  final newImageBytes = await getImageBytes();
+
                                   contactController.postContactDetail(
                                       senderUserId.toString() ?? "",
                                       receiverUserId.toString() ?? "",
@@ -268,7 +290,8 @@ class _ContactFormState extends State<ContactForm> {
                                       state,
                                       district,
                                       city,
-                                      fileImages.isNotEmpty ? fileImages : null,
+                                      newImageBytes,
+                                      //fileImages.isNotEmpty ? fileImages : null,
                                       context);
                                 }
                               },

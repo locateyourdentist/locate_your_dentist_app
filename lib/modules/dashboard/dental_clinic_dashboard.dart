@@ -401,18 +401,18 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
             child: TabBarView(
             children: [
 
-            jobController.jobList.isEmpty
-            ? Center(
-            child: Text(
-            'No data found',
-            style: AppTextStyles.caption(
-            context,
-            color: AppColors.black,
-            ),
-            ),
-            )
-                :
-            AnimationLimiter(
+            jobController.jobList.isEmpty ?
+            buildShimmerEmptyWidget(size)
+            //   Center(
+            // child: Text(
+            // 'No data found',
+            // style: AppTextStyles.caption(
+            // context,
+            // color: AppColors.black,
+            // ),
+            // ),
+            // )
+                :AnimationLimiter(
               child: ListView.builder(
               itemCount: jobController.jobList.length,
                 key: ValueKey(jobController.jobList.length),
@@ -470,16 +470,18 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
               ),
             ),
 
-            jobController.webinarList.isEmpty
-            ? Center(
-            child: Text(
-            'No data found',
-            style: AppTextStyles.caption(
-            context,
-            color: AppColors.black,
-            ),
-            ),
-            )
+            jobController.webinarList.isEmpty ?
+            buildShimmerEmptyWidget(size)
+
+            // Center(
+            // child: Text(
+            // 'No data found',
+            // style: AppTextStyles.caption(
+            // context,
+            // color: AppColors.black,
+            // ),
+            // ),
+            // )
                 : AnimationLimiter(
                   child: ListView.builder(
                               itemCount: jobController.webinarList.length,

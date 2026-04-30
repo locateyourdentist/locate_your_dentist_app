@@ -54,7 +54,7 @@ class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
 
     String imageUrl = (img ?? "").replaceAll("\\", "/");
     return SizedBox(
-      height: width * 0.23,
+      height: width * 0.6,
       width: width,
       child: Stack(
         alignment: Alignment.center,
@@ -66,13 +66,13 @@ class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
 
             Image.network(
               imageUrl??"",
-              width: width * 0.6,
-              height: width * 0.23,
+              width: width ,
+              height: width * 0.6,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  width: width * 0.6,
-                  height: width * 0.23,
+                  width: width ,
+                  height: width * 0.5,
                   decoration: BoxDecoration(
                     color: const Color(0xFFF1F3F6),
                     borderRadius: BorderRadius.circular(16),
@@ -99,7 +99,7 @@ class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
               left: 0,
               child: IconButton(
                 onPressed: showPrevious,
-                icon: const Icon(Icons.arrow_left, size: 50, color: Colors.black54),
+                icon: const Icon(Icons.arrow_left, size: 50, color: Colors.white),
               ),
             ),
 
@@ -109,7 +109,7 @@ class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
               right: 0,
               child: IconButton(
                 onPressed: showNext,
-                icon: const Icon(Icons.arrow_right, size: 50, color: Colors.black54),
+                icon: const Icon(Icons.arrow_right, size: 50, color: Colors.white),
               ),
             ),
 

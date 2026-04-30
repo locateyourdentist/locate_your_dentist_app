@@ -18,7 +18,7 @@ class SettingsPageMobile extends StatefulWidget {
 }
 
 class _SettingsPageMobileState extends State<SettingsPageMobile> {
-  late List<Map<String, dynamic>> settingList;
+  List<Map<String, dynamic>> settingList = [];
   final jobController = Get.put(JobController());
   String selectedUserType = Api.userInfo.read('userType') ?? "";
   final loginController = Get.put(LoginController());
@@ -27,12 +27,9 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
     super.initState();
     final String selectedUserType = Api.userInfo.read('userType') ?? "";
     print('type: $selectedUserType');
+    settingList = _getSettingsForUser(selectedUserType);
     loginController.getProfileByUserId(Api.userInfo.read('userId') ?? "", context);
     loginController.getBranchDetails(context);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      settingList = _getSettingsForUser(selectedUserType);
-      setState(() {});
-    });
   }
   List<Map<String, String>> _getSettingsForUser(String userType) {
     switch (userType) {
@@ -180,14 +177,17 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
                   child: Row(
                     children: [
 
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 35,
                         backgroundColor: AppColors.white,
                         child: CircleAvatar(
                           radius: 32,
-                          backgroundImage: AssetImage(
-                            "assets/images/doctor5.jpg",
-                          ),
+                          backgroundImage:
+                          (Api.userInfo.read("profileImage") != null &&
+                              Api.userInfo.read("profileImage").toString().isNotEmpty)
+                              ? NetworkImage(Api.userInfo.read("profileImage"))
+                              : const AssetImage("assets/images/doctor5.jpg")
+                          as ImageProvider,
                         ),
                       ),
 
@@ -223,6 +223,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
                         ),
                         child:  IconButton(
                           onPressed: (){
+                            Api.userInfo.write('selectUId',Api.userInfo.read('userId')??"");
                             (Api.userInfo.read('userType')=='Job Seekers')?Get.toNamed('/jobSeekerEditProfilePage'): Get.toNamed('/clinicEditProfile');
                             },
                           icon:Icon(Icons.edit,

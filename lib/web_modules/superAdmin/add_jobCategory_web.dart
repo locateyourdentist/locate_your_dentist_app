@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
@@ -20,6 +21,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
 
   final JobController jobController = Get.put(JobController());
   final TextEditingController nameController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKeyJobCategory = GlobalKey<ScaffoldState>();
 
   final List<String> userTypes = const [
     "All",
@@ -58,6 +60,8 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
       context: context,
       builder: (_) {
         double s=MediaQuery.of(context).size.width;
+        final bool isDesktop = s >= 1100;
+
         return Dialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15)),
@@ -68,7 +72,15 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
+                if (!isDesktop)
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    child: IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () => _scaffoldKeyJobCategory.currentState?.openDrawer(),
+                    ),
+                  ),
                 Center(
                   child: Text(
                     model != null
@@ -343,8 +355,15 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
   @override
   Widget build(BuildContext context) {
     double s=MediaQuery.of(context).size.width;
+    double width=MediaQuery.of(context).size.width;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;
     return Scaffold(
-      backgroundColor: AppColors.white,
+      key: _scaffoldKeyJobCategory,
+      backgroundColor: Colors.white,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
         height: s * 0.03,
         title: "LYD",
@@ -358,7 +377,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
         builder: (controller) {
           return Row(
             children: [
-              const AdminSideBar(),
+              if (isDesktop) const AdminSideBar(),
               Expanded(
                 child: Center(
                   child: ConstrainedBox(
@@ -380,7 +399,15 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                             crossAxisAlignment:
                             CrossAxisAlignment.start,
                             children: [
-
+                              if (!isDesktop)
+                                Positioned(
+                                  top: 10,
+                                  left: 10,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.menu),
+                                    onPressed: () => _scaffoldKeyJobCategory.currentState?.openDrawer(),
+                                  ),
+                                ),
                               Text(
                                 "Job Categories",
                                 style: AppTextStyles.subtitle(

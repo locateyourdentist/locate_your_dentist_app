@@ -26,6 +26,7 @@ void showContactDetailsDialog(BuildContext context) {
               child: FutureBuilder(
                 future: contactController.postFilterResults('', '', '', '', '', '', Api.userInfo.read('contactId1'), '', '', context),
                 builder: (context, snapshot) {
+
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return  SizedBox(
                       height: size*0.35,
@@ -50,7 +51,7 @@ void showContactDetailsDialog(BuildContext context) {
                         Align(
                           alignment: Alignment.topRight,
                           child: IconButton(
-                            icon:  Icon(Icons.close,color: Colors.redAccent,size: size*0.012,),
+                            icon:  Icon(Icons.close,color: Colors.redAccent,size: size*0.02,),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                         ),
@@ -59,7 +60,7 @@ void showContactDetailsDialog(BuildContext context) {
                         Row(
                           children: [
                             CircleAvatar(
-                              radius: size*0.023,
+                              radius: size*0.03,
                               backgroundColor: Colors.white,
                               child:  Icon(Icons.person, size: size*0.014, color: Colors.grey),
                             ),

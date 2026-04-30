@@ -1,13 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
-import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
-import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
-import 'package:locate_your_dentist/web_modules/common/test_text_editor.dart';
-import 'package:locate_your_dentist/web_modules/dental_clinic/branch_list_web.dart';
 
 class AdminSideBar extends StatefulWidget {
   const AdminSideBar({super.key});
@@ -17,18 +14,49 @@ class AdminSideBar extends StatefulWidget {
 }
 
 class _AdminSideBarState extends State<AdminSideBar> {
-  final loginController = Get.put(LoginController());
+  final loginController = Get.find<LoginController>();
 
   late List<Map<String, String>> settingList;
+
   @override
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
-    //loginController.getProfileByUserId(Api.userInfo.read('userId') ?? "", context);
     loginController.getBranchDetails(context);
+
     String userType = Api.userInfo.read('userType') ?? "";
     settingList = _getSettingsForUser(userType);
   }
+
+  bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 600;
+
+  bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 600 &&
+          MediaQuery.of(context).size.width < 1024;
+
+  bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 1024;
+
+  double getSidebarWidth(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
+    if (isMobile(context)) return w * 0.3;
+    if (isTablet(context)) return w * 0.25;
+    return w * 0.15;
+  }
+  double getAvatarSize(BuildContext context) {
+    if (isMobile(context)) return 50;
+    if (isTablet(context)) return 60;
+    return 70;
+  }
+
+  // 🔹 Icon size
+  double getIconSize(BuildContext context) {
+    if (isMobile(context)) return 18;
+    if (isTablet(context)) return 20;
+    return 22;
+  }
+
   List<Map<String, String>> _getSettingsForUser(String userType) {
     switch (userType) {
       case 'Dental Lab':
@@ -48,7 +76,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Dashboard", "page": "/superAdminWebDashboard"},
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "User List", "page": "/userTypeListWeb"},
-          {"title": "Add admin", "page": "/registerPageWeb"},
+          {"title": "Add User", "page": "/registerPageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "Reports", "page": "/reportPageWeb"},
           {"title": "Create Scrolling Ads Post", "page": "/scrollingAdsWebPage"},
@@ -66,7 +94,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Dashboard", "page": "/superAdminWebDashboard"},
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "User List", "page": "/userTypeListWeb"},
-          {"title": "Add admin", "page": "/registerPageWeb"},
+          {"title": "Add User", "page": "/registerPageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "Reports", "page": "/reportPageWeb"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
@@ -95,7 +123,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Dashboard", "page": "/dentalMechanicDashboardWebPage"},
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
-          {"title": "My Purchases", "page": "/viewInvoiceListPage"},
+          {"title": "My Purchases", "page": "/myInvoiceListWebPage"},
           {"title": "Jobs/Webinars", "page": "/viewJobWebinarWebPage"},
           {"title": "Products", "page": "/myServicesListWebPage"},
           {"title": "Add Profile", "page": "/clinicEditProfile"},
@@ -111,7 +139,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           // {"title": "Edit Profile", "page": "/clinicEditProfile"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
-          {"title": "My Purchases", "page": "/viewInvoiceListPage"},
+          {"title": "My Purchases", "page": "/myInvoiceListWebPage"},
           {"title": "Jobs/Webinars", "page": "/viewJobWebinarWebPage"},
           {"title": "Products", "page": "/myServicesListWebPage"},
           {"title": "Add Branches", "page": "/addBranchesWeb"},
@@ -153,228 +181,139 @@ class _AdminSideBarState extends State<AdminSideBar> {
   }
   @override
   Widget build(BuildContext context) {
-    double s = MediaQuery.of(context).size.width;
-    return GetBuilder<LoginController>(
-        builder: (controller) {
-          return Container(
-          width:s *0.13,
-              height: double.infinity,
-              decoration: const BoxDecoration(
-                //color: AppColors.white
-                gradient: LinearGradient(
-                  colors: [AppColors.primary,AppColors.secondary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+    double sidebarWidth = getSidebarWidth(context);
+    double avatarSize = getAvatarSize(context);
+    double iconSize = getIconSize(context);
 
+    return GetBuilder<LoginController>(
+      builder: (controller) {
+        return Container(
+          width: sidebarWidth,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.primary, AppColors.secondary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
           child: Column(
             children: [
               const SizedBox(height: 20),
+
               ClipOval(
                 child: Image.network(
                   Api.userInfo.read("profileImage") ?? "",
+                  width: avatarSize,
+                  height: avatarSize,
                   fit: BoxFit.cover,
-                  width: s*0.03,
-                  height:  s*0.03,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width:  s*0.03,
-                      height:  s*0.03,
-                      color: Colors.grey.shade300,
-                      child:  Icon(
-                        Icons.person,
-                        size:  s*0.016,
-                        color: Colors.white,
+                  errorBuilder: (_, __, ___) => Container(
+                    width: avatarSize,
+                    height: avatarSize,
+                    color: Colors.grey,
+                    child: const Icon(Icons.person, color: Colors.white),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              Text(
+                Api.userInfo.read("orgName") ?? "",
+                style: AppTextStyles.body(
+                  context,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const Divider(color: Colors.white30),
+
+              const SizedBox(height: 10),
+
+              Expanded(
+                child: ListView.builder(
+                  itemCount: settingList.length,
+                  itemBuilder: (context, index) {
+                    final setting = settingList[index];
+                    final isSelected = index == controller.selectedIndex;
+
+                    return ListTile(
+                      leading: Icon(
+                        _getIcon(setting['title'] ?? ""),
+                        size: iconSize,
+                        color:
+                        isSelected ? Colors.redAccent : Colors.white,
                       ),
+                      title: Text(
+                        setting['title'] ?? "",
+                        style: TextStyle(
+                          color:
+                          isSelected ? Colors.redAccent : Colors.white,
+                          fontSize:
+                          isMobile(context) ? 14 : 16,
+                        ),
+                      ),
+                      tileColor: isSelected
+                          ? Colors.white
+                          : Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      onTap: () async {
+                        controller.selectedIndex = index;
+                        controller.update();
+
+                        if (setting['title'] == "Logout") {
+                          Api.userInfo.erase();
+                          Get.offAllNamed("/webLoginPage");
+                        }
+
+                        if (setting['title'] == "Edit Profile") {
+                          String userId=Api.userInfo.read('userId')??"";
+                          Api.userInfo.write('selectUId',userId);
+                          Get.offAllNamed("/viewProfilePageWeb");
+                        }
+                        if (setting['title'] == "Add User") {
+                          String userId=Api.userInfo.read('userId')??"";
+                          Api.userInfo.write('selectUId',userId);
+                          Get.offAllNamed("/registerPageWeb",arguments: {"userId":0});
+                        }
+                        else {
+                          Get.toNamed(setting['page'] ?? "");
+                        }
+                      },
                     );
                   },
-                )
-              ),
-              const SizedBox(height: 5,),
-               Text(
-                   Api.userInfo.read("orgName") ?? "",
-                style: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold)
-              ),
-             const Divider(thickness: 0.3,color: AppColors.grey,),
-              const SizedBox(height: 30),
-
-              GetBuilder<LoginController>(
-                  builder: (controller) {
-                    return Flexible(
-                    child: ListView.builder(
-                      //shrinkWrap: true,
-                      itemCount: settingList.length,
-                      itemBuilder: (context, index) {
-                        final setting = settingList[index];
-                        final bool isSelected = index == controller.selectedIndex;
-                        return GestureDetector(
-                          onTap: ()async {
-                            setState(() {
-                              controller.selectedIndex = index;
-                            });
-                            if (setting['title'] == "My Subscription") {
-                             // bool multipleBranches =controller.userBranchesList.length > 1;
-                              if (controller.userBranchesList.length > 1) {
-                                 showBranchSelectionDialog(
-                                context: context,
-                                pageRoute: "",);
-                              } else {
-                                Get.toNamed("/viewPlanPageWeb");
-                              }
-                            }
-                            if (setting['title'] == "Logout") {
-                              Api.userInfo.erase();
-                              showLogoutDialog(context);
-
-                            //  Get.offAllNamed("/webLoginPage");
-                            } else if (setting['title'] == "Add admin") {
-                              Api.userInfo.write('isAdmin', 'true');
-                              Get.offAllNamed("/registerPageWeb",arguments: {"userId":"0"});
-
-                            } else if (setting['title'] == "Create Plan") {
-                              Get.toNamed('/createPlanPageWeb', arguments: {'selectedString': "BasePlan"});
-                            }
-                            else if (setting['title'] == "Dashboard") {
-                              await loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-                              String userType = Api.userInfo.read('userType') ?? "";
-                              Get.offAllNamed('/${pageUserTypeWeb(userType)}');
-                            }
-                            else if (setting['title'] == "Edit Profile") {
-                              Api.userInfo.write('selectUId',Api.userInfo.read('userId')??"");
-                              Get.toNamed(setting['page'] ?? "");
-                              await loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-
-                            }
-                            else {
-                              Get.toNamed(setting['page'] ?? "");
-                            }
-                          },
-                          child:
-                          Container(
-                            margin: const EdgeInsets.symmetric(vertical: 4),
-                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                            decoration: BoxDecoration(
-                              color: isSelected ? Colors.white : Colors.transparent,
-                             //  gradient:  LinearGradient(
-                             //    colors: isSelected ? [AppColors.primary,AppColors.secondary]:[AppColors.white,AppColors.white],
-                             //    begin: Alignment.topLeft,
-                             //    end: Alignment.bottomRight,
-                             //  ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  _getIcon(setting['title'] ?? ""),
-                                  color: isSelected ? AppColors.black:Colors.white,
-                                  size: MediaQuery.of(context).size.width * 0.008,
-                                ),
-                                const SizedBox(width: 10),
-                                Flexible(
-                                  child: Text(
-                                    setting['title'] ?? "",
-                                    style: AppTextStyles.caption(
-                                      context,
-                                      color: isSelected ? AppColors.black:Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }
+                ),
               ),
             ],
           ),
         );
-      }
+      },
     );
   }
 
-
   IconData _getIcon(String title) {
     switch (title) {
-
       case "Dashboard":
-        return Icons.dashboard_rounded;
-
-      case "Clinic Profile":
-      case "Lab Profile":
-      case "Shop Profile":
-      case "Profile":
-        return Icons.account_circle_rounded;
-
+        return Icons.dashboard;
       case "Edit Profile":
-      case "Add Profile":
-        return Icons.edit_rounded;
-
+        return Icons.edit;
+      case "User List":
+        return Icons.people;
       case "Add admin":
-        return Icons.admin_panel_settings_rounded;
-
-      case "UserList":
-        return Icons.groups_rounded;
-
-      case "My Subscription":
-        return Icons.workspace_premium_rounded;
-
-      case "My Purchases":
-        return Icons.receipt_long_rounded;
-
+        return Icons.admin_panel_settings;
       case "Create Plan":
-        return Icons.add_card_rounded;
-
+        return Icons.add_card;
       case "Reports":
-        return Icons.bar_chart_rounded;
-
-      case "Job/Webinars":
-      case "Jobs":
-        return Icons.work_rounded;
-
-      case "My Jobs":
-        return Icons.work_history_rounded;
-      case "Create Scrolling Ads Post":
-        return Icons.ads_click;
-      case "Services":
-        return Icons.miscellaneous_services_rounded;
-
-      case "Products":
-        return Icons.inventory_2_rounded;
-
-      case "Add JobCategory":
-        return Icons.category_rounded;
-
-      case "Contact Form":
-        return Icons.contact_mail_rounded;
-
-      case "Add Branches":
-        return Icons.account_tree_rounded;
-
-      case "Change Password":
-        return Icons.lock_reset_rounded;
-
-      case "Create Notification":
-        return Icons.notifications_active_rounded;
-
-        case "Create Scrolling Ads Post":
-        return Icons.campaign_rounded;
-
-        case "Settings":
-        return Icons.settings_rounded;
-
-        case "About Us":
-        return Icons.info_outline_rounded;
-
-        case "Logout":
-        return Icons.logout_rounded;
-
+        return Icons.bar_chart;
+      case "Settings":
+        return Icons.settings;
+      case "Logout":
+        return Icons.logout;
       default:
-        return Icons.circle_outlined;
+        return Icons.circle;
     }
   }
 }
