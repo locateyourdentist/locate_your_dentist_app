@@ -218,13 +218,12 @@ class _AddProductState extends State<AddProduct> {
 
     for (var img in loginController.serviceFileImages) {
       if (img.bytes != null) {
-        imageBytes.add(img.bytes!); // web
+        imageBytes.add(img.bytes!);
       } else if (img.file != null) {
         final bytes = await img.file!.readAsBytes();
         imageBytes.add(bytes);
       }
     }
-
     return imageBytes;
   }
   Future<void> confirmRemoveImage(BuildContext ctx, int index) async {
@@ -248,10 +247,7 @@ class _AddProductState extends State<AddProduct> {
   }
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.white,

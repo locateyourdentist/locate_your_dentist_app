@@ -196,8 +196,16 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
     }
 
     if (item.label == 'Profile') {
-      await loginController.getProfileByUserId(userId, context);
-
+      Api.userInfo.write('selectUId',userId);
+      if (token != null) {
+        Get.offAllNamed('/${profilePage(userType)}');
+      } else {
+        Get.offAllNamed('/registerPage');
+      }
+      return;
+    }
+    if (item.label == 'Register') {
+      Api.userInfo.write('selectUId',userId);
       if (token != null) {
         Get.offAllNamed('/${profilePage(userType)}');
       } else {

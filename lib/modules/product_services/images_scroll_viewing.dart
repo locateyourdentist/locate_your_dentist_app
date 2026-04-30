@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/model/serviceModel.dart';
 
 class NetworkImageCarousel extends StatefulWidget {
-  final List<ServiceModel> services;
+  //final List<ServiceModel> services;
+  final List<String> services;
 
   const NetworkImageCarousel({super.key, required this.services});
 
@@ -37,20 +39,22 @@ class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
       return SizedBox(
         width: width * 0.9,
         height: width * 0.6,
-        child: Center(child: Text("No Images")),
+        child: Center(child: Text("No Images",style: AppTextStyles.caption(context),)),
       );
     }
 
-    // Take first image of the current service (if exists)
-    String? imageUrl;
-    final currentService = widget.services[currentIndex];
-    if (currentService.image != null && currentService.image!.isNotEmpty) {
-      //imageUrl = "${AppConstants.baseUrl}${currentService.image![0].replaceAll("\\", "/")}";
-      imageUrl = "${currentService.image![0].replaceAll("\\", "/")}";
-    }
+    // String? imageUrl;
+    // final currentService = widget.services[currentIndex];
+    // if (currentService.image != null && currentService.image!.isNotEmpty) {
+    //   //imageUrl = "${AppConstants.baseUrl}${currentService.image![0].replaceAll("\\", "/")}";
+    //   imageUrl = "${currentService.image![0].replaceAll("\\", "/")}";
+    // }
+   // String imageUrl = widget.services[currentIndex].replaceAll("\\", "/");
+    final img = widget.services[currentIndex];
 
+    String imageUrl = (img ?? "").replaceAll("\\", "/");
     return SizedBox(
-      height: width * 1,
+      height: width * 0.23,
       width: width,
       child: Stack(
         alignment: Alignment.center,
@@ -62,13 +66,13 @@ class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
 
             Image.network(
               imageUrl??"",
-              width: width * 0.9,
-              height: width * 0.9,
+              width: width * 0.6,
+              height: width * 0.23,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  width: width * 0.9,
-                  height: width * 0.9,
+                  width: width * 0.6,
+                  height: width * 0.23,
                   decoration: BoxDecoration(
                     color: const Color(0xFFF1F3F6),
                     borderRadius: BorderRadius.circular(16),

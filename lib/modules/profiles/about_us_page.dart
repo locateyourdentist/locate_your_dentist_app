@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
@@ -96,7 +97,7 @@ class AboutUsPage extends StatelessWidget {
 
             Center(
               child: Text(
-                "© 2025 Dental Connect — All Rights Reserved",
+                "© ${DateTime.now().year} Dental Connect — All Rights Reserved",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.grey[500],
@@ -110,20 +111,44 @@ class AboutUsPage extends StatelessWidget {
             ),
             CommonListTile(
               title: 'Privacy Policy',
-              onTap: () => Get.toNamed('/'),
-            ),
+                onTap: () {
+                  Api.userInfo.write('legalPage','Privacy Policy');
+                  Get.toNamed('/viewLegalMobilePage');
+                }            ),
             CommonListTile(
               title: 'Terms & Conditions',
-              onTap: () => Get.toNamed('/'),
-            ),
-            Text('follow us on',
-                style: TextStyle(
-    fontSize: size*0.03,
-    fontWeight: FontWeight.bold,
-    decoration: TextDecoration.underline,
-    decorationColor: AppColors.primary,
-    decorationThickness: 2,
-    ),),
+              onTap: () {
+               Api.userInfo.write('legalPage','Terms & Conditions');
+                Get.toNamed('/viewLegalMobilePage');
+              }
+              ),
+              CommonListTile(
+              title: 'Cookie Policy',
+              onTap: () {
+              Api.userInfo.write('legalPage','Cookie Policy');
+              Get.toNamed('/viewLegalMobilePage');
+              }
+              ),
+              CommonListTile(
+              title: 'Refund Policy',
+              onTap: () {
+              Api.userInfo.write('legalPage','Refund Policy');
+              Get.toNamed('/viewLegalMobilePage');
+              }    ),
+              CommonListTile(
+              title: 'Disclaimer',
+              onTap: () {
+              Api.userInfo.write('legalPage','Disclaimer');
+              Get.toNamed('/viewLegalMobilePage');
+              }    ),
+              Text('follow us on',
+              style: TextStyle(
+              fontSize: size*0.03,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
+              decorationColor: AppColors.primary,
+              decorationThickness: 2,
+              ),),
             SizedBox(height: size * 0.02),
 
             const Padding(

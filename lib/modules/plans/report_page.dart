@@ -1,9 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Border, BorderStyle;
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
+import 'package:locate_your_dentist/model/expense_model.dart';
+import 'package:locate_your_dentist/model/income_model.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
+import 'package:locate_your_dentist/web_modules/superAdmin/excel_service.dart';
 import '../../common_widgets/color_code.dart';
+import 'package:excel/excel.dart';
+import 'dart:typed_data';
+import 'package:file_saver/file_saver.dart';
 
 class ReportsDashboardPage extends StatefulWidget {
   const ReportsDashboardPage({super.key});
@@ -14,15 +20,251 @@ class ReportsDashboardPage extends StatefulWidget {
 class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
   final PlanController controller = Get.put(PlanController());
   String selectedYear = DateTime.now().year.toString();
+  // Future<void> exportExcel({
+  //   required IncomeDashboardModel incomeModel,
+  //   required List<ExpenseModel> expenses,
+  //   required List<Map<String, dynamic>> stateWiseExpense,
+  //   required double totalExpense,
+  //   required String state,
+  //   String? fromDate,
+  //   String? toDate,
+  // }) async {
+  //
+  //   final excel = ExcelService.buildExcel(
+  //     incomeModel: incomeModel,
+  //     expenses: expenses,
+  //     stateWiseExpense: stateWiseExpense,
+  //     totalExpense: totalExpense,
+  //   );
+  //
+  //   final bytes = excel.encode();
+  //   if (bytes == null) return;
+  //
+  //   final fileName = buildFileName(
+  //     state: state,
+  //     fromDate: fromDate,
+  //     toDate: toDate,
+  //   );
+  //
+  //   downloadExcel(bytes, fileName);
+  // }
+  Future<void> exportExcelWeb({
+    required IncomeDashboardModel incomeModel,
+    required List<ExpenseModel> expenses,
+    required List<Map<String, dynamic>> stateWiseExpense,
+    required double totalExpense,
+    required String state,
+    String? fromDate,
+    String? toDate,
+  }) async {
+    final excel = Excel.createExcel();
+
+    excel.rename('Sheet1', 'Income');
+    excel.setDefaultSheet('Income');
+
+    final titleStyle = CellStyle(
+      bold: true,
+      horizontalAlign: HorizontalAlign.Center,
+      fontSize: 14,
+    );
+
+    final headerStyle = CellStyle(
+      bold: true,
+      horizontalAlign: HorizontalAlign.Center,
+      leftBorder: Border(borderStyle: BorderStyle.Thin),
+      rightBorder: Border(borderStyle: BorderStyle.Thin),
+      topBorder: Border(borderStyle: BorderStyle.Thin),
+      bottomBorder: Border(borderStyle: BorderStyle.Thin),
+    );
+
+    final cellStyle = CellStyle(
+      leftBorder: Border(borderStyle: BorderStyle.Thin),
+      rightBorder: Border(borderStyle: BorderStyle.Thin),
+      topBorder: Border(borderStyle: BorderStyle.Thin),
+      bottomBorder: Border(borderStyle: BorderStyle.Thin),
+    );
+
+    final fileName = "report_${state}_${fromDate ?? ''}_${toDate ?? ''}";
+
+    final incomeSheet = excel['Income'];
+
+    incomeSheet.appendRow([
+      TextCellValue("Income Report"),
+    ]);
+
+    incomeSheet.merge(
+      CellIndex.indexByString("A1"),
+      CellIndex.indexByString("B1"),
+    );
+
+    incomeSheet.cell(CellIndex.indexByString("A1")).cellStyle = titleStyle;
+
+    incomeSheet.appendRow([
+      TextCellValue("Category"),
+      TextCellValue("Income"),
+    ]);
+
+    incomeSheet.cell(CellIndex.indexByString("A2")).cellStyle = headerStyle;
+    incomeSheet.cell(CellIndex.indexByString("B2")).cellStyle = headerStyle;
+
+    final incomeData = [
+      ["Poster", incomeModel.posterIncome],
+      ["Base Plan", incomeModel.basePlanIncome],
+      ["AddOns", incomeModel.addOnsIncome],
+      ["Job", incomeModel.jobIncome],
+      ["Webinar", incomeModel.webinarIncome],
+    ];
+
+    for (int i = 0; i < incomeData.length; i++) {
+      final row = i + 3;
+
+      incomeSheet.appendRow([
+        TextCellValue(incomeData[i][0].toString()),
+        TextCellValue(incomeData[i][1].toString()),
+      ]);
+
+      incomeSheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).cellStyle =
+          cellStyle;
+      incomeSheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).cellStyle =
+          cellStyle;
+    }
+
+    final expenseSheet = excel['Expenses'];
+
+    expenseSheet.appendRow([
+      TextCellValue("Expense Report"),
+    ]);
+
+    expenseSheet.appendRow([
+      TextCellValue("Title"),
+      TextCellValue("Category"),
+      TextCellValue("Amount"),
+      TextCellValue("State"),
+      TextCellValue("Date"),
+    ]);
+
+    for (int i = 0; i < 5; i++) {
+      expenseSheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 1))
+          .cellStyle = headerStyle;
+    }
+
+    for (int i = 0; i < expenses.length; i++) {
+      final e = expenses[i];
+      final row = i + 2;
+
+      expenseSheet.appendRow([
+        TextCellValue(e.title ?? ""),
+        TextCellValue(e.category ?? ""),
+        TextCellValue((e.amount ?? 0).toString()),
+        TextCellValue((e.state?.isEmpty ?? true) ? "Others" : e.state!),
+        TextCellValue(e.createdDate.toString().split('T')[0]),
+      ]);
+
+      for (int c = 0; c < 5; c++) {
+        expenseSheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: row))
+            .cellStyle = cellStyle;
+      }
+    }
+    final stateSheet = excel['StateWise'];
+
+    stateSheet.appendRow([
+      TextCellValue("State Wise Expense"),
+    ]);
+
+    stateSheet.appendRow([
+      TextCellValue("State"),
+      TextCellValue("Total Expense"),
+    ]);
+
+    stateSheet.cell(CellIndex.indexByString("A2")).cellStyle = headerStyle;
+    stateSheet.cell(CellIndex.indexByString("B2")).cellStyle = headerStyle;
+
+    for (int i = 0; i < stateWiseExpense.length; i++) {
+      final s = stateWiseExpense[i];
+      final row = i + 3;
+
+      stateSheet.appendRow([
+        TextCellValue((s['state'] == null || s['state'] == "")
+            ? "Others"
+            : s['state'].toString()),
+        TextCellValue((s['totalExpense'] ?? 0).toString()),
+      ]);
+
+      stateSheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
+          .cellStyle = cellStyle;
+
+      stateSheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row))
+          .cellStyle = cellStyle;
+    }
+    final summary = excel['Summary'];
+
+    final totalIncome = incomeModel.posterIncome +
+        incomeModel.basePlanIncome +
+        incomeModel.addOnsIncome +
+        incomeModel.jobIncome +
+        incomeModel.webinarIncome;
+
+    summary.appendRow([
+      TextCellValue("Total Income"),
+      TextCellValue(totalIncome.toString()),
+    ]);
+
+    summary.appendRow([
+      TextCellValue("Total Expense"),
+      TextCellValue(totalExpense.toString()),
+    ]);
+
+    summary.appendRow([
+      TextCellValue("Profit/Loss"),
+      TextCellValue((totalIncome - totalExpense).toString()),
+    ]);
+
+    final bytes = excel.encode();
+    if (bytes == null) return;
+    await FileSaver.instance.saveFile(
+      name: fileName,
+      bytes: Uint8List.fromList(bytes),
+      mimeType: MimeType.microsoftExcel,
+    );
+  }
+  String buildFileName({
+    required String state,
+    String? fromDate,
+    String? toDate,
+  }) {
+    final safeState = (state.isEmpty) ? "AllStates" : state.replaceAll(" ", "_");
+
+    final from = (fromDate == null || fromDate.isEmpty) ? "AllTime" : fromDate;
+    final to = (toDate == null || toDate.isEmpty) ? "AllTime" : toDate;
+
+    return "Finance_${safeState}_${from}_to_${to}.xlsx";
+  }
+  void addSheetTitle({
+    required Sheet sheet,
+    required String title,
+    required CellStyle style,
+  }) {
+    sheet.merge(
+      CellIndex.indexByString("A1"),
+      CellIndex.indexByString("E1"),
+    );
+
+    sheet.cell(CellIndex.indexByString("A1"))
+      ..value = TextCellValue(title)
+      ..cellStyle = style;
+  }
   @override
   void initState() {
     super.initState();
-    controller.getIncomeDetailsByPlan(context: context);
-    controller.getExpense(month: "", year: selectedYear);
+    _refresh();
   }
   Future<void> _refresh() async {
-    controller.getIncomeDetailsByPlan(context: context);
-    controller.getExpense(month: "", year: selectedYear);
+   await controller.getIncomeDetailsByPlan(context: context);
+   await controller.getExpense(month: "", year: selectedYear);
   }
   @override
   Widget build(BuildContext context) {

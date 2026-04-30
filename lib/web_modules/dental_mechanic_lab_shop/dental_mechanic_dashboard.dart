@@ -46,7 +46,7 @@ class _DentalMechanicWebDashboardState extends State<DentalMechanicWebDashboard>
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
@@ -80,9 +80,14 @@ class _DentalMechanicWebDashboardState extends State<DentalMechanicWebDashboard>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text(
-                                      'What are you looking for?',
-                                      style: AppTextStyles.subtitle(context)
+                                  Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Center(
+                                      child: Text(
+                                          'What are you looking for?',
+                                          style: AppTextStyles.subtitle(context)
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(height: 20),
                                   GridView.builder(
@@ -117,31 +122,27 @@ class _DentalMechanicWebDashboardState extends State<DentalMechanicWebDashboard>
                                   SizedBox(height: size*.01,),
                                   Align(
                                     alignment: Alignment.topRight,
-                                    child: Container(
-                                      height: size*0.02,
-                                      width: size*0.25,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(0.04),
-                                            blurRadius: 15,
-                                            offset: const Offset(0, 6),
-                                          ),
-                                        ],
-                                      ),
+                                    child:   Padding(
+                                      padding: const EdgeInsets.all(30.0),
                                       child: Row(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          const SizedBox(width: 12),
-                                          Icon(Icons.search, color: Colors.grey.shade500),
-                                          const SizedBox(width: 8),
-
-                                          Expanded(
-                                            child: CustomTextField(
-                                              hint: "Search contacts...",
-                                              controller:searchController,
-                                              onTap: ()async{
+                                          Container(
+                                            width: size * 0.35,
+                                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade100,
+                                              borderRadius: BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey.withOpacity(0.15),
+                                                  blurRadius: 6,
+                                                )
+                                              ],
+                                            ),
+                                            child: TextField(
+                                              controller: searchController,
+                                              onChanged: (value)async {
                                                 await contactController.getReceiverContactFormLists(
                                                   Api.userInfo.read('userId') ?? "",
                                                   '',
@@ -150,20 +151,22 @@ class _DentalMechanicWebDashboardState extends State<DentalMechanicWebDashboard>
                                                   context,
                                                 );
                                               },
+                                              decoration: InputDecoration(
+                                                icon: Icon(
+                                                  Icons.search,
+                                                  color: AppColors.grey,
+                                                  size: size * 0.008,
+                                                ),
+                                                hintText: "Search contacts by name, userId, mobile number...",
+                                                hintStyle:
+                                                AppTextStyles.caption(context, color: AppColors.grey),
+                                                border: InputBorder.none,
+                                              ),
                                             ),
                                           ),
-                                          IconButton(
-                                            icon: const Icon(Icons.tune_rounded, color: AppColors.primary),
-                                            onPressed: () {
-                                              showDateFilterPopup(context);
-                                              // Navigator.push(
-                                              //   context,
-                                              //   MaterialPageRoute(
-                                              //     builder: (context) =>
-                                              //     //const DateFilterPopup(selectedContactType: 'sender'),
-                                              //   ),
-                                            },
-                                          ),
+
+                                          const SizedBox(width: 10),
+
                                         ],
                                       ),
                                     ),
@@ -193,15 +196,12 @@ class _DentalMechanicWebDashboardState extends State<DentalMechanicWebDashboard>
                                       child: Column(
                                         children: [
 
-                                          Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Text(
-                                              "Contacts",
-                                              style: AppTextStyles.body(context,fontWeight: FontWeight.bold, color: Colors.black),
-                                            ),
+                                          Text(
+                                            "Contacts",
+                                            style: AppTextStyles.body(context,fontWeight: FontWeight.bold, color: Colors.black),
                                           ),
 
-                                          // Header Row
+                                          const SizedBox(height: 15),
                                           Container(
                                             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                                             decoration: BoxDecoration(
@@ -210,13 +210,13 @@ class _DentalMechanicWebDashboardState extends State<DentalMechanicWebDashboard>
                                             ),
                                             child: const Row(
                                               children: [
-                                                Expanded(child: Text("Org Name", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                                                Expanded(child: Text("UserType", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                                                Expanded(child: Center(child: Text("Org Name", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)))),
+                                                Expanded(child: Center(child: Text("UserType", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)))),
 
-                                                Expanded(child: Text("Name", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                                                Expanded(child: Text("Mobile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                                                Expanded(child: Text("Date", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-                                                Expanded(child: Text("Action", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                                                Expanded(child: Center(child: Text("Name", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)))),
+                                                Expanded(child: Center(child: Text("Mobile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)))),
+                                                Expanded(child: Center(child: Text("Date", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)))),
+                                                Expanded(child: Center(child: Text("Action", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)))),
                                               ],
                                             ),
                                           ),
@@ -252,11 +252,11 @@ class _DentalMechanicWebDashboardState extends State<DentalMechanicWebDashboard>
                                                         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                                                         child: Row(
                                                           children: [
-                                                            Expanded(child: Text(contact.orgName ?? "",style: AppTextStyles.caption(context),)),
-                                                            Expanded(child: Text(contact.userType ?? "",style: AppTextStyles.caption(context),)),
-                                                            Expanded(child: Text(contact.Name ?? "",style: AppTextStyles.caption(context))),
-                                                            Expanded(child: Text(contact.mobileNumber ?? "",style: AppTextStyles.caption(context))),
-                                                            Expanded(child: Text(formattedDate,style: AppTextStyles.caption(context))),
+                                                            Expanded(child: Center(child: Text(contact.orgName ?? "",style: AppTextStyles.caption(context),))),
+                                                            Expanded(child: Center(child: Text(contact.userType ?? "",style: AppTextStyles.caption(context),))),
+                                                            Expanded(child: Center(child: Text(contact.Name ?? "",style: AppTextStyles.caption(context)))),
+                                                            Expanded(child: Center(child: Text(contact.mobileNumber ?? "",style: AppTextStyles.caption(context)))),
+                                                            Expanded(child: Center(child: Text(formattedDate,style: AppTextStyles.caption(context)))),
                                                             Expanded(
                                                               child:ElevatedButton.icon(
                                                                 icon: Icon(

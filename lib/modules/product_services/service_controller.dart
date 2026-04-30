@@ -17,6 +17,9 @@ class ServiceController extends GetxController{
   List<ServiceModel> get serviceList=>_serviceList;
   List<ServiceModel>_serviceDetails=[];
   List<ServiceModel> get serviceDetails=>_serviceDetails;
+  List<dynamic>_privacyDetails=[];
+  List<dynamic> get PrivacyDetails=>_privacyDetails;
+  List<Map<String, dynamic>> privacyData = [];
   final loginController=Get.put(LoginController());
   final Api api = Api();
   String? selectedServiceId;
@@ -25,6 +28,8 @@ class ServiceController extends GetxController{
   final TextEditingController costController = TextEditingController();
   String? selectServiceId;
   List<File>? serviceImage=[];
+  bool isTitleSidebarOpen = false;
+  String? tempSelectedTitle;
   Future<void> getServiceListAdmin( String userId,dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
@@ -41,6 +46,7 @@ class ServiceController extends GetxController{
         List<dynamic> services = data["data"];
 
         _serviceList = services.map((e) => ServiceModel.fromJson(e)).toList();
+
         // showCustomToast(context,  "Profile details fetched",);
       } else {
         //showCustomToast(context,  "can not get service error,${data["message"] ?? "error"}",);
@@ -53,7 +59,81 @@ class ServiceController extends GetxController{
       update();
     }
   }
+  Future<List<Map<String, dynamic>>> getPrivacyPolicyDetails(
+      String category,
+      BuildContext context,
+      ) async {
 
+    var connection = await Connectivity().checkConnectivity();
+
+    if (connection == ConnectivityResult.none) {
+      Get.snackbar("No Internet", "Please check your connection");
+      return [];
+    }
+
+    try {
+      final response = await api.getPrivacyPolicyDetails(category);
+      var data = jsonDecode(response.body);
+
+      if (data["status"] == "success") {
+        List<dynamic> services = data["data"] ?? [];
+
+        if (services.isNotEmpty && services[0]["data"] != null) {
+          return List<Map<String, dynamic>>.from(services[0]["data"]);
+        }
+      }
+
+      return [];
+
+    } catch (e) {
+      print("privacy error: $e");
+      return [];
+    }
+  }
+  // Future<void> getPrivacyPolicyDetails(String category,dynamic context) async {
+  //   var connection = await Connectivity().checkConnectivity();
+  //
+  //   if (connection == ConnectivityResult.none) {
+  //     Get.snackbar("No Internet", "Please check your connection");
+  //     return;
+  //   }
+  //
+  //   isLoading = true;
+  //   update();
+  //
+  //   try {
+  //     _privacyDetails = [];
+  //
+  //     final response = await api.getPrivacyPolicyDetails( category,);
+  //     var data = jsonDecode(response.body);
+  //
+  //     if (data["status"]?.toString().toLowerCase() == "success") {
+  //       List<dynamic> services = data["data"] ?? [];
+  //
+  //       if (services.isNotEmpty) {
+  //         var rawData = services[0]["data"];
+  //         if (rawData is List) {
+  //           privacyData = List<Map<String, dynamic>>.from(rawData);
+  //         } else if (rawData is String) {
+  //           privacyData = List<Map<String, dynamic>>.from(
+  //             jsonDecode(rawData),
+  //           );
+  //         } else {
+  //           privacyData = [];
+  //         }
+  //       } else {
+  //         privacyData = [];
+  //       }
+  //     } else {
+  //       privacyData = [];
+  //     }
+  //   } catch (error) {
+  //     print('privacy content error: $error');
+  //   } finally {
+  //     isLoading = false;
+  //     update();
+  //   }
+  // }
   // Future<void> getServiceDetailAdmin( String serviceId,dynamic context) async {
   //   var connection = await Connectivity().checkConnectivity();
   //   if (connection == ConnectivityResult.none) {
@@ -185,7 +265,8 @@ class ServiceController extends GetxController{
       update();
     }
   }
-  Future<void> createServiceAdmin(String serviceId,String userId,String userType, String serviceTitle,String serviceDescription,String serviceCost,serviceImage, List<String>? serviceImageUrl,dynamic context) async {
+  Future<void> createServiceAdmin(String serviceId,String userId,String userType, String serviceTitle,String serviceDescription,
+      String serviceCost,serviceImage, List<String>? serviceImageUrl,dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
@@ -193,7 +274,7 @@ class ServiceController extends GetxController{
     }
     isLoading=true;
     try {
-      final response = await api.createServiceAdmin(  serviceId, userId, userType,  serviceTitle, serviceDescription, serviceCost, serviceImage,serviceImageUrl);
+      final response = await api.createServiceAdmin( serviceId, userId, userType,  serviceTitle, serviceDescription, serviceCost, serviceImage,serviceImageUrl);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
         showSuccessDialog(context, title:"Success",message :"Services added Successfully", onOkPressed: () {

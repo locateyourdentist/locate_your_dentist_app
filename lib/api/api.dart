@@ -175,10 +175,10 @@ class Api {
       if (response.statusCode == 200) {
         return response;
       } else {
-        throw "switch Account Login: Unable to communicate with the server";
+        throw "switch Account error: Unable to communicate with the server";
       }
     } catch (e) {
-      throw "switch Account Login failed: $e";
+      throw "switch Account error: $e";
     }
   }
 
@@ -426,7 +426,6 @@ class Api {
         request.files.add(http.MultipartFile.fromBytes(
           'image',
           image[i],
-          filename: 'image_$userId$i.jpg',
         ));
       }
     }
@@ -977,7 +976,10 @@ class Api {
           },
           body:jsonEncode({"State":state,"fromDate":fromDate,"toDate":toDate})
       );
-      print('api plan response ${response.body}');
+      print("State: $state");
+      print("From Date: $fromDate");
+      print("To Date: $toDate");
+      print('api getIncomeDetails response ${response.body}');
       return response;
     } catch (e) {
       throw "Failed to fetch base plan details: $e";
@@ -990,7 +992,9 @@ class Api {
     String? token = Api.userInfo.read('token');
     try {
       final String token = Api.userInfo.read('token') ?? "";
-
+      print("Stateexpense: $state");
+      print(" month: $month");
+      print("To tyear: $year");
       final response = await http.post(
           Uri.parse(url),
           headers: {
@@ -1000,7 +1004,8 @@ class Api {
           },
           body:jsonEncode({"month":month,"year":year,"state":state})
       );
-      print('api plan response ${response.body}');
+
+      print('api getExpenseDetails response ${response.body}');
       return response;
     } catch (e) {
       throw "Failed to fetch base plan details: $e";
@@ -1170,14 +1175,15 @@ class Api {
     //   ));
     // }
 
-    String now = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    request.files.add(
-      http.MultipartFile.fromBytes(
-        'posterImages', // match backend
-        images[0],    // only one file
-        filename: 'image_$now$userId.jpg',
-      ),
-    );
+    if (images.isNotEmpty) {
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'posterImages',
+          images.first,
+         // filename: 'image_${DateTime.now().millisecondsSinceEpoch}.jpg',
+        ),
+      );
+    }
     try {
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
@@ -1189,7 +1195,6 @@ class Api {
       return http.Response('{"status":"error","message":"$e"}', 500);
     }
   }
-
   Future<http.Response> contactFilterSearch(String receiverUserId,String senderUserId,String state,String district,String city,String status, String search,String fromDate,String toDate,) async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.contactFilterSearchUrl}";
@@ -1634,11 +1639,6 @@ class Api {
       request.fields['city'] = city;
       request.fields['area'] = area;
 
-      // if (notificationImage1 != null) {
-      //   for (var img in notificationImage1) {
-      //     request.files.add(await http.MultipartFile.fromPath('notificationImage', img.path));
-      //   }
-      // }
       if (notificationImage1 != null) {
         request.files.add(
           http.MultipartFile.fromBytes(
@@ -1678,58 +1678,6 @@ class Api {
       throw "Failed to job post admin  details: $e";
     }
   }
-
-  // Future<http.Response>addAppLogo(XFile ?logoImage1,) async {
-  //   String url =
-  //       "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants.changeAppLogoUrl}";
-  //   print('API getJobListAdmin $url');
-  //   String? token = Api.userInfo.read('token');
-  //   try {
-  //     final String token = Api.userInfo.read('token') ?? "";
-  //     var request = http.MultipartRequest('POST', Uri.parse(url));
-  //
-  //     // if (logoImage1 != null) {
-  //     //     request.files.add(await http.MultipartFile.fromPath('appLogo', logoImage1.path));
-  //     // }
-  //     if (logoImage1 != null) {
-  //
-  //       var bytes = await logoImage1.readAsBytes();
-  //
-  //       request.files.add(
-  //         http.MultipartFile.fromBytes(
-  //           'appLogo',
-  //           bytes,
-  //           filename: logoImage1.path.split('/').last,
-  //         ),
-  //       );
-  //     }
-  //     request.headers.addAll({
-  //       "Authorization": "Bearer $token",
-  //       "Accept": "application/json",
-  //     });
-  //     print("=== MultipartRequest Fields ===");
-  //
-  //     if (request.files.isNotEmpty) {
-  //       print("=== MultipartRequest Files ===");
-  //       for (var f in request.files) {
-  //         print(
-  //             "field: ${f.field}, filename: ${f.filename}, length: ${f.length}");
-  //       }
-  //     }
-  //     print("Sending job request with image...");
-  //     final streamedResponse = await request.send();
-  //     final response = await http.Response.fromStream(streamedResponse);
-  //
-  //     print("API Response: ${response.body}");
-  //     if (response.statusCode != 200) {
-  //       throw "job post admin failed: Server returned ${response.statusCode}";
-  //     }
-  //     return response;
-  //
-  //   } catch (e) {
-  //     throw "Failed to job post admin  details: $e";
-  //   }
-  // }
   Future<http.Response> addAppLogo(Uint8List? logoBytes, ) async {
     final String url =
         "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants.changeAppLogoUrl}";
@@ -1816,7 +1764,7 @@ class Api {
           "Accept": "application/json",
           "Authorization": "Bearer $token",
         },
-        body: jsonEncode({"userId":userId}),
+       // body: jsonEncode({"userId":userId}),
       );
       print('api getAllContacts ${response.body}');
       return response;
@@ -1895,6 +1843,32 @@ class Api {
       throw "Failed to fetch base plan details: $e";
     }
   }
+  Future<http.Response> getPrivacyPolicyDetails( category) async {
+    String url =
+        "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.getPrivacyPolicyUrl}";
+    print('API getBasePlanUrl $url');
+    try {
+      final body = {
+        "category": category,
+      };
+
+      final response = await http.post(
+          Uri.parse(url),
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            //"Authorization": "Bearer $token",
+          },
+        body: jsonEncode(body),
+      );
+      print("REQUEST BODY: ${jsonEncode(body)}");
+
+      print('api getPrivacyPolicyDetails ${response.body}');
+      return response;
+    } catch (e) {
+      throw "Failed to fetch base plan details: $e";
+    }
+  }
   Future<http.Response> addCompanyDetails(String userId,String companyName,String gst,
       Map<String, dynamic> address,
       String email,String phone,) async {
@@ -1928,8 +1902,8 @@ class Api {
     String? token = Api.userInfo.read('token');
     try {
       final String token = Api.userInfo.read('token') ?? "";
-      print(details.runtimeType);          // Should be List<Map<String, dynamic>>
-      print(({"details": details}).runtimeType); // Should be _Map<String, dynamic>
+      print(details.runtimeType);
+      print(({"details": details}).runtimeType);
       final bodyString = jsonEncode(details);
 
       final response = await http.post(
@@ -1945,6 +1919,38 @@ class Api {
       return response;
     } catch (e) {
       throw "Failed to addContactDetailsStateWise details: $e";
+    }
+  }
+  Future<http.Response> addPrivacyPolicyContent(  String category,String details,) async {
+    String url =
+        "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.addPrivacyPolicyUrl}";
+    print('API addPrivacyPolicyContent $url');
+    try {
+      final String token = Api.userInfo.read('token') ?? "";
+      print(({"details": details}).runtimeType);
+      final Map<String, dynamic> requestBody = {
+        'category': category,
+        'details': details,
+      };
+
+      print("REQUEST BODY: ${jsonEncode(requestBody)}");
+      final response = await http.post(
+          Uri.parse(url),
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+          },
+          body:jsonEncode({
+            'category':category,
+            'details':details,
+          })
+      );
+
+      print('api addPrivacyPolicyContent ${response.body}');
+      return response;
+    } catch (e) {
+      throw "Failed to addPrivacyPolicyContent details: $e";
     }
   }
   Future<http.Response> addGstDetails(String userId,String state,String cgst,
@@ -2549,8 +2555,7 @@ class Api {
   }
   Future<http.Response> postJobsAdmin(String jobId,String userId,String userType,String jobType,List<String> jobCategory,String orgName, String jobTitle,String jobDescription,String salary,
       String qualification,String experience,String state,String district,String city,String startTime,String endTime,List<Uint8List> ?jobImage1,) async {
-    String url =
-        "${AppConstants.baseUrl}${AppConstants.jobUrl}${AppConstants.postJobsAdminUrl}";
+    String url = "${AppConstants.baseUrl}${AppConstants.jobUrl}${AppConstants.postJobsAdminUrl}";
     print('API applyJobsJobSeekers $url');
    // String? userId=Api.userInfo.read('userId');
     //String? userType=Api.userInfo.read('userType');
@@ -2590,7 +2595,7 @@ class Api {
           request.files.add(http.MultipartFile.fromBytes(
             'jobImage',
             jobImage1[i],
-            filename: 'job_${userId}_$i.jpg',
+         //   filename: 'job_${userId}_$i.jpg',
           ));
         }
       }
@@ -2619,7 +2624,6 @@ class Api {
       request.fields.forEach((key, value) {
         print("$key: $value");
       });
-
       if (request.files.isNotEmpty) {
         print("=== MultipartRequest Files ===");
         for (var f in request.files) {
@@ -2653,6 +2657,7 @@ class Api {
       var request = http.MultipartRequest('POST', Uri.parse(url));
       request.fields['senderUserId'] = senderUserId;
       request.fields['receiverUserId'] = receiverUserId;
+      request.fields['userType'] = Api.userInfo.read('userType');
 
       request.fields['email'] = email;
       request.fields['mobileNumber'] = mobileNumber;
@@ -2712,173 +2717,33 @@ class Api {
       throw "Failed to contact post details: $e";
     }
   }
-  // Future<http.Response> createServiceAdmin(
-  //     String serviceId,
-  //     String userId,
-  //     String userType,
-  //     String serviceTitle,
-  //     String serviceDescription,
-  //     String serviceCost,
-  //     List<Uint8List> serviceImage,
-  //     List<String>? serviceImageUrl,
-  //     ) async {
-  //   String url =
-  //       "${AppConstants.baseUrl}${AppConstants.serviceURL}${AppConstants.createServiceUrl}";
-  //   print('API applyJobsJobSeekers $url');
-  //
-  //   try {
-  //     final String token = Api.userInfo.read('token') ?? "";
-  //     var request = http.MultipartRequest('POST', Uri.parse(url));
-  //
-  //     request.fields['serviceId'] = serviceId;
-  //     request.fields['userId'] = userId;
-  //     request.fields['userType'] = userType;
-  //     request.fields['serviceTitle'] = serviceTitle;
-  //     request.fields['serviceDescription'] = serviceDescription;
-  //     request.fields['serviceCost'] = serviceCost;
-  //     request.fields['oldImageUrl'] = jsonEncode(serviceImageUrl);
-  //
-  //     if (serviceImageUrl != null && serviceImageUrl.isNotEmpty) {
-  //       for (int i = 0; i < serviceImageUrl.length; i++) {
-  //         request.fields['existingImages[$i]'] = serviceImageUrl[i];
-  //       }
-  //     }
-  //     if (serviceImage != null && serviceImage.isNotEmpty) {
-  //       request.files.add(
-  //         http.MultipartFile.fromBytes(
-  //           "serviceImage",
-  //           serviceImage,
-  //           //filename: notificationImage1!,
-  //         ),
-  //       );
-  //     }
-  //     if (serviceImage != null && serviceImage.isNotEmpty) {
-  //       for (var img in serviceImage) {
-  //         print("Uploading image: ${img.path.split('/').last}");
-  //         request.files.add(
-  //           await http.MultipartFile.fromPath(
-  //             'serviceImage',
-  //             img.path,
-  //             filename: img.path.split('/').last,
-  //           ),
-  //         );
-  //       }
-  //     } else {
-  //       print("NO NEW IMAGE SELECTED");
-  //     }
-  //     request.headers.addAll({
-  //       "Authorization": "Bearer $token",
-  //       "Accept": "application/json",
-  //     });
-  //
-  //     print("=== MultipartRequest Fields ===");
-  //     request.fields.forEach((key, value) {
-  //       print("$key: $value");
-  //     });
-  //     request.files.forEach((file) {
-  //       print("Field: ${file.field}, Filename: ${file.filename}, Path: ${file.filename}");
-  //     });
-  //     if (request.files.isNotEmpty) {
-  //       print("=== MultipartRequest Files ===");
-  //       for (var f in request.files) {
-  //         print(
-  //             "field: ${f.field}, filename: ${f.filename}, length: ${f.length}");
-  //       }
-  //     }
-  //     print("Sending request with images...");
-  //     final streamedResponse = await request.send();
-  //     final response = await http.Response.fromStream(streamedResponse);
-  //
-  //     print("API Response: ${response.body}");
-  //
-  //     if (response.statusCode != 200) {
-  //       throw "Error: Server returned ${response.statusCode}";
-  //     }
-  //     return response;
-  //
-  //   } catch (e) {
-  //     throw "Failed to upload service: $e";
-  //   }
-  // }
-  // Future<http.Response> createServiceAdmin(
-  //     String serviceId,
-  //     String userId,
-  //     String userType,
-  //     String serviceTitle,
-  //     String serviceDescription,
-  //     String serviceCost,
-  //     List<Uint8List>? serviceImages,
-  //     List<String>? serviceImageUrl,
-  //     ) async {
-  //   String url =
-  //       "${AppConstants.baseUrl}${AppConstants.serviceURL}${AppConstants.createServiceUrl}";
-  //
-  //   try {
-  //     final String token = Api.userInfo.read('token') ?? "";
-  //     var request = http.MultipartRequest('POST', Uri.parse(url));
-  //
-  //     // Fields
-  //     request.fields['serviceId'] = serviceId;
-  //     request.fields['userId'] = userId;
-  //     request.fields['userType'] = userType;
-  //     request.fields['serviceTitle'] = serviceTitle;
-  //     request.fields['serviceDescription'] = serviceDescription;
-  //     request.fields['serviceCost'] = serviceCost;
-  //
-  //     // Existing images
-  //     request.fields['oldImageUrl'] = jsonEncode(serviceImageUrl ?? []);
-  //
-  //     if (serviceImageUrl != null && serviceImageUrl.isNotEmpty) {
-  //       for (int i = 0; i < serviceImageUrl.length; i++) {
-  //         request.fields['existingImages[$i]'] = serviceImageUrl[i];
-  //       }
-  //     }
-  //
-  //     // New images
-  //     if (serviceImages != null && serviceImages.isNotEmpty) {
-  //       for (int i = 0; i < serviceImages.length; i++) {
-  //         request.files.add(
-  //           http.MultipartFile.fromBytes(
-  //             'serviceImage',
-  //             serviceImages[i],
-  //             filename: "image_$i.jpg",
-  //           ),
-  //         );
-  //       }
-  //     } else {
-  //       print("NO NEW IMAGE SELECTED");
-  //     }
-  //
-  //
-  //     // Headers
-  //     request.headers.addAll({
-  //       "Authorization": "Bearer $token",
-  //       "Accept": "application/json",
-  //     });
-  //
-  //     // Debug logs
-  //     print("=== Fields ===");
-  //     request.fields.forEach((k, v) => print("$k: $v"));
-  //
-  //     print("=== Files ===");
-  //     for (var f in request.files) {
-  //       print("field: ${f.field}, filename: ${f.filename}, size: ${f.length}");
-  //     }
-  //
-  //     final streamedResponse = await request.send();
-  //     final response = await http.Response.fromStream(streamedResponse);
-  //
-  //     print("API Response: ${response.body}");
-  //
-  //     if (response.statusCode != 200) {
-  //       throw "Error: Server returned ${response.statusCode}";
-  //     }
-  //
-  //     return response;
-  //   } catch (e) {
-  //     throw "Failed to upload service: $e";
-  //   }
-  // }
+
+  Future<http.Response> postPublicContactDetail(String email,String mobileNumber,String name, String description) async {
+    String url =
+        "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.postPublicContactFormUrl}";
+    print('API postPublicContactDetail $url');
+    try {
+      final body = {
+        'email': email,
+        "mobile":mobileNumber,
+        'name': name,
+        'message': description,
+      };
+      print("Request Body: ${jsonEncode(body)}");
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(body),
+      );
+      print('api postPublicContactDetail response ${response.body}');
+      return response;
+    } catch (e) {
+      throw "Failed to fetch postPublicContactDetail: $e";
+    }
+  }
   Future<http.Response> createServiceAdmin(
       String serviceId,
       String userId,
@@ -2895,15 +2760,12 @@ class Api {
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
        print('add service url$url');
-    // Fields
     request.fields['serviceId'] = serviceId;
     request.fields['userId'] = userId;
     request.fields['userType'] = userType;
     request.fields['serviceTitle'] = serviceTitle;
     request.fields['serviceDescription'] = serviceDescription;
     request.fields['serviceCost'] = serviceCost;
-
-
     // request.fields['existingImages'] = jsonEncode(serviceImageUrl ?? []);
     // if (serviceImageUrl != null) {
     //   for (int i = 0; i < serviceImageUrl.length; i++) {
@@ -2912,13 +2774,23 @@ class Api {
     // }
     request.fields['existingImages'] = jsonEncode(serviceImageUrl ?? []);
     print("Sending existingImages: ${jsonEncode(serviceImageUrl ?? [])}");
+    final now = DateTime.now();
+
+    String formattedDate =
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+    String formattedTime =
+        "${now.hour.toString().padLeft(2, '0')}-${now.minute.toString().padLeft(2, '0')}-${now.second.toString().padLeft(2, '0')}";
+
     if (serviceImages != null && serviceImages.isNotEmpty) {
       for (int i = 0; i < serviceImages.length; i++) {
+
+        final fileName = "${userId}_${formattedDate}_${formattedTime}_$i.jpg";
+
         request.files.add(
           http.MultipartFile.fromBytes(
             'serviceImage',
             serviceImages[i],
-            filename: "$userId$i.jpg",
+            filename: fileName,
           ),
         );
       }
@@ -2932,8 +2804,6 @@ class Api {
     //     ));
     //   }
     // }
-
-    // Headers
     request.headers.addAll({
       "Authorization": "Bearer $token",
       "Accept": "application/json",
@@ -2993,11 +2863,12 @@ class Api {
       //   }
       // }
       if (webinarImage1 != null) {
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
         for (int i = 0; i < webinarImage1.length; i++) {
           request.files.add(http.MultipartFile.fromBytes(
             'webinarImage',
             webinarImage1[i],
-            //   filename: 'job_$userId$i.jpg',
+            filename: 'webinar_${userId}_${timestamp}_$i.jpg',
           ));
         }
       }

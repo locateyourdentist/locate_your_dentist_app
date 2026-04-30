@@ -126,36 +126,6 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
     //await loginController.getProfileByUserId(Api.userInfo.read('userId') ?? "", context);
     serviceController.selectedServiceId.toString().isNotEmpty ? serviceController.selectedServiceId.toString() : "0";
   }
-  // Future<void> pickImages() async {
-  //   const maxImages = 3;
-  //   final existingCount = loginController.serviceFileImages.length;
-  //   final remaining = maxImages - existingCount;
-  //   if (remaining <= 0) {
-  //     Get.snackbar("Error", "Maximum $maxImages images allowed");
-  //     return;
-  //   }
-  //   try {
-  //     final List<XFile>? selected = await _picker.pickMultiImage();
-  //     if (selected != null && selected.isNotEmpty) {
-  //       final limited = selected.take(remaining).toList();
-  //       for (final x in limited) {
-  //         if (kIsWeb) {
-  //           final bytes = await x.readAsBytes();
-  //           serviceFileImages.add(AppImage(bytes: bytes));
-  //         } else {
-  //           serviceFileImages.add(AppImage(file: File(x.path)));
-  //         }
-  //       }
-  //       loginController.update();
-  //       if (selected.length > remaining) {
-  //         Get.snackbar("Info", "Only $remaining more images allowed");
-  //       }
-  //     }
-  //   } catch (e) {
-  //     debugPrint("Error picking images: $e");
-  //     Get.snackbar("Error", "Failed to pick images");
-  //   }
-  // }
   bool isPicking = false;
 
   Future<void> pickImages() async {
@@ -223,7 +193,7 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
     selectedUserType = Api.userInfo.read('userType') ?? "";
     return Scaffold(
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
@@ -303,57 +273,6 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
                                     SizedBox(height: size*0.01),
                                     Text('Images', style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 5),
-                                    // SizedBox(
-                                    //   height: size * 0.135,
-                                    //   child: GetBuilder<LoginController>(
-                                    //     builder: (lc) {
-                                    //       final images = serviceFileImages;
-                                    //       return ListView.builder(
-                                    //         scrollDirection: Axis.horizontal,
-                                    //         physics: const AlwaysScrollableScrollPhysics(),
-                                    //         itemCount: (images.length < 3) ? images.length + 1 : images.length,
-                                    //         itemBuilder: (_, index) {
-                                    //           if (index >= images.length && images.length < 3) {
-                                    //             return GestureDetector(
-                                    //               onTap: pickImages,
-                                    //               child: Container(
-                                    //                 margin: const EdgeInsets.all(8),
-                                    //                 width: size * 0.13,
-                                    //                 height: size * 0.13,
-                                    //                 decoration: BoxDecoration(
-                                    //                   borderRadius: BorderRadius.circular(10),
-                                    //                   border: Border.all(color: Colors.grey),
-                                    //                   color: Colors.grey.shade200,
-                                    //                 ),
-                                    //                 child: const Center(child: Icon(Icons.add, size: 40, color: Colors.grey)),
-                                    //               ),
-                                    //             );
-                                    //           }
-                                    //
-                                    //           final AppImage img = images[index];
-                                    //           return Container(
-                                    //             margin: const EdgeInsets.all(8),
-                                    //             width: size * 0.13,
-                                    //             height: size * 0.13,
-                                    //             child: Stack(
-                                    //               children: [
-                                    //                 img.buildWidget(width: size * 0.13, height: size * 0.13),
-                                    //                 Positioned(
-                                    //                   right: 0,
-                                    //                   top: 0,
-                                    //                   child: GestureDetector(
-                                    //                     onTap: () => confirmRemoveImage(context, index),
-                                    //                     child: Icon(Icons.cancel, color: Colors.black, size: size * 0.012),
-                                    //                   ),
-                                    //                 ),
-                                    //               ],
-                                    //             ),
-                                    //           );
-                                    //         },
-                                    //       );
-                                    //     },
-                                    //   ),
-                                    // ),
                                     SizedBox(
                                       height: size * 0.135,
                                       child: ListView.builder(

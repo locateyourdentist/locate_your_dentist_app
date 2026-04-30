@@ -48,12 +48,12 @@ import 'package:locate_your_dentist/modules/profiles/vedio_plays.dart';
       containerHeight = 250;
     } else {
       // Mobile
-      containerHeight = s * 4;
+      containerHeight = s * 5;
     }
 
     if (widget.images.isEmpty) {
       return Container(
-        height: kIsWeb== "Web"? s * 0.1:s*0.65,
+        height: kIsWeb== "Web"? s * 0.1:s*0.75,
         width: double.infinity,
         decoration: BoxDecoration(color: Colors.grey[200],border: Border.all(color: AppColors.grey)),
         //s*0.3,
@@ -66,7 +66,7 @@ import 'package:locate_your_dentist/modules/profiles/vedio_plays.dart';
     return Stack(
       children: [
         SizedBox(
-          height: kIsWeb== "Web"? s * 0.15:s*0.65,
+          height: kIsWeb== "Web"? s * 0.15:s*0.7,
           width: double.infinity,
           child: PageView.builder(
             controller: _pageController,
@@ -168,7 +168,7 @@ import 'package:locate_your_dentist/modules/profiles/vedio_plays.dart';
       mediaWidget = Image.network(
         media.url!,
         width: s*0.14,
-        height:kIsWeb== "Web"? s * 0.3:s*0.65,
+        height:kIsWeb== "Web"? s * 0.3:s*0.85,
         //s*0.02,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => Container(

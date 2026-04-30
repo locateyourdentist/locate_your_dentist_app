@@ -117,32 +117,33 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(
-                          height: 80,
-                          width: 80,
+                          width: size*0.05,
+                          height: size*0.05,
                           child: ClipOval(
-                            child: loginController.appLogoUrl != null
-                                ? Image.network(
-                              loginController.appLogoUrl!,
+                            child:
+                                Image.network(
+                                  loginController.appLogoUrl != null? loginController.appLogoUrl!:"",
                               fit: BoxFit.cover,
-                              width: 80,
-                              height: 80,
-                            )
-                                : Container(
+                              width: size*0.15,
+                              height: size*0.12,
+                              errorBuilder: (_, __, ___) =>
+                                  Container(
                               color: Colors.white.withOpacity(0.3),
-                              child: const Icon(
+                              child:  Icon(
                                 Icons.medical_services,
-                                size: 50,
+                                size: size*0.15,
                                 color: Colors.white,
                               ),
                             ),
-                          ),
+                          )
+                          )
                         ),
                         const SizedBox(height: 20),
                         Text(
                          "Verify OTP",
-                          style: AppTextStyles.body(context),
+                          style: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 10),
+                         SizedBox(height: size*0.01),
                         Text(
                           !isOtpSent
                               ? "Enter your received OTP"
@@ -151,15 +152,16 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
                               context, color: AppColors.white),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 30),
+                        SizedBox(height: size*0.01),
 
                           OtpTextField(
                             numberOfFields: 4,
                             focusedBorderColor:AppColors.primary,
                             borderColor: AppColors.primary,
                             showFieldAsBox: true,
-                            fieldWidth: size * 0.04,
-                            fieldHeight: size * 0.04,
+                            textStyle: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),
+                            fieldWidth: size * 0.045,
+                            fieldHeight: size * 0.07,
                             borderWidth: 3.0,
                             borderRadius: BorderRadius.circular(20),
                             onCodeChanged: (String code) {

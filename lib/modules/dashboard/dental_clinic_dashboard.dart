@@ -72,19 +72,18 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
           ),
         ),
         centerTitle: false,
-        title: Column(
-          mainAxisAlignment:MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Welcome Back',
-              style: AppTextStyles.body(context,
-                  color: AppColors.white,fontWeight: FontWeight.bold,),
-            ),
-           // Text(Api.userInfo.read('name')??"",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.bold,color: Colors.white),
-           // ),
-          ],
-        ),
+        // title: Column(
+        //   mainAxisAlignment:MainAxisAlignment.start,
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     Text(
+        //       'Welcome Back',
+        //       style: AppTextStyles.body(context,
+        //           color: AppColors.white,fontWeight: FontWeight.bold,),
+        //     ),
+        //
+        //   ],
+        // ),
         actions: [
           GetBuilder<NotificationController>(
             builder: (controller) {
@@ -92,32 +91,20 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+
                   if(multipleBranches)
-                  TextButton.icon(
-                    onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) =>  ZefyrExample()),
-                      // );
-                      Get.toNamed(
-                        '/branchListPage',
-                        arguments: {'page': 'dashboard'},
-                      );
-                    },
-                    icon: Icon(
-                      Icons.switch_account,
-                      color: AppColors.white,
-                      size: size * 0.05,
-                    ),
-                    label: Text(
-                      "Switch",
-                      style: AppTextStyles.caption(
-                        context,
-                        color: AppColors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                    GestureDetector(
+                        onTap: ()async{
+                          //await   loginController.getBranchDetails(context);
+                          Get.toNamed(
+                            '/branchListPage',
+                            arguments: {'page': 'dashboard'},
+                          );
+                        },
+                        child: Row(
+                            children:[
+                              Text('Switch Account',style: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold),),
+                              Image.asset('assets/images/switch_account.png',height: size * 0.05,width:size * 0.05,)])),
                   Stack(
                     children: [
                       IconButton(
@@ -127,17 +114,14 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                           size: size * 0.07,
                         ),
                         onPressed: () async {
-                          await notificationController
-                              .getNotificationListAdmin(context);
+                          await notificationController.getNotificationListAdmin(context);
                           notificationController.unreadCount="0";
                           notificationController.update();
                           Get.toNamed('/notificationPage');
                         },
                       ),
 
-                      if (int.tryParse(
-                          notificationController.unreadCount ?? "0")! >
-                          0)
+                      if (int.tryParse(notificationController.unreadCount ?? "0")! > 0)
                         Positioned(
                           top: 4,
                           right: 8,
@@ -195,7 +179,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(50),
+                              borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.15),
@@ -213,7 +197,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                 Expanded(
                                   child:CommonSearchTextField(
                                     controller: searchController,
-                                    hintText: "Search dental clinic",
+                                    hintText: "Search user list by name,mobileNumber...",
                                     onSubmitted: (value)async {
                                       print("Search text: $value");
                                       await  loginController.getProfileDetails('' ,'', '', 'true','','','',searchController.text.toString(), value,context);
@@ -222,7 +206,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                   )
                                 ),
                                 Container(
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: AppColors.white,),
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: AppColors.white,),
                                   child: Center(
                                     child: IconButton(
                                       onPressed: () {
@@ -300,12 +284,13 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                     horizontalOffset: 50,
                                     child: FadeInAnimation(
                                       child: GestureDetector(
-                                        onTap: () {
+                                        onTap: ()async {
                                           if (title[index] == "Job Posts/Webinars") {
                                             Get.toNamed('/viewJobWebinarPage');
                                           } else {
                                             Api.userInfo.write('sUserType', title[index] ?? "");
-                                            loginController.getProfileDetails(
+                                            print('cvv${title[index]}');
+                                           await loginController.getProfileDetails(
                                               title[index], '', '', '', 'true', '', '', '', '',
                                               context,
                                             );
@@ -516,10 +501,9 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                   child: FadeInAnimation(
                                     child: GestureDetector(
                                     onTap: () async{
-                                   await jobController.getWebinarById(
-                                    webinars.webinarId.toString(),
-                                    webinars.isActive.toString(),
-                                    context);
+                                      print('web view id${webinars.webinarId.toString()}');
+                                      Api.userInfo.write('webinarId',webinars.webinarId.toString());
+                                  // await jobController.getWebinarById(webinars.webinarId.toString(), webinars.isActive.toString(), context);
                                     Get.toNamed('/viewWebinarPage');
                                     },
                                     child: JobCard(

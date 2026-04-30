@@ -238,20 +238,18 @@ class _WebinarCardState extends State<WebinarCard> {
         
                         const SizedBox(height: 12),
         
-                        /// Description
-                        Text(
-                          webinar.webinarDescription ?? "",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey.shade700,
-                          ),
-                        ),
+                        // Text(
+                        //   webinar.webinarDescription ?? "",
+                        //   maxLines: 2,
+                        //   overflow: TextOverflow.ellipsis,
+                        //   style: TextStyle(
+                        //     fontSize: 13,
+                        //     color: Colors.grey.shade700,
+                        //   ),
+                        // ),
         
                         const SizedBox(height: 16),
         
-                        /// Button
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

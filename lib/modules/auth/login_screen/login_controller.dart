@@ -14,10 +14,7 @@ import '../../../common_widgets/color_code.dart';
 import '../../../common_widgets/common_widget_all.dart';
 import '../../../common_widgets/custom_toast.dart';
 import 'package:http/http.dart' as http;
-// import 'dart:io' show File;
-import 'package:image_picker/image_picker.dart';
-import 'package:image_picker/image_picker.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../../model/contact_model_web.dart';
 
 class AppImage1 {
@@ -40,13 +37,15 @@ class AppImage1 {
   });
 }
 class AppImage {
-  final String? url;
-  final File? file;
-  final bool isVideo;
+  Uint8List? bytes;
+  File? file;
+  String? url;
+  bool isVideo;
 
   AppImage({
-    this.url,
+    this.bytes,
     this.file,
+    this.url,
     this.isVideo = false,
   });
 }
@@ -186,7 +185,7 @@ class LoginController extends GetxController {
   final notificationController = Get.put(NotificationController());
   int selectedIndex = -1;
   //List<ContactModel> contactList = <ContactModel>[];
-
+  List<ContactApiModel> contactListApi = [];
   final TextEditingController typeNameController = TextEditingController();
   TextEditingController ugCollege = TextEditingController();
   TextEditingController ugDegree = TextEditingController();
@@ -198,6 +197,8 @@ class LoginController extends GetxController {
   PGDetailsModel pgDetails = PGDetailsModel();
   String? branchUserId;
   List<String> selectedCategories = [];
+  List<Map<String, dynamic>> descriptionData = [];
+
   void clearProfileData() {
     selectedUserType=null;
     descriptionController.clear();
@@ -369,7 +370,8 @@ class LoginController extends GetxController {
   List<AppImage> editImages = [];
   List<AppImage2> webinarFileImages = [];
   List<AppImage2> jobFileImages = [];
-  List<AppImage> logoImage = [];
+  //List<AppImage> logoImage = [];
+  List<String> logoImage = [];
 
   List<AppImage> editCertificates = [];
   List<AppImage2> serviceFileImages = [];
@@ -377,7 +379,7 @@ class LoginController extends GetxController {
   List<AppImage2> contactImages = [];
   Map<String, dynamic> data = {};
 
-  static const String baseUrl = "https://india-location-hub.in/api";
+  //static const String baseUrl = "https://india-location-hub.in/api";
   double ?latitude;
   double ?longitude;
 
@@ -397,8 +399,7 @@ class LoginController extends GetxController {
 
   Future<void> fetchStates() async {
     try {
-      const url =
-          '${AppConstants.baseUrl}${AppConstants.notificationUrl}${AppConstants.stateUrl}';
+      const url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}${AppConstants.stateUrl}';
        print('state url$url');
       final response = await http.get(Uri.parse(url));
 
@@ -407,6 +408,7 @@ class LoginController extends GetxController {
         states = List<String>.from(
           decoded is List ? decoded : decoded["states"] ?? decoded["data"] ?? [],
         );
+
         print("Loaded States: $states");
         update();
       } else {
@@ -418,11 +420,9 @@ class LoginController extends GetxController {
   }
   Future<void> fetchDistricts(String state) async {
     try {
-      final url =
-          '${AppConstants.baseUrl}${AppConstants.notificationUrl}districts/$state';
-        print('dist url$url');
+      final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}districts/$state';
+      print('dist url$url');
       final res = await http.get(Uri.parse(url));
-
       if (res.statusCode == 200) {
         final decoded = jsonDecode(res.body);
         districts = List<String>.from(
@@ -430,7 +430,6 @@ class LoginController extends GetxController {
         );
         print('Districts: $districts');
         update();
-
         selectedDistrict = null;
         selectedTaluka = null;
         talukas = [];
@@ -443,11 +442,8 @@ class LoginController extends GetxController {
   }
   Future<void> fetchTalukas(String district) async {
     try {
-      final url =
-          '${AppConstants.baseUrl}${AppConstants.notificationUrl}subdistricts/$district';
-
+      final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}subdistricts/$district';
       final res = await http.get(Uri.parse(url));
-
       if (res.statusCode == 200) {
         final decoded = jsonDecode(res.body);
         talukas = List<String>.from(
@@ -526,11 +522,11 @@ class LoginController extends GetxController {
         print("STATE: $state");
         print("NAME: $name");
         print(Api.userInfo.read("profileImage"));
-        String fcmToken=Api.userInfo.read('fcmToken')??"";
-        print("read fcm token${Api.userInfo.read('fcmToken')}");
-        //final token = await FirebaseMessaging.instance.getToken();
-        print('userid$userId1 usertype$userType1 token$fcmToken');
-        await saveFcmToken(userId1,userType1,fcmToken,context);
+        // String fcmToken=Api.userInfo.read('fcmToken')??"";
+        // print("read fcm token${Api.userInfo.read('fcmToken')}");
+        // final token = await FirebaseMessaging.instance.getToken();
+        // print('userid$userId1 usertype$userType1 token$fcmToken');
+        //await saveFcmToken(userId1,userType1,fcmToken,context);
         showCustomToast(context, "Login successful", backgroundColor: AppColors.secondary);
 
         platform != "Web"
@@ -550,6 +546,9 @@ class LoginController extends GetxController {
       update();
     }
   }
+  Future<void> _refresh() async {
+    Api.userInfo.erase();
+  }
   Future<void> switchAccountLogin(String userId,String platform,context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
@@ -558,7 +557,9 @@ class LoginController extends GetxController {
     }
     isLoading=true;
     try {
-      final response = await api.loginUser(userId,context);
+      _refresh();
+//Api.userInfo.erase();
+      final response = await api.switchAccountLogin(userId,);
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
         print("Login Success");
@@ -604,14 +605,14 @@ class LoginController extends GetxController {
         //final token = await FirebaseMessaging.instance.getToken();
         print('userid$userId1 usertype$userType1 token$fcmToken');
         await saveFcmToken(userId1,userType1,fcmToken,context);
-        showCustomToast(context, "Login successful", backgroundColor: AppColors.secondary);
-
+        showCustomToast(context, "Account Switched successfully", backgroundColor: AppColors.secondary);
+                 Navigator.pop(context);
         platform != "Web"
             ? Get.offAllNamed("/${pageUserType(userType)}")
             : Get.offAllNamed("/${pageUserTypeWeb(userType)}");
       }
       else {
-        showCustomToast(context,  "Login Failed, ${data["message"] ?? "error"}",);
+        showCustomToast(context,  "Account not switched error, ${data["message"] ?? "error"}",);
         //I/flutter (12546): api job response {"status":"error","message":"jwt expired"}
         //Get.snackbar("Login Failed", data["message"] ?? "error");
       }
@@ -709,18 +710,20 @@ class LoginController extends GetxController {
       if ( data["status"] == "Success") {
         List<dynamic> users = data["data"];
          String excludedUserId = Api.userInfo.read('userId')??"";
-         _profileList = users.where((e) => e["userId"] != excludedUserId).map((e) => ProfileModel.fromJson(e)).toList();
-        String userType = Api.userInfo.read('userType') ?? '';
-
-        // _profileList = users.where((e) {
-        // //  if (e["userId"] == excludedUserId) return false;
-        //   if (userType == "superAdmin") {
-        //     return e["userType"] == "admin" || e["userType"] == "superAdmin";
-        //   }
-        //   return e["userType"] != "admin" && e["userType"] != "superAdmin";
-        // })
-        //     .map((e) => ProfileModel.fromJson(e))
-        //     .toList();
+         //_profileList = users.where((e) => e["userId"] != excludedUserId).map((e) => ProfileModel.fromJson(e)).toList();
+       // String userType = Api.userInfo.read('userType') ?? '';
+        final currentUserType = Api.userInfo.read("userType") ?? "";
+        _profileList = users.where((e) {
+          final userId = e["userId"];
+          final userType = e["userType"];
+          if (userId == excludedUserId) return false;
+          if (currentUserType != "superAdmin") {
+            if (userType == "admin" || userType == "superAdmin") {
+              return false;
+            }
+          }
+          return true;
+        }).map((e) => ProfileModel.fromJson(e)).toList();
         print('Total profiles: ${_profileList.length}');
       } else {
         showCustomToast(context,  "Profile data error, ${data["message"] ?? "error"}",);
@@ -797,7 +800,9 @@ class LoginController extends GetxController {
         selectUserId=user.userId??"";
         selectedUserType=user.userType??"";
         passwordController.text=user.details["password"]??"";
-        descriptionController.text = user.details["description"] ?? "";
+       // descriptionController.text = user.details["description"] ?? "";
+        descriptionData = user.details["description"] ?? "";
+
         print("namw${user.details["name"] ?? ""}");
         servicesOfferedController.text = user.details["services"] ?? "";
         websiteController.text = user.details["website"] ?? "";
@@ -809,26 +814,53 @@ class LoginController extends GetxController {
         print('city $selectedTaluka');
         selectedVillage = user.address["area"] ?? "";
         print('area $selectedVillage');
-
         pinCodeController.text = user.address["pincode"] ?? "";
         addressController.text = user.address["address"] ?? "";
         selectedMartialStatus=user.martialStatus??"";
         locationController.text=user.location??"";
 
 
+        // if (user.details["jobCategory"] != null) {
+        //   final jc = user.details["jobCategory"];
+        //   if (jc is List) {
+        //     selectedCategories = jc.map((e) => e.toString()).toList();
+        //   } else if (jc is String && jc.isNotEmpty) {
+        //     selectedCategories = [jc];
+        //   } else {
+        //     selectedCategories = [];
+        //   }
+        // } else {
+        //   selectedCategories = [];
+        // }
+        // print('categoryy$selectedCategories');
+        String normalize(String value) => value.trim().toLowerCase();
+
         if (user.details["jobCategory"] != null) {
           final jc = user.details["jobCategory"];
           if (jc is List) {
-            selectedCategories = jc.map((e) => e.toString()).toList();
+            selectedCategories = jc.map((e) => normalize(e.toString())).toList();
           } else if (jc is String && jc.isNotEmpty) {
-            selectedCategories = [jc];
+            selectedCategories = [normalize(jc)];
           } else {
             selectedCategories = [];
           }
         } else {
           selectedCategories = [];
         }
-        print('categoryy$selectedCategories');
+
+        print('categoryy $selectedCategories');
+        void setSelectedCategoriesFromUser(List<dynamic>? jc) {
+          String normalize(String v) => v.trim().toLowerCase();
+
+          if (jc == null) {
+           selectedCategories = [];
+          } else {
+        selectedCategories = jc.map((e) => normalize(e.toString())).toList();
+          }
+
+         update();
+        }
+        setSelectedCategoriesFromUser(user.details["jobCategory"]);
         final college = user.details["collegeDetails"] ?? {};
         final ug = college["ugDegree"] ?? {};
         final pg = college["pgDegree"] ?? {};
@@ -866,10 +898,13 @@ class LoginController extends GetxController {
             isVideo: isVideo,
           );
         }).toList();
+        // logoImage = parseStringList(user.logoImages)
+        //     .map((e) => AppImage(url: e.replaceAll("\\", "/")))
+        //     .toList();
         logoImage = parseStringList(user.logoImages)
-            .map((e) => AppImage(url: e.replaceAll("\\", "/")))
+            .map((e) => e.replaceAll("\\", "/"))
             .toList();
-
+        print('lodo$logoImage');
         editCertificates = parseStringList(user.certificates)
             .map((e) => AppImage(url: e.replaceAll("\\", "/")))
             .toList();
@@ -939,7 +974,7 @@ class LoginController extends GetxController {
     // List<Uint8List>? image,
     // List<Uint8List>? certificate,
     logoImage,
-   image,
+    image,
     certificate,
     List<String>? oldImageUrl,
     List<String>? oldCertificatesUrl, List<String>? logoUrl,Map<String, dynamic>? details,
@@ -1161,8 +1196,21 @@ class LoginController extends GetxController {
       final response = await api.getAllContacts( );
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
-        List<dynamic> contacts = data['data'][0]['details'];
+        //List<dynamic> contacts = data['data'][0]['details'];
+        var rawDetails = data['data'][0]['details'];
 
+        List<dynamic> contacts = [];
+
+        if (rawDetails is List) {
+          contacts = rawDetails;
+        } else if (rawDetails is Map) {
+          contacts = [rawDetails];
+        }
+        contactListApi = contacts
+            .map((e) => ContactApiModel.fromJson(e))
+            .toList();
+
+        update();
         contactList.clear();
 
         for (var item in contacts) {
@@ -1202,10 +1250,9 @@ class LoginController extends GetxController {
         showSuccessDialog(context, title:"Success",message :"mail verified successfully ${data["message"] ??""} ",
           onOkPressed: () {
           kIsWeb? Get.offAllNamed('/forgotPasswordWebScreen'):Get.offAllNamed('/forgotChangePasswordPage') ;
-
           },);
         emailController.clear();
-        Get.toNamed('/verifyPasswordPage');
+      //  Get.toNamed('/verifyPasswordPage');
       } else {
         showCustomToast(context,"password not changed, ${data["message"] ?? "error"}",);
       }

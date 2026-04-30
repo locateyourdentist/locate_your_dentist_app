@@ -1,5 +1,88 @@
+import 'dart:convert';
+
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 
+// class ProfileModel {
+//   final String id;
+//   final String userId;
+//   final String name;
+//   final String password;
+//   final String martialStatus;
+//   final String? dob;
+//   final String userType;
+//   final String mobileNumber;
+//   final String email;
+//   final String location;
+//   final List<String> images;
+//   final List<String> logoImages;
+//   final List<String> certificates;
+//   final Map<String, dynamic> address;
+//   final Map<String, dynamic> details;
+//   final bool isActive;
+//   final DateTime? createdDate;
+//   final DateTime? updatedDate;
+//   List<ExperienceFieldModel> experienceDetails = [];
+//
+//   ProfileModel({
+//     required this.id,
+//     required this.userId,
+//     required this.name,
+//     required this.password,
+//     required this.martialStatus,
+//     required this.dob,
+//     required this.userType,
+//     required this.mobileNumber,
+//     required this.email,
+//     required this.location,
+//     required this.images,
+//     required this.logoImages,
+//     required this.certificates,
+//     required this.address,
+//     required this.details,
+//     required this.isActive,
+//     this.createdDate,
+//     this.updatedDate,    this.experienceDetails = const [],
+//
+//   });
+//   factory ProfileModel.fromJson(Map<String, dynamic> json) {
+//    // final detailsMap = Map<String, dynamic>.from(json['details'] ?? {});
+//     final detailsMap = Map<String, dynamic>.from(json['details'] ?? {});
+//
+//     List<String> parseStringList(dynamic value) {
+//       if (value == null) return [];
+//       if (value is List) return value.map((e) => e.toString()).toList();
+//       if (value is String && value.isNotEmpty) return [value];
+//       return [];
+//     }
+//
+//     return ProfileModel(
+//       id: json['_id']?.toString() ?? '',
+//       userId: json['userId']?.toString() ?? '',
+//       name: json['name']?.toString() ?? '',
+//       password: json['password']?.toString() ?? '',
+//       martialStatus: json['martialStatus']?.toString() ?? '',
+//       dob: json['dob']?.toString() ?? '',
+//       userType: json['userType']?.toString() ?? '',
+//       mobileNumber: json['mobileNumber']?.toString() ?? '',
+//       email: json['email']?.toString() ?? '',
+//       location: json['location']?.toString() ?? '',
+//       images: parseStringList(json['image']),
+//       logoImages: parseStringList(json['logoImages']),
+//       certificates: parseStringList(json['certificates']),
+//       address: (json['address'] ?? {}) as Map<String, dynamic>,
+//       details: detailsMap,
+//       isActive: json['isActive'] ?? false,
+//       createdDate: json['createdDate'] != null ? DateTime.tryParse(json['createdDate']) : null,
+//       updatedDate: json['updatedDate'] != null ? DateTime.tryParse(json['updatedDate']) : null,
+//
+//       experienceDetails: (detailsMap['experienceDetails'] as List<dynamic>? ?? [])
+//           .map((e) => ExperienceFieldModel.fromJson(e))
+//           .toList(),
+//     );
+//   }
+//
+// }
+//
 class ProfileModel {
   final String id;
   final String userId;
@@ -11,15 +94,19 @@ class ProfileModel {
   final String mobileNumber;
   final String email;
   final String location;
+
   final List<String> images;
   final List<String> logoImages;
   final List<String> certificates;
+
   final Map<String, dynamic> address;
   final Map<String, dynamic> details;
+
   final bool isActive;
   final DateTime? createdDate;
   final DateTime? updatedDate;
-  List<ExperienceFieldModel> experienceDetails = [];
+
+  List<ExperienceFieldModel> experienceDetails;
 
   ProfileModel({
     required this.id,
@@ -39,13 +126,33 @@ class ProfileModel {
     required this.details,
     required this.isActive,
     this.createdDate,
-    this.updatedDate,    this.experienceDetails = const [],
-
+    this.updatedDate,
+    this.experienceDetails = const [],
   });
+
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
-   // final detailsMap = Map<String, dynamic>.from(json['details'] ?? {});
+
     final detailsMap = Map<String, dynamic>.from(json['details'] ?? {});
 
+    dynamic rawDescription = detailsMap["description"];
+
+    if (rawDescription is String && rawDescription.isNotEmpty) {
+      try {
+        detailsMap["description"] =
+        List<Map<String, dynamic>>.from(jsonDecode(rawDescription));
+      } catch (e) {
+        detailsMap["description"] = [
+          {"insert": "\n"}
+        ];
+      }
+    } else if (rawDescription is List) {
+      detailsMap["description"] =
+      List<Map<String, dynamic>>.from(rawDescription);
+    } else {
+      detailsMap["description"] = [
+        {"insert": "\n"}
+      ];
+    }
     List<String> parseStringList(dynamic value) {
       if (value == null) return [];
       if (value is List) return value.map((e) => e.toString()).toList();
@@ -59,29 +166,36 @@ class ProfileModel {
       name: json['name']?.toString() ?? '',
       password: json['password']?.toString() ?? '',
       martialStatus: json['martialStatus']?.toString() ?? '',
-      dob: json['dob']?.toString() ?? '',
+      dob: json['dob']?.toString(),
       userType: json['userType']?.toString() ?? '',
       mobileNumber: json['mobileNumber']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
       location: json['location']?.toString() ?? '',
-      images: parseStringList(json['image']),
-      logoImages: parseStringList(json['logoImages']),
-      certificates: parseStringList(json['certificates']),
-      address: (json['address'] ?? {}) as Map<String, dynamic>,
-      details: detailsMap,
-      isActive: json['isActive'] ?? false,
-      createdDate: json['createdDate'] != null ? DateTime.tryParse(json['createdDate']) : null,
-      updatedDate: json['updatedDate'] != null ? DateTime.tryParse(json['updatedDate']) : null,
 
-      experienceDetails: (detailsMap['experienceDetails'] as List<dynamic>? ?? [])
+      images: parseStringList(json['image']),
+      logoImages: parseStringList(json['logoImage']),
+      certificates: parseStringList(json['certificates']),
+
+      address: Map<String, dynamic>.from(json['address'] ?? {}),
+      details: detailsMap,
+
+      isActive: json['isActive'] ?? false,
+
+      createdDate: json['createdDate'] != null
+          ? DateTime.tryParse(json['createdDate'])
+          : null,
+
+      updatedDate: json['updatedDate'] != null
+          ? DateTime.tryParse(json['updatedDate'])
+          : null,
+
+      experienceDetails:
+      (detailsMap['experienceDetails'] as List<dynamic>? ?? [])
           .map((e) => ExperienceFieldModel.fromJson(e))
           .toList(),
     );
   }
-
 }
-
-
 // {
 // "details": {
 // "collegeDetails": {

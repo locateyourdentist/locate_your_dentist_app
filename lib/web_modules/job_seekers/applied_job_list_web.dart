@@ -47,38 +47,9 @@ class _AppliedJobListsWebState extends State<AppliedJobListsWeb> {
       return text[0].toUpperCase();
     }
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,backgroundColor: AppColors.white,
-      //   iconTheme: const IconThemeData(color: AppColors.white),
-      //   leading: Padding(
-      //     padding: const EdgeInsets.all(8.0),
-      //     child: GestureDetector(
-      //       onTap: () {
-      //         Navigator.pop(context);
-      //       },
-      //       child: Container(
-      //         decoration: const BoxDecoration(
-      //           shape: BoxShape.circle,
-      //           gradient: LinearGradient(
-      //             colors: [AppColors.primary, AppColors.secondary],
-      //             begin: Alignment.topLeft,
-      //             end: Alignment.bottomRight,
-      //           ),
-      //         ),
-      //         child: const Center(
-      //           child: Icon(
-      //             Icons.arrow_back,
-      //             color: AppColors.white,
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      //   title: Text('My Jobs',style: AppTextStyles.subtitle(context,color: AppColors.black),),
-      // ),
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LYD",
         onLogout: () {
         },
@@ -216,7 +187,9 @@ class _AppliedJobListsWebState extends State<AppliedJobListsWeb> {
                                               padding: const EdgeInsets.all(30.0),
                                               child: GestureDetector(
                                                 onTap: (){
-                                                  jobController.getJobsById(appliedJobs.jobId!, context);
+                                                  Api.userInfo.write('selectJobId',appliedJobs.jobId.toString());
+                                                  Api.userInfo.write('activeStatus',appliedJobs.isActive.toString());
+                                                  //jobController.getJobsById(appliedJobs.jobId!, context);
                                                   Get.toNamed('/viewJobDetailWebPage');
                                                 },
                                                 child: Container(

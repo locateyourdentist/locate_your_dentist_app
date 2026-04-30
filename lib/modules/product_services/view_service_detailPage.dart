@@ -201,9 +201,14 @@ class _ServiceDetailPageState extends State<ServiceDetailPage>
                             ],
                           ),
                           padding: const EdgeInsets.all(16),
+                          // child: NetworkImageCarousel(
+                          //   services: serviceController.serviceList,
+                          // ),
                           child: NetworkImageCarousel(
-                            services: serviceController.serviceList,
-                          ),
+                            services: loginController.serviceFileImages
+                                .map((e) => e.url ?? "")
+                                .toList(),                                    ),
+
                         ),
                       ),
                     ),

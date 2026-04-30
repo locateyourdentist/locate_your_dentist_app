@@ -217,7 +217,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(children: [
-                    Text('Contacts Lists',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
+                    Text('Contacts Lists',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
                   SizedBox(height: size*0.02,),
                               if(contactController.senderContactLists.isEmpty)
                   Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),

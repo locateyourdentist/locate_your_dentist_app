@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'color_code.dart'; // your AppColors file
+import 'color_code.dart';
 
 class CommonImageCard extends StatelessWidget {
   final String? imageUrl;
@@ -22,13 +22,11 @@ class CommonImageCard extends StatelessWidget {
     this.height,
     this.borderRadius = 10,
   });
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
-
     return GestureDetector(
-      onTap: onTap, // whole card tappable
+      onTap: onTap,
       child: Container(
         width: width ?? size * 0.55,
         height: height ?? size * 0.5,
@@ -45,7 +43,6 @@ class CommonImageCard extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // 🖼️ Background Image
             ClipRRect(
               borderRadius: BorderRadius.circular(borderRadius),
               child:
@@ -70,8 +67,6 @@ class CommonImageCard extends StatelessWidget {
                 height: double.infinity,
               ),
             ),
-
-            // ❤️ Favorite Icon
             Positioned(
               top: 8,
               right: 8,

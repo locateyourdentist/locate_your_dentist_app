@@ -14,16 +14,13 @@ class AboutUsWebPage extends StatelessWidget {
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
-          height: width * 0.08,
+          height: width * 0.03,
           title: "LYD",
           onLogout: () {},
           onNotification: () {},
         );
       } else {
-        return const PreferredSize(
-          preferredSize: Size.fromHeight(60),
-          child: CommonHeader(),
-        );
+         return CommonHeader();
       }
     }
     return Scaffold(
@@ -100,7 +97,6 @@ class AboutUsWebPage extends StatelessWidget {
 
                   const SizedBox(height: 60),
 
-                  /// FEATURES SECTION
                   Center(
                     child: Container(
                       constraints:  const BoxConstraints(maxWidth: 1100),
@@ -253,7 +249,7 @@ class FeatureCard extends StatelessWidget {
 
           Text(
             title,
-            style: const TextStyle(
+            style:  TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),

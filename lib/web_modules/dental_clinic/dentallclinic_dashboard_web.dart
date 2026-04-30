@@ -132,23 +132,24 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
   @override
   void initState() {
     super.initState();
-    jobController.getJobListAdmin(context);
-    jobController.getWebinarListAdmin(context);
-    notificationController.getNotificationListAdmin(context);
-    planController.checkPlansStatus(Api.userInfo.read('userId')??"",context);
+    _refresh();
   }
   Future<void> _refresh() async {
-    jobController.getJobListAdmin(context);
-    jobController.getWebinarListAdmin(context);
-    notificationController.getNotificationListAdmin(context);
-    planController.checkPlansStatus(Api.userInfo.read('userId')??"",context);  }
+ await   jobController.getJobListAdmin(context);
+ await  jobController.getWebinarListAdmin(context);
+ await  notificationController.getNotificationListAdmin(context);
+ await planController.checkPlansStatus(Api.userInfo.read('userId')??"",context);  }
+  String getPlainText(List<Map<String, dynamic>>? delta) {
+    if (delta == null) return "";
+    return delta.map((e) => e['insert'] ?? "").join();
+  }
   @override
   Widget build(BuildContext context) {
     double size=MediaQuery.of(context).size.width;
     return  Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
@@ -381,81 +382,6 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                                                 ),
                                               ),
 
-                                            //  const SizedBox(width: 10),
-
-                                              // Container(
-                                              //   height: 45,
-                                              //   width: 45,
-                                              //   decoration: BoxDecoration(
-                                              //     color: AppColors.primary,
-                                              //     borderRadius: BorderRadius.circular(10),
-                                              //     boxShadow: [
-                                              //       BoxShadow(
-                                              //         color: AppColors.primary.withOpacity(0.3),
-                                              //         blurRadius: 6,
-                                              //       ),
-                                              //     ],
-                                              //   ),
-                                              //   child: IconButton(
-                                              //     icon: const Icon(Icons.filter_list, color: Colors.white),
-                                              //     onPressed: () {
-                                              //       showModalBottomSheet(
-                                              //         context: context,
-                                              //         isScrollControlled: true,
-                                              //         backgroundColor: Colors.transparent,
-                                              //         builder: (context) {
-                                              //           return FractionallySizedBox(
-                                              //             heightFactor: 0.75,
-                                              //             child: FilterDrawer(
-                                              //               onApply: () async {
-                                              //                 print("Selected State: ${loginController.selectedState}");
-                                              //                 print("Selected District: ${loginController.selectedDistrict}");
-                                              //                 print("Selected Area: ${loginController.selectedArea}");
-                                              //
-                                              //                 String userType = Api.userInfo.read('sUserType');
-                                              //                 print("ssuser$userType");
-                                              //                 filteredProfiles.map((e) => searchController.text.toString());
-                                              //                 await loginController.getProfileDetails(
-                                              //                   userType ?? "",
-                                              //                   loginController.selectedState,
-                                              //                   loginController.selectedDistrict,
-                                              //                   loginController.selectedTaluka,
-                                              //                   "true", '', '', '', '',
-                                              //                   context,
-                                              //                 );
-                                              //                 Get.toNamed('/userTypeListWeb');
-                                              //
-                                              //                 Api.userInfo.read('userType')!='superAdmin'?
-                                              //                 await loginController.getProfileDetails(
-                                              //                   userType ?? "",
-                                              //                   loginController.selectedState,
-                                              //                   loginController.selectedDistrict,
-                                              //                   loginController.selectedTaluka,"true",'','','',searchController.text.toString(),
-                                              //                   context,
-                                              //                 )
-                                              //                     :await loginController.getProfileDetails(
-                                              //                   userType ?? "",
-                                              //                   loginController.selectedState,
-                                              //                   loginController.selectedDistrict,
-                                              //                   loginController.selectedTaluka,"",'','','',searchController.text.toString(),
-                                              //                   context,
-                                              //                 );
-                                              //               },
-                                              //               onReset: () {
-                                              //                 setState(() {
-                                              //                   loginController.selectedArea = null;
-                                              //                   loginController.selectedUserType = null;
-                                              //                   loginController.selectedState = null;
-                                              //                   loginController.selectedDistrict = null;
-                                              //                 });
-                                              //               },
-                                              //             ),
-                                              //           );
-                                              //         },
-                                              //       );
-                                              //     },
-                                              //   ),
-                                              // ),
                                             ],
                                           ),
                                         ),
@@ -469,86 +395,6 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              // Text('What you Want?',style: AppTextStyles.subtitle(context,color: AppColors.black),),
-                                              // SizedBox(height: size*0.02,),
-                                              // SizedBox(
-                                              //   height: size * 0.095,
-                                              //   child: AnimationLimiter(
-                                              //     child: ListView.builder(
-                                              //       itemCount: title.length,
-                                              //       scrollDirection: Axis.horizontal,
-                                              //       padding: const EdgeInsets.symmetric(horizontal: 10),
-                                              //       itemBuilder: (context, index) {
-                                              //         return AnimationConfiguration.staggeredList(
-                                              //           position: index,
-                                              //           duration: const Duration(milliseconds: 500),
-                                              //           child: SlideAnimation(
-                                              //             horizontalOffset: 50,
-                                              //             child: FadeInAnimation(
-                                              //               child: GestureDetector(
-                                              //                 onTap: () async{
-                                              //                   if (title[index] == "Job Posts/Webinars") {
-                                              //                     Get.toNamed('/viewJobWebinarWebPage');
-                                              //                   } else {
-                                              //                     Api.userInfo.write('sUserType1', title[index] ?? "");
-                                              //                     print('dffd${title[index]}');
-                                              //                   await  loginController.getProfileDetails(
-                                              //                       title[index], '', '', '', 'true', '', '', '', '',
-                                              //                       context);
-                                              //                     Get.toNamed('/userTypeListWeb');
-                                              //                   }
-                                              //                 },
-                                              //                 child: Container(
-                                              //                   width: size * 0.137,
-                                              //                   margin: const EdgeInsets.only(right: 15),
-                                              //                   decoration: BoxDecoration(
-                                              //                     color: Colors.white,
-                                              //                     borderRadius: BorderRadius.circular(16),
-                                              //                     boxShadow: [
-                                              //                       BoxShadow(
-                                              //                         color: Colors.black.withOpacity(0.08),
-                                              //                         blurRadius: 8,
-                                              //                         offset: const Offset(0, 3),
-                                              //                       ),
-                                              //                     ],
-                                              //                   ),
-                                              //                   child: Column(
-                                              //                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                                              //                     children: [
-                                              //                       ClipRRect(
-                                              //                         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                                              //                         child: Image.asset(
-                                              //                           imgUserType(title[index]),
-                                              //                           height: size * 0.065,
-                                              //                           fit: BoxFit.cover,
-                                              //                         ),
-                                              //                       ),
-                                              //                       Expanded(
-                                              //                         child: Container(
-                                              //                           alignment: Alignment.center,
-                                              //                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                                              //                           child: Text(
-                                              //                             title[index],
-                                              //                             textAlign: TextAlign.center,
-                                              //                             style: AppTextStyles.caption(
-                                              //                               context,
-                                              //                               color: AppColors.black,
-                                              //                               fontWeight: FontWeight.bold,
-                                              //                             ),
-                                              //                           ),
-                                              //                         ),
-                                              //                       ),
-                                              //                     ],
-                                              //                   ),
-                                              //                 ),
-                                              //               ),
-                                              //             ),
-                                              //           ),
-                                              //         );
-                                              //       },
-                                              //     ),
-                                              //   ),
-                                              // ),
                                                Text(
                                                 'What are you looking for?',
                                                 style: AppTextStyles.subtitle(context)
@@ -646,7 +492,7 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                                                           crossAxisCount: 3,
                                                           crossAxisSpacing: 20,
                                                           mainAxisSpacing: 20,
-                                                          childAspectRatio: 2.2,),
+                                                          childAspectRatio: 2.3,),
                                                           itemCount: jobController.jobList.length,
                                                           itemBuilder: (context, index) {
                                                           final jobs = jobController.jobList[index];
@@ -659,18 +505,19 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                                                               child: FadeInAnimation(
                                                                 child: InkWell(
                                                                   onTap: () async{
+                                                                    print("nnn${Api.userInfo.read('selectJobId')}");
+                                                                    // await jobController.getJobsById(
+                                                                    //     jobs.jobId.toString(), context);
+                                                                    // await  jobController.getAppliedJobsAdmin(
+                                                                    //     jobs.jobId.toString(), context);
                                                                     Api.userInfo.write('selectJobId',jobs.jobId.toString());
                                                                     Api.userInfo.write('activeStatus',jobs.isActive.toString());
-                                                                    print("nnn${Api.userInfo.read('selectJobId')}");
-                                                                    await jobController.getJobsById(
-                                                                        jobs.jobId.toString(), context);
-                                                                    await  jobController.getAppliedJobsAdmin(
-                                                                        jobs.jobId.toString(), context);
                                                                     Get.toNamed('/viewJobDetailWebPage');
                                                                   },
                                                                   child: _modernCard(
                                                                     title: jobs.jobTitle ?? "",
-                                                                    desc: jobs.jobDescription ?? "",
+                                                                      desc: getPlainText(jobs.jobDescription),
+                                                                      //desc: jobs.jobDescription ?? "",
                                                                     status: (jobs.isActive ?? false) ? "Open" : "Closed",
                                                                     statusColor: (jobs.isActive ?? false)
                                                                         ? Colors.green
@@ -715,18 +562,19 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                                                               child: FadeInAnimation(
                                                                 child: GestureDetector(
                                                                   onTap: () async{
-                                                                    await jobController.getWebinarById(
-                                                                        webinars.webinarId.toString(),
-                                                                        webinars.isActive.toString(),
-                                                                        context);
-                                                                    await   jobController.getAppliedWebinarsAdmin(webinars.webinarId.toString(),context);
+                                                                    // await jobController.getWebinarById(
+                                                                    //     webinars.webinarId.toString(),
+                                                                    //     webinars.isActive.toString(),
+                                                                    //     context);
+                                                                    // await   jobController.getAppliedWebinarsAdmin(webinars.webinarId.toString(),context);
                                                                     Api.userInfo.write('webinarId', webinars.webinarId.toString());
-                                                                    Api.userInfo.write('statusWebinar', webinars.isActive.toString());
+                                                                    Api.userInfo.write('activeStatus1',webinars.isActive.toString());
                                                                     Get.toNamed('/viewWebinarDetailWebPage');
                                                                   },
                                                                   child: _modernCard(
                                                                     title: webinars.webinarTitle ?? "",
-                                                                    desc: webinars.webinarDescription ?? "",
+                                                                      desc: getPlainText(webinars.webinarDescription),
+                                                                      //desc: webinars.webinarDescription ?? "",
                                                                     status: webinars.isActive == true ? "Open" : "Closed",
                                                                     statusColor: webinars.isActive == true
                                                                         ? Colors.green
@@ -807,7 +655,6 @@ Widget _modernCard({
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
 
-        /// Title + Status
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -866,10 +713,8 @@ Widget _modernCard({
 
         const SizedBox(height: 5),
 
-        /// Description
         Expanded(
           child: Text(
-            //"A clinic is a healthcare facility focused on outpatient care, providing diagnosis, treatment, and preventive services for non-life-threatening conditions without overnight stays. Often staffed by specialized doctors, nurses, or general practitioners, they are typically smaller than hospitals and offer accessible, specialized care (e.g., dental, mental health, or pediatric)",
             desc,
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
@@ -879,9 +724,7 @@ Widget _modernCard({
           ),
         ),
 
-      //   SizedBox(height: size*0.001),
 
-        /// Footer
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

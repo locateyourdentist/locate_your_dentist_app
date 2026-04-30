@@ -85,6 +85,13 @@ dev_dependencies:
   fl_chart:
   flutter_quill: ^11.5.0
   flutter_quill_extensions:
+  permission_handler:
+  excel:
+  share_plus:
+  file_saver:
+  crop_your_image:
+  firebase_auth:
+#  universal_html:
 #  zefyrka:
   graphview:
 # For information on the generic Dart part of this file, see the

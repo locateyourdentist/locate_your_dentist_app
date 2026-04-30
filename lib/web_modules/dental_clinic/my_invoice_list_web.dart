@@ -10,9 +10,6 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 
 class InvoiceListPageWeb extends StatefulWidget {
-  // final List<Invoice> invoices;
-  //
-  // const InvoiceListPage({super.key, required this.invoices});
   @override
   State<InvoiceListPageWeb> createState() => _InvoiceListPageWebState();
 }
@@ -29,7 +26,7 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
     final size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},

@@ -40,11 +40,13 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Products", "page": "/myServicesListWebPage"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
+          {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'superAdmin':
         return [
           {"title": "Dashboard", "page": "/superAdminWebDashboard"},
+          {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "User List", "page": "/userTypeListWeb"},
           {"title": "Add admin", "page": "/registerPageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
@@ -54,16 +56,21 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Create Plan", "page": "/createPlanPageWeb"},
           {"title": "Add JobCategory", "page": "/jobCategoryWeb"},
           {"title": "Settings", "page": "/settingsWebPage"},
+          {"title": "Add Legal Pages", "page": "/addPrivacyPolicyPage"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
+          {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'admin':
         return [
-          {"title": "Dashboard", "page": "/superAdminDashboard"},
-          {"title": "My Subscription", "page": "/viewPlanPage"},
-          {"title": "My Purchases", "page": "/viewInvoiceListPage"},
-          {"title": "Change Password", "page": "/changePasswordWeb"},
+          {"title": "Dashboard", "page": "/superAdminWebDashboard"},
+          {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
+          {"title": "User List", "page": "/userTypeListWeb"},
+          {"title": "Add admin", "page": "/registerPageWeb"},
+          {"title": "My Subscription", "page": "/viewPlanPageWeb"},
+          {"title": "Reports", "page": "/reportPageWeb"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
+          {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'Dental Clinic':
@@ -80,6 +87,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Add Branches", "page": "/addBranchesWeb"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
+          {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'Dental Shop':
@@ -94,13 +102,14 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Add Branches", "page": "/addBranchesWeb"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
+          {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'Dental Mechanic':
         return [
           {"title": "Dashboard", "page": "/dentalMechanicDashboardWebPage"},
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
-          {"title": "Edit Profile", "page": "/clinicEditProfile"},
+          // {"title": "Edit Profile", "page": "/clinicEditProfile"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "My Purchases", "page": "/viewInvoiceListPage"},
           {"title": "Jobs/Webinars", "page": "/viewJobWebinarWebPage"},
@@ -108,6 +117,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Add Branches", "page": "/addBranchesWeb"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
+          {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'Dental Consultant':
@@ -122,6 +132,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Add Branches", "page": "/addBranchesWeb"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
+          {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'Job Seekers':
@@ -133,6 +144,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Webinars", "page": "/webinarListWebPage"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
+          {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
         ];
       default:
@@ -145,7 +157,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
     return GetBuilder<LoginController>(
         builder: (controller) {
           return Container(
-          width:s *0.125,
+          width:s *0.13,
               height: double.infinity,
               decoration: const BoxDecoration(
                 //color: AppColors.white
@@ -218,7 +230,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
                             //  Get.offAllNamed("/webLoginPage");
                             } else if (setting['title'] == "Add admin") {
                               Api.userInfo.write('isAdmin', 'true');
-                              Get.offAllNamed("/registerPageWeb");
+                              Get.offAllNamed("/registerPageWeb",arguments: {"userId":"0"});
 
                             } else if (setting['title'] == "Create Plan") {
                               Get.toNamed('/createPlanPageWeb', arguments: {'selectedString': "BasePlan"});
@@ -228,13 +240,11 @@ class _AdminSideBarState extends State<AdminSideBar> {
                               String userType = Api.userInfo.read('userType') ?? "";
                               Get.offAllNamed('/${pageUserTypeWeb(userType)}');
                             }
-                            else if (setting['title'] == "Text Editor") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>  EditorPage(),
-                                ),
-                              );
+                            else if (setting['title'] == "Edit Profile") {
+                              Api.userInfo.write('selectUId',Api.userInfo.read('userId')??"");
+                              Get.toNamed(setting['page'] ?? "");
+                              await loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
+
                             }
                             else {
                               Get.toNamed(setting['page'] ?? "");
@@ -328,7 +338,8 @@ class _AdminSideBarState extends State<AdminSideBar> {
 
       case "My Jobs":
         return Icons.work_history_rounded;
-
+      case "Create Scrolling Ads Post":
+        return Icons.ads_click;
       case "Services":
         return Icons.miscellaneous_services_rounded;
 

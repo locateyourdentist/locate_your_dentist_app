@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
@@ -116,13 +117,13 @@ class _AddBranchesState extends State<AddBranches> {
                                       onPressed: ()async {
                                         loginController.userData.clear();
                                         loginController.clearProfileData();
-                                       // loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
+                                        loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
                                         Get.toNamed('/clinicEditProfile',arguments: {'branchId':'0'});
                                       },
                                           //loginController.addBranchList(),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.transparent,
-                                        shadowColor: AppColors.primary.withOpacity(0.5),
+                                        shadowColor: AppColors.transparent,
                                         elevation: 4,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(12),

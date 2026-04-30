@@ -53,12 +53,21 @@ class AppImage2 {
   List<Map<String, dynamic>> get getGstList => _getGstList;
   List<InvoiceModel>  _invoiceList=[];
   List<InvoiceModel> get invoiceList=>_invoiceList;
-
   List<InvoiceModel>  _invoiceDetails=[];
   List<InvoiceModel> get invoiceDetails=>_invoiceDetails;
+  List<Map<String, dynamic>> stateWiseExpense = [];
 
   List<Map<String, dynamic>> _checkPlanList = [];
   List<Map<String, dynamic>> get checkPlanList => _checkPlanList;
+  void setCheckPlanList(dynamic response) {
+    _checkPlanList = response['data'] ?? [];
+
+    if (checkPlanList.isNotEmpty && checkPlanList.first.isEmpty) {
+      checkPlanList.clear();
+    }
+
+    update();
+  }
   TextEditingController userTypeController=TextEditingController();
   TextEditingController planNameController=TextEditingController();
   TextEditingController priceController=TextEditingController();
@@ -273,6 +282,29 @@ class AppImage2 {
       }
     } catch (error) {
       print('Contact details can not get error $error');
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+  Future<void> addPrivacyPolicyContent( String category,String details,dynamic context) async {
+    var connection = await Connectivity().checkConnectivity();
+    if (connection == ConnectivityResult.none) {
+      Get.snackbar("No Internet", "Please check your connection");
+      return;
+    }
+    isLoading=true;
+    try {
+      final response = await api.addPrivacyPolicyContent( category, details,);
+      var data = jsonDecode(response.body);
+      if ( data["status"].toString().toLowerCase() == "success") {
+        await showSuccessDialog(context, title:"Success",message :"Content  Saved Successfully",
+            onOkPressed: () {Get.back();});
+      } else {
+        showCustomToast(context,  "Content details can not get error,${data["message"] ?? "error"}",);
+      }
+    } catch (error) {
+      print('Content details can not get error $error');
     } finally {
       isLoading = false;
       update();
@@ -507,7 +539,9 @@ class AppImage2 {
         // update();
         List<dynamic> expenseList = data["data"]["expenses"] ?? [];
         _expenses = expenseList.map((e) => ExpenseModel.fromJson(e)).toList();
-
+        stateWiseExpense = List<Map<String, dynamic>>.from(
+          data["data"]["stateWiseExpense"] ?? [],
+        );
         update();
       } else {
         showCustomToast(context,  "expense details can not get error,${data["message"] ?? "error"}",);
@@ -1023,8 +1057,17 @@ class AppImage2 {
         editUploadImage1 = (data["data"] as List).map((u) => AppImage2(
           url:  u["path"],
         )).toList();
-        _posterImage = (data["data"] as List).map((e) => PosterImageModel.fromJson(e)).toList();
 
+        _posterImage = (data["data"] as List).map((e) => PosterImageModel.fromJson(e)).toList();
+        editUploadImage1 = (data["data"] as List).map((u) {
+          return AppImage2(
+            id: u["_id"],
+            url: u["path"],
+            isActive: u["isActive"] ?? false,
+            //startDate: u["startDate"] == "null" ? "" : u["startDate"],
+           // endDate: u["endDate"] == "null" ? "" : u["endDate"],
+          );
+        }).toList();
         //  _posterImage = (data["data"] as List).map((e) => PosterImageModel.fromJson(e)).toList();
         update();
       } else {

@@ -7,7 +7,7 @@ class AppTextStyles {
     final width = MediaQuery.of(context).size.width;
 
     const mobileBase = 375.0;
-    const webBase = 1500.0;
+    const webBase = 1400.0;
 
     if (width < 600) {
       return size * (width / mobileBase);

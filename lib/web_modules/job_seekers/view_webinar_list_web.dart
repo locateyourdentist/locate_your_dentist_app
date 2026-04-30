@@ -29,14 +29,7 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
   Widget build(BuildContext context) {
     double size=MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: CommonWebAppBar(
-        height: size * 0.08,
-        title: "LYD",
-        onLogout: () {
-        },
-        onNotification: () {
-        },
-      ),
+      appBar: buildAppBar(context),
       body: GetBuilder<JobController>(
           builder: (controller) {
             return Row(
@@ -86,11 +79,13 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
                                                    print('wefsdf lst${jobController.webinarListJobSeekers}');
                                                 return GestureDetector(
                                                   onTap: ()async{
-                                                    await jobController.getWebinarById(appliersList.webinarId.toString(), appliersList.isActive.toString(), context);
-                                                    await jobController.getAppliedWebinarsAdmin(appliersList.webinarId.toString(),context);
+                                                    //await jobController.getWebinarById(appliersList.webinarId.toString(), appliersList.isActive.toString(), context);
+                                                   // await jobController.getApplie
+                                                    //
+                                                    // dWebinarsAdmin(appliersList.webinarId.toString(),context);
                                                     print('dsfwebid${appliersList.isActive.toString()}');
                                                     Api.userInfo.write('webinarId', appliersList.webinarId.toString());
-                                                    Api.userInfo.write('statusWebinar', appliersList.isActive.toString());
+                                                    Api.userInfo.write('activeStatus1', appliersList.isActive.toString());
                                                     Get.toNamed('/viewWebinarDetailWebPage');
                                                     },
                                                   child: MouseRegion(
@@ -132,7 +127,7 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
                                                             children: [
                                                               Center(
                                                                 child: Text(
-                                                                 "${appliersList.orgName ?? ""}",
+                                                                 appliersList.orgName ?? "",
                                                                   style:AppTextStyles.caption(context,fontWeight: FontWeight.bold)
                                                                 ),
                                                               ),

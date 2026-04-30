@@ -48,6 +48,14 @@ class AppRoutes {
   static const webinarListWebPage='/webinarListWebPage';
   static const viewNotificationWebPage='/viewNotificationWebPage';
   static const serviceDetailPageWeb='/serviceDetailPageWeb';
+  static const contactWebPage='/contactWebPage';
+  static const addPrivacyPolicyPage='/addPrivacyPolicyPage';
+  static const addLegalPageMobile='/addLegalPageMobile';
+  static const getPrivacyPolicyPage='/getPrivacyPolicyPage';
+  static const viewLegalPage='/viewLegalPage';
+  static const viewLegalMobilePage='/viewLegalMobilePage';
+  static const contactUsMobilePage='/contactUsMobilePage';
+
 
   //profile
   static const clinicProfilePage='/clinicProfilePage';

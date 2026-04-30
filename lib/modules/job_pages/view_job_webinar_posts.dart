@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -10,6 +12,7 @@ import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:get/get.dart';
 import '../../common_widgets/color_code.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 
 class ViewJobWebinar extends StatefulWidget {
@@ -22,11 +25,56 @@ class ViewJobWebinar extends StatefulWidget {
 class _ViewJobWebinarState extends State<ViewJobWebinar> {
   final jobController=Get.put(JobController());
   final loginController=Get.put(LoginController());
+  final ScrollController _scrollController = ScrollController();
+  late QuillController _controller;
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta = [];
+
+      if (data == null) {
+        delta = [{"insert": "\n"}];
+      }
+
+      else if (data is List) {
+        delta = List<Map<String, dynamic>>.from(data);
+      }
+
+      else if (data is String) {
+        delta = List<Map<String, dynamic>>.from(jsonDecode(data));
+      }
+
+      _controller = QuillController(
+        document: Document.fromJson(delta),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller = QuillController.basic();
+      setState(() {});
+    }
+  }
   @override
   void initState() {
-   jobController.getJobListAdmin(context);
-   jobController.getWebinarListAdmin(context);
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
+    _refresh();
     super.initState();
+  }
+  Future<void> _refresh() async {
+    await jobController.getJobListAdmin(context);
+    await jobController.getWebinarListAdmin(context);
+    loadJobDescription(
+        jobController.webDescriptionData);
+
   }
   @override
   Widget build(BuildContext context) {
@@ -263,14 +311,14 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                                         child: Padding(
                                           padding:  const EdgeInsets.only(bottom: 12),
                                           child: GestureDetector(
-                                                      onTap: ()async {
-                                                        Api.userInfo.write('selectJobId',jobs.jobId.toString());
-                                                        Api.userInfo.write('activeStatus',jobs.isActive.toString());
-                                                        print("nnn${Api.userInfo.read('selectJobId')}");
-                                                        await  jobController.getJobsById(jobs.jobId.toString(), context);
-                                                        await  jobController.getAppliedJobsAdmin(jobs.jobId.toString(),context);
-                                                        Get.toNamed('/jobViewProfilePage');
-                                                      },
+                                            onTap: ()async {
+                                              Api.userInfo.write('selectJobId',jobs.jobId.toString());
+                                              Api.userInfo.write('activeStatus',jobs.isActive.toString());
+                                              print("nnn${Api.userInfo.read('selectJobId')}");
+                                              await  jobController.getJobsById(jobs.jobId.toString(), context);
+                                              await  jobController.getAppliedJobsAdmin(jobs.jobId.toString(),context);
+                                              Get.toNamed('/jobViewProfilePage');
+                                            },
                                             child: JobCard(
                                               title: jobs.jobTitle.toString(),
                                               description: jobs.jobDescription.toString(),
@@ -289,8 +337,8 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                                               jobId: jobs.jobId.toString(),
                                               isActive: jobs.isActive.toString(),
                                               size: size,
-                                                          onTap: (){
-                                                            jobController.getJobsById(jobs.jobId.toString(), context);
+                                                          onTap: ()async{
+                                                           await jobController.getJobsById(jobs.jobId.toString(), context);
                                                             Get.toNamed('/createJobAdminPage');
                                                           },
                                             ),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -8,6 +10,7 @@ import 'package:locate_your_dentist/modules/profiles/jobseeker_edit_profile.dart
 import 'package:locate_your_dentist/modules/profiles/pdf_path_view_page.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class JobSeekerProfilePage extends StatefulWidget {
   const JobSeekerProfilePage({super.key});
@@ -16,11 +19,51 @@ class JobSeekerProfilePage extends StatefulWidget {
 }
 class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
   final loginController = Get.put(LoginController());
+  final ScrollController _scrollController = ScrollController();
+  late QuillController _controller;
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta = [];
+
+      if (data == null) {
+        delta = [{"insert": "\n"}];
+      }
+
+      else if (data is List) {
+        delta = List<Map<String, dynamic>>.from(data);
+      }
+
+      else if (data is String) {
+        delta = List<Map<String, dynamic>>.from(jsonDecode(data));
+      }
+
+      _controller = QuillController(
+        document: Document.fromJson(delta),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+    } catch (e) {
+      print("Quill load error: $e");
+      _controller = QuillController.basic();
+    }
+  }
   @override
-  // void initState() {
-  //   super.initState();
-  //   loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-  // }
+  void initState() {
+    super.initState();
+    //loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
+    _refresh();
+  }
+  Future<void> _refresh() async {
+    await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
+    loadJobDescription(loginController.descriptionData);
+  }
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -122,8 +165,7 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                   ),
                 const SizedBox(height: 12),
                 Center(
-                  child: Text(
-                               user?.name ?? "",
+                  child: Text(user?.name ?? "",
                     style: TextStyle(fontSize: size * 0.05, fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                 ),
@@ -167,8 +209,22 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      Text(description, style: AppTextStyles.caption(context, fontWeight: FontWeight.normal)),
-
+                     // Text(description, style: AppTextStyles.caption(context, fontWeight: FontWeight.normal)),
+                      Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child:  IgnorePointer(
+                            child: QuillEditor(
+                              controller: _controller,
+                              scrollController: _scrollController,
+                              focusNode: FocusNode(),
+                              config: const QuillEditorConfig(
+                                showCursor: false,
+                                expands: false,
+                              ),
+                            ),
+                          )
+                        //Text( getPlainText(job.jobDescription), style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
+                      ),
                       const SizedBox(height: 10),
                       _sectionTitle("Resume", size),
                       GestureDetector(

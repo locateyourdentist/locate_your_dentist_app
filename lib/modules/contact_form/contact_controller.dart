@@ -57,6 +57,34 @@ class ContactController extends GetxController{
       update();
     }
   }
+  Future<void> postPublicContactDetail(String email,String mobileNumber,String name, String description,dynamic context) async {
+    var connection = await Connectivity().checkConnectivity();
+    if (connection == ConnectivityResult.none) {
+      Get.snackbar("No Internet", "Please check your connection");
+      return;
+    }
+    isLoading=true;
+    try {
+      final response = await api.postPublicContactDetail(   email, mobileNumber, name,  description);
+      var data = jsonDecode(response.body);
+      if ( data["status"].toString().toLowerCase() == "success") {
+        if (!context.mounted) return;
+
+        showSuccessDialog(context, title:"Success",message :"Contact Form submitted Successfully", onOkPressed: () {
+        });
+        contactClinicNameController.clear();
+        doctorNameController.clear();
+        contactDetailsController.clear();
+      } else {
+        showCustomToast(context,  "Job post Failed, ${data["message"] ?? "error"}",);
+      }
+    } catch (error) {
+      print('job application error $error');
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
 
   Future<void> postFilterResults(String receiverUserId,String senderUserId,String state,String district,String city,String status, String search,String fromDate,String toDate,dynamic context) async {
     var connection = await Connectivity().checkConnectivity();

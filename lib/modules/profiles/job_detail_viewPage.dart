@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -9,9 +10,9 @@ import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.d
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:locate_your_dentist/modules/profiles/jobseeker_viewprofile.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class ViewJobPage extends StatefulWidget {
   const ViewJobPage({super.key});
@@ -26,23 +27,59 @@ class _ViewJobPageState extends State<ViewJobPage> {
   int? totalApplies;
   late String appliedKey;
   bool isAlreadyApplied = false;
-   @override
-  void initState(){
-    super.initState();
-    _refresh();
-    //final job = jobController.job.isNotEmpty ? jobController.job[0] : null;
-    //jobController.getJobSeekersAppliedLists(Api.userInfo.read('userId')??"",context);
+  final ScrollController _scrollController = ScrollController();
+  late QuillController _controller;
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta = [];
 
-   // jobController.getJobsById(Api.userInfo.read('selectJobId')??"",  context);
-   //  jobController.getAppliedJobsAdmin(Api.userInfo.read('selectJobId')??"",context);
-   //
-   }
-  @override
-  Future<void> _refresh() async {
-  await  jobController.getJobsById(Api.userInfo.read('selectJobId')??"",  context);
-  await jobController.getAppliedJobsAdmin(Api.userInfo.read('selectJobId')??"",context);
-  await jobController.getJobSeekersAppliedLists(Api.userInfo.read('userId')??"",context);
+      if (data == null) {
+        delta = [{"insert": "\n"}];
+      }
+
+      else if (data is List) {
+        delta = List<Map<String, dynamic>>.from(data);
+      }
+
+      else if (data is String) {
+        delta = List<Map<String, dynamic>>.from(jsonDecode(data));
+      }
+
+      _controller = QuillController(
+        document: Document.fromJson(delta),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller = QuillController.basic();
+      setState(() {});
+    }
   }
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refresh());
+  }
+  Future<void> _refresh() async {
+    final selectJobId = Api.userInfo.read('selectJobId') ?? "";
+    await jobController.getJobsById(selectJobId, context);
+    await jobController.getAppliedJobsAdmin(selectJobId, context);
+    await jobController.getJobSeekersAppliedLists(Api.userInfo.read('userId') ?? "", context);
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
+    loadJobDescription(
+        jobController.jobDescriptionData);
+  }
+  @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     final jobController = Get.find<JobController>();
@@ -68,6 +105,10 @@ class _ViewJobPageState extends State<ViewJobPage> {
               }
               final url = loginController.jobFileImages.isNotEmpty
                   ? loginController.jobFileImages.first.url.toString() : "";
+              String getPlainText(List<Map<String, dynamic>>? delta) {
+                if (delta == null) return "";
+                return delta.map((e) => e['insert'] ?? "").join();
+              }
               return SingleChildScrollView(
                 child: SafeArea(
                   child: Column(
@@ -126,7 +167,7 @@ class _ViewJobPageState extends State<ViewJobPage> {
                           ),
                           Positioned(
                               right: 35,
-                              top: 5,
+                              top: 10,
                               child: PopupMenuButton<String>(
                             onSelected: (String isActive)async {
                               print("Selected Status: $isActive");
@@ -184,17 +225,19 @@ class _ViewJobPageState extends State<ViewJobPage> {
                               mainAxisAlignment:MainAxisAlignment.center,
                               children: [
                                 Center(
-                                  child: Text(
-                                    job.jobTitle ?? '',
-                                    style: AppTextStyles.body(
-                                        context,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.black),
+                                  child: Expanded(
+                                    child: Text(
+                                      job.jobTitle ?? '',softWrap: true,maxLines: 2,
+                                      style: AppTextStyles.caption(
+                                          context,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.black),
+                                    ),
                                   ),
                                 ),
                                 Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(5.0),
                                     child: Text(
                                       job.isActive.toString()=='true' ? ". Open" :". Close",
                                       style: AppTextStyles.caption(
@@ -209,7 +252,7 @@ class _ViewJobPageState extends State<ViewJobPage> {
                             const SizedBox(height: 4),
                           Center(
                               child: Text(
-                                job.orgName ?? '',
+                               job.orgName ?? '',
                                 style: AppTextStyles.body(
                                     context,
                                     fontWeight: FontWeight.bold,
@@ -308,16 +351,19 @@ class _ViewJobPageState extends State<ViewJobPage> {
                               child: TabBarView(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      job.jobDescription ?? '',
-                                      style: AppTextStyles.caption(
-                                        context,
-                                        fontWeight: FontWeight.normal,
-                                        color: AppColors.black,
-                                        height: 1.5,
-                                      ),
-                                    ),
+                                      padding: const EdgeInsets.all(8.0),
+                                      child:  IgnorePointer(
+                                        child: QuillEditor(
+                                          controller: _controller,
+                                          scrollController: _scrollController,
+                                          focusNode: FocusNode(),
+                                          config: const QuillEditorConfig(
+                                            showCursor: false,
+                                            expands: false,
+                                          ),
+                                        ),
+                                      )
+                                    //Text( getPlainText(job.jobDescription), style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
                                   ),
                                   Api.userInfo.read('userType') == 'Job Seekers'
                                       ? Padding(

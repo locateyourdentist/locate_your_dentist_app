@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
@@ -31,13 +32,19 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
   final GlobalKey<ScaffoldState> _scaffoldKeyUser1 = GlobalKey<ScaffoldState>();
   final planController=Get.put(PlanController());
 
-  void getLocation()async{
+  Future<void> getLocation() async {
     final position = await LocationService.getCurrentLocation();
+
     if (position != null) {
-      final address = await getAddressFromLatLng(position.latitude, position.longitude);
-      print('address$address');
-      planController.currentLocation=address;
-    //  Get.snackbar('Location', 'Your location: $address');
+      loginController.latitude = position.latitude;
+      loginController.longitude = position.longitude;
+
+      final address = await getAddressFromLatLng(loginController.latitude!, loginController.longitude!);
+
+      print('latitude ${loginController.latitude}');
+      print('longitude ${loginController.longitude}');
+
+      planController.currentLocation = address;
     } else {
       Get.snackbar('Location', 'Unable to get location');
     }
@@ -49,7 +56,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
   }
   Future<void> _refresh() async {
     getLocation();
-   await loginController.getProfileDetails('Dental Clinic', '', '', '',"true",loginController.latitude.toString(), loginController.longitude.toString(),'','', context);
+    await loginController.getProfileDetails('Dental Clinic', '', '', '',"true",'', '','','', context);
+   // await loginController.getProfileDetails('Dental Clinic', '', '', '',"true",loginController.latitude.toString(), loginController.longitude.toString(),'','', context);
    await planController.getUploadImages(userType: "Dental Clinic",context: context);
   }
   Future<String> getAddressFromLatLng(double lat, double lng) async {
@@ -114,34 +122,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
           ],
         ),
       ),
-      drawer: FilterDrawer(
-        onApply: () async{
-          print("Selected State: ${loginController.selectedState}");
-          print("Selected District: ${loginController.selectedDistrict}");
-          print("Selected Area: ${loginController.selectedArea}");
-          //String userType=  Api.userInfo.read('sUserType');
-          //print("ssuser$userType");
-          filteredProfiles.map((e) => searchController.text.toString());
-          await loginController.getProfileDetails(
-            "Dental Clinic",
-            loginController.selectedState,
-            loginController.selectedDistrict,
-            loginController.selectedTaluka,"true",'','',loginController.selectedDistance.toString(),'',
-            context,
-          );
-        },
-        onReset: () {
-          setState(() {
-            // loginController.selectedPlace = null;
-            // loginController.selectedDistrict = null;
-            loginController.selectedArea = null;
-            loginController.selectedUserType=null;
-            loginController.selectedState=null;
-            loginController.selectedDistrict=null;
-            loginController.selectedDistance=null;
-          });
-        },
-      ),
       body: GetBuilder<LoginController>(
     init: loginController,
     builder: (controller) {
@@ -188,15 +168,15 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                   height: size*0.012,
                   child: Row(
                     children: [
-                      const Icon(Icons.search, color: Colors.grey, size: 24),
+                       Icon(Icons.search, color: Colors.grey, size: size*0.015),
                       const SizedBox(width: 8),
                       Expanded(
                         child: CommonSearchTextField(
                           controller: searchController,
                           hintText: "Search dental clinic",
-                          onSubmitted: (value) {
+                          onSubmitted: (value)async {
                             print("Search text: $value");
-                            loginController.getProfileDetails(
+                          await  loginController.getProfileDetails(
                               "Dental Clinic",
                               '',
                               '',
@@ -214,7 +194,47 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                         child: Center(
                           child: IconButton(
                             onPressed: () {
-                               _scaffoldKeyUser1.currentState!.openDrawer();
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) {
+                                  return FractionallySizedBox(
+                                      heightFactor: 0.75,
+                                      child: FilterDrawer(
+                                        onApply: () async{
+                                          print("Selected State: ${loginController.selectedState}");
+                                          print("Selected District: ${loginController.selectedDistrict}");
+                                          print("Selected Area: ${loginController.selectedArea}");
+                                          //String userType=  Api.userInfo.read('sUserType');
+                                          //print("ssuser$userType");
+                                          filteredProfiles.map((e) => searchController.text.toString());
+                                          await loginController.getProfileDetails(
+                                            "Dental Clinic",
+                                            loginController.selectedState,
+                                            loginController.selectedDistrict,
+                                            loginController.selectedTaluka,"true",'','',loginController.selectedDistance.toString(),'',
+                                            context,
+                                          );
+                                          Navigator.pop(context);
+                                        },
+                                        onReset: () {
+                                          setState(() {
+                                            // loginController.selectedPlace = null;
+                                            // loginController.selectedDistrict = null;
+                                            loginController.selectedArea = null;
+                                            loginController.selectedUserType=null;
+                                            loginController.selectedState=null;
+                                            loginController.selectedDistrict=null;
+                                            loginController.selectedDistance=null;
+                                            loginController.selectedSalary=null;
+                                            loginController.selectedJobType=null;
+                                            loginController.selectedCategories.clear();
+                                            loginController.update();
+                                          });
+                                        },
+                                      )      );
+                                });
                             },
                             icon:  Icon(Icons.filter_list, color: Colors.black, size: size*0.06),
                             splashRadius: 22,
@@ -242,7 +262,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                   SizedBox(height: size * 0.02),
                 GetBuilder<PlanController>(
                   builder: (controller) {
-                    final imageUrls = controller.editUploadImage
+                    final imageUrls = controller.editUploadImage1
                         .map((e) => e.url ?? "").where((url) => url.isNotEmpty).toList();
                     return DashboardCarousel(
                       imageList: imageUrls,
@@ -250,56 +270,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                   },
                 ),
 
-                // GetBuilder<LoginController>(
-                // builder: (controller) {
-                //    return GestureDetector(
-                //                    behavior: HitTestBehavior.translucent,
-                //                    onTap: () {
-                //
-                //                      if (_isNavigating) return;
-                //
-                //                      if (imageUrls.isEmpty) {
-                //       Get.snackbar(
-                //         "No Image",
-                //         "No image available to view",
-                //         snackPosition: SnackPosition.BOTTOM,
-                //       );
-                //       return;
-                //                      }
-                //
-                //                      if (currentIndex >= imageUrls.length) {
-                //       Get.snackbar(
-                //         "Invalid Image",
-                //         "Image index out of range",
-                //         snackPosition: SnackPosition.BOTTOM,
-                //       );
-                //       return;
-                //                      }
-                //                      _isNavigating = true;
-                //                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                //       Get.toNamed(
-                //         '/viewImagePage',
-                //         arguments: {
-                //           'url': imageUrls[currentIndex],
-                //           'index': currentIndex,
-                //         },
-                //       )?.then((_) {
-                //         _isNavigating = false;
-                //       });
-                //                      });
-                //                    },
-                //                    child: DashboardCarousel(
-                //                      imageList: imageUrls,
-                //                      onIndexChanged: (index) {
-                //       if (!mounted) return;
-                //       setState(() {
-                //         currentIndex = index;
-                //       });
-                //       debugPrint("Updated index: $currentIndex");
-                //                      },
-                //                    ),);
-                //    }
-                //  ),
                 SizedBox(height: size * 0.03),
                   Text(
                       "Popular Dental Clinics",
@@ -352,7 +322,9 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                         children: [
                                           GestureDetector(
                                             onTap: ()async {
-                                              await loginController.getProfileByUserId(doctor.userId.toString()??"", context);
+                                             // await loginController.getProfileByUserId(doctor.userId.toString()??"", context);
+                                              Api.userInfo.write('selectUId',doctor.userId.toString()??"");
+
                                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                                 Get.toNamed('/clinicProfilePage');
                                               });                                            },
@@ -386,10 +358,9 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                               ),
                                                     child: ClipRRect(
                                                       borderRadius: BorderRadius.circular(10),
-                                                      child: Image.network(
-                                                        firstImage.isNotEmpty
-                                                            ? firstImage
-                                                            : "",
+                                                      child: doctor.logoImages.isNotEmpty
+                                                          ? Image.network(
+                                                        doctor.logoImages.first, // ✅ FIXED
                                                         fit: BoxFit.cover,
                                                         width: double.infinity,
                                                         height: double.infinity,
@@ -409,9 +380,9 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                                                 const SizedBox(height: 8),
                                                                 Text(
                                                                   "No Image Available",
-                                                                  style: TextStyle(
+                                                                  style: AppTextStyles.caption(
+                                                                    context,
                                                                     color: Colors.grey[500],
-                                                                    fontSize: 14,
                                                                     fontWeight: FontWeight.w500,
                                                                   ),
                                                                 ),
@@ -419,8 +390,32 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                                             ),
                                                           );
                                                         },
+                                                      )
+                                                          : Container(
+                                                        width: double.infinity,
+                                                        height: double.infinity,
+                                                        color: Colors.grey[200],
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Icon(
+                                                              Icons.image,
+                                                              color: Colors.grey[400],
+                                                              size: 50,
+                                                            ),
+                                                            const SizedBox(height: 8),
+                                                            Text(
+                                                              "No Image Available",
+                                                              style: AppTextStyles.caption(
+                                                                context,
+                                                                color: Colors.grey[500],
+                                                                fontWeight: FontWeight.w500,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
+                                                    )
                                                   ),
                                                   Positioned(
                                                     bottom: 0,

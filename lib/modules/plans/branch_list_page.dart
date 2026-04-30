@@ -27,6 +27,9 @@ final loginController=Get.put(LoginController());
     super.initState();
      pageRoute = Get.arguments?['page'] ??"";
      loginController.getBranchDetails(context);
+    final savedUserId = Api.userInfo.read('userId');
+    String? selectedName;
+   selectedUserId = savedUserId;
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -104,18 +107,19 @@ final loginController=Get.put(LoginController());
                         final city = branch.address['city'] ?? '';
                         final district = branch.address['district'] ?? '';
                         final state = branch.address['state'] ?? '';
-
+                        final isSelected =
+                            selectedUserId == branch.userId;
                         return AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: selectedUserId == branch.userId
+                              color: isSelected
                                   ? Theme.of(context).primaryColor
                                   : Colors.grey.shade300,
                               width: 1.5,
                             ),
-                            color: selectedUserId == branch.userId
+                            color: isSelected
                                 ? Theme.of(context)
                                 .primaryColor
                                 .withOpacity(0.05)
@@ -126,7 +130,7 @@ final loginController=Get.put(LoginController());
                             groupValue: selectedUserId,
                             title: Text(
                               name,
-                              style:  const TextStyle(
+                              style:  AppTextStyles.caption(context,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -175,8 +179,8 @@ final loginController=Get.put(LoginController());
                               : "Unknown";
                           await loginController.switchAccountLogin(
                             selectedUserId.toString(),platform,context);
-                          await loginController.getProfileByUserId(selectedUserId.toString(), context);
-
+                          Navigator.pop(context);
+                        //  await loginController.getProfileByUserId(selectedUserId.toString(), context);
                         },
                         style: ElevatedButton.styleFrom( backgroundColor:selectedUserId==null?  AppColors.transparent:AppColors.transparent,
                           shadowColor: AppColors.transparent,

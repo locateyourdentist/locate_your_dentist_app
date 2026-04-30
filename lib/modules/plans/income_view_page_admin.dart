@@ -4,7 +4,9 @@ import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
+import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 
 class IncomeDashboardPage extends StatefulWidget {
   const IncomeDashboardPage({super.key});
@@ -16,6 +18,7 @@ class IncomeDashboardPage extends StatefulWidget {
 class _IncomeDashboardPageState extends State<IncomeDashboardPage>
     with SingleTickerProviderStateMixin {
   final controller = Get.put(PlanController());
+  final loginController = Get.put(LoginController());
   final TextEditingController fromDateController = TextEditingController();
   final TextEditingController toDateController = TextEditingController();
   String? selectState;
@@ -23,10 +26,11 @@ class _IncomeDashboardPageState extends State<IncomeDashboardPage>
   @override
   void initState() {
     super.initState();
-    controller.getIncomeDetailsByPlan(context: context);
+    _refresh();
   }
   Future<void> _refresh() async {
     await     controller.getIncomeDetailsByPlan( context: context);
+    await loginController.fetchStates();
   }
 
   @override
@@ -71,7 +75,7 @@ class _IncomeDashboardPageState extends State<IncomeDashboardPage>
 
           final income = controller.income;
           if (income == null) {
-            return const Center(child: Text("No Data Found"));
+            return  Center(child: Text("No Data Found",style: AppTextStyles.caption(context),));
           }
 
           return RefreshIndicator(
@@ -79,23 +83,47 @@ class _IncomeDashboardPageState extends State<IncomeDashboardPage>
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                CustomDropdownField(
-                  hint: "Select State",
-                  // icon: Icons.place,
-                  fillColor: Colors.grey.shade100,
-                  borderColor: AppColors.white,
-                  items: const ["Tamilnadu","karnataka","Andhra"],
-                  selectedValue: (selectState != null &&
-                      ["Tamilnadu","karnataka","Andhra"]
-                          .contains(selectState))
-                      ? selectState
-                      : null,
-                  onChanged: (value) async{
-                    setState(() {
-                      selectState = value;
-                    });
-                    await  controller.getIncomeDetailsByPlan(state:selectState,fromDate: fromDateController.text,toDate: toDateController.text, context: context);
-                    },
+                GetBuilder<LoginController>(
+                  builder: (controller) {
+                    final items=controller.states.map((d) => d.toString()).toList();
+                    return CustomDropdown<String>.search(
+                      hintText: "Select State",
+                      decoration: CustomDropdownDecoration(
+                        closedFillColor: Colors.grey[100],
+                        expandedFillColor: Colors.white,
+                        closedBorder: Border.all(
+                          color: AppColors.white,
+                          width: 1.5,
+                        ),
+                        expandedBorder: Border.all(
+                          color: AppColors.primary,
+                          width: 1.5,
+                        ),
+                        closedBorderRadius: BorderRadius.circular(10),
+                        expandedBorderRadius: BorderRadius.circular(10),
+                        hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                        headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                        listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
+                      items: controller.states.map((s) => s.toString()).toList(),
+                      //initialItem: controller.selectedState,
+                      initialItem: items.contains(controller.selectedState)
+                          ? controller.selectedState
+                          : null,
+                      onChanged: (val) {
+                        if (val != null) {
+                          controller.selectedState = val;
+                          controller.districts.clear();
+                          controller.selectedDistrict = null;
+                          controller.selectedTaluka = null;
+                          controller.selectedVillage = null;
+                          final state = controller.states.firstWhere((s) => s == val);
+                          print('state  selected$state');
+                          controller.fetchDistricts(state.toString());
+                          controller.update();
+                        }
+                      },
+                    );
+                  },
                 ),
            Row(
              mainAxisAlignment: MainAxisAlignment.spaceBetween,

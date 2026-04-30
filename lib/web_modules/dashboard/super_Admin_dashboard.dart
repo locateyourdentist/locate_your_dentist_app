@@ -5,6 +5,8 @@ import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/model/profile_model.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
+import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
+import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -22,25 +24,24 @@ class AdminDashboard extends StatefulWidget {
 class _AdminDashboardState extends State<AdminDashboard> {
   @override
   final loginController = Get.put(LoginController());
-  final userTypeCounts = {
-    "admin": 2,
-    "superAdmin": 1,
-    "Dental Clinic": 12,
-    "Dental Lab": 4,
-    "Dental Shop": 5,
-    "Dental Mechanic": 3,
-    "Job Seekers": 10,
-    "Dental Consultant": 6,
-  };
+  final notificationController=Get.put(NotificationController());
+  final PlanController planController = Get.put(PlanController());
+  final TextEditingController searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _refresh();
   }
   Future<void> _refresh() async {
-    await loginController.getProfileDetails('', '', '', '', "", '', '', '', '', context);
     await loginController.fetchStates();
+    await planController.getIncomeDetailsByPlan(context: context);
+    await planController.getExpense(month: "", year: "");
     await loginController.getAppLogoImage(context);
+    await notificationController.getNotificationListAdmin(context);
+    Api.userInfo.read('userType')=="superAdmin"?
+    await loginController.getProfileDetails('', '', '', '', '','','','','', context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", '', '', '','','','', '',context);
+    await planController.getIncomeDetailsByPlan(context: context);
   }
   @override
   Widget build(BuildContext context) {
@@ -107,7 +108,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                 "Admin Dashboard",
                                                 style: AppTextStyles.subtitle(context, color: AppColors.white),
                                               ),
-                                              // Icons
                                               Row(
                                                 children: [
                                                   IconButton(
@@ -152,15 +152,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                               icon: Icons.verified_user,
                                               color: Colors.green,
                                             ),
-                                            const StatCard(
+                                             StatCard(
                                               title: "Total Revenue",
-                                              value: "₹1,25,000",
+                                              value:  "\₹ ${planController.income?.total.toStringAsFixed(2)}",
+                                               //"₹1,25,000",
                                               icon: Icons.currency_rupee,
                                               color: Colors.orange,
                                             ),
-                                            const StatCard(
+                                             StatCard(
                                               title: "Total Expenses",
-                                              value: "₹40,000",
+                                              value: "\₹ ${planController.total.toStringAsFixed(2)}",
+                                               //"₹40,000",
                                               icon: Icons.money_off,
                                               color: Colors.red,
                                             ),
@@ -185,9 +187,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                     ],
                                   ),
                                   child: TextField(
-                                    onChanged: (value) {
-                                      //loginController.searchProfiles(value);
-                                    },
+                                    onChanged: (value)async {
+                                      if( Api.userInfo.read('userType')=="superAdmin") {
+                                        await   loginController.getProfileDetails('', '', '', '', '','','','',searchController.text.toString(),  context);
+                                      }
+                                      if( Api.userInfo.read('userType')=="admin") {
+                                        await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','',searchController.text.toString(), context);
+                                      }                                    },
+                                    controller:searchController,
                                     decoration:  InputDecoration(
                                       icon: Icon(Icons.search,color: AppColors.grey,size: size*0.008,),
                                       hintText: "Search by name, userId, clinic...",
@@ -281,8 +288,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
       },
       child: GestureDetector(
         onTap: ()async{
-          Get.toNamed('/viewProfilePageWeb');
-         await loginController.getProfileByUserId(clinic.userId.toString() ?? "", context);
+          Api.userInfo.write('selectUId', clinic.userId.toString() ?? "");
+          Get.toNamed('/clinicProfileWebPage');
+         //await loginController.getProfileByUserId(clinic.userId.toString() ?? "", context);
         },
         child: Stack(
           children: [
@@ -460,7 +468,7 @@ class StatCard extends StatelessWidget {
           children: [
 
             CircleAvatar(
-              radius: size*0.0062,
+              radius: size*0.0067,
               backgroundColor: color.withOpacity(0.2),
               child: Icon(icon, color: color,size: size*0.013,),
             ),
@@ -519,8 +527,14 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
   }
   @override
   Widget build(BuildContext context) {
-    String userType=Api.userInfo.read('userType');
-    final allItems = widget.userTypeCounts.keys.toList();
+    final loggedInUserType = Api.userInfo.read('userType')??"";
+
+    final allItems = widget.userTypeCounts.keys.where((type) {
+      if (loggedInUserType == 'admin') {
+        return type != 'admin' && type != 'superAdmin';
+      }
+      return true;
+    }).toList();
     final startIndex = currentPage * rowsPerPage;
     final endIndex = (startIndex + rowsPerPage > allItems.length)
         ? allItems.length

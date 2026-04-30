@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
@@ -13,6 +14,8 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import '../../api/api.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class Media {
@@ -31,14 +34,57 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
   String imgUrl = "";
   final userType = Api.userInfo.read('userType')?.toString() ?? "";
   final serviceController=Get.put(ServiceController());
+  final ScrollController _scrollController = ScrollController();
+  late QuillController _controller;
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta = [];
+
+      if (data == null) {
+        delta = [{"insert": "\n"}];
+      }
+
+      else if (data is List) {
+        delta = List<Map<String, dynamic>>.from(data);
+      }
+
+      else if (data is String) {
+        delta = List<Map<String, dynamic>>.from(jsonDecode(data));
+      }
+
+      _controller = QuillController(
+        document: Document.fromJson(delta),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller = QuillController.basic();
+      setState(() {});
+    }
+  }
   @override
   void initState() {
-  //  _tabController1 = TabController(length:userType=='superAdmin'? 2:1, vsync: this,);
-    //Api.userInfo.read('selectUserId')=="admin"|| Api.userInfo.read('selectUserId')=="superAdmin"? loginController.getProfileByUserId(Api.userInfo.read('selectUserId'), context):loginController.getProfileByUserId(Api.userInfo.read('userId'), context);
-    //loginController.getProfileByUserId(Api.userInfo.read('selectUserId')??"", context);
-    //serviceController.getServiceListAdmin(Api.userInfo.read('selectUId')??"", context);
-     // loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+      ),
+    );
+    _refresh();
       super.initState();
+  }
+  Future<void> _refresh() async {
+    await serviceController.getServiceListAdmin(Api.userInfo.read('selectUId')??"", context);
+   await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
+   if (!mounted) return;
+    final data = loginController.userData.isNotEmpty
+        ? loginController.userData.first.details["description"]
+        : null;
+    loadJobDescription(data);
   }
   bool getPlanActive() {
     final userData = loginController.userData;
@@ -51,29 +97,28 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
     final size = MediaQuery.of(context).size.width;
     final planActive = getPlanActive();
     String userType=Api.userInfo.read('userType')??"";
-    print('fsgdfsf$userType');
     String userId=Api.userInfo.read('userId')??"";
-    String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
+    final user = loginController.userData.isNotEmpty ? loginController.userData.first : null;
+    String editUserId = user?.userId?.toString() ?? "";
     final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
-    Future<void> _refresh() async {
-      //_tabController1 = TabController(length:userType=='superAdmin'? 2:1, vsync: this,);
-     // serviceController.getServiceListAdmin(loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"", context);
-      await serviceController.getServiceListAdmin(Api.userInfo.read('selectUId')??"", context);
-     await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
-    }
+    final isSameUser = Api.userInfo.read('token') != null && user != null && user.userId.toString() == Api.userInfo.read('userId');
+    print("isSameUser: $isSameUser");
+    // Future<void> _refresh() async {
+    //   //_tabController1 = TabController(length:userType=='superAdmin'? 2:1, vsync: this,);
+    //  // serviceController.getServiceListAdmin(loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"", context);
+    //   await serviceController.getServiceListAdmin(Api.userInfo.read('selectUId')??"", context);
+    //  await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
+    // }
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
-          height: size * 0.08,
+          height: size * 0.03,
           title: "LYD",
           onLogout: () {},
           onNotification: () {},
         );
       } else {
-        return const PreferredSize(
-          preferredSize: Size.fromHeight(60),
-          child: CommonHeader(),
-        );
+        return   CommonHeader();
       }
     }
     return Scaffold(
@@ -101,8 +146,8 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  height: size*0.14,
-                                  padding: const EdgeInsets.all(20),
+                                  height: size*0.15,
+                                  padding: const EdgeInsets.all(15),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(16),
@@ -116,32 +161,37 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                                     // ],
                                   ),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+
                                     children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
                                         child: Image.network(
-                                          loginController.editImages.isNotEmpty
-                                              ? loginController.editImages.first.url ?? ""
+                                          loginController.logoImage.isNotEmpty
+                                              ? loginController.logoImage.first ?? ""
                                               : "",
-                                          height: size*0.16,
-                                          width: size*0.11,
+                                          // loginController.editImages.isNotEmpty
+                                          //     ? loginController.editImages.first.url ?? ""
+                                          //     : "",
+                                          height: size*0.08,
+                                          width: size*0.08,
                                           fit: BoxFit.cover,
                                           errorBuilder: (_, __, ___) => Container(
-                                            height: size*0.2,
-                                            width: size*0.11,
+                                            height: size*0.08,
+                                            width: size*0.08,
                                             color: Colors.grey.shade200,
-                                            child:  Icon(Icons.image, size: size*0.012),
+                                            child:  Icon(Icons.image, size: size*0.012,color: AppColors.grey,),
                                           ),
                                         ),
                                       ),
 
-                                      const SizedBox(width: 24),
+                                       SizedBox(width: size*0.01),
 
-                                      /// RIGHT - DETAILS
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
 
                                             Row(
@@ -149,14 +199,14 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                                               children: [
                                                 Flexible(
                                                   child: Text(
-                                                    loginController.userData.first.details["name"] ?? "",
-                                                    style: AppTextStyles.subtitle(context),
+                                                   user?.details["name"] ?? "",
+                                                    style: AppTextStyles.body(context,fontWeight: FontWeight.bold),
                                                   ),
                                                 ),
                                                       if(userType=='admin'||userType=='superAdmin'||userId==editUserId)
                                                         GestureDetector(
                                                           onTap: (){
-                                                            loginController.getProfileByUserId(loginController.userData.first.userId??"", context);
+                                                            loginController.getProfileByUserId(user?.userId??"", context);
                                                             Get.toNamed('/registerPageWeb');
                                                             //Get.toNamed('/clinicEditProfile',arguments: {"userId":loginController.userData.first.userId??""});
                                                           },
@@ -173,7 +223,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                                               ],
                                             ),
 
-                                            const SizedBox(height: 8),
+                                            SizedBox(height: size*0.0001,),
 
                                             if(isAdminUser)
                                             Column(
@@ -182,22 +232,22 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                                                   children: [
                                                     Flexible(
                                                       child: Text(
-                                                        loginController.userData.first.userType ?? "",
+                                                        user?.userType ?? "",
                                                         style:  AppTextStyles.caption(context,color: Colors.grey),
                                                       ),
                                                     ),
                                                     const SizedBox(width: 12),
-                                                      if(Api.userInfo.read('userType')=='superAdmin')
+                                                      if(Api.userInfo.read('userType')=='superAdmin'||Api.userInfo.read('userType')=='admin')
                                                     Container(
                                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                                       decoration: BoxDecoration(
-                                                        color: loginController.userData.first.isActive
+                                                        color: user?.isActive==true
                                                             ? Colors.green
                                                             : Colors.red,
                                                         borderRadius: BorderRadius.circular(20),
                                                       ),
                                                       child: Text(
-                                                        loginController.userData.first.isActive
+                                                        user?.isActive==true
                                                             ? "Active"
                                                             : "Inactive",
                                                         style: const TextStyle(color: Colors.white, fontSize: 12),
@@ -212,29 +262,25 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                                             Row(
                                               children: [
                                                 const Icon(Icons.location_on, size: 16, color: Colors.grey),
-                                                 SizedBox(width: size*0.01,),
+                                                 SizedBox(width: size*0.001,),
                                                 Text(
-                                                  "${loginController.userData.first.address['city'] ?? ''}, "
-                                                      "${loginController.userData.first.address['district'] ?? ''}",
+                                                  "${user?.address['city'] ?? ''}, "
+                                                      "${user?.address['district'] ?? ''}",
                                                   style: const TextStyle(color: Colors.grey),
                                                 ),
                                               ],
                                             ),
 
-                                            const SizedBox(height: 16),
+                                            SizedBox(height: size*0.01,),
 
                                             Row(
                                               children: [
                                                 _actionButton(Icons.call, "Call", () async{
                                                   if ((planActive == true &&
-                                                      loginController.userData
-                                                          .first
-                                                          .details["plan"]?["basePlan"]?["details"]?["mobileNumber"] ==
+                                                      user?.details["plan"]?["basePlan"]?["details"]?["mobileNumber"] ==
                                                           true) ||
                                                       isAdminUser) {
-                                                   await launchCall(loginController
-                                                        .userData.first
-                                                        .mobileNumber
+                                                   await launchCall(user?.mobileNumber
                                                         .toString() ?? "");
                                                   }
                                                 },context
@@ -242,21 +288,18 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                                                  SizedBox(width: size*0.01),
                                                 _actionButton(Icons.language, "Website",
                                                         () {
-                                                          if((planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]?["location"]==true)||
+                                                          if((planActive==true&&user?.details["plan"]?["basePlan"]?["details"]?["location"]==true)||
                                                               isAdminUser) {
                                                             if (PlatformHelper.platform == 'Android' ||
                                                                 PlatformHelper.platform == 'iOS') {
                                                               Get.toNamed('/webViewProfilePage', arguments: {
                                                                 "url": loginController.userData.first
                                                                     .details["website"] ?? "".toString() ?? "",
-                                                                "clinicName": loginController.userData.first
-                                                                    .details["name"] ?? "".toString()
+                                                                "clinicName": user?.details["name"] ?? "".toString()
                                                               });
-                                                              if (loginController.userData.first
-                                                                  .details["website"] ?? ""
+                                                              if (user?.details["website"] ?? ""
                                                                   .toString()
-                                                                  .isEmpty || loginController.userData.first
-                                                                  .details["website"] ??
+                                                                  .isEmpty || user?.details["website"] ??
                                                                   "".toString() == null) {
                                                                 showCustomToast(context, "Website error",
                                                                     backgroundColor: AppColors.secondary);
@@ -283,25 +326,27 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                                                     message: "Hi Message From ${userData.details?["name"] ?? ''}",
                                                   );
                                                 },context),
+                                                SizedBox(width: size*0.01,),
+                                                if (Api.userInfo.read('token') != null && isSameUser != true)
+                                                  _actionButton(Icons.contact_page_outlined, "Contact", () async{
+                                                  Get.toNamed('/createContactPageWeb',arguments:{
+                                                    "senderUserId":Api.userInfo.read('userId'),
+                                                    "receiverUserId":loginController.userData.first.userId.toString() ?? "",
+                                                    "clinicName": loginController.userData.first.details["name"].toString() ?? "",
+                                                    "mobileNumber": loginController.userData.first.mobileNumber.toString() ?? "",
+                                                    "email": loginController.userData.first.email.toString() ?? "","doctorName":loginController.userData.first.name.toString() ?? "",
+                                                    "address": {
+                                                      "city": loginController.userData.first.address?['city'] ?? "",
+                                                      "district": loginController.userData.first.address?['district'] ?? "",
+                                                      "state": loginController.userData.first.address?['state'] ?? "",
+                                                    }
+                                                  });
+
+                                                },context
+                                                ),
                                               ],
                                             ),
-                                            SizedBox(height: size*0.01,),
-                                            _actionButton(Icons.contact_page_outlined, "Contact", () async{
-                                          Get.toNamed('/createContactPageWeb',arguments:{
-                                          "senderUserId":Api.userInfo.read('userId'),
-                                          "receiverUserId":loginController.userData.first.userId.toString() ?? "",
-                                          "clinicName": loginController.userData.first.details["name"].toString() ?? "",
-                                          "mobileNumber": loginController.userData.first.mobileNumber.toString() ?? "",
-                                          "email": loginController.userData.first.email.toString() ?? "","doctorName":loginController.userData.first.name.toString() ?? "",
-                                          "address": {
-                                          "city": loginController.userData.first.address?['city'] ?? "",
-                                          "district": loginController.userData.first.address?['district'] ?? "",
-                                          "state": loginController.userData.first.address?['state'] ?? "",
-                                          }
-                                          });
 
-                                            },context
-                                            ),
                                           ],
                                         ),
                                       )
@@ -311,7 +356,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
 
                                 const SizedBox(height: 24),
                                 SizedBox(
-                                  height: size*0.027,
+                                  height: size*0.03,
                                   child: TabBar(
                                    // isScrollable: true,
                                     indicator: BoxDecoration(
@@ -360,23 +405,37 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                       if(loginController.userData.first.details["description"].isNotEmpty)
+                                       // if(user?.details["description"].isNotEmpty)
                                          Text("Description",
                                             style: AppTextStyles.body(fontWeight: FontWeight.bold,context)),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          //"Cherub Fertility and women's centre is a Gynecology/Obstetrics Clinic in Rajakilpakkam, Chennai. The clinic is visited by gynecologist like Dr. Florence Vasantha Praba. The timings of Cherub Fertility and women's centre are: Mon-Sun: 00:00-23:59. Some of the services provided by the Clinic are: Abortion / Medical Termination of Pregnancy (MTP),Gynaecological Endoscopy,Gynae Problems,Gynaec Laparoscopy and Female Infertility Treatment etc. Click on map to find directions to reach Cherub Fertility and women's centre. ",
-                                          loginController.userData.first.details["description"] ?? "No Data found",
-                                          style:AppTextStyles.caption(fontWeight: FontWeight.normal,context),
+                                      //  const SizedBox(height: 10),
+                                        // Text(
+                                        //   //"Cherub Fertility and women's centre is a Gynecology/Obstetrics Clinic in Rajakilpakkam, Chennai. The clinic is visited by gynecologist like Dr. Florence Vasantha Praba. The timings of Cherub Fertility and women's centre are: Mon-Sun: 00:00-23:59. Some of the services provided by the Clinic are: Abortion / Medical Termination of Pregnancy (MTP),Gynaecological Endoscopy,Gynae Problems,Gynaec Laparoscopy and Female Infertility Treatment etc. Click on map to find directions to reach Cherub Fertility and women's centre. ",
+                                        //   loginController.userData.first.details["description"] ?? "No Data found",
+                                        //   style:AppTextStyles.caption(fontWeight: FontWeight.normal,context),
+                                        // ),
+                                        Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child:  IgnorePointer(
+                                              child: QuillEditor(
+                                                controller: _controller,
+                                                scrollController: _scrollController,
+                                                focusNode: FocusNode(),
+                                                config: const QuillEditorConfig(
+                                                  showCursor: false,
+                                                  expands: false,
+                                                ),
+                                              ),
+                                            )
                                         ),
                                       ],
                                     ),
                                   ),
-                                        SingleChildScrollView(
-                                          child:    Container(
-                                            height: double.infinity,
-                                            padding: const EdgeInsets.all(20),
-                                            decoration: _cardDecoration(),
+                                        Container(
+                                          height: double.infinity,
+                                          padding: const EdgeInsets.all(20),
+                                          decoration: _cardDecoration(),
+                                          child: SingleChildScrollView(
                                             child: Column(children: [
                                              // Text(
                                              //     "Our Services",
@@ -388,75 +447,95 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                                              if(serviceController.isLoading)
                                                const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
                                             //  if(serviceController.serviceList.isNotEmpty&&planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"]==true|| isAdminUser||userId==editUserId)
-                                              if ((serviceController.serviceList.isNotEmpty && planActive == true && loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"] == true) || isAdminUser || userId == editUserId)
-                                                GridView.builder(
-                                                shrinkWrap: false,
-                                                  physics: const ClampingScrollPhysics(),
-                                                  itemCount: serviceController.serviceList.length,
-                                                gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: 2,
-                                                  crossAxisSpacing: 16,
-                                                  mainAxisSpacing: 16,
-                                                  childAspectRatio:4
-                                                ),
-                                                itemBuilder: (_, index) {
-                                                  final service = serviceController.serviceList[index];
-
-                                                  return GestureDetector(
-                                                  onTap: ()async{
-                                                    await serviceController.getServiceDetailAdmin(service.serviceId.toString()??"", context);
-                                                    Get.toNamed('/viewServicePage',arguments: {"serviceId":service.serviceId.toString()??""});
-                                                    },
-                                                  child: Container(
-                                                    height: 150,
-                                                    padding: const EdgeInsets.all(10),
-                                                   color: AppColors.white,
-                                                   // decoration: _cardDecoration(),
-                                                    child: Row(
-                                                children: [
-                                                  ClipRRect(
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    child: Image.network(
-                                                      service.image?.isNotEmpty == true
-                                                          ? service.image!.first
-                                                          : "",
-                                                      width: size*0.13,
-                                                      height:  size*0.13,
-                                                      fit: BoxFit.cover,
-                                                      errorBuilder: (_, __, ___) =>
-                                                          Image.asset('assets/images/hospital2.png',
-                                                        width: size*0.13,
-                                                        height:  size*0.13,fit: BoxFit.cover,
-                                                        //color: Colors.grey.shade200,
+                                              //if ((serviceController.serviceList.isNotEmpty && planActive == true && loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"] == true) || isAdminUser || userId == editUserId)
+                                                if (serviceController.serviceList.isNotEmpty && (
+                                                        planActive == true && user?.details["plan"]?["basePlan"]?["details"]["services"] == true ||
+                                                            isAdminUser == true || userId == editUserId))
+                                                Container(
+                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color:Colors.grey.shade100),
+                                                  child: Column(
+                                                    children: [
+                                                   GridView.builder(
+                                                      shrinkWrap: true,
+                                                      physics: const NeverScrollableScrollPhysics(),
+                                                      itemCount: serviceController.serviceList.length,
+                                                      gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 2,
+                                                      crossAxisSpacing: 16,
+                                                      mainAxisSpacing: 16,
+                                                      childAspectRatio:4
+                                                    ),
+                                                    itemBuilder: (_, index) {
+                                                      final service = serviceController.serviceList[index];
+                                                      return GestureDetector(
+                                                      onTap: ()async{
+                                                        await serviceController.getServiceDetailAdmin(service.serviceId.toString()??"", context);
+                                                        Get.toNamed('/serviceDetailPageWeb',arguments: {"serviceId":service.serviceId.toString()??""});
+                                                        },
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Container(
+                                                          height: size*0.3,
+                                                          padding: const EdgeInsets.all(10),
+                                                         //color: Colors.white,
+                                                          decoration: _cardDecoration(),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(8.0),
+                                                            child: Row(
+                                                              children: [
+                                                                ClipRRect(
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            child: Image.network(
+                                                              service.image?.isNotEmpty == true
+                                                                  ? service.image!.first
+                                                                  : "",
+                                                              width: size*0.06,
+                                                              height: size * 0.3,
+                                                              fit: BoxFit.cover,
+                                                              errorBuilder: (_, __, ___) {
+                                                                return Container(
+                                                                  width: size*0.06,
+                                                                  height: size * 0.3,
+                                                                  decoration: BoxDecoration(
+                                                                    color: Colors.grey.shade200,
+                                                                    borderRadius: BorderRadius.circular(8),
+                                                                  ),
+                                                                  child: Center(
+                                                                    child: Icon(
+                                                                      Icons.broken_image_outlined,
+                                                                      size: size * 0.015,
+                                                                      color: Colors.grey.shade500,
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
+                                                            ),), SizedBox(width: size*0.01), Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Text(
+                                                                  service.serviceTitle ?? "",
+                                                                  style:  AppTextStyles.caption(fontWeight: FontWeight.bold,context),
+                                                                ),
+                                                                 SizedBox(height: size*0.01),
+                                                                Text(
+                                                                  "₹ ${service.serviceCost}",
+                                                                  style:  AppTextStyles.caption(fontWeight: FontWeight.normal,context),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                                                                                  )
+                                                                                                                ],
+                                                                                                  ),
+                                                          ),
+                                                                                              ),
                                                       ),
-                                                    ),
+                                                                                    );
+                                                                                  },
+                                                                                ),]
                                                   ),
-                                                  SizedBox(width: size*0.01),
-
-
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Text(
-                                                          service.serviceTitle ?? "",
-                                                          style:  AppTextStyles.caption(fontWeight: FontWeight.bold,context),
-                                                        ),
-                                                         SizedBox(height: size*0.01),
-                                                        Text(
-                                                          "₹ ${service.serviceCost}",
-                                                          style:  AppTextStyles.caption(fontWeight: FontWeight.normal,context),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                ],
-                                                                                          ),
-                                                                                        ),
-                                                                                );
-                                                                              },
-                                                                            ),
+                                                ),
                                                                    ],),
                                           ),
                                         ),
@@ -499,51 +578,93 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                                                                 verticalOffset: 120.0,
                                                                 curve: Curves.easeOutBack,
                                                                 child: FadeInAnimation(
-                                                                  child:Padding(
-                                                                    padding: const EdgeInsets.all(10.0),
-                                                                    child:
-                                                                    GestureDetector(
-                                                                      onTap: () {
-                                                                        Get.toNamed('/viewImagePage',arguments: {'url':loginController.editCertificates[index].url??"",});
-                                                                        print('fgf${loginController.editCertificates[index]}');
-                                                                      },
-                                                                      child: Card(
-                                                                        elevation: 2,
-                                                                        // height: size * 0.65,
-                                                                        // width: double.infinity,
-                                                                        // decoration: BoxDecoration(
-                                                                        //   borderRadius: BorderRadius.circular(30),),
-                                                                        child: Column(
-                                                                          children: [
-                                                                            Text(
-                                                                                "${loginController.userData.first.userType} Certificate",
-                                                                                //labProfile['address'].toString(),
-                                                                                // "Catchy Dental Clinic",
-                                                                                textAlign: TextAlign.center,
-                                                                                style: AppTextStyles.caption(
-                                                                                    context, color: AppColors.black)
-                                                                            ),
-                                                                            ClipRRect(
-                                                                              borderRadius: BorderRadius.circular(
-                                                                                  10),
-                                                                              child:Image.network(
-                                                                                  loginController.editCertificates[index].url??"",
+                                                                  child:GestureDetector(
+                                                                    onTap: () {
+                                                                      Get.toNamed('/viewImagePage',arguments: {'url':loginController.editCertificates[index].url??"",});
+                                                                      print('fgf${loginController.editCertificates[index]}');
+                                                                    },
+                                                                    child: Card(
+                                                                      elevation: 2,
+                                                                      // height: size * 0.65,
+                                                                      // width: double.infinity,
+                                                                      // decoration: BoxDecoration(
+                                                                      //   borderRadius: BorderRadius.circular(30),),
+                                                                      child: Column(
+                                                                        children: [
+                                                                          Text(
+                                                                              "${user?.userType} Certificate",
+                                                                              //labProfile['address'].toString(),
+                                                                              // "Catchy Dental Clinic",
+                                                                              textAlign: TextAlign.center,
+                                                                              style: AppTextStyles.caption(
+                                                                                  context, color: AppColors.black)
+                                                                          ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.all(10.0),
+                                                                        child: ClipRRect(
+                                                                          borderRadius: BorderRadius.circular(10),
+                                                                          child: Builder(
+                                                                            builder: (context) {
+                                                                              final url = loginController.editCertificates[index].url ?? "";
+
+                                                                              if (url.toLowerCase().endsWith(".pdf")) {
+                                                                                return Container(
+                                                                                  height: size * 0.3,
+                                                                                  width: size * 0.3,
+                                                                                  decoration: BoxDecoration(
+                                                                                    border: Border.all(color: AppColors.grey, width: 0.6),
+                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                  ),
+                                                                                  child: Center(
+                                                                                    child: ElevatedButton.icon(
+                                                                                      icon: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                                                                                      label: const Text("Open PDF"),
+                                                                                      onPressed: ()async {
+                                                                                        final Uri pdfUri = Uri.parse(url);
+                                                                                        if (await canLaunchUrl(pdfUri)) {
+                                                                                        await launchUrl(
+                                                                                        pdfUri,
+                                                                                        mode: LaunchMode.externalApplication,
+                                                                                        );
+                                                                                        } else {
+                                                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                                                        const SnackBar(content: Text("Could not open PDF")),
+                                                                                        );
+                                                                                        }                                                                                      },
+                                                                                    ),
+                                                                                  ),
+                                                                                );
+                                                                              } else {
+                                                                                return Image.network(
+                                                                                  url,
                                                                                   fit: BoxFit.cover,
-                                                                                  height: size * 0.6,
-                                                                                  width: double.infinity,
-                                                                                  errorBuilder: (context, error, stackTrace) =>
-                                                                                      Container(
-                                                                                        decoration: BoxDecoration(border: Border.all(color: AppColors.grey,width: 0.6)),
-                                                                                        height: size * 0.55,
-                                                                                        width: double.infinity,
-                                                                                        child: Center(child: Icon(Icons.file_download_off,color: AppColors.grey,size: size*0.09,),),
-                                                                                      )
-                                                                              ),
-                                                                            ),
-                                                                          ],
+                                                                                  height: size * 0.3,
+                                                                                  width: size * 0.3,
+                                                                                  errorBuilder: (context, error, stackTrace) => Container(
+                                                                                    decoration: BoxDecoration(
+                                                                                      border: Border.all(color: AppColors.grey, width: 0.6),
+                                                                                    ),
+                                                                                    height: size * 0.15,
+                                                                                    width: size * 0.3,
+                                                                                    child: Center(
+                                                                                      child: Icon(
+                                                                                        Icons.image,
+                                                                                        color: AppColors.grey,
+                                                                                        size: size * 0.016,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                );
+                                                                              }
+                                                                            },
+                                                                          ),
                                                                         ),
                                                                       ),
-                                                                    ),),
+
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
                                                                 ),
                                                               ),
                                                             );
@@ -587,11 +708,11 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
   Widget _actionButton(IconData icon, String label, VoidCallback onTap,BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     return SizedBox(
-      width: size*0.06,
+      width: size*0.063,
       child: InkWell(
         onTap: onTap,
         child: Container(
-          padding:  EdgeInsets.symmetric(horizontal: size*0.004, vertical: size*0.005,),
+          padding:  EdgeInsets.symmetric(horizontal: size*0.0035, vertical: size*0.005,),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey.shade300),
             borderRadius: BorderRadius.circular(10),
@@ -599,8 +720,8 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
           child: Row(
             children: [
               Icon(icon, size: size*0.01,color: Colors.grey,),
-               SizedBox(width: size*0.001),
-              Text(label,style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+               SizedBox(width: size*0.003),
+              Text(label,style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.primary),),
             ],
           ),
         ),

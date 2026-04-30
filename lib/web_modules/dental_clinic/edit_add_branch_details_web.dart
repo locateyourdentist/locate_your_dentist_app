@@ -41,7 +41,7 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
     double size = MediaQuery.of(context).size.width;
     return  Scaffold(
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},

@@ -644,7 +644,7 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LYD",
         onLogout: () {},
         onNotification: () {},
@@ -653,72 +653,127 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
         children: [
           const AdminSideBar(),
           Expanded(
-            child: Center(
-              child: Container(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 900),
-                padding: const EdgeInsets.all(20),
-                child: Column(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
                     Expanded(
-                      child: SingleChildScrollView(
+                      flex: 1,
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+
                             Text(
-                              'Plan Summary',
+                              "Order Summary",
                               style: AppTextStyles.caption(
                                 context,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
                               ),
                             ),
+
                             const SizedBox(height: 20),
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+
+                            _infoTile("Plan", planName),
+                            _infoTile("Start Date", formatDate(startDate)),
+                            _infoTile("End Date", formatDate(endDate)),
+                            _infoTile("User ID", userId),
+                            _infoTile("Mobile", mobileNumber),
+                            _infoTile("Email", email),
+
+                            const Divider(height: 40),
+
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              elevation: 4,
-                              child: Padding(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "Total Amount",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  Text(
+                                    "₹ ${amount.toStringAsFixed(2)}",
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 20,),
+                            Center(
+                              child: Container(
+                                width: size*0.3,
                                 padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 10,
+                                    )
+                                  ],
+                                ),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.secondary.withOpacity(0.15),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: Text(
-                                        planName,
-                                        style: const TextStyle(
-                                          color: AppColors.secondary,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+
+                                    const Icon(Icons.payment,
+                                        size: 60, color: AppColors.primary),
+
+                                    const SizedBox(height: 20),
+
+                                    Text(
+                                      "Secure Payment",
+                                      style: AppTextStyles.subtitle(
+                                        context,
                                       ),
                                     ),
-                                    const SizedBox(height: 20),
-                                    _row("Start Date", formatDate(startDate)),
-                                    _row("End Date", formatDate(endDate)),
-                                    _row("User ID", userId),
+
+                                    const SizedBox(height: 10),
+
+                                    const Text(
+                                      "You will be redirected to a secure payment gateway.",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+
                                     const SizedBox(height: 30),
-                                    Center(
-                                      child: Container(
-                                        padding: const EdgeInsets.all(20),
-                                        decoration: BoxDecoration(
-                                          gradient: const LinearGradient(
-                                            colors: [AppColors.primary, AppColors.secondary],
+
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: startPayment,
+                                        style: ElevatedButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(vertical: 16),
+                                          backgroundColor: AppColors.primary,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
                                           ),
-                                          borderRadius: BorderRadius.circular(16),
                                         ),
-                                        child: Column(
-                                          children: [
-                                            Text("Total Amount", style: TextStyle(color: Colors.white70)),
-                                            Text(
-                                              "₹ ${amount.toStringAsFixed(2)}",
-                                              style: AppTextStyles.subtitle(context, color: Colors.white),
-                                            ),
-                                          ],
+                                        child: const Text(
+                                          "Pay Now",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -730,20 +785,8 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: size * 0.25,
-                      child: ElevatedButton(
-                        onPressed: startPayment,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          backgroundColor: AppColors.primary,
-                        ),
-                        child: Text(
-                          "Proceed to Checkout",
-                          style: AppTextStyles.subtitle(context, color: Colors.white),
-                        ),
-                      ),
-                    ),
+
+
                   ],
                 ),
               ),
@@ -754,6 +797,18 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
     );
   }
 
+  Widget _infoTile(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title, style: const TextStyle(color: Colors.grey)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+        ],
+      ),
+    );
+  }
   Widget _row(String title, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),

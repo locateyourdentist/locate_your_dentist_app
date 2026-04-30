@@ -279,8 +279,6 @@ class _CreatePlanState extends State<CreatePlan> {
                             CustomDropdownField(
                               hint: "Select User Type",
                               //icon: Icons.person_outline,
-                              borderColor: AppColors.white,
-                              fillColor: AppColors.grey,
                               items: const [
                                 "Dental Clinic",
                                 "Dental Lab",
@@ -303,8 +301,6 @@ class _CreatePlanState extends State<CreatePlan> {
                             CustomTextField(
                               hint: "Plan Name",
                               controller: planController.planNameController,
-                              borderColor: AppColors.white,
-                              fillColor: AppColors.grey,
                             ),
                             // SizedBox(height:size* 0.01,),
                             // Text('Price Name',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold)),
@@ -316,8 +312,6 @@ class _CreatePlanState extends State<CreatePlan> {
                                   child: CustomTextField(
                                     hint: "Price",
                                     controller: planController.priceController,
-                                    borderColor: AppColors.white,
-                                    fillColor: AppColors.grey,
                                     keyboardType: TextInputType.number,
                                     maxLength: 4,
                                   ),
@@ -327,8 +321,6 @@ class _CreatePlanState extends State<CreatePlan> {
                                   child: CustomTextField(
                                     hint: "Mark Price",
                                     controller:planController.markPriceController,
-                                    borderColor: AppColors.white,
-                                    fillColor: AppColors.grey,
                                     keyboardType: TextInputType.number,
                                     maxLength: 4,
                                   ),
@@ -342,8 +334,6 @@ class _CreatePlanState extends State<CreatePlan> {
                                   child: CustomTextField(
                                     hint: "Duration months",
                                     controller: planController.durationMonthsController,
-                                    borderColor: AppColors.white,
-                                    fillColor: AppColors.grey,
                                     maxLength: 2,
                                     keyboardType: TextInputType.number,
                                   ),
@@ -353,8 +343,6 @@ class _CreatePlanState extends State<CreatePlan> {
                                   child: CustomTextField(
                                     hint: "Duration Days",
                                     controller: planController.durationDaysController,
-                                    borderColor: AppColors.white,
-                                    fillColor: AppColors.grey,
                                     maxLength: 3,
                                     keyboardType: TextInputType.number,
                                   ),
@@ -377,8 +365,6 @@ class _CreatePlanState extends State<CreatePlan> {
                                           child: CustomTextField(
                                             hint: "Number of Image",
                                             controller: planController.imageCountController,
-                                            borderColor: AppColors.white,
-                                            fillColor: AppColors.grey,
                                             maxLength: 1,
                                             keyboardType: TextInputType.number,
                                           ),
@@ -386,13 +372,11 @@ class _CreatePlanState extends State<CreatePlan> {
                                         SizedBox(
                                           width:size*0.4,
                                           child: CustomTextField(
-                                                                            hint: "Image Size (MB)",
-                                                                            controller: planController.imageSizeController,
-                                            borderColor: AppColors.white,
-                                            fillColor: AppColors.grey,
-                                                                            maxLength: 3,
-                                                                            keyboardType: TextInputType.number,
-                                                                          ),
+                                            hint: "Image Size (MB)",
+                                            controller: planController.imageSizeController,
+                                            maxLength: 3,
+                                            keyboardType: TextInputType.number,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -405,8 +389,6 @@ class _CreatePlanState extends State<CreatePlan> {
                                           child: CustomTextField(
                                             hint: "Number Of Video",
                                             controller: planController.videoCountController,
-                                            borderColor: AppColors.white,
-                                            fillColor: AppColors.grey,
                                             maxLength: 1,
                                             keyboardType: TextInputType.number,
                                           ),
@@ -416,8 +398,6 @@ class _CreatePlanState extends State<CreatePlan> {
                                           child: CustomTextField(
                                             hint: "Video Size (MB)",
                                             controller: planController.videoSizeController,
-                                            borderColor: AppColors.white,
-                                            fillColor: AppColors.grey,
                                             maxLength: 3,
                                             keyboardType: TextInputType.number,
                                           ),
@@ -433,8 +413,6 @@ class _CreatePlanState extends State<CreatePlan> {
                               CustomTextField(
                               hint: "Job Count",
                               controller: planController.countDaysController,
-                                borderColor: AppColors.white,
-                                fillColor: AppColors.grey,
                               maxLength: 3,
                               keyboardType: TextInputType.number,
                             ),

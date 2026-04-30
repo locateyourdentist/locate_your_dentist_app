@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -13,6 +14,7 @@ import 'package:locate_your_dentist/modules/profiles/pdf_path_view_page.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
 import '../../common_widgets/color_code.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -26,6 +28,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final _formKeyEditJobProfile = GlobalKey<FormState>();
   final jobController=Get.put(JobController());
   final loginController=Get.put(LoginController());
+  late QuillController _controller;
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode _focusNode = FocusNode();
   Future<void> pickSingleImage() async {
     final XFile? pickedImage = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -38,6 +43,58 @@ class _EditProfilePageState extends State<EditProfilePage> {
       loginController.images.add(file);
       loginController.editImages.clear();
       loginController.update();
+    }
+  }
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta;
+
+      if (data == null || data.toString().trim().isEmpty) {
+        delta = [
+          {"insert": "\n"}
+        ];
+      }
+
+      else if (data is String) {
+        final trimmed = data.trim();
+
+        if (trimmed.isEmpty || trimmed == "[]") {
+          delta = [
+            {"insert": "\n"}
+          ];
+        } else {
+          final decoded = jsonDecode(trimmed);
+
+          if (decoded is List && decoded.isNotEmpty) {
+            delta = List<Map<String, dynamic>>.from(decoded);
+          } else {
+            delta = [
+              {"insert": "\n"}
+            ];
+          }
+        }
+      }
+
+      else if (data is List && data.isNotEmpty) {
+        delta = List<Map<String, dynamic>>.from(data);
+      }
+
+      else {
+        delta = [
+          {"insert": "\n"}
+        ];
+      }
+
+      _controller.document = Document.fromJson(delta);
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller.document = Document.fromJson([
+        {"insert": "\n"}
+      ]);
+
+      setState(() {});
     }
   }
   Future<void> pickSingleImage1() async {
@@ -138,7 +195,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      ViewPDFPage(pdfUrl: AppConstants.baseUrl + loginController.userData.first.certificates[0]??""),
+                      ViewPDFPage(pdfUrl:loginController.userData.first.certificates[0]??""),
                 ),
               );
             },
@@ -217,8 +274,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState(){
     super.initState();
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
+    _refresh();
+  }
+  Future<void> _refresh() async {
+    //loginController.getProfileByUserId(userId!, context);
+    await loginController.fetchStates();
     loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-     jobController.getJobCategoryLists("",context);
+    jobController.getJobCategoryLists("",context);
+    loadJobDescription(loginController.descriptionData);
   }
   @override
   Widget build(BuildContext context) {
@@ -328,10 +399,51 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 controller: loginController.pinCodeController,
               ),
               const SizedBox(height: 20),
-              CustomTextField(
-                hint: "About Me",
-                icon: Icons.location_on,maxLines: 5,
-                controller: loginController.descriptionController,
+              // CustomTextField(
+              //   hint: "About Me",
+              //   icon: Icons.location_on,maxLines: 5,
+              //   controller: loginController.descriptionController,
+              // ),
+              Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),),
+                    height: size*0.4,
+                    width: double.infinity,
+                    child: QuillSimpleToolbar(
+                      controller: _controller,
+                      config: QuillSimpleToolbarConfig(
+                        // embedButtons: FlutterQuillEmbeds.toolbarButtons(),
+                        embedButtons: [],
+                        showBackgroundColorButton: false,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: size*0.5,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                      ),),
+                    child: QuillEditor(
+                      controller: _controller,
+                      scrollController: _scrollController,
+                      focusNode: _focusNode,
+                      config: QuillEditorConfig(
+                        placeholder: "Enter  description...",
+                        padding: const EdgeInsets.all(16),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: size*0.03,),
               sectionTitle( "Select Preferences Job Categories",size),
@@ -518,38 +630,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                  },
                                ),
                              ),
-                     // SizedBox(height: size * 0.03),
-
-                      // SizedBox(
-                      //   height: size * 0.5,
-                      //   child: GetBuilder<LoginController>(
-                      //     builder: (controller) {
-                      //       if (controller.logoImages.isNotEmpty) {
-                      //         final file = controller.logoImages.first;
-                      //         return _buildSingleImageWidget1(file: file);
-                      //       }
-                      //       if (controller.logoImage.isNotEmpty) {
-                      //         final img = controller.logoImage.first;
-                      //         print('job img url${img.url}}');
-                      //         return _buildSingleImageWidget1(url: "${img.url}");
-                      //       }
-                      //
-                      //       return GestureDetector(
-                      //         onTap: () => pickSingleImage1(),
-                      //         child: Container(
-                      //           decoration: BoxDecoration(
-                      //             borderRadius: BorderRadius.circular(10),
-                      //             border: Border.all(color: Colors.grey),
-                      //             color: Colors.grey.shade200,
-                      //           ),
-                      //           child: const Center(
-                      //             child: Icon(Icons.add, size: 40, color: Colors.grey),
-                      //           ),
-                      //         ),
-                      //       );
-                      //     },
-                      //   ),
-                      // ),
 
                       SizedBox(height: size * 0.06),
                       Text('Upload Resume',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),

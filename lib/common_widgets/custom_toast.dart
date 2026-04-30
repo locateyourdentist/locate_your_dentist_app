@@ -3,13 +3,17 @@ import 'package:locate_your_dentist/common_widgets/color_code.dart';
 double getResponsiveFontSize(BuildContext context) {
   double width = MediaQuery.of(context).size.width;
 
+  double base;
+
   if (width < 600) {
-    return 14; // Mobile
+    base = 14; // mobile
   } else if (width < 1000) {
-    return 18; // Tablet
+    base = 16; // tablet
   } else {
-    return 12; // Web/Desktop
+    base = 15; // desktop
   }
+
+  return base;
 }
 void showCustomToast(
     BuildContext context,
@@ -48,7 +52,7 @@ void showCustomToast(
               style: TextStyle(
                 color: textColor ?? Colors.white,
                 fontSize: getResponsiveFontSize(context),
-               // fontSize: MediaQuery.of(context).size.width * 0.02,
+             //  fontSize: MediaQuery.of(context).size.width * 0.006,
                 fontWeight: FontWeight.w400,
               ),
               textAlign: TextAlign.center,

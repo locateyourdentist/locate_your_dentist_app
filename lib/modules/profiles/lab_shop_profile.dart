@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -10,10 +12,10 @@ import 'package:locate_your_dentist/common_widgets/watsapp_utils.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/product_services/service_controller.dart';
 import 'package:locate_your_dentist/modules/profiles/view_profileImages.dart';
-import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:get/get.dart';
 import '../../common_widgets/common_widget_all.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
   class LabProfile extends StatefulWidget {
   const LabProfile({super.key});
@@ -28,17 +30,60 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
   late TabController _tabController;
   final serviceController=Get.put(ServiceController());
   final userType = Api.userInfo.read('userType')?.toString() ?? "";
+  final ScrollController _scrollController = ScrollController();
+  late QuillController _controller;
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta = [];
+
+      if (data == null) {
+        delta = [{"insert": "\n"}];
+      }
+
+      else if (data is List) {
+        delta = List<Map<String, dynamic>>.from(data);
+      }
+
+      else if (data is String) {
+        delta = List<Map<String, dynamic>>.from(jsonDecode(data));
+      }
+
+      _controller = QuillController(
+        document: Document.fromJson(delta),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller = QuillController.basic();
+      setState(() {});
+    }
+  }
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length:userType=='superAdmin'? 2:1, vsync: this,);
     //loginController.getProfileByUserId(Api.userInfo.read('selectUserId')??"", context);
-    _loadPlanStatus();
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
+    _refresh();
   }
   void _loadPlanStatus() async {
      planActive = await getPlanActive();
     print('planStatus $planActive');
   }
+  Future<void> _refresh() async {
+    _loadPlanStatus();
+    await serviceController.getServiceListAdmin(Api.userInfo.read('selectUId')??"", context);
+    await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);  }
   @override
   void dispose() {
     _tabController.dispose();
@@ -67,30 +112,30 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
     String userId=Api.userInfo.read('userId')??"";
     String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
     return Scaffold(
-      appBar: AppBar(
-          centerTitle: true,backgroundColor: AppColors.white,
-          // title: Text(loginController.userData.isNotEmpty ? "${loginController.userData.first.userType.split(" ").last} Profile" : "Profile",
-          //   style: AppTextStyles.subtitle(context,color: AppColors.black),),automaticallyImplyLeading: true,
-          iconTheme: IconThemeData(color: AppColors.black,size: size*0.05),
-          actions: [
-            if(userType=='admin'||userType=='superAdmin'||userId==editUserId)
-              GestureDetector(
-                onTap: ()async{
-                 //await loginController.getProfileByUserId(loginController.userData.first.userId??"", context);
-                  Get.toNamed('/clinicEditProfile');
-                  //Get.toNamed('/clinicEditProfile',arguments: {"userId":loginController.userData.first.userId??""});
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(Icons.edit,color: AppColors.primary,size: size*0.05,),
-                    SizedBox(height: size * 0.03),
-                    Text('Edit',style: TextStyle(color: AppColors.primary,fontSize: size*0.04,fontWeight: FontWeight.bold),)
-                  ],
-                ),
-              ),]
-      ),
+      // appBar: AppBar(
+      //     centerTitle: true,backgroundColor: AppColors.white,
+      //     // title: Text(loginController.userData.isNotEmpty ? "${loginController.userData.first.userType.split(" ").last} Profile" : "Profile",
+      //     //   style: AppTextStyles.subtitle(context,color: AppColors.black),),automaticallyImplyLeading: true,
+      //     iconTheme: IconThemeData(color: AppColors.black,size: size*0.05),
+      //     actions: [
+      //       if(userType=='admin'||userType=='superAdmin'||userId==editUserId)
+      //         GestureDetector(
+      //           onTap: ()async{
+      //            //await loginController.getProfileByUserId(loginController.userData.first.userId??"", context);
+      //             Get.toNamed('/clinicEditProfile');
+      //             //Get.toNamed('/clinicEditProfile',arguments: {"userId":loginController.userData.first.userId??""});
+      //           },
+      //           child: Row(
+      //             mainAxisAlignment: MainAxisAlignment.center,
+      //             crossAxisAlignment: CrossAxisAlignment.center,
+      //             children: [
+      //               Icon(Icons.edit,color: AppColors.primary,size: size*0.05,),
+      //               SizedBox(height: size * 0.03),
+      //               Text('Edit',style: TextStyle(color: AppColors.primary,fontSize: size*0.04,fontWeight: FontWeight.bold),)
+      //             ],
+      //           ),
+      //         ),]
+      // ),
       body: GetBuilder<LoginController>(
         builder: (controller) {
           return SafeArea(
@@ -109,22 +154,78 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                 if(loginController.userData.isNotEmpty)
                 Column(
                   children: [
-                    MediaCarousel(
-                      images: loginController.editImages.isNotEmpty
-                          ? loginController.editImages
-                          .where((img) =>
-                      img.url != null &&
-                          img.url!.startsWith('http') &&
-                          !img.url!.contains('undefined'))
-                          .toList() : [],
-                      // images: loginController.editImages
-                      //     .where((img) =>
-                      // img.url != null &&
-                      //     img.url!.startsWith('http') &&
-                      //     !img.url!.contains('undefined'))
-                      //     .toList(),
-                    ),
+                    // MediaCarousel(
+                    //   images: loginController.editImages.isNotEmpty
+                    //       ? loginController.editImages
+                    //       .where((img) =>
+                    //   img.url != null &&
+                    //       img.url!.startsWith('http') &&
+                    //       !img.url!.contains('undefined'))
+                    //       .toList() : [],
+                    // ),
+                    Stack(
+                      children: [
 
+                        MediaCarousel(
+                          images: loginController.editImages
+                              .where((img) =>
+                          img.url != null &&
+                              img.url!.startsWith('http') &&
+                              !img.url!.contains('undefined'))
+                              .toList(),
+                        ),
+
+                        Positioned(
+                          top: 10,
+                          left: 10,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.black.withOpacity(0.4),
+                            child: IconButton(
+                              icon: const Icon(Icons.arrow_back,
+                                  color: Colors.white),
+                              onPressed: () {
+                                Get.back();
+                              },
+                            ),
+                          ),
+                        ),
+
+                        if (userType == 'admin' ||
+                            userType == 'superAdmin' ||
+                            userId == editUserId)
+                          Positioned(
+                            top: 10,
+                            right: 10,
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.toNamed('/clinicEditProfile');
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.4),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  children: const [
+                                    Icon(Icons.edit,
+                                        color: Colors.white, size: 18),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      "Edit",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                            Container(
                       width: double.infinity,
                       transform: Matrix4.translationValues(0.0, -30.0, 0.0),
@@ -336,7 +437,22 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                               ),
                             ),
                             const SizedBox(height: 10),
-                            Text( loginController.userData.first.details["description"]??"A dental clinic provides comprehensive oral health care services, including routine check-ups, teeth cleaning, preventive care, restorative treatments, and cosmetic dentistry. The clinic is dedicated to maintaining healthy smiles through modern equipment, skilled professionals, and a comfortable, patient-friendly environment.",
+                            // Text( loginController.userData.first.details["description"]??"A dental clinic provides comprehensive oral health care services, including routine check-ups, teeth cleaning, preventive care, restorative treatments, and cosmetic dentistry. The clinic is dedicated to maintaining healthy smiles through modern equipment, skilled professionals, and a comfortable, patient-friendly environment.",
+                            // ),
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child:  IgnorePointer(
+                                  child: QuillEditor(
+                                    controller: _controller,
+                                    scrollController: _scrollController,
+                                    focusNode: FocusNode(),
+                                    config: const QuillEditorConfig(
+                                      showCursor: false,
+                                      expands: false,
+                                    ),
+                                  ),
+                                )
+                              //Text( getPlainText(job.jobDescription), style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
                             ),
                             const SizedBox(height: 20),
 
@@ -365,8 +481,11 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                         Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
                                       if(serviceController.isLoading)
                                         const CircularProgressIndicator(color: AppColors.primary,),
-                                      if(serviceController.serviceList.isNotEmpty&&(planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"]==true||
-                                          isAdminUser||userId==editUserId))
+                                      if (serviceController.serviceList.isNotEmpty && (
+                                          planActive == true && loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"] == true ||
+                                              isAdminUser == true || userId == editUserId))
+                                      // if(serviceController.serviceList.isNotEmpty&&(planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"]==true||
+                                      //     isAdminUser||userId==editUserId))
                                        // Text('Services',style: AppTextStyles.body(context,fontWeight: FontWeight.bold),),
                                       GetBuilder<ServiceController>(
                                           builder: (controller) {
@@ -377,9 +496,9 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                                   physics: const NeverScrollableScrollPhysics(),
                                                   itemBuilder: (BuildContext context, int index) {
                                                     final service=serviceController.serviceList[index];
-                                                    print("${AppConstants.baseUrl}${service.image.toString()??""}");
+                                                    print("${service.image.toString()??""}");
                                                     if (service.image != null && service.image!.isNotEmpty) {
-                                                      imgUrl = AppConstants.baseUrl + service.image!.first.replaceAll("\\", "/");
+                                                      imgUrl = service.image!.first.replaceAll("\\", "/");
                                                     }
                                                     return AnimationConfiguration.staggeredList(
                                                       position: index,

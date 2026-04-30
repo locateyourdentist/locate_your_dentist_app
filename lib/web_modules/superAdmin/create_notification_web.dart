@@ -105,7 +105,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
-        height: s * 0.08,
+        height: s * 0.03,
         title: "LYD",
         onLogout: () {
         },

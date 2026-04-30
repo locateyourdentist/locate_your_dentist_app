@@ -18,29 +18,18 @@ class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
     final size = MediaQuery.of(context).size.height;
 
     if (widget.imageUrls.isEmpty) {
-      return SizedBox();
-      //   Container(
-      //   height: size * 0.4,
-      //   width: double.infinity,
-      //   decoration: BoxDecoration(
-      //     color: Colors.grey[200],
-      //     borderRadius: BorderRadius.circular(12),
-      //   ),
-      //   child:  Center(
-      //     child: Icon(Icons.image_not_supported, size: size*0.03, color: Colors.grey),
-      //   ),
-      // );
+      return const SizedBox();
     }
 
-    return Stack(
-      alignment: Alignment.bottomCenter,
+    return Column(
       children: [
         CarouselSlider(
           options: CarouselOptions(
             height: size * 0.4,
             autoPlay: true,
-            enlargeCenterPage: false,
-            viewportFraction: 1.0,
+            enlargeCenterPage: true,
+            viewportFraction: 0.33,
+            autoPlayInterval: const Duration(seconds: 3),
             onPageChanged: (index, reason) {
               setState(() {
                 _currentIndex = index;
@@ -48,38 +37,53 @@ class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
             },
           ),
           items: widget.imageUrls.map((url) {
-            return GestureDetector(
-              onTap: () {
-                Get.toNamed('/viewImagePage', arguments: {'url': url});
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  url,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  )
+                ],
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  Get.toNamed('/viewImagePage', arguments: {'url': url});
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
                 ),
               ),
             );
           }).toList(),
         ),
-        Positioned(
-          bottom: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: widget.imageUrls.asMap().entries.map((entry) {
-              return Container(
-                width: 8.0,
-                height: 8.0,
-                margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(
-                      _currentIndex == entry.key ? 0.9 : 0.4),
-                ),
-              );
-            }).toList(),
-          ),
+
+        const SizedBox(height: 10),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: widget.imageUrls.asMap().entries.map((entry) {
+            return Container(
+              width: _currentIndex == entry.key ? 10 : 8,
+              height: _currentIndex == entry.key ? 10 : 8,
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _currentIndex == entry.key
+                    ? Colors.black
+                    : Colors.grey,
+              ),
+            );
+          }).toList(),
         ),
       ],
     );

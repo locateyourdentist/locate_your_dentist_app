@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class ViewJobPageWeb extends StatefulWidget {
   const ViewJobPageWeb({super.key});
@@ -24,9 +26,48 @@ class ViewJobPageWeb extends StatefulWidget {
 class _ViewJobPageWebState extends State<ViewJobPageWeb> {
   final loginController = Get.put(LoginController());
   final jobController = Get.put(JobController());
+  final ScrollController _scrollController = ScrollController();
+  late QuillController _controller;
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta = [];
+
+      if (data == null) {
+        delta = [{"insert": "\n"}];
+      }
+
+      else if (data is List) {
+        delta = List<Map<String, dynamic>>.from(data);
+      }
+
+      else if (data is String) {
+        delta = List<Map<String, dynamic>>.from(jsonDecode(data));
+      }
+
+      _controller = QuillController(
+        document: Document.fromJson(delta),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller = QuillController.basic();
+      setState(() {});
+    }
+  }
   @override
   void initState() {
     super.initState();
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) => _refresh());
   }
   Future<void> _refresh() async {
@@ -34,6 +75,8 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
     await jobController.getJobsById(selectJobId, context);
     await jobController.getAppliedJobsAdmin(selectJobId, context);
     await jobController.getJobSeekersAppliedLists(Api.userInfo.read('userId') ?? "", context);
+    loadJobDescription(
+        jobController.jobDescriptionData);
   }
   Widget _networkImageSafe(String? url, {required double width, required double height, BorderRadius? borderRadius, BoxFit fit = BoxFit.cover}) {
     final br = borderRadius ?? BorderRadius.circular(10);
@@ -67,12 +110,7 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: CommonWebAppBar(
-        height: screenWidth * 0.08,
-        title: "LOCATE YOUR DENTIST",
-        onLogout: () {},
-        onNotification: () {},
-      ),
+      appBar: buildAppBar(context),
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: GetBuilder<JobController>(
@@ -91,13 +129,18 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                 : "";
             final targetJobId = job.jobId ?? "";
             final isJobApplied = jobController.jobSeekersAppliedLists.any((j) => j.jobId.toString() == targetJobId);
+            String getPlainText(List<Map<String, dynamic>>? delta) {
+              if (delta == null) return "";
+              return delta.map((e) => e['insert'] ?? "").join();
+            }
             return ConstrainedBox(
               constraints: BoxConstraints(minHeight: screenHeight),
               child: SafeArea(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const AdminSideBar(),
+                    if( Api.userInfo.read('token')!=null)
+                      const AdminSideBar(),
                     Expanded(
                       child: Center(
                         child: DefaultTabController(
@@ -138,7 +181,6 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                   
                                       const SizedBox(height: 12),
                                   
-                                      // Job info container
                                       Container(
                                         width: double.infinity,
                                         padding: const EdgeInsets.all(16),
@@ -149,7 +191,6 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            // Title + status
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
@@ -191,60 +232,56 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                             const SizedBox(height: 12),
 
                                           Center(
-                                            child: SizedBox(
-                                              height: screenWidth*0.03,
-                                              width: screenWidth*0.12,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  Flexible(
-                                                    child: Text(
-                                                      "Salary : ${job.salary ?? ''}",
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: AppTextStyles.caption(
-                                                        context,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: AppColors.black,
-                                                      ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Flexible(
+                                                  child: Text(
+                                                    "Salary : ${job.salary ?? ''}",
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: AppTextStyles.caption(
+                                                      context,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: AppColors.black,
                                                     ),
                                                   ),
-                                                  const SizedBox(width: 5),
-                                                  GetBuilder<LoginController>(
-                                                    builder: (controller) {
-                                                      bool isUserActive = controller.userData.isNotEmpty &&
-                                                          controller.userData.first.isActive;
+                                                ),
+                                                const SizedBox(width: 5),
+                                                GetBuilder<LoginController>(
+                                                  builder: (controller) {
+                                                    bool isUserActive = controller.userData.isNotEmpty &&
+                                                        controller.userData.first.isActive;
 
-                                                      return Switch(
-                                                        value: job.isActive.toString() == 'true',
-                                                        activeColor:
-                                                        job.isActive.toString() == 'true' ? AppColors.primary : Colors.red,
-                                                        activeTrackColor:job.isActive.toString()=='true'?
-                                                        AppColors.primary.withOpacity(0.5):Colors.red,
-                                                        inactiveThumbColor: Colors.red,
-                                                        inactiveTrackColor: Colors.grey.shade400,
-                                                        onChanged: (value) {
-                                                          showDeactivateConfirmDialog(
-                                                            context: context,
-                                                            isActivating: value,
-                                                            onConfirm: () async {
-                                                              print('jhg${job.isActive.toString()}');
-                                                              job.isActive.toString()=='true'?
-                                                              await jobController.updateApplicationStatusAdmin(
-                                                                job.jobId.toString(), 'false', context):await jobController.updateApplicationStatusAdmin(
-                                                                  job.jobId.toString(),'true', context);
-                                                              await jobController.getJobsById(job.jobId.toString(), context);
-                                                              await jobController.getAppliedJobsAdmin(job.jobId.toString(), context);
-                                                              jobController.update();
-                                                            },
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
+                                                    return Switch(
+                                                      value: job.isActive.toString() == 'true',
+                                                      activeColor:
+                                                      job.isActive.toString() == 'true' ? AppColors.primary : Colors.red,
+                                                      activeTrackColor:job.isActive.toString()=='true'?
+                                                      AppColors.primary.withOpacity(0.5):Colors.red,
+                                                      inactiveThumbColor: Colors.red,
+                                                      inactiveTrackColor: Colors.grey.shade400,
+                                                      onChanged: (value) {
+                                                        showDeactivateConfirmDialog(
+                                                          context: context,
+                                                          isActivating: value,
+                                                          onConfirm: () async {
+                                                            print('jhg${job.isActive.toString()}');
+                                                            job.isActive.toString()=='true'?
+                                                            await jobController.updateApplicationStatusAdmin(
+                                                              job.jobId.toString(), 'false', context):await jobController.updateApplicationStatusAdmin(
+                                                                job.jobId.toString(),'true', context);
+                                                            await jobController.getJobsById(job.jobId.toString(), context);
+                                                            await jobController.getAppliedJobsAdmin(job.jobId.toString(), context);
+                                                            jobController.update();
+                                                          },
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ],
                                             ),
                                           ),
                                             const SizedBox(height: 12),
@@ -274,10 +311,25 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                                 children: [
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
-                                                    child: Text(job.jobDescription ?? '', style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
+                                                    child:  IgnorePointer(
+                                                      child: QuillEditor(
+                                                        controller: _controller,
+                                                        scrollController: _scrollController,
+                                                        focusNode: FocusNode(),
+                                                        config: const QuillEditorConfig(
+                                                          showCursor: false,
+                                                          expands: false,
+                                                        ),
+                                                      ),
+                                                    )
+                                                    // QuillEditor.basic(
+                                                    //   controller: _controller,
+                                                    //   readOnly: true,
+                                                    // )
+
+                                                    //Text( getPlainText(job.jobDescription), style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
                                                   ),
                                   
-                                                  // Clinic Description or Applicants List
                                                   Api.userInfo.read('userType') == 'Job Seekers'
                                                       ? Padding(
                                                     padding: const EdgeInsets.all(8.0),

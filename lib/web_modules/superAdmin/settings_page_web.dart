@@ -128,7 +128,7 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
         //backgroundColor: const Color(0xffF5F7FB),
         backgroundColor: AppColors.scaffoldBg,
         appBar: CommonWebAppBar(
-          height: s * 0.08,
+          height: s * 0.03,
           title: "LYD",
           onLogout: () {
           },
@@ -202,112 +202,114 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
                                   // ],
                                 ),
 
-                                child: Column(
-                                  children: [
-                                    Form(
-                                      key: _formKeyChangePasswordWeb1,
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            decoration: const BoxDecoration(
-                                              gradient: LinearGradient(
-                                                colors: [ AppColors.scaffoldBg, AppColors.scaffoldBg,],
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                              ),
-                                            ),
-                                          ),
-
-                                          Center(
-                                            child: Container(
-                                              width: double.infinity,
-                                              //width: size.width > 800 ? 450 : size.width * 0.85,
-                                              padding: const EdgeInsets.all(40),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.white,
-                                                //.withOpacity(0.15),
-                                                borderRadius: BorderRadius.circular(0),
-                                                // boxShadow: [
-                                                //   BoxShadow(
-                                                //     color: Colors.black.withOpacity(0.2),
-                                                //     blurRadius: 20,
-                                                //     offset: const Offset(0, 10),
-                                                //   ),
-                                                // ],
-                                                border: Border.all(
-                                                  color: Colors.white,
-                                                  //.withOpacity(0.3),
-                                                  width: 1,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Form(
+                                        key: _formKeyChangePasswordWeb1,
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              decoration: const BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [ AppColors.scaffoldBg, AppColors.scaffoldBg,],
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
                                                 ),
                                               ),
-                                              child:  GetBuilder<LoginController>(
-                                                  init: loginController,
-                                                  builder: (controller) {
-                                                    return Column(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        SizedBox(
-                                                          height: 80,
-                                                          width: 80,
-                                                          child: ClipOval(
-                                                            child: loginController.appLogoUrl != null
-                                                                ? Image.network(
-                                                              loginController.appLogoUrl!,
-                                                              fit: BoxFit.cover,
-                                                              width: 80,
-                                                              height: 80,
-                                                            )
-                                                                : Container(
-                                                              color: Colors.white.withOpacity(0.3),
-                                                              child: const Icon(
-                                                                Icons.medical_services,
-                                                                size: 50,
-                                                                color: Colors.white,
+                                            ),
+                                  
+                                            Center(
+                                              child: Container(
+                                                width: double.infinity,
+                                                //width: size.width > 800 ? 450 : size.width * 0.85,
+                                                padding: const EdgeInsets.all(40),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.white,
+                                                  //.withOpacity(0.15),
+                                                  borderRadius: BorderRadius.circular(0),
+                                                  // boxShadow: [
+                                                  //   BoxShadow(
+                                                  //     color: Colors.black.withOpacity(0.2),
+                                                  //     blurRadius: 20,
+                                                  //     offset: const Offset(0, 10),
+                                                  //   ),
+                                                  // ],
+                                                  border: Border.all(
+                                                    color: Colors.white,
+                                                    //.withOpacity(0.3),
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child:  GetBuilder<LoginController>(
+                                                    init: loginController,
+                                                    builder: (controller) {
+                                                      return Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 80,
+                                                            width: 80,
+                                                            child: ClipOval(
+                                                              child: loginController.appLogoUrl != null
+                                                                  ? Image.network(
+                                                                loginController.appLogoUrl!,
+                                                                fit: BoxFit.cover,
+                                                                width: 80,
+                                                                height: 80,
+                                                              )
+                                                                  : Container(
+                                                                color: Colors.white.withOpacity(0.3),
+                                                                child: const Icon(
+                                                                  Icons.medical_services,
+                                                                  size: 50,
+                                                                  color: Colors.white,
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(height: 20),
-
-                                                        Text(
-                                                          "Change Password",
-                                                          style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                                                        //const SizedBox(height: 10),
-                                                        // Text(
-                                                        //   "Forgot Password",
-                                                        //   style: AppTextStyles.caption(context,color: AppColors.white),),
-                                                        // const SizedBox(height: 30),
-                                                        const SizedBox(height: 20),
-
-                                                        CustomTextField(
-                                                          hint: "Old Password",
-                                                          icon: Icons.lock,
-                                                          isPassword: true,
-                                                          controller: loginController.oldPasswordController,
-                                                          validator: (value) {
-                                                            if (value == null || value.isEmpty) return "Password cannot be empty";
-                                                            // if (value.length < 6) return "Password must be at least 6 characters";
-                                                            return null;
-                                                          },
-                                                        ),
-                                                        const SizedBox(height: 20),
-                                                        passwordField(),
-                                                        const SizedBox(height: 20),
-                                                        confirmPasswordField(),
-                                                        const SizedBox(height: 30),
-                                                        submitButton(),
-                                                        const SizedBox(height: 20),
-
-                                                      ],
-                                                    );
-                                                  }
+                                                          const SizedBox(height: 20),
+                                  
+                                                          Text(
+                                                            "Change Password",
+                                                            style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
+                                                          //const SizedBox(height: 10),
+                                                          // Text(
+                                                          //   "Forgot Password",
+                                                          //   style: AppTextStyles.caption(context,color: AppColors.white),),
+                                                          // const SizedBox(height: 30),
+                                                          const SizedBox(height: 20),
+                                  
+                                                          CustomTextField(
+                                                            hint: "Old Password",
+                                                            icon: Icons.lock,
+                                                            isPassword: true,
+                                                            controller: loginController.oldPasswordController,
+                                                            validator: (value) {
+                                                              if (value == null || value.isEmpty) return "Password cannot be empty";
+                                                              // if (value.length < 6) return "Password must be at least 6 characters";
+                                                              return null;
+                                                            },
+                                                          ),
+                                                          const SizedBox(height: 20),
+                                                          passwordField(),
+                                                          const SizedBox(height: 20),
+                                                          confirmPasswordField(),
+                                                          const SizedBox(height: 30),
+                                                          submitButton(),
+                                                          const SizedBox(height: 20),
+                                  
+                                                        ],
+                                                      );
+                                                    }
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                        ],
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
 

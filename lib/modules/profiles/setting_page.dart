@@ -51,6 +51,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
         return [
           {"title": "Dashboard", "page": "/superAdminDashboard"},
           {"title": "Add admin", "page": "/registerPage"},
+          {"title": "User List", "page": "/userTypeListPage"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
           {"title": "Reports", "page": "/viewReportPage"},
           {"title": "Create Scrolling Ads Post", "page": "/createPostImages"},
@@ -60,16 +61,19 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "change Logo", "page": "/changLogoImagePage"},
           {"title": "Add JobCategory", "page": "/addJobCategoryPage"},
           {"title": "AddCompany", "page": "/addCompanyPage"},
+          {"title": "Add Legal Pages", "page": "/addLegalPageMobile"},
           {"title": "About Us", "page": "/aboutUsPage"},
+          {"title": "Contact Us", "page": "/contactUsMobilePage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'admin':
         return [
           {"title": "Dashboard", "page": "/superAdminDashboard"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
-          {"title": "My Purchases", "page": "/viewInvoiceListPage"},
+          {"title": "User List", "page": "/userTypeListPage"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "About Us", "page": "/aboutUsPage"},
+          {"title": "Contact Us", "page": "/contactUsMobilePage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'Dental Clinic':
@@ -84,6 +88,8 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "Contact Form", "page": "/viewSenderContactList"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "Add Branches", "page": "/addBranchesPage"},
+          {"title": "About Us", "page": "/aboutUsPage"},
+          {"title": "Contact Us", "page": "/contactUsMobilePage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'Dental Shop':
@@ -96,6 +102,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "Add Profile", "page": "/clinicEditProfile"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "About Us", "page": "/aboutUsPage"},
+          {"title": "Contact Us", "page": "/contactUsMobilePage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'Dental Mechanic':
@@ -109,6 +116,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "Services", "page": "/viewServiceList"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "About Us", "page": "/aboutUsPage"},
+          {"title": "Contact Us", "page": "/contactUsMobilePage"},
           {"title": "Logout", "page": "/logout"},
         ];
       case 'Job Seekers':
@@ -119,6 +127,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "Jobs", "page": "/filterPageJobSeekersPage"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "About Us", "page": "/aboutUsPage"},
+          {"title": "Contact Us", "page": "/contactUsMobilePage"},
           {"title": "Logout", "page": "/logout"},
         ];
       default:
@@ -264,7 +273,21 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
                                     } else if (title == "Jobs") {
                                       await jobController.getJobListJobSeekers(search: '',context: context);
                                       Get.toNamed(setting['page']);
-                                    } else {
+                                    }
+                                    else if (title == "User List") {
+                                      if( Api.userInfo.read('userType')=="superAdmin") {
+                                        await   loginController.getProfileDetails('', '', '', '', '','','','','',  context);
+                                      }
+                                      if( Api.userInfo.read('userType')=="admin") {
+                                        await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
+                                      }
+                                      Get.toNamed('/userTypeListPage');
+                                    }
+                                else if (title == "Profile") {
+                                      Api.userInfo.write('selectUId',userId);
+                                Get.toNamed(setting['page']);
+                                     }
+                                    else {
                                       Get.toNamed(setting['page']);
                                     }
                                   },

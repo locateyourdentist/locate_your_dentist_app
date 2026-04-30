@@ -81,7 +81,7 @@ class _JobSeekerDashboardWebState extends State<JobSeekerDashboardWeb> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LYD",
         onLogout: () {
         },

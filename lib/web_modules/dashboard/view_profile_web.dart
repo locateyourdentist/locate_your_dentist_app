@@ -1,15 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
-import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
-import 'package:locate_your_dentist/modules/profiles/jobseeker_edit_profile.dart';
 import 'package:locate_your_dentist/modules/profiles/pdf_path_view_page.dart';
 import 'package:get/get.dart';
-import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class ViewWebProfilePage extends StatefulWidget {
   const ViewWebProfilePage({super.key});
@@ -18,10 +17,60 @@ class ViewWebProfilePage extends StatefulWidget {
 }
 class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
   final loginController = Get.put(LoginController());
+  final ScrollController _scrollController = ScrollController();
+  late QuillController _controller;
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta = [];
+
+      if (data == null) {
+        delta = [{"insert": "\n"}];
+      }
+
+      else if (data is List) {
+        delta = List<Map<String, dynamic>>.from(data);
+      }
+
+      else if (data is String) {
+        delta = List<Map<String, dynamic>>.from(jsonDecode(data));
+      }
+
+      _controller = QuillController(
+        document: Document.fromJson(delta),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller = QuillController.basic();
+      setState(() {});
+    }
+  }
   @override
   void initState() {
     super.initState();
-   // loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+      ),
+    );
+
+    loadData();
+  }
+  Future<void> loadData() async {
+    await loginController.getProfileByUserId(
+      Api.userInfo.read('selectUId') ?? "",
+      context,
+    );
+    if (!mounted) return;
+    final data = loginController.userData.isNotEmpty
+        ? loginController.userData.first.details["description"]
+        : null;
+    loadJobDescription(data);
   }
   @override
   Widget build(BuildContext context) {
@@ -32,15 +81,16 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     final ug = collegeDetails['ugDegree'] ?? {};
     final pg = collegeDetails['pgDegree'] ?? {};
     final experiences = (hasData) ? user!.details['experienceDetails'] ?? [] : [];
-    final description = (hasData && user!.details["description"] != null)
-        ? user.details["description"].toString() : "";
+    // final description = (hasData && user!.details["description"] != null)
+    //     ? user.details["description"].toString() : "";
+    loadJobDescription(user?.details["description"]);
     // final categoryString = (user?.details['jobCategory'] as List<dynamic>?)?.join(", ")
     //     ?? user?.details['jobCategory']?.toString()
     //     ?? "";
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
@@ -68,16 +118,31 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
+                            Flexible(
                               flex: 2,
                               child: _card(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     _sectionTitle("About",size),
+                                    // const SizedBox(height: 10),
+                                    // Text(description, style: AppTextStyles.caption(context)),
+                                    Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child:  IgnorePointer(
+                                          child: QuillEditor(
+                                            controller: _controller,
+                                            scrollController: _scrollController,
+                                            focusNode: FocusNode(),
+                                            config: const QuillEditorConfig(
+                                              showCursor: false,
+                                              expands: false,
+                                            ),
+                                          ),
+                                        )
+                                    ),
+
                                     const SizedBox(height: 10),
-                                    Text(description, style: AppTextStyles.caption(context)),
-                                    const SizedBox(height: 20),
                                     if(Api.userInfo.read('userType')=='Job Seekers')
                                       Column(
                                         mainAxisAlignment: MainAxisAlignment.start,
@@ -258,7 +323,7 @@ Widget _profileHeader(user, double size,dynamic context) {
     child: Row(
       children: [
         CircleAvatar(
-          radius: 50,
+          radius: size*0.15,
           backgroundImage: (user?.images.isNotEmpty ?? false)
               ? NetworkImage(user.images[0])
               : null,
@@ -395,7 +460,6 @@ Widget _headerHero(user, double size,context) {
           ),
         ),
 
-        /// Avatar & Info (Positioned)
         Positioned(
           bottom: -30,
           left: 30,

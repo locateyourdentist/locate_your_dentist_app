@@ -1,4 +1,5 @@
 import 'dart:io' show File, Platform;
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
@@ -14,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:video_compress/video_compress.dart';
+import 'package:geocoding/geocoding.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -153,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
         if (compressed?.file != null) {
           selectedFile = compressed!.file!;
-          print('videeo$selectedFile');
+          print('video$selectedFile');
         }
       }
 
@@ -259,12 +261,35 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
     );
   }
+  Future<String> getAddressFromLatLng(double lat, double lng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+      Placemark place = placemarks.first;
+      return '${place.subLocality}, ${place.locality} ${place.postalCode}';
+    } catch (e) {
+      return '';
+    }
+  }
+  Future<void> getLocation() async {
+    final position = await LocationService.getCurrentLocation();
+
+    if (position != null) {
+      loginController.latitude = position.latitude;
+      loginController.longitude = position.longitude;
+      //  final address = await getAddressFromLatLng(loginController.latitude!, loginController.longitude!);
+      print('latitude ${loginController.latitude}');
+      print('longitude ${loginController.longitude}');
+
+    } else {
+      Get.snackbar('Location', 'Unable to get location');
+    }
+  }
   @override
   void initState(){
     loginController.clearProfileData();
     loginController.fetchStates();
     jobController.getJobCategoryLists("",context);
-    // getLocation();
+     getLocation();
     super.initState();
   }
   @override
@@ -878,8 +903,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                           return _buildSingleImageWidget1(file: file);
                                         }
                                         if (controller.logoImage.isNotEmpty) {
-                                          final AppImage img = controller.logoImage.first;
-                                          return _buildSingleImageWidget1(url: img.url);
+                                          //final AppImage img = controller.logoImage.first;
+                                          final  img = controller.logoImage.first;
+                                          return _buildSingleImageWidget1(url: img);
                                         }
                                         return GestureDetector(
                                           onTap: () => pickSingleImage1(),
@@ -946,6 +972,18 @@ class _RegisterPageState extends State<RegisterPage> {
                                           if(loginController.selectedVillage==null){
                                             showCustomToast(context,"Please Select Village",);
                                           }
+                                          Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
+                                            return await Future.wait(files.map((file) => file.readAsBytes()));
+                                          }
+                                          final imageBytes = loginController.selectedUserType == "Job Seekers"
+                                              ? await convertFilesToBytes(controller.logoImages)
+                                              : await convertFilesToBytes(loginController.images);
+
+                                          final logoBytes = loginController.selectedUserType != "Job Seekers"
+                                              ? await convertFilesToBytes(controller.logoImages)
+                                              : [];
+                                          final certBytes = await convertFilesToBytes(loginController.certificates);
+
                                             //print('usertype${loginController.selectedUserType} married${loginController.selectedMartialStatus!}');
                                             await loginController.registerUser(
                                               userId: "0",
@@ -962,12 +1000,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                               area: loginController.selectedVillage ?? '',
                                               pinCode: loginController.pinCodeController.text,
                                               typeName: loginController.typeNameController.text??"",
-                                              image: loginController.selectedUserType=="Job Seekers"?controller.logoImages ?? []:loginController.images ?? [],
-                                              certificate: loginController.certificates ?? [],
+                                              //image: loginController.selectedUserType=="Job Seekers"?controller.logoImages ?? []:loginController.images ?? [],
+                                              image: loginController.selectedUserType=="Job Seekers"?logoBytes ?? []:imageBytes ?? [],
+                                              certificate: certBytes,
+                                              //loginController.certificates ?? [],
                                               location: loginController.locationController.text,
                                               website: loginController.websiteController.text,
                                               description: loginController.descriptionController.text??"N/A",
-                                              logoImage: loginController.selectedUserType!="Job Seekers"?controller.logoImages ?? []:[],
+                                              //logoImage: loginController.selectedUserType!="Job Seekers"?controller.logoImages ?? []:[],
+                                              logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
                                               latitude: loginController.latitude.toString()??"",
                                               longitude: loginController.longitude.toString()??"",
                                               jobCategory:loginController.selectedCategories,

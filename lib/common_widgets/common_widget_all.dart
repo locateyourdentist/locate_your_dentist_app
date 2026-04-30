@@ -542,17 +542,22 @@ class _AnimatedIconButtonState extends State<AnimatedIconButton>
             Container(
               width: widget.size,
               height: widget.size,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
+              decoration:  BoxDecoration(
+                //shape: BoxShape.circle,
+             borderRadius: BorderRadius.circular(15),
                 color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 8,
-                    offset: Offset(0, 1),
-                  ),
-                ],
+                border: Border.all(
+                  //color: getRandomColor(Jobs.orgName.toString()),
+                    color: Colors.grey.shade300,
+                    width: 1),
               ),
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: Colors.black26,
+                //     blurRadius: 8,
+                //     offset: Offset(0, 1),
+                //   ),
+                // ],
               child: Center(
                 child: Image.asset(
                   widget.iconPath,

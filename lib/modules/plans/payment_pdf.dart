@@ -390,14 +390,15 @@ class PdfGenerator {
 
           // Tax Table
           pw.Table.fromTextArray(
-            headers: ['Description', 'Amount (₹)'],
+            headers: ['Description', 'Amount (₹)',],
+
             data: [
               ['Base Amount', taxSummary.baseAmount.toStringAsFixed(2)],
               if (taxSummary.cgst > 0) ['CGST (${taxSummary.cgstPercentage.toStringAsFixed(0)}%)', taxSummary.cgst.toStringAsFixed(2)],
               if (taxSummary.sgst > 0) ['SGST (${taxSummary.sgstPercentage.toStringAsFixed(0)}%)', taxSummary.sgst.toStringAsFixed(2)],
               if (taxSummary.igst > 0) ['IGST (${taxSummary.igstPercentage.toStringAsFixed(0)}%)', taxSummary.igst.toStringAsFixed(2)],
             ],
-            headerStyle: pw.TextStyle(font: boldFont, fontWeight: pw.FontWeight.bold, color: PdfColors.white),
+            headerStyle: pw.TextStyle(font: boldFont, fontWeight: pw.FontWeight.bold, color: PdfColors.white, fontFallback: [regularFont]),
             headerDecoration: pw.BoxDecoration(color: PdfColor.fromHex('#004958')),
             cellStyle: pw.TextStyle(font: regularFont),
             cellAlignment: pw.Alignment.centerLeft,

@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 class WebinarModel {
   String? id;
   String? webinarTitle;
-  String? webinarDescription;
+  //String? webinarDescription;
+  List<Map<String, dynamic>>? webinarDescription;
   String? orgName;
   String? createdDate;
   String? updatedDate;
@@ -53,16 +56,40 @@ class WebinarModel {
 
     if (json["webinarImage"] != null) {
       if (json["webinarImage"] is String) {
-        images = [json["webinarImage"]]; // wrap single string in a list
+        images = [json["webinarImage"]];
       } else if (json["webinarImage"] is List) {
         images = List<String>.from(json["webinarImage"]);
       }
     }
+    List<Map<String, dynamic>> parseJobDescription(dynamic data) {
+      try {
+        if (data == null) return [];
+        if (data is List) {
+          return List<Map<String, dynamic>>.from(data);
+        }
+        if (data is String) {
+          try {
+            final decoded = jsonDecode(data);
 
+            if (decoded is List) {
+              return List<Map<String, dynamic>>.from(decoded);
+            }
+          } catch (_) {}
+          return [
+            {"insert": data}
+          ];
+        }
+        return [
+          {"insert": data.toString()}
+        ];
+      } catch (e) {
+        return [];
+      }
+    }
     return WebinarModel(
       id: json["_id"],
       webinarTitle: json["webinarTitle"],
-      webinarDescription: json["webinarDescription"],
+      webinarDescription: parseJobDescription(json["webinarDescription"]),
       orgName: json["orgName"],
       createdDate: json["createdDate"],
       updatedDate: json["updatedDate"],

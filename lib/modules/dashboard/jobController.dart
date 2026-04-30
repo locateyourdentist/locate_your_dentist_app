@@ -29,10 +29,13 @@ class JobController extends GetxController{
   List<WebinarJobSeekers> get webinarListJobSeekers=>_webinarListJobSeekers;
   List<JobSeekerAppliedModel>_jobIdListAdmin=[];
   List<JobSeekerAppliedModel> get jobIdListAdmin=>_jobIdListAdmin;
- String? isActive;
+  List<Map<String, dynamic>> jobDescriptionData = [];
+  List<Map<String, dynamic>> webDescriptionData = [];
+
+  String? isActive;
   List<JobCategoryModel>_jobCategoryAdmin=[];
   List<JobCategoryModel> get jobCategoryAdmin=>_jobCategoryAdmin;
-
+ // dynamic jobDescriptionData;
   List<JobModel>_jobSeekersAppliedLists=[];
   List<JobModel> get jobSeekersAppliedLists=>_jobSeekersAppliedLists;
   List<WebinarModel>_webinarList=[];
@@ -45,6 +48,8 @@ class JobController extends GetxController{
   List<WebinarModel> get appliedWebinarList=>_appliedWebinarList;
   final Api api = Api();
   String? selectedUserType;
+  String? selectedTitle;
+
   String? alert;
   final loginController=Get.put(LoginController());
   final notificationController=Get.put(NotificationController());
@@ -532,7 +537,27 @@ class JobController extends GetxController{
     }
     isLoading=true;
     try {
-    final response = await api.postJobsAdmin( jobId, userId, userType, jobType,jobCategory, orgName,  jobTitle, jobDescription, salary, qualification, experience, state, district, city, startTime, endTime,jobImage1);
+
+   // final response = await api.postJobsAdmin( jobId, userId, userType, jobType,jobCategory, orgName,  jobTitle, jobDescription, salary, qualification, experience, state, district, city, startTime, endTime,jobImage1);
+    final response = await api.postJobsAdmin(
+        jobId,
+        userId,
+        userType,
+        jobType,
+        jobCategory,
+        orgName,
+        jobTitle,
+        jobDescription,
+        salary,
+        qualification,
+        experience,
+        state,
+        district,
+        city,
+        startTime,
+        endTime,
+        jobImage1
+    );
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
        // if (!context.mounted) return;
@@ -633,7 +658,14 @@ class JobController extends GetxController{
         _job = list.map((job) => JobModel.fromJson(job)).toList();
         loginController.jobTitleController.text=_job.first.jobTitle??"";
         selectedJobId=_job.first.jobId??"";
-        loginController.jobDescController.text=_job.first.jobDescription??"";
+        //jobDescriptionData = _job.first.jobDescription;
+        //loginController.jobDescController.text=_job.first.jobDescription??"";
+        // jobDescriptionData =
+        // List<Map<String, dynamic>>.from(_job.first.jobDescription ?? []);
+        jobDescriptionData = _job.first.jobDescription ?? [];
+       // jobDescriptionData = _job.first.jobDescription??"";
+        // final List<dynamic> delta =
+        // List<Map<String, dynamic>>.from(job['jobDescription']);
         loginController.selectedSalary=_job.first.salary??"";
         loginController.qualificationJobController.text=_job.first.qualification??"";
         loginController.selectedExperience=_job.first.experience??"";
@@ -653,52 +685,65 @@ class JobController extends GetxController{
           if (data == null) return [];
 
           if (data is List) {
-            return data
-                .expand((e) => e is List ? e : [e])
-                .map((e) => e.toString())
-                .toList();
+            return data.map((e) => e.toString().trim()).toList();
           }
 
           if (data is String && data.isNotEmpty) {
-            try {
-              final decoded = jsonDecode(data);
-              if (decoded is List) {
-                return decoded.map((e) => e.toString()).toList();
-              }
-            } catch (_) {}
-            return [data];
+            return [data.trim()];
           }
-
           return [];
         }
-        loginController.selectedCategories = parseCategory(_job.first.jobCategory);
+       //  final rawCategory = data["data"][0]["jobCategory"];
+       //  loginController.selectedCategories =
+       //  (rawCategory is List)
+       //      ? rawCategory.map((e) => e.toString().trim()).toList()
+       //      : [];
+       // // loginController.selectedCategories = parseCategory(_job.first.jobCategory);
+       //  print("Selected Categories: ${loginController.selectedCategories}");
+        final rawCategory = data["data"][0]["jobCategory"];
+
+        String normalize(String v) => v.trim().toLowerCase();
+
+        if (rawCategory is List) {
+          loginController.selectedCategories =
+              rawCategory.map((e) => normalize(e.toString())).toList();
+
+        } else if (rawCategory is String && rawCategory.isNotEmpty) {
+          try {
+            final decoded = jsonDecode(rawCategory);
+            if (decoded is List) {
+              loginController.selectedCategories =
+                  decoded.map((e) => normalize(e.toString())).toList();
+            } else {
+              loginController.selectedCategories = [];
+            }
+          } catch (e) {
+            loginController.selectedCategories = [];
+          }
+
+        } else {
+          loginController.selectedCategories = [];
+        }
+
+        print("FINAL SELECTED: ${loginController.selectedCategories}");
         loginController.jobFileImages = images
             .map((u) => AppImage2(url:  u.replaceAll("\\", "/")))
             .toList();
 
         void splitStartTime(String time) {
           if (time.isEmpty) return;
-
           time = time.trim().toLowerCase();
-
-          // Separate period (am/pm)
           String period = time.contains("am") ? "am" : "pm";
-
-          // Remove am/pm
           String cleanTime = time.replaceAll("am", "").replaceAll("pm", "").trim();
-
-          // Support both ":" and "."
           List<String> hm = cleanTime.contains(":")
               ? cleanTime.split(":")
               : cleanTime.split(".");
-
           if (hm.length == 2) {
             startHour = hm[0];
             startMinutes = hm[1];
             startPeriod = period;
           }
         }
-
         void splitEndTime(String time) {
           if (time.isEmpty) return;
           time = time.trim().toLowerCase();
@@ -707,7 +752,6 @@ class JobController extends GetxController{
           List<String> hm = cleanTime.contains(":")
               ? cleanTime.split(":")
               : cleanTime.split(".");
-
           if (hm.length == 2) {
             endHour = hm[0];
             endMinutes = hm[1];
@@ -718,6 +762,7 @@ class JobController extends GetxController{
         splitEndTime( endTime);
         print(startTime);
         print("Total job profiles: ${_job.length}");
+        loginController.update();
 //   final jobDescriptionJson = _job.first.jobDescription ?? "[]";
 //   List<dynamic> jobDescriptionDelta = jsonDecode(jobDescriptionJson);
 //
@@ -730,7 +775,6 @@ class JobController extends GetxController{
           "Job not found error: ${data["message"] ?? "error"}",
         );
       }
-
     } catch (e) {
       print('job by id  error $e');
     } finally {
@@ -764,19 +808,27 @@ class JobController extends GetxController{
         _webinar = list.map((job) => WebinarModel.fromJson(job)).toList();
         loginController.webinarTitleJobController.text=_webinar.first.webinarTitle??"";
         selectedWebinarId = _webinar.first.webinarId?.toString() ?? "";
-        loginController.webinarDescriptionJobController.text=_webinar.first.webinarDescription??"";
+        webDescriptionData=_webinar.first.webinarDescription??[];
+        //loginController.webinarDescriptionJobController.text=_webinar.first.webinarDescription??"";
         loginController.webinarDateController.text=_webinar.first.webinarDate??"";
         loginController.webinarLinkController.text=_webinar.first.webinarLink??"";
         //webinarImage=_webinar.first.webinarImage??"";
         String startTime=_webinar.first.startTime??"";
         String endTime=_webinar.first.endTime??"";
+        // final images = _webinar.first.webinarImage ?? [];
+        //
+        // loginController.webinarFileImages = images
+        //     .map((u) => AppImage2(url: u.replaceAll("\\", "/")))
+        //     .toList();
         final images = _webinar.first.webinarImage ?? [];
 
-        loginController.webinarFileImages = images
-            .map((u) => AppImage2(url: u.replaceAll("\\", "/")))
-            // .map((u) => AppImage(url: AppConstants.baseUrl + u.replaceAll("\\", "/")))
+        loginController.webinarImages = images
+            .map((u) => AppImage2(
+          url: u.replaceAll("\\", "/"),
+        ))
             .toList();
 
+        loginController.update();
         void splitTime(String startTime) {
           final parts = startTime.split(" ");
 

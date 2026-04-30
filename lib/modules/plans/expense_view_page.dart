@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
+import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 
 class ExpensePage extends StatefulWidget {
   const ExpensePage({super.key});
@@ -15,6 +17,7 @@ class ExpensePage extends StatefulWidget {
 
 class _ExpensePageState extends State<ExpensePage> {
   final PlanController controller = Get.put(PlanController());
+  final LoginController loginController = Get.put(LoginController());
 
   String selectedMonthName = DateFormat.MMMM().format(DateTime.now());
   String selectedYear = DateTime.now().year.toString();
@@ -24,14 +27,11 @@ class _ExpensePageState extends State<ExpensePage> {
   @override
   void initState() {
     super.initState();
-    controller.getExpense(
-      month: monthNumber,
-      year: selectedYear,
-      state: selectedState,
-    );
+    _refresh();
   }
 
   Future<void> _refresh() async {
+    await loginController.fetchStates();
     await controller.getExpense(
       month: monthNumber,
       year: selectedYear,
@@ -66,7 +66,7 @@ class _ExpensePageState extends State<ExpensePage> {
   }
   void _showStatePickerDialog() {
     final states = ["Tamilnadu", "Karnataka", "Andhra"];
-    String? tempSelectedState = selectedState; // temporary selection
+    String? tempSelectedState = selectedState;
 
     showDialog(
       context: context,
@@ -221,10 +221,52 @@ class _ExpensePageState extends State<ExpensePage> {
                         mainAxisSize: MainAxisSize.min, 
                         children: [
 
-                          _modernFilterBox(
-                            icon: Icons.location_on,
-                            label: selectedState ?? "Select State",
-                            onTap: _showStatePickerDialog,
+                          // _modernFilterBox(
+                          //   icon: Icons.location_on,
+                          //   label: selectedState ?? "Select State",
+                          //   onTap: _showStatePickerDialog,
+                          // ),
+                          GetBuilder<LoginController>(
+                            builder: (controller) {
+                              final items=controller.states.map((d) => d.toString()).toList();
+                              return CustomDropdown<String>.search(
+                                hintText: "Select State",
+                                decoration: CustomDropdownDecoration(
+                                  closedFillColor: Colors.grey[100],
+                                  expandedFillColor: Colors.white,
+                                  closedBorder: Border.all(
+                                    color: AppColors.white,
+                                    width: 1.5,
+                                  ),
+                                  expandedBorder: Border.all(
+                                    color: AppColors.primary,
+                                    width: 1.5,
+                                  ),
+                                  closedBorderRadius: BorderRadius.circular(10),
+                                  expandedBorderRadius: BorderRadius.circular(10),
+                                  hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                                  headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                                  listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
+                                items: controller.states.map((s) => s.toString()).toList(),
+                                //initialItem: controller.selectedState,
+                                initialItem: items.contains(controller.selectedState)
+                                    ? controller.selectedState
+                                    : null,
+                                onChanged: (val) {
+                                  if (val != null) {
+                                    controller.selectedState = val;
+                                    controller.districts.clear();
+                                    controller.selectedDistrict = null;
+                                    controller.selectedTaluka = null;
+                                    controller.selectedVillage = null;
+                                    final state = controller.states.firstWhere((s) => s == val);
+                                    print('state  selected$state');
+                                    controller.fetchDistricts(state.toString());
+                                    controller.update();
+                                  }
+                                },
+                              );
+                            },
                           ),
                           const SizedBox(height: 12),
                           Row(

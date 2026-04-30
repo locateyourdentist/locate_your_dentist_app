@@ -66,24 +66,29 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
             padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                Text(
-                  model != null
-                      ? "Update Category"
-                      : "Add Category",
-                  style: AppTextStyles.body(
-                    context,fontWeight: FontWeight.bold
+                Center(
+                  child: Text(
+                    model != null
+                        ? "Update Category"
+                        : "Add Category",
+                    style: AppTextStyles.caption(
+                      context,fontWeight: FontWeight.bold
+                    ),
                   ),
                 ),
+                const SizedBox(height: 10),
 
-                const SizedBox(height: 20),
+                Text("Select User Type",style: AppTextStyles.caption(context,),),
+                const SizedBox(height: 10),
                 GetBuilder<JobController>(
                     builder: (controller) {
                       return CustomDropdownField(
-                      hint: "Select UserType",
+                      hint: " ",
                       fillColor: Colors.grey[100],
-                      borderColor: AppColors.white,
+                      borderColor: AppColors.grey,
                       //items:userTypes.map((e) => e!='All').toList(),
                         items: userTypes.where((e) => e != "All").toList(),
                         selectedValue: controller.selectedUserType,
@@ -95,11 +100,15 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                   }
                 ),
                 const SizedBox(height: 15),
+                Text("Enter Job Category",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
+                const SizedBox(height: 10),
 
                 CustomTextField(
-                  hint: "Job Category",
+                  hint: " ",
                   icon: Icons.work,
                   controller: nameController,
+                  fillColor: Colors.grey[100],
+                  borderColor: AppColors.grey,
                 ),
 
                 const SizedBox(height: 20),
@@ -107,6 +116,14 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      elevation: 4,
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                     onPressed: () async {
 
                       if (model != null) {
@@ -125,7 +142,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                       Navigator.pop(context);
                       fetchCategories();
                     },
-                    child: Text(model != null ? "Update" : "Add"),
+                    child: Text(model != null ? "Update" : "Add",style: AppTextStyles.caption(context,color: AppColors.white),),
                   ),
                 )
               ],
@@ -141,7 +158,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title:  Text("Select User Type",style: AppTextStyles.body(context,fontWeight: FontWeight.bold),),
+          title:  Center(child: Text("Select User Type",style: AppTextStyles.body(context,fontWeight: FontWeight.bold),)),
           content: SizedBox(
             width: 300,
             child: Column(
@@ -151,7 +168,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                 return RadioListTile<String>(
                   value: type,
                   groupValue: tempSelected,
-                  title: Text(type),
+                  title: Text(type,style: AppTextStyles.caption(context),),
                   onChanged: (value) async {
 
                     tempSelected = value;
@@ -212,88 +229,12 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
       ),
     );
   }
-
-  // Widget _categoryTable() {
-  //   final size = MediaQuery.of(context).size.width;
-  //   return Card(
-  //     elevation: 3,
-  //     shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(12)),
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(10),
-  //       child: DataTable(
-  //         columnSpacing:size*0.12 ,
-  //         headingRowColor:
-  //         MaterialStateProperty.all(
-  //             Colors.grey.shade100),
-  //         columns:  [
-  //           DataColumn(label: Text("S.No",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),)),
-  //           DataColumn(label: Text("Category",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),)),
-  //           DataColumn(label: Text("User Type",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),)),
-  //           DataColumn(label: Text("Actions",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),)),
-  //         ],
-  //         rows:
-  //         jobController.jobCategoryAdmin.asMap().entries.map((entry) {
-  //           int index = entry.key;
-  //           var item = entry.value;
-  //           return DataRow(
-  //             cells: [
-  //               DataCell(Text("${index + 1}.",style: AppTextStyles.caption(context),)),
-  //
-  //               DataCell(Text(item.name,style: AppTextStyles.caption(context),)),
-  //
-  //               DataCell(Text(item.userType,style: AppTextStyles.caption(context),)),
-  //               DataCell(
-  //                 Row(
-  //                   children: [
-  //                     IconButton(
-  //                       icon:  Icon(Icons.edit,size: size*0.01,
-  //                           color: AppColors.primary),
-  //                       onPressed: () {
-  //                         openCategoryDialog(model: item);
-  //                       },
-  //                     ),
-  //
-  //                     IconButton(
-  //                       icon:  Icon(Icons.delete,size: size*0.01,
-  //                           color: Colors.red),
-  //                       onPressed: () async {
-  //
-  //                         showDeleteDialog(
-  //                           context: context,
-  //                           title: "Delete Category",
-  //                           message:
-  //                           "This category will be permanently removed.",
-  //                           onConfirm: () async {
-  //
-  //                             await jobController
-  //                                 .deleteJobCategoryLists(
-  //                                 item.id,
-  //                                 context);
-  //
-  //                             fetchCategories();
-  //                           },
-  //                         );
-  //                       },
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ],
-  //           );
-  //         }).toList(),
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget _categoryTable() {
     final size = MediaQuery.of(context).size.width;
 
     return SingleChildScrollView(
       child: Column(
         children: [
-
-          /// 🔷 HEADER
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Container(
@@ -315,8 +256,6 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
               ),
             ),
           ),
-
-          /// 🔷 LIST
           ListView.builder(
             shrinkWrap: true,
             itemCount: jobController.jobCategoryAdmin.length,
@@ -407,7 +346,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: CommonWebAppBar(
-        height: s * 0.08,
+        height: s * 0.03,
         title: "LYD",
         onLogout: () {
         },

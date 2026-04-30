@@ -415,20 +415,116 @@ String? getAlertMessage(String planName, String endDate) {
 //   );
 // }
 
+// void showPlanAlerts(
+//     String userId,
+//     List<Map<String, dynamic>> dataList,
+//     BuildContext context,
+//     ) {
+//   final box = GetStorage();
+//   final todayString = DateTime.now().toIso8601String().substring(0, 10);
+//   final lastAlertDate = box.read("lastPlanAlertDate1_$userId");
+//
+//   if (lastAlertDate == todayString) return;
+//
+//   final loginController = Get.put(LoginController());
+//
+//   final Map<int, List<String>> expiringPlans = {};
+//   final planList = {
+//     "basePlan": "Base Plan",
+//     "addonsPlan": "Add-ons Plan",
+//     "jobPlan": "Job Plan",
+//     "webinarPlan": "Webinar Plan",
+//     "posterPlan": "Post Image Plan"
+//   };
+//
+//   DateTime parseDDMMYYYY(String date) {
+//     final parts = date.split('-');
+//     return DateTime(
+//       int.parse(parts[2]),
+//       int.parse(parts[1]),
+//       int.parse(parts[0]),
+//     );
+//   }
+//
+//   for (var item in dataList) {
+//     final plans = item["details"]?["plan"];
+//     if (plans == null) continue;
+//
+//     for (var key in planList.keys) {
+//       final plan = plans[key];
+//       if (plan == null) continue;
+//
+//       final endDateRaw = plan["endDate"];
+//       if (endDateRaw == null) continue;
+//
+//       DateTime endDate = parseDDMMYYYY(endDateRaw.toString());
+//       DateTime today = DateTime.now();
+//
+//       final daysLeft =
+//           endDate.difference(DateTime(today.year, today.month, today.day)).inDays;
+//
+//       if (daysLeft <= 7) {
+//         expiringPlans.putIfAbsent(daysLeft, () => []);
+//         expiringPlans[daysLeft]!.add(planList[key]!);
+//       }
+//     }
+//   }
+//
+//   if (expiringPlans.isEmpty) return;
+//   List<String> messages = [];
+//   expiringPlans.forEach((daysLeft, plans)async {
+//     if (daysLeft < 0) {
+//       messages.add("Your ${plans.join(", ")} have expired!");
+//     } else if (daysLeft == 0) {
+//       messages.add("Your ${plans.join(", ")} expire today!");
+//       await loginController.sentMailPlan(userId, "plan", "Plan Expires Alert", "basePlan", context);
+//     } else if (daysLeft <= 3) {
+//       messages.add("Your ${plans.join(", ")} will expire within $daysLeft day(s).");
+//       await loginController.sentMailPlan(userId, "plan", "Plan Expires Alert", "basePlan", context);
+//     } else {
+//       messages.add("Your ${plans.join(", ")} will expire in $daysLeft days.");
+//       await loginController.sentMailPlan(userId, "plan", "Plan Expires Alert", "basePlan", context);
+//     }
+//   });
+//
+//   if (messages.isEmpty) return;
+//
+//   // Show dialog
+//  // loginController.sentMailPlan(userId, "plan", "Plan Expires Alert", "basePlan", context);
+//
+//   showDialog(
+//     context: context,
+//     builder: (context) => AlertDialog(
+//       title: Center(child: Text("Plan Expiry Alert",style: AppTextStyles.body(context,fontWeight: FontWeight.bold),)),
+//       content: Text(messages.join("\n",),style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
+//       actions: [
+//         Center(
+//           child: TextButton(
+//             onPressed: () => Navigator.of(context).pop(),
+//             child: Text("OK",style: AppTextStyles.caption(context),),
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+//   box.write("lastPlanAlertDate1_$userId", todayString);
+// }
 void showPlanAlerts(
     String userId,
     List<Map<String, dynamic>> dataList,
     BuildContext context,
-    ) {
+    ) async {
   final box = GetStorage();
-  final todayString = DateTime.now().toIso8601String().substring(0, 10);
-  final lastAlertDate = box.read("lastPlanAlertDate1_$userId");
+  final today = DateTime.now();
+  final todayString = today.toIso8601String().substring(0, 10);
 
+  final lastAlertDate = box.read("lastPlanAlertDate1_$userId");
   if (lastAlertDate == todayString) return;
 
   final loginController = Get.put(LoginController());
 
   final Map<int, List<String>> expiringPlans = {};
+
   final planList = {
     "basePlan": "Base Plan",
     "addonsPlan": "Add-ons Plan",
@@ -437,14 +533,8 @@ void showPlanAlerts(
     "posterPlan": "Post Image Plan"
   };
 
-  DateTime parseDDMMYYYY(String date) {
-    final parts = date.split('-');
-    return DateTime(
-      int.parse(parts[2]),
-      int.parse(parts[1]),
-      int.parse(parts[0]),
-    );
-  }
+  // Normalize today (remove time)
+  final normalizedToday = DateTime(today.year, today.month, today.day);
 
   for (var item in dataList) {
     final plans = item["details"]?["plan"];
@@ -457,56 +547,82 @@ void showPlanAlerts(
       final endDateRaw = plan["endDate"];
       if (endDateRaw == null) continue;
 
-      DateTime endDate = parseDDMMYYYY(endDateRaw.toString());
-      DateTime today = DateTime.now();
+      try {
+        // ✅ FIX: correct parsing (YYYY-MM-DD)
+        DateTime endDate = DateTime.parse(endDateRaw.toString());
 
-      final daysLeft =
-          endDate.difference(DateTime(today.year, today.month, today.day)).inDays;
+        final normalizedEndDate =
+        DateTime(endDate.year, endDate.month, endDate.day);
 
-      if (daysLeft <= 7) {
-        expiringPlans.putIfAbsent(daysLeft, () => []);
-        expiringPlans[daysLeft]!.add(planList[key]!);
+        final daysLeft =
+            normalizedEndDate.difference(normalizedToday).inDays;
+
+        if (daysLeft <= 7) {
+          expiringPlans.putIfAbsent(daysLeft, () => []);
+          expiringPlans[daysLeft]!.add(planList[key]!);
+        }
+      } catch (e) {
+        print("Date parse error: $e");
       }
     }
   }
 
   if (expiringPlans.isEmpty) return;
+
   List<String> messages = [];
-  expiringPlans.forEach((daysLeft, plans)async {
+
+  // ✅ FIX: proper async loop
+  for (var entry in expiringPlans.entries) {
+    final daysLeft = entry.key;
+    final plans = entry.value;
+
     if (daysLeft < 0) {
       messages.add("Your ${plans.join(", ")} have expired!");
     } else if (daysLeft == 0) {
       messages.add("Your ${plans.join(", ")} expire today!");
-      await loginController.sentMailPlan(userId, "plan", "Plan Expires Alert", "basePlan", context);
+      await loginController.sentMailPlan(
+          userId, "plan", "Plan Expires Alert", "basePlan", context);
     } else if (daysLeft <= 3) {
-      messages.add("Your ${plans.join(", ")} will expire within $daysLeft day(s).");
-      await loginController.sentMailPlan(userId, "plan", "Plan Expires Alert", "basePlan", context);
+      messages.add(
+          "Your ${plans.join(", ")} will expire within $daysLeft day(s).");
+      await loginController.sentMailPlan(
+          userId, "plan", "Plan Expires Alert", "basePlan", context);
     } else {
-      messages.add("Your ${plans.join(", ")} will expire in $daysLeft days.");
-      await loginController.sentMailPlan(userId, "plan", "Plan Expires Alert", "basePlan", context);
+      messages.add(
+          "Your ${plans.join(", ")} will expire in $daysLeft days.");
     }
-  });
+  }
 
   if (messages.isEmpty) return;
 
-  // Show dialog
- // loginController.sentMailPlan(userId, "plan", "Plan Expires Alert", "basePlan", context);
-
+  // ✅ Show dialog
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Center(child: Text("Plan Expiry Alert",style: AppTextStyles.body(context,fontWeight: FontWeight.bold),)),
-      content: Text(messages.join("\n",),style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
+      title: Center(
+        child: Text(
+          "Plan Expiry Alert",
+          style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+        ),
+      ),
+      content: Text(
+        messages.join("\n"),
+        style: AppTextStyles.caption(context),
+      ),
       actions: [
         Center(
           child: TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text("OK",style: AppTextStyles.caption(context),),
+            child: Text(
+              "OK",
+              style: AppTextStyles.caption(context),
+            ),
           ),
         ),
       ],
     ),
   );
+
   box.write("lastPlanAlertDate1_$userId", todayString);
 }
 void showDeactivateConfirmDialog({

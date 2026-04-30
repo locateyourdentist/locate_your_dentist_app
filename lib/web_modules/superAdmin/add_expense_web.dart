@@ -41,7 +41,7 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: CommonWebAppBar(
-        height: size * 0.06,
+        height: size * 0.03,
         title: "LYD",
         onLogout: () {
         },
@@ -89,40 +89,38 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
                                         Expanded(
                                           child:  GetBuilder<LoginController>(
                                             builder: (controller) {
-                                              return Center(
-                                                child: CustomDropdown<String>.search(
-                                                  hintText: "Select State",
-                                                  decoration: CustomDropdownDecoration(
-                                                    closedFillColor: Colors.grey.shade100,
-                                                    expandedFillColor: Colors.white,
-                                                    closedBorder: Border.all(
-                                                      color: AppColors.white,
-                                                      width: 1.5,
-                                                    ),
-                                                    expandedBorder: Border.all(
-                                                      color: AppColors.primary,
-                                                      width: 1.5,
-                                                    ),
-                                                    closedBorderRadius: BorderRadius.circular(10),
-                                                    expandedBorderRadius: BorderRadius.circular(10),
-                                                    hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                                    headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                                    listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
-                                                  items: controller.states.map((s) => s.toString()).toList(),
-                                                  //initialItem: controller.selectedState,
-                                                  onChanged: (val) {
-                                                    if (val != null) {
-                                                      planController.selectedState = val;
-                                                      controller.districts.clear();
-                                                      controller.selectedDistrict = null;
-                                                      controller.selectedTaluka = null;
-                                                      controller.selectedVillage = null;
-                                                      final state = controller.states.firstWhere((s) => s == val);
-                                                      print('state  selected$state');
-                                                      controller.update();
-                                                    }
-                                                  },
-                                                ),
+                                              return CustomDropdown<String>.search(
+                                                hintText: "Select State",
+                                                decoration: CustomDropdownDecoration(
+                                                  closedFillColor: Colors.grey.shade100,
+                                                  expandedFillColor: Colors.white,
+                                                  closedBorder: Border.all(
+                                                    color: AppColors.white,
+                                                    width: 1.5,
+                                                  ),
+                                                  expandedBorder: Border.all(
+                                                    color: AppColors.primary,
+                                                    width: 1.5,
+                                                  ),
+                                                  closedBorderRadius: BorderRadius.circular(10),
+                                                  expandedBorderRadius: BorderRadius.circular(10),
+                                                  hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                                                  headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                  listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
+                                                items: controller.states.map((s) => s.toString()).toList(),
+                                                //initialItem: controller.selectedState,
+                                                onChanged: (val) {
+                                                  if (val != null) {
+                                                    planController.selectedState = val;
+                                                    controller.districts.clear();
+                                                    controller.selectedDistrict = null;
+                                                    controller.selectedTaluka = null;
+                                                    controller.selectedVillage = null;
+                                                    final state = controller.states.firstWhere((s) => s == val);
+                                                    print('state  selected$state');
+                                                    controller.update();
+                                                  }
+                                                },
                                               );
                                             },
                                           ),
@@ -134,15 +132,11 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Expanded(
-                                         // width: size*0.44,
-                                          child:   Expanded(
-                                            child: _modernFilterBox(
-                                              icon: Icons.calendar_month,
-                                              label: selectedMonthName!,
-                                              onTap: _showMonthPickerDialog,
-                                            ),
+                                          child: _modernFilterBox(
+                                            icon: Icons.calendar_month,
+                                            label: selectedMonthName!,
+                                            onTap: _showMonthPickerDialog,
                                           ),
-
                                         ),
                                          SizedBox(width: size*0.01,),
                                         Expanded(
@@ -282,7 +276,7 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
   }
   void _showMonthPickerDialog() {
     final months = List.generate(12, (index) => DateFormat.MMMM().format(DateTime(0, index + 1)));
-    String? tempSelectedMonth = selectedMonthName; // temp selection
+    String? tempSelectedMonth = selectedMonthName;
     String? tempMonthNumber = monthNumber;
 
     showDialog(
@@ -335,9 +329,9 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Cancel
+                Navigator.pop(context);
               },
-              child: const Text("Cancel"),
+              child:  Text("Cancel",style: AppTextStyles.caption(context),),
             ),
             TextButton(
               onPressed: () {
@@ -347,7 +341,7 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text("OK"),
+              child:  Text("OK",style: AppTextStyles.caption(context),),
             ),
           ],
         );
@@ -406,9 +400,9 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Cancel
+                Navigator.pop(context);
               },
-              child: const Text("Cancel"),
+              child:  Text("Cancel",style: AppTextStyles.caption(context),),
             ),
             TextButton(
               onPressed: () {
@@ -416,9 +410,9 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
                   selectedYear = tempSelectedYear!;
                 });
 
-                Navigator.pop(context); // Confirm
+                Navigator.pop(context);
               },
-              child: const Text("OK"),
+              child:  Text("OK",style: AppTextStyles.caption(context),),
             ),
           ],
         );
@@ -436,7 +430,7 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.grey[100], // light background
+          color: Colors.grey[100],
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.grey.shade300),
           boxShadow: [
@@ -458,7 +452,7 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
                   style: AppTextStyles.caption(context,fontWeight: FontWeight.bold)
               ),
             ),
-            const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+             Icon(Icons.keyboard_arrow_down, size:14,color: Colors.grey),
           ],
         ),
       ),

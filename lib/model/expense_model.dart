@@ -3,7 +3,7 @@ class ExpenseModel {
   final String title;
   final double amount;
   final String category;
-  final String addedBy;
+  final String state;
   final DateTime createdDate;
 
   ExpenseModel({
@@ -11,18 +11,19 @@ class ExpenseModel {
     required this.title,
     required this.amount,
     required this.category,
-    required this.addedBy,
+    required this.state,
     required this.createdDate,
   });
 
   factory ExpenseModel.fromJson(Map<String, dynamic> json) {
     return ExpenseModel(
-      id: json["_id"],
+      id: json["_id"] ?? "",
       title: json["title"] ?? "",
       amount: double.tryParse(json["amount"].toString()) ?? 0,
       category: json["category"] ?? "General",
-      addedBy: json["addedBy"] ?? "",
-      createdDate: DateTime.parse(json["createdDate"]),
+      state: (json["state"] ?? "").toString(),
+      createdDate: DateTime.tryParse(json["createdDate"] ?? "") ??
+          DateTime.now(),
     );
   }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "540179202432",
+    "project_id": "locate-your-dentist",
+    "storage_bucket": "locate-your-dentist.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540179202432:android:b009329da500f2c73b8165",
+        "android_client_info": {
+          "package_name": "com.lyd.locate_your_dentist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC45Xj0VK-dYGqjdNoJVqkBJ1zlbrKvBJI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

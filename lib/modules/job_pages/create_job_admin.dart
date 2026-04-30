@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -13,6 +14,8 @@ import '../../common_widgets/color_code.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class CreateJobPost extends StatefulWidget {
   const CreateJobPost({super.key});
@@ -34,9 +37,45 @@ class _CreateJobPostState extends State<CreateJobPost> {
   final ImagePicker _picker = ImagePicker();
   File? selectedImageFile;
   File? selectedJobImageFile;
+  late QuillController _controller;
+  final FocusNode _focusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
 
   String? jobId;
   String? job;
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta = [];
+
+      if (data == null || data.toString().trim().isEmpty) {
+        delta = [{"insert": "\n"}];
+      }
+      else {
+        dynamic decoded = data;
+        if (data is String) {
+          decoded = jsonDecode(data);
+        }
+        if (decoded is List) {
+          delta = List<Map<String, dynamic>>.from(decoded);
+          if (delta.isEmpty) {
+            delta = [{"insert": "\n"}];
+          }
+        } else {
+          delta = [{"insert": "\n"}];
+        }
+      }
+      _controller = QuillController(
+        document: Document.fromJson(delta),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+      _controller = QuillController.basic();
+      setState(() {});
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -51,6 +90,25 @@ class _CreateJobPostState extends State<CreateJobPost> {
     } else {
       job = "";
     }
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (selectedString == "Webinar") {
+        print("Loading Webinar Description");
+        loadJobDescription(
+            jobController.webDescriptionData);
+      } else {
+        print("Loading Job Description");
+        loadJobDescription(
+            jobController.jobDescriptionData);
+      }
+    });
     loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
     jobController.selectedJobId.toString().isNotEmpty? jobController.selectedJobId.toString():"0";
     print('jobid${jobController.selectedJobId}webid${jobController.selectedWebinarId.toString()}');
@@ -333,12 +391,53 @@ class _CreateJobPostState extends State<CreateJobPost> {
                           borderColor: AppColors.grey,
                         ),
                         SizedBox(height: size*0.03,),
-                        CustomTextField(
-                          hint: "Job Description",
-                          icon: Icons.text_fields,
-                          controller: loginController.jobDescController,
-                           fillColor: AppColors.white,
-                          borderColor: AppColors.grey,maxLines: 3,
+                        // CustomTextField(
+                        //   hint: "Job Description",
+                        //   icon: Icons.text_fields,
+                        //   controller: loginController.jobDescController,
+                        //    fillColor: AppColors.white,
+                        //   borderColor: AppColors.grey,maxLines: 3,
+                        // ),
+                        Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),),
+                              height: size*0.4,
+                              width: double.infinity,
+                              child: QuillSimpleToolbar(
+                                controller: _controller,
+                                config: QuillSimpleToolbarConfig(
+                                  //embedButtons: FlutterQuillEmbeds.toolbarButtons(),
+                                  embedButtons: [],
+                                  showBackgroundColorButton: false,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: size*0.5,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                ),),
+                              child: QuillEditor(
+                                controller: _controller,
+                                scrollController: _scrollController,
+                                focusNode: _focusNode,
+                                config: QuillEditorConfig(
+                                  placeholder: "Job description...",
+                                  padding: const EdgeInsets.all(16),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: size * 0.03),
                         CustomDropdownField(
@@ -797,13 +896,53 @@ class _CreateJobPostState extends State<CreateJobPost> {
                             borderColor: AppColors.grey,
                           ),
                           SizedBox(height: size*0.03,),
-                          CustomTextField(
-                            hint: "Webinar Description",
-                            icon: Icons.text_fields,
-                            controller: loginController.webinarDescriptionJobController,
-                            fillColor: AppColors.white,
-                            borderColor: AppColors.grey,maxLines: 4,
+                          Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10),
+                                  ),),
+                                height: size*0.15,
+                                width: double.infinity,
+                                child: QuillSimpleToolbar(
+                                  controller: _controller,
+                                  config: QuillSimpleToolbarConfig(
+                                    embedButtons: FlutterQuillEmbeds.toolbarButtons(),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height: size*0.1,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(10),
+                                    bottomRight: Radius.circular(10),
+                                  ),),
+                                child: QuillEditor(
+                                  controller: _controller,
+                                  scrollController: _scrollController,
+                                  focusNode: _focusNode,
+                                  config: QuillEditorConfig(
+                                    placeholder: "Enter webinar description...",
+                                    padding: const EdgeInsets.all(16),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+
+                          // CustomTextField(
+                          //   hint: "Webinar Description",
+                          //   icon: Icons.text_fields,
+                          //   controller: loginController.webinarDescriptionJobController,
+                          //   fillColor: AppColors.white,
+                          //   borderColor: AppColors.grey,maxLines: 4,
+                          // ),
                           SizedBox(height: size * 0.03),
                           CustomTextField(
                             hint: "Webinar Date",

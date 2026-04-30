@@ -33,6 +33,11 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
     loginController.selectedArea = null;
     loginController.selectedUserType=null;
     loginController.selectedDistrict=null;
+    loginController.selectedState=null;
+    loginController.selectedTaluka=null;
+    loginController.selectedDistance=null;
+    loginController.latitude=null;
+    loginController.longitude=null;
     loginController.selectedCategories.clear();
     loginController.fetchStates();
     jobController.getJobCategoryLists("", context);
@@ -41,6 +46,8 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    String userType=Api.userInfo.read('userType')??"";
+    print('vd$userType');
     return GetBuilder<LoginController>(
         builder: (controller) {
           return Container(
@@ -76,27 +83,55 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                 ),
                 const SizedBox(height: 25),
                 _sectionTitle("Distance"),
+                // _selectableHorizontal(
+                //   options: ["5 Km", "10 Km", "15 Km", "20 Km"],
+                //   selectedValue: loginController.selectedDistance,
+                //   onSelect: (val) => setState(() => loginController.selectedDistance = val),
+                // ),
                 _selectableHorizontal(
                   options: ["5 Km", "10 Km", "15 Km", "20 Km"],
-                  selectedValue: loginController.selectedDistance,
-                  onSelect: (val) => setState(() => loginController.selectedDistance = val),
+                  selectedValue: loginController.selectedDistance != null
+                      ? "${loginController.selectedDistance} Km"
+                      : null,
+                  onSelect: (val) {
+                    final numericValue = val.replaceAll(" Km", "");
+                    setState(() {
+                      loginController.selectedDistance = numericValue;
+                    });
+                  },
                 ),
                 const SizedBox(height: 20),
 
                 _sectionTitle("Select Location"),
-               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween, 
-                 children: [
-                Expanded(child: _stateDropdown(width)),
-                const SizedBox(width: 20),
-                Expanded(child: _districtDropdown()),
-               ],),
+               // Row(
+               //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+               //   children: [
+               //
+               //  Expanded(child:Api.userInfo.read('userType') != 'admin'? _stateDropdown(width):SizedBox(width: 2,)),
+               //  const SizedBox(width: 20),
+               //  Expanded(child: _districtDropdown()),
+               // ],),
+                Row(
+                  children: [
+                    if (Api.userInfo.read('userType') != 'admin')
+                      Expanded(
+                        child: _stateDropdown(width),
+                      ),
+
+                    if (Api.userInfo.read('userType') != 'admin')
+                      const SizedBox(width: 20),
+
+                    Expanded(
+                      child: _districtDropdown(),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 20),
 
                 _talukaDropdown(),
                 const SizedBox(height: 20),
 
-                if ((Api.userInfo.read('userType') == 'Job Seekers') ||(Api.userInfo.read('userType') == null))...[
+                if ((userType == 'Job Seekers') ||(userType == null))...[
                   _sectionTitle("Job Categories"),
                   _jobCategoriesMultiSelect(),
                   const SizedBox(height: 20),

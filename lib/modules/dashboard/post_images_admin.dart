@@ -7,10 +7,14 @@ import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
+import 'package:locate_your_dentist/modules/dashboard/crop_screen.dart';
 import '../../common_widgets/color_code.dart';
 import '../../common_widgets/common_textstyles.dart';
 import '../plans/plan_controller.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:crop_your_image/crop_your_image.dart';
+import 'package:flutter/foundation.dart';
 
 
 class UploadImages extends StatefulWidget {
@@ -64,8 +68,13 @@ class _UploadImagesState extends State<UploadImages> {
   //     //     filesToUpload.add(selectedImage.file!);
   //     //   }
   //     // }
-  //     List<File> filesToUpload = planController.editUploadImage
-  //         .where((img) => img.file != null).map((img) => img.file!).toList();
+  //     // List<Uint8List> filesToUpload = planController.editUploadImage
+  //     //     .where((img) => img.file != null).map((img) => img.file!).toList();
+  //     List<Uint8List> filesToUpload = await Future.wait(
+  //       planController.editUploadImage
+  //           .where((img) => img.file != null)
+  //           .map((img) async => await img.file!.readAsBytes()),
+  //     );
   //     if(userType!='superAdmin') {
   //       isActive1  = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["isActive"] ?? "false";
   //       startDate1 = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["startDate"] ?? "";
@@ -80,37 +89,34 @@ class _UploadImagesState extends State<UploadImages> {
   //     await  planController.uploadImagesUserType(Api.userInfo.read('userId'), userType,"0","1",startDate1.toString(),endDate1.toString(),isActive1.toString(),filesToUpload,context);
   //   }
   // }
-  Future<void> pickImages() async {
+  Future<void> pickImages(BuildContext context) async {
     final List<XFile>? pickedImages = await picker.pickMultiImage();
+
     if (pickedImages == null || pickedImages.isEmpty) return;
 
-    const int maxImages = 20;
-    final int availableSlots = maxImages - planController.editUploadImage.length;
-
-    if (availableSlots <= 0) {
-      Get.snackbar("Limit reached", "You can upload only $maxImages images");
-      return;
-    }
-
-    final limited = pickedImages.take(availableSlots);
-
-    for (var file in limited) {
+    for (var file in pickedImages) {
       final bytes = await file.readAsBytes();
-      final appImage2 = AppImage2(
-        bytes: bytes,
-        file: kIsWeb ? null : File(file.path),
-        isActive: true,
-        url: kIsWeb ? file.path : null,
+
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => CropScreen(imageBytes: bytes),
+        ),
       );
 
-      setState(() {
-        planController.editUploadImage1.add(appImage2);
-      });
+      if (result == null) continue;
+      final Uint8List croppedBytes = result;
+
+      final appImage2 = AppImage2(
+        bytes: croppedBytes,
+        isActive: true,
+      );
+
+      planController.editUploadImage1.add(appImage2);
     }
 
     planController.update();
   }
-
   Map<String, String> calculatePlanDates(String durationStr) {
     int duration = int.tryParse(durationStr) ?? 0;
     DateTime start = DateTime.now();
@@ -150,7 +156,7 @@ class _UploadImagesState extends State<UploadImages> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-  String userType=  Api.userInfo.read('userType')??"";
+   String userType=  Api.userInfo.read('userType')??"";
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,backgroundColor: AppColors.white,
@@ -563,20 +569,22 @@ class _UploadImagesState extends State<UploadImages> {
                             }
                             // Add image button
                             return GestureDetector(
-                              onTap: pickImages,
-                              child: Container(
-                                margin: const EdgeInsets.all(8),
-                                width: size * 0.3,
-                                height: size * 0.3,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.grey),
-                                  color: Colors.grey.shade200,
+                              onTap:() {
+                                pickImages(context);
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.all(8),
+                                  width: size * 0.3,
+                                  height: size * 0.3,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.grey),
+                                    color: Colors.grey.shade200,
+                                  ),
+                                  child: const Center(
+                                    child: Icon(Icons.add, size: 40, color: Colors.grey),
+                                  ),
                                 ),
-                                child: const Center(
-                                  child: Icon(Icons.add, size: 40, color: Colors.grey),
-                                ),
-                              ),
                             );
                           },
                         );

@@ -118,7 +118,7 @@ class _ViewPlanState extends State<ViewPlan> {
       planController.selectedUserType="Dental Clinic";
       loadData(planController.selectedUserType);
     }
-    final userId = Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId');
+    final userId = Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId')??"";
     planController.checkPlansStatus(userId,context);
     //planController.getUploadImages(Api.userInfo.read('userId')??"", Api.userInfo.read('userType')??"", context);
   }
@@ -552,7 +552,7 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                              Text(plan.planName??"",style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold),),
                                                                                              Text("₹${plan.price??"0"}",style: AppTextStyles.body(context,color:AppColors.black,fontWeight: FontWeight.bold),),
                                                                                              Container(
-                                                                                                 height: s*0.08,decoration: BoxDecoration(gradient: const LinearGradient(
+                                                                                                decoration: BoxDecoration(gradient: const LinearGradient(
                                                                                                colors: [AppColors.primary,AppColors.secondary],
                                                                                                begin: Alignment.topLeft,
                                                                                                end: Alignment.bottomRight,
@@ -785,7 +785,7 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                                                                                                                 Text(plan.addOnsPlanName??"",style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold)),
                                                                                                                                                                                                 Text("₹${plan.price??"0"}",style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
                                                                                                                                                                                                 Container(
-                                                                                                                                                                                                    height: s*0.08,decoration: BoxDecoration(gradient: const LinearGradient(
+                                                                                                                                                                                                  decoration: BoxDecoration(gradient: const LinearGradient(
                                                                                                                                                                                                   colors: [AppColors.primary,AppColors.secondary],
                                                                                                                                                                                                   begin: Alignment.topLeft,
                                                                                                                                                                                                   end: Alignment.bottomRight,
@@ -1053,7 +1053,7 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                                                                                                             Text(plan.jobPlanName??"",style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold)),
                                                                                                                                                                                             Text("₹${plan.price??"0"}",style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
                                                                                                                                                                                             Container(
-                                                                                                                                                                                                height: s*0.08,decoration: BoxDecoration(
+                                                                                                                                                                                                decoration: BoxDecoration(
                                                                                                                                                                                               borderRadius: BorderRadius.circular(10),
                                                                                                                                                                                               gradient: const LinearGradient(
                                                                                                                                                                                               colors: [AppColors.primary,AppColors.secondary],
@@ -1297,7 +1297,7 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                                         Text(plan.webinarPlanName??"",style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold)),
                                                                                                                         Text("₹${plan.price??"0"}",style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
                                                                                                                         Container(
-                                                                                                                            height: s*0.08,decoration: BoxDecoration(gradient: const LinearGradient(
+                                                                                                                           decoration: BoxDecoration(gradient: const LinearGradient(
                                                                                                                           colors: [AppColors.primary,AppColors.secondary],
                                                                                                                           begin: Alignment.topLeft,
                                                                                                                           end: Alignment.bottomRight,
@@ -1315,6 +1315,13 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                               ),
                                                                                                               const Divider(color: AppColors.grey,thickness: 0.3,),
                                                                                                               SizedBox(height: s*0.01,),
+                                                                                                              Text(
+                                                                                                                'Publish webinar details to job seekers and allow them to view, explore, and engage with your sessions.',
+                                                                                                                textAlign: TextAlign.start,
+                                                                                                                maxLines: 5,
+                                                                                                                overflow: TextOverflow.ellipsis,
+                                                                                                                softWrap:true,
+                                                                                                                style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
                                                                                                             //   if (plan.details != null && plan.details!.isNotEmpty)
                                                                                                             //     Column(
                                                                                                             //       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1563,7 +1570,7 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                                         Text(plan.postPlanName??"",style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold)),
                                                                                                                         Text("₹${plan.price??"0"}",style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
                                                                                                                         Container(
-                                                                                                                            height: s*0.08,decoration: BoxDecoration(gradient: const LinearGradient(
+                                                                                                                          decoration: BoxDecoration(gradient: const LinearGradient(
                                                                                                                           colors: [AppColors.primary,AppColors.secondary],
                                                                                                                           begin: Alignment.topLeft,
                                                                                                                           end: Alignment.bottomRight,
@@ -1580,6 +1587,13 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                                 ),
                                                                                                               ),
                                                                                                               const Divider(color: AppColors.grey,thickness: 0.3,),
+                                                                                                              Text(
+                                                                                                                'Display your advertisements as scrolling banners to reach users continuously and increase visibility.',
+                                                                                                                textAlign: TextAlign.start,
+                                                                                                                maxLines: 3,
+                                                                                                                overflow: TextOverflow.ellipsis,
+                                                                                                                softWrap:true,
+                                                                                                                style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
                                                                                                               SizedBox(height: s*0.01,),
                                                                                                               //   if (plan.details != null && plan.details!.isNotEmpty)
                                                                                                               //     Column(

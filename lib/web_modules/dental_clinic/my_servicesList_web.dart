@@ -35,61 +35,8 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
     double size=MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
-      // appBar: AppBar(centerTitle: true,
-      //   backgroundColor:AppColors.scaffoldBg,
-      //   title: Text('View Lists',
-      //     style: AppTextStyles.subtitle(context,color: AppColors.black),),automaticallyImplyLeading: true,iconTheme: IconThemeData(color: AppColors.black,size: size*0.05),
-      //   leading: Padding(
-      //     padding: const EdgeInsets.all(8.0),
-      //     child: GestureDetector(
-      //       onTap: () {
-      //         Navigator.pop(context);
-      //       },
-      //       child: Container(
-      //         decoration: const BoxDecoration(
-      //           shape: BoxShape.circle,
-      //           gradient: LinearGradient(
-      //             colors: [AppColors.primary, AppColors.secondary],
-      //             begin: Alignment.topLeft,
-      //             end: Alignment.bottomRight,
-      //           ),
-      //         ),
-      //         child: const Center(
-      //           child: Icon(
-      //             Icons.arrow_back,
-      //             color: AppColors.white,
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      //
-      //   actions: [Container(
-      //     decoration: const BoxDecoration(
-      //       shape: BoxShape.circle,
-      //       gradient: LinearGradient(
-      //         colors: [AppColors.primary, AppColors.secondary],
-      //         begin: Alignment.topLeft,
-      //         end: Alignment.bottomRight,
-      //       ),
-      //     ),
-      //     child: IconButton(
-      //       onPressed: () {
-      //         serviceController.serviceDetails.clear();
-      //         loginController.serviceFileImages.clear();
-      //         serviceController.selectedServiceId='';
-      //         serviceController.titleController.clear();
-      //         serviceController.descriptionController.clear();
-      //         serviceController.costController.clear();
-      //         serviceController.serviceImage!.clear();
-      //         Get.toNamed('/createServicesPage');
-      //       },
-      //       icon: Icon(Icons.add,color: AppColors.white,size: size*0.06,),
-      //     ),
-      //   ),],
-      // ),
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
@@ -214,7 +161,7 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
                                                               child: Image.network(
                                                                 imgUrl,
                                                                 fit: BoxFit.cover,
-                                                                height: size * 0.08,
+                                                                height: size * 0.09,
                                                                 width: double.infinity,
                                                                 errorBuilder: (context, error, stackTrace) {
                                                                   return Container(
@@ -262,13 +209,13 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
                                                                             await serviceController.deactivateService(service.serviceId.toString(), context);
                                                                             serviceController.update();
                                                                             await serviceController.getServiceListAdmin(Api.userInfo.read('userId') ?? "", context);
-                                                                            Navigator.of(context).pop();
+                                                                            Navigator.pop(context);
                                                                           });
                                                                         },
                                                                         icon:  Icon(Icons.delete, color: Colors.redAccent, size: size*0.012),
                                                                       ),
                                                                     ],
-                                                                  )
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),

@@ -28,6 +28,7 @@ import 'package:locate_your_dentist/modules/plans/add_expense.dart';
 import 'package:locate_your_dentist/modules/plans/add_gst_details.dart';
 import 'package:locate_your_dentist/modules/plans/branch_list_page.dart';
 import 'package:locate_your_dentist/modules/plans/company_details_add.dart';
+import 'package:locate_your_dentist/modules/plans/contact_us_mobile.dart';
 import 'package:locate_your_dentist/modules/plans/expense_view_page.dart';
 import 'package:locate_your_dentist/modules/plans/income_view_page_admin.dart';
 import 'package:locate_your_dentist/modules/plans/payment_page.dart';
@@ -35,6 +36,8 @@ import 'package:locate_your_dentist/modules/plans/report_page.dart';
 import 'package:locate_your_dentist/modules/plans/view_invoice_list.dart';
 import 'package:locate_your_dentist/modules/plans/view_plan.dart';
 import 'package:locate_your_dentist/modules/product_services/add-products.dart';
+import 'package:locate_your_dentist/modules/product_services/add_privacy_policy_mobile.dart';
+import 'package:locate_your_dentist/modules/product_services/view_legal_pages_mobile.dart';
 import 'package:locate_your_dentist/modules/product_services/view_product_services.dart';
 import 'package:locate_your_dentist/modules/product_services/view_service_detailPage.dart';
 import 'package:locate_your_dentist/modules/profiles/about_us_page.dart';
@@ -56,6 +59,7 @@ import 'package:locate_your_dentist/web_modules/auth_web/forgot_password_web.dar
 import 'package:locate_your_dentist/web_modules/auth_web/register_web.dart';
 import 'package:locate_your_dentist/web_modules/auth_web/verify_otp_page.dart';
 import 'package:locate_your_dentist/web_modules/auth_web/web_login_page.dart';
+import 'package:locate_your_dentist/web_modules/common/contact_web.dart';
 import 'package:locate_your_dentist/web_modules/common/notification_page_web.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/landing_dashboard.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/super_Admin_dashboard.dart';
@@ -70,6 +74,7 @@ import 'package:locate_your_dentist/web_modules/dental_clinic/edit_add_branch_de
 import 'package:locate_your_dentist/web_modules/dental_clinic/my_invoice_list_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/my_servicesList_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/payment_page_web.dart';
+import 'package:locate_your_dentist/web_modules/dental_clinic/service_detail_page.dart';
 import 'package:locate_your_dentist/web_modules/job_seekers/applied_job_list_web.dart';
 import 'package:locate_your_dentist/web_modules/job_seekers/job_list_jobSeekers_web.dart';
 import 'package:locate_your_dentist/web_modules/job_seekers/job_seeker_dashboard_web.dart';
@@ -83,10 +88,12 @@ import 'package:locate_your_dentist/web_modules/superAdmin/add_contact_details.d
 import 'package:locate_your_dentist/web_modules/superAdmin/add_expense_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/add_gst_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/add_jobCategory_web.dart';
+import 'package:locate_your_dentist/web_modules/superAdmin/add_privacyPolicy.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/create_notification_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/create_plan_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/scrollingAds_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/settings_page_web.dart';
+import 'package:locate_your_dentist/web_modules/superAdmin/view_legal_pages.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/view_plan_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/view_report_web.dart';
 import '../modules/auth/login_screen/login_screen.dart';
@@ -151,6 +158,10 @@ class AppPages {
       page: () => const ViewWebProfilePage(),
     ),
     GetPage(
+      name: AppRoutes.serviceDetailPageWeb,
+      page: () => const ServiceDetailPageWeb(),
+    ),
+    GetPage(
       name: AppRoutes.viewJobWebinarWebPage,
       page: () => const ViewJobWebinarWebPage(),
     ),
@@ -205,6 +216,34 @@ class AppPages {
     GetPage(
       name: AppRoutes.clinicProfileWebPage,
       page: () => const ClinicProfileWeb(),
+    ),
+    GetPage(
+      name: AppRoutes.contactWebPage,
+      page: () => const ContactsWebPage(),
+    ),
+    GetPage(
+      name: AppRoutes.addPrivacyPolicyPage,
+      page: () => const PrivacyPolicyWeb(),
+    ),
+    GetPage(
+      name: AppRoutes.getPrivacyPolicyPage,
+      page: () => const PrivacyPolicyWeb(),
+    ),
+    GetPage(
+      name: AppRoutes.viewLegalPage,
+      page: () => const LegalPagesWebView(),
+    ),
+    GetPage(
+      name: AppRoutes.viewLegalMobilePage,
+      page: () => const LegalPagesMobileView(),
+    ),
+    GetPage(
+      name: AppRoutes.contactUsMobilePage,
+      page: () => const ContactsMobilePage(),
+    ),
+    GetPage(
+      name: AppRoutes.addLegalPageMobile,
+      page: () => const PrivacyPolicyMobile(),
     ),
     GetPage(
       name: AppRoutes.reportPageWeb,

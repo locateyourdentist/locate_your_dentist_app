@@ -167,7 +167,7 @@ class TaxSummary {
       cgstPercentage: json['cgstPercentage']?['amount']?.toDouble() ?? 0,
       sgstPercentage: json['sgstPercentage']?['amount']?.toDouble() ?? 0,
       igstPercentage: json['igstPercentage']?['amount']?.toDouble() ?? 0,
-      totalAmount: json['finalAmount']?.toDouble() ?? 0,
+      totalAmount: json['totalAmount']?.toDouble() ?? 0,
     );
   }
 }

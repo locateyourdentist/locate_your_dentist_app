@@ -17,6 +17,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class CreateJobPostWeb extends StatefulWidget {
   const CreateJobPostWeb({super.key});
@@ -44,44 +45,43 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
 
   String? jobId;
   String? job;
-  // void loadJobDescription(String text) {
-  //   final doc = Document()..insert(0, text);
-  //   _controller = QuillController(
-  //     document: doc,
-  //     selection: const TextSelection.collapsed(offset: 0),
-  //   );
-  //
-  //   setState(() {});
-  // }
-  void loadJobDescription(String data) {
+  void loadJobDescription(dynamic data) {
     try {
-      dynamic decoded = jsonDecode(data);
+      List<Map<String, dynamic>> delta = [];
 
-      // 🔥 If still string → decode again
-      if (decoded is String) {
-        decoded = jsonDecode(decoded);
+      if (data == null || data.toString().trim().isEmpty) {
+        delta = [{"insert": "\n"}];
       }
+      else {
+        dynamic decoded = data;
 
-      // ✅ Ensure it's a List
-      if (decoded is List) {
-        _controller = QuillController(
-          document: Document.fromJson(decoded),
-          selection: const TextSelection.collapsed(offset: 0),
-        );
-      } else {
-        throw Exception("Invalid format");
+        if (data is String) {
+          decoded = jsonDecode(data);
+        }
+
+        if (decoded is List) {
+          delta = List<Map<String, dynamic>>.from(decoded);
+
+          if (delta.isEmpty) {
+            delta = [{"insert": "\n"}];
+          }
+        } else {
+          delta = [{"insert": "\n"}];
+        }
       }
-    } catch (e) {
-      print("Quill parse error: $e");
-      final doc = Document()..insert(0, data);
 
       _controller = QuillController(
-        document: doc,
+        document: Document.fromJson(delta),
         selection: const TextSelection.collapsed(offset: 0),
       );
-    }
 
-    setState(() {});
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller = QuillController.basic();
+      setState(() {});
+    }
   }
   @override
   void initState() {
@@ -106,18 +106,26 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
       config: QuillControllerConfig(
         clipboardConfig: QuillClipboardConfig(
           enableExternalRichPaste: true,
-          // onImagePaste: (Uint8List imageBytes) async {
-          //   //final imageUrl = await uploadImageToServer(imageBytes);
-          //   return imageUrl;
-          // },
         ),
+
       ),
     );
     //loginController.jobDescController.text = _controller.document.toPlainText();
    // final jobDescriptionPlain = _controller.document.toPlainText();
-    print('jobb desc${loginController.jobDescController.text}');
-    loadJobDescription(loginController.jobDescController.text);
-    loadJobDescription(loginController.webinarDescriptionJobController.text);
+   // loadJobDescription(loginController.jobDescController.text);
+    //loadJobDescription(loginController.webinarDescriptionJobController.text);
+    print('selectedString: $selectedString');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (selectedString == "Webinar") {
+        print("Loading Webinar Description");
+        loadJobDescription(
+            jobController.webDescriptionData);
+      } else {
+        print("Loading Job Description");
+        loadJobDescription(
+            jobController.jobDescriptionData);
+      }
+    });
   }
   Future<List<Uint8List>> convertImages(List<AppImage2> images) async {
     List<Uint8List> result = [];
@@ -134,7 +142,6 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
         }
       }
     }
-
     return result;
   }
   Future<void> pickSingleJobImage1() async {
@@ -142,18 +149,14 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
       source: ImageSource.gallery,
       imageQuality: 80,
     );
-
     if (image == null) return;
-
     loginController.jobFileImages.clear();
-
     if (kIsWeb) {
       final bytes = await image.readAsBytes();
       loginController.jobImages.add(AppImage2(bytes: bytes));
     } else {
       loginController.jobFileImages.add(AppImage2(file: File(image.path)));
     }
-
     loginController.update();
   }
   Future<void> pickSingleWebinarImage1() async {
@@ -164,194 +167,25 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
 
     if (image == null) return;
 
-    loginController.webinarFileImages.clear();
+    loginController.webinarImages.clear();
 
     if (kIsWeb) {
-      final bytes = await image.readAsBytes();
-      loginController.webinarImages.add(AppImage2(bytes: bytes));
+      loginController.webinarImages.add(
+        AppImage2(bytes: await image.readAsBytes()),
+      );
     } else {
-      loginController.webinarFileImages.add(AppImage2(file: File(image.path)));
+      loginController.webinarImages.add(
+        AppImage2(file: File(image.path)),
+      );
     }
 
     loginController.update();
   }
-  // Future<void> pickImage() async {
-  //   final XFile? pickedFile = await _picker.pickImage(
-  //     source: ImageSource.gallery,
-  //     imageQuality: 80,
-  //   );
-  //
-  //   if (pickedFile != null) {
-  //     selectedImageFile = File(pickedFile.path);
-  //     jobController.webinarImage=null;
-  //   }
-  // }
-  // Future<void> pickImageFromCamera() async {
-  //   final XFile? pickedFile = await _picker.pickImage(
-  //     source: ImageSource.camera,
-  //     imageQuality: 80,
-  //   );
-  //
-  //   if (pickedFile != null) {
-  //     selectedImageFile = File(pickedFile.path);
-  //   }
-  // }
-  // Future<void> pickSingleImage() async {
-  //   final XFile? pickedImage = await _picker.pickImage(
-  //     source: ImageSource.gallery,
-  //     imageQuality: 80,
-  //   );
-  //   if (pickedImage != null) {
-  //     final selectedImageFile = File(pickedImage.path);
-  //
-  //     loginController.webinarImages.clear();
-  //     loginController.webinarImages.add(selectedImageFile);
-  //
-  //     loginController.webinarFileImages.clear();
-  //     loginController.update();
-  //   }
-  // }
-  // Widget _buildSingleImageWidget({File? file, String? url}) {
-  //   return Stack(
-  //     children: [
-  //       ClipRRect(
-  //         borderRadius: BorderRadius.circular(10),
-  //         child: _buildImage(file, url),
-  //         // file != null
-  //         //     ? Image.file(file, fit: BoxFit.cover, width: double.infinity, height: double.infinity)
-  //         //     : Image.network(url!, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
-  //       ),
-  //       Positioned(
-  //         right: 0,
-  //         top: 0,
-  //         child: GestureDetector(
-  //           onTap: () async{
-  //             loginController.webinarImages.clear();
-  //             loginController.webinarFileImages.clear();
-  //             loginController.update();
-  //             await loginController.deleteAwsFile(url.toString(),'user', context);
-  //           },
-  //           child: const Icon(Icons.cancel, color: Colors.black,),
-  //         ),
-  //       ),
-  //       Positioned(
-  //         right: 10,
-  //         bottom: 10,
-  //         child: GestureDetector(
-  //           onTap: () => pickSingleImage(),
-  //           child: Container(
-  //             padding: const EdgeInsets.all(4),
-  //             decoration: BoxDecoration(
-  //               color: Colors.black54,
-  //               borderRadius: BorderRadius.circular(8),
-  //             ),
-  //             child: const Icon(Icons.edit, color: Colors.white),
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-  // Future<void> pickSingleImage1() async {
-  //   final XFile? pickedImage = await _picker.pickImage(
-  //     source: ImageSource.gallery,
-  //     imageQuality: 80,
-  //   );
-  //
-  //   if (pickedImage != null) {
-  //     final selectedImageFile = File(pickedImage.path);
-  //     loginController.jobImages.clear();
-  //     loginController.jobImages.add(selectedImageFile);
-  //     loginController.jobFileImages.clear();
-  //     loginController.update();
-  //   }
-  // }
-  //
-  // Widget _buildSingleImageWidget1({File? file, String? url}) {
-  //   return Stack(
-  //     children: [
-  //       ClipRRect(
-  //         borderRadius: BorderRadius.circular(10),
-  //         child:  _buildImage(file, url),
-  //                ),
-  //       Positioned(
-  //         right: 0,
-  //         top: 0,
-  //         child: GestureDetector(
-  //           onTap: ()async {
-  //             loginController.jobImages.clear();
-  //             loginController.jobFileImages.clear();
-  //             loginController.update();
-  //             await loginController.deleteAwsFile(url.toString(),'user', context);
-  //           },
-  //           child: const Icon(Icons.cancel, color: Colors.black,),
-  //         ),
-  //       ),
-  //       Positioned(
-  //         right: 10,
-  //         bottom: 10,
-  //         child: GestureDetector(
-  //           onTap: () => pickSingleImage(),
-  //           child: Container(
-  //             padding: const EdgeInsets.all(4),
-  //             decoration: BoxDecoration(
-  //               color: Colors.black54,
-  //               borderRadius: BorderRadius.circular(8),
-  //             ),
-  //             child: const Icon(Icons.edit, color: Colors.white),
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-  // Widget _buildImage(File? file, String? url) {
-  //   if (file != null) {
-  //     return Image.file(
-  //       file,
-  //       fit: BoxFit.cover,
-  //       width: double.infinity,
-  //       height: double.infinity,
-  //     );
-  //   }
-  //
-  //   if (url != null && url.isNotEmpty && url != "null") {
-  //     return Image.network(
-  //       url,
-  //       fit: BoxFit.cover,
-  //       width: double.infinity,
-  //       height: double.infinity,
-  //       errorBuilder: (context, error, stackTrace) {
-  //         return _errorWidget();
-  //       },
-  //       loadingBuilder: (context, child, progress) {
-  //         if (progress == null) return child;
-  //         return const Center(child: CircularProgressIndicator());
-  //       },
-  //     );
-  //   }
-  //
-  //   return _errorWidget();
-  // }
-  // Widget _errorWidget() {
-  //   return Container(
-  //     width: double.infinity,
-  //     height: double.infinity,
-  //     decoration: BoxDecoration(
-  //       color: const Color(0xFFF1F3F6),
-  //       borderRadius: BorderRadius.circular(16),
-  //     ),
-  //     child: Icon(
-  //       Icons.image_outlined,
-  //       color: Colors.grey.shade400,
-  //       size: 40,
-  //     ),
-  //   );
-  // }
   Widget _buildSingleImageWidget({required AppImage2 image}) {
+    double s=MediaQuery.of(context).size.width;
     return Container(
-      height: 120,
-      width: 200,
+      width: s * 0.15,
+      height: s * 0.15,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey),
@@ -370,6 +204,8 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
             child: GestureDetector(
               onTap: () {
                 loginController.jobFileImages.clear();
+                loginController.jobImages.clear();
+                loginController.webinarImages.clear();
                 loginController.update();
               },
               child: const Icon(Icons.cancel, color: Colors.red),
@@ -379,47 +215,50 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
       ),
     );
   }  Widget _buildImage(AppImage2 image) {
+    double s=MediaQuery.of(context).size.width;
     if (kIsWeb) {
       if (image.bytes != null) {
         return Image.memory(
           image.bytes!,
-          fit: BoxFit.cover,
+          fit: BoxFit.cover,width: s * 0.15,
+          height: s * 0.15,
         );
       } else if (image.url != null && image.url!.isNotEmpty) {
         return Image.network(
           image.url!,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
+          fit: BoxFit.cover,width: s * 0.15,
+          height: s * 0.15,
+          errorBuilder: (_, __, ___) =>  Center(child: Icon(Icons.broken_image,size: s*0.012,color: AppColors.grey,)),
         );
       }
     } else {
       if (image.file != null) {
         return Image.file(
           image.file!,
-          fit: BoxFit.cover,
+          fit: BoxFit.cover,width: s * 0.15,
+          height: s * 0.15,
         );
       } else if (image.url != null && image.url!.isNotEmpty) {
         return Image.network(
           image.url!,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
+          fit: BoxFit.cover,width: s * 0.15,
+          height: s * 0.15,
+          errorBuilder: (_, __, ___) =>  Center(child: Icon(Icons.broken_image,size: s*0.012,color: AppColors.grey)),
         );
       }
     }
 
-    return const Center(
-      child: Icon(Icons.image_not_supported, color: Colors.red),
+    return  Center(
+      child: Icon(Icons.image_not_supported, color: Colors.red,size: s*0.012,),
     );
   }
   void saveDocument() {
     final jsonData =
     jsonEncode(_controller.document.toDelta().toJson());
-
     debugPrint("Saved JSON: $jsonData");
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Document Saved")),
-    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //    SnackBar(content: Text("Document Saved",style: AppTextStyles.caption(context),)),
+    // );
   }
   void loadDocument() {
     const sample = [
@@ -435,7 +274,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LYD",
         onLogout: () {
         },
@@ -508,115 +347,69 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           SizedBox(height: size*0.01,),
-                                          Text(jobController.selectedJobId.toString().isNotEmpty? "Edit New Job":  'Post New Job',style: AppTextStyles.subtitle(context,color: AppColors.black),),
+                                          Text(jobController.selectedJobId.toString().isNotEmpty? "Edit Job":  'Create New Job',style: AppTextStyles.subtitle(context,color: AppColors.black),),
                                           SizedBox(height: size*0.01,),
                                           Text('Job Title',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+                                          SizedBox(height: size * 0.005),
                                           CustomTextField(
-                                            hint: "Job Title",
+                                            hint: "",
                                             icon: Icons.title,
                                             controller: loginController.jobTitleController,
-                                            // fillColor: AppColors.white,
-                                            // borderColor: AppColors.grey,
                                           ),
-                                          SizedBox(height: size*0.01,),
-                                          // CustomTextField(
-                                          //   hint: "Job Description",
-                                          //   icon: Icons.text_fields,
-                                          //   controller: loginController.jobDescController,
-                                          //   // fillColor: AppColors.white,
-                                          //   // borderColor: AppColors.grey,
-                                          //   maxLines: 7,
-                                          // ),
-                                          // QuillSimpleToolbar(
-                                          //   controller: _controller,
-                                          //   config: QuillSimpleToolbarConfig(
-                                          //     embedButtons: FlutterQuillEmbeds.toolbarButtons(),
-                                          //   ),
-                                          // ),
-                                          // SizedBox(
-                                          //   height: MediaQuery.of(context).size.height * 0.2,
-                                          //   child: Row(
-                                          //     children: [
-                                          //       IconButton(
-                                          //         icon: const Icon(Icons.save),
-                                          //         onPressed: saveDocument,
-                                          //       ),
-                                          //       IconButton(
-                                          //         icon: const Icon(Icons.download),
-                                          //         onPressed: loadDocument,
-                                          //       ),
-                                          //       Expanded(
-                                          //         child: QuillEditor(
-                                          //           controller: _controller,
-                                          //           scrollController: _scrollController,
-                                          //           focusNode: _focusNode,
-                                          //           config: QuillEditorConfig(
-                                          //             placeholder: "Enter job description...",
-                                          //             padding: const EdgeInsets.all(16),
-                                          //             embedBuilders: FlutterQuillEmbeds.editorBuilders(
-                                          //               imageEmbedConfig: QuillEditorImageEmbedConfig(
-                                          //                 imageProviderBuilder: (context, imageUrl) {
-                                          //                   return NetworkImage(imageUrl);
-                                          //                 },
-                                          //               ),
-                                          //             ),
-                                          //           ),
-                                          //         ),
-                                          //       ),
-                                          //     ],
-                                          //   ),
-                                          // ),
-            Column(
-            children: [
-            SizedBox(
-              height: size*0.05,
-              child: QuillSimpleToolbar(
-              controller: _controller,
-              config: QuillSimpleToolbarConfig(
-              embedButtons: FlutterQuillEmbeds.toolbarButtons(),
-              ),
-              ),
-            ),
+                                          SizedBox(height: size * 0.005),
 
-            Row(
-            children: [
-            IconButton(
-            icon:  Icon(Icons.save,color: AppColors.grey,size: size*0.012,),
-            onPressed: saveDocument,
-            ),
-            IconButton(
-            icon:  Icon(Icons.download,color: AppColors.grey,size: size*0.012,),
-            onPressed: loadDocument,
-            ),
-            ],
-            ),
+                                          Column(
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.grey.shade100,
+                                                  borderRadius: const BorderRadius.only(
+                                                    topLeft: Radius.circular(10),
+                                                    topRight: Radius.circular(10),
+                                                  ),),
+                                                height: size*0.05,
+                                                width: double.infinity,
+                                                child: QuillSimpleToolbar(
+                                                  controller: _controller,
+                                                  config: QuillSimpleToolbarConfig(
+                                                    embedButtons: [],
+                                                    showBackgroundColorButton: false,
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                height: size*0.1,
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.grey.shade100,
+                                                  borderRadius: const BorderRadius.only(
+                                                    bottomLeft: Radius.circular(10),
+                                                    bottomRight: Radius.circular(10),
+                                                  ),),
+                                                child: QuillEditor(
+                                                  controller: _controller,
+                                                  scrollController: _scrollController,
+                                                  focusNode: _focusNode,
+                                                  config: QuillEditorConfig(
+                                                    placeholder: "Job description...",
+                                                    padding: const EdgeInsets.all(16),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
 
-            SizedBox(
-            height: MediaQuery.of(context).size.height * 0.25,
-            child: QuillEditor(
-            controller: _controller,
-            scrollController: _scrollController,
-            focusNode: _focusNode,
-            config: QuillEditorConfig(
-            placeholder: "Enter job description...",
-            padding: const EdgeInsets.all(16),
-            ),
-            ),
-            ),
-            ],
-            ),
-                                          SizedBox(height: size * 0.01),
+                                          SizedBox(height: size * 0.005),
                                           Text('Qualification',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+                                          SizedBox(height: size * 0.005),
                                           CustomTextField(
-                                            hint: "Qualification",
+                                            hint: "",
                                             icon: Icons.text_fields,
                                             controller: loginController.qualificationJobController,
-                                            // fillColor: AppColors.white,
-                                            // borderColor: AppColors.grey,
-                                            //maxLines: 7,
                                           ),
-                                          SizedBox(height: size*0.01,),
+                                          SizedBox(height: size * 0.005),
                                           Text('Job Type',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+                                          SizedBox(height: size * 0.005),
 
                                           buildPopupField(
                                             label: "Select Job Type",
@@ -631,37 +424,102 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                               if (value != null) setState(() => loginController.selectedJobType = value);
                                             },
                                           ),
-                                          SizedBox(height: size * 0.01),
+                                          SizedBox(height: size * 0.005),
                                           Text('Select Job Categories',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
-
+                                          SizedBox(height: size * 0.005),
+                                          // GetBuilder<JobController>(
+                                          //   builder: (jobController) {
+                                          //     if (jobController.jobCategoryAdmin.isEmpty) {
+                                          //       return const CircularProgressIndicator();
+                                          //     }
+                                          //
+                                          //     final categoryItems = jobController.jobCategoryAdmin
+                                          //         .map((e) => MultiSelectItem<String>(
+                                          //       e.name.trim(),
+                                          //       e.name,
+                                          //     ))
+                                          //         .toList();
+                                          //
+                                          //     return MultiSelectDialogField<String>(
+                                          //       items: categoryItems,
+                                          //       dialogWidth: size * 0.7,
+                                          //       dialogHeight: size * 0.5,
+                                          //
+                                          //       selectedColor: AppColors.primary,
+                                          //
+                                          //       initialValue: loginController.selectedCategories
+                                          //           .map((e) => e.trim())
+                                          //           .toList(),
+                                          //
+                                          //       decoration: BoxDecoration(
+                                          //         color: Colors.grey[100],
+                                          //         borderRadius: BorderRadius.circular(10),
+                                          //         border: Border.all(color: AppColors.grey, width: 1),
+                                          //       ),
+                                          //
+                                          //       buttonText: Text(
+                                          //         "Select Job Categories",
+                                          //         style: AppTextStyles.caption(
+                                          //           context,
+                                          //           color: AppColors.grey,
+                                          //           fontWeight: FontWeight.normal,
+                                          //         ),
+                                          //       ),
+                                          //
+                                          //       onConfirm: (results) {
+                                          //         loginController.selectedCategories = results.cast<String>();
+                                          //         loginController.update();
+                                          //       },
+                                          //     );
+                                          //   },
+                                          // ),
                                           GetBuilder<JobController>(
                                             builder: (jobController) {
-                                              final List<String> categoryOptions = jobController.jobCategoryAdmin
-                                                  .map((e) => e.name.trim())
+                                              if (jobController.jobCategoryAdmin.isEmpty) {
+                                                return const CircularProgressIndicator();
+                                              }
+
+                                              final categoryItems = jobController.jobCategoryAdmin
+                                                  .map((e) => MultiSelectItem<String>(
+                                                e.name.trim(),
+                                                e.name,
+                                              ))
                                                   .toList();
 
-                                              return buildPopupField(
-                                                label: "Select Job Categories",
-                                                value: loginController.selectedCategories.isEmpty
-                                                    ? null
-                                                    : loginController.selectedCategories.join(", "),
-                                                onTap: () async {
-                                                  final selected = await showMultiSelectDialog(
-                                                    context: context,
-                                                    title: "Select Job Categories",
-                                                    options: categoryOptions,
-                                                    selectedValues: loginController.selectedCategories,
-                                                  );
-                                                  if (selected != null) {
-                                                    setState(() {
-                                                      loginController.selectedCategories = selected;
-                                                    });
-                                                  }
+                                              return MultiSelectDialogField<String>(
+                                                items: categoryItems,
+                                                dialogWidth: size * 0.7,
+                                                dialogHeight: size * 0.5,
+
+                                                selectedColor: AppColors.primary,
+
+                                                initialValue: loginController.selectedCategories
+                                                    .map((e) => e.trim())
+                                                    .toList(),
+
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[100],
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  border: Border.all(color: AppColors.grey, width: 1),
+                                                ),
+
+                                                buttonText: Text(
+                                                  "Select Job Categories",
+                                                  style: AppTextStyles.caption(
+                                                    context,
+                                                    color: AppColors.grey,
+                                                    fontWeight: FontWeight.normal,
+                                                  ),
+                                                ),
+
+                                                onConfirm: (results) {
+                                                  loginController.selectedCategories = results.cast<String>();
+                                                  loginController.update();
                                                 },
                                               );
                                             },
                                           ),
-                                          SizedBox(height: size * 0.01),
+                                          SizedBox(height: size * 0.005),
                                           buildTimeRow(
                                             label: "Start Time",
                                             hour: jobController.startHour,
@@ -695,7 +553,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                               if (value != null) setState(() => jobController.startPeriod = value);
                                             },
                                           ),
-                                          const SizedBox(height: 16),
+                                          SizedBox(height: size * 0.005),
 
                                           // End Time
                                           buildTimeRow(
@@ -731,8 +589,9 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                               if (value != null) setState(() => jobController.endPeriod = value);
                                             },
                                           ),
-                                          SizedBox(height: size * 0.01),
+                                          SizedBox(height: size * 0.005),
                                           Text('Select Salary',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+                                          SizedBox(height: size * 0.005),
 
                                           buildPopupField(
                                             label: "Select Salary",
@@ -765,6 +624,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
 
                                           SizedBox(height: size * 0.01),
                                           Text('Select Experience',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+                                          SizedBox(height: size * 0.005),
 
                                           buildPopupField(
                                             label: "Select Experience",
@@ -789,7 +649,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                               if (value != null) setState(() => loginController.selectedExperience = value);
                                             },
                                           ),
-                                          SizedBox(height: size * 0.01),
+                                          SizedBox(height: size * 0.005),
                                           Column(
                                             mainAxisAlignment:  MainAxisAlignment.center,
                                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -827,50 +687,9 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                   },
                                                 ),
                                               ),
-                                              // GetBuilder<LoginController>(
-                                              //   builder: (controller) {
-                                              //     return SizedBox(
-                                              //       height: 200,
-                                              //       child: controller.jobFileImages.isNotEmpty
-                                              //           ? _buildSingleImageWidget(image: controller.jobFileImages.first)
-                                              //           : GestureDetector(
-                                              //         onTap: pickSingleJobImage1,
-                                              //         child: Container(
-                                              //           height:120,
-                                              //           //s * 0.13,
-                                              //           width:200,
-                                              //           //s * 0.13,
-                                              //           alignment: Alignment.center,
-                                              //           decoration: BoxDecoration(
-                                              //             border: Border.all(color: Colors.grey),
-                                              //             borderRadius: BorderRadius.circular(10),
-                                              //           ),
-                                              //           child: Center(
-                                              //             child: Icon(Icons.add, color: AppColors.grey, size: size * 0.012),
-                                              //           ),
-                                              //         ),
-                                              //       ),
-                                              //     );
-                                              //   },
-                                              // ),
+
                                               const SizedBox(height: 20),
 
-                                              // Row(
-                                              //   mainAxisAlignment: MainAxisAlignment.center,
-                                              //   children: [
-                                              //     ElevatedButton.icon(
-                                              //       onPressed: () async {
-                                              //         await pickImage1();
-                                              //         setState(() {});
-                                              //       },
-                                              //       icon:  Icon(Icons.photo,color: AppColors.primary,size: size*0.06,),
-                                              //       label:  Text("Pick Image",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.primary),),
-                                              //     ),
-                                              //
-                                              //     const SizedBox(width: 15),
-                                              //
-                                              //   ],
-                                              // ),
                                             ],
                                           ),
                                           SizedBox(height: size * 0.02),
@@ -940,25 +759,26 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     }
                                                     final jobImageBytes = await convertImages(loginController.jobImages ?? []);
 
-                                                    //final jobDescriptionJson = jsonEncode(_controller.document.toDelta().toJson());
-                                                    final jobDescriptionPlain = _controller.document.toPlainText();
+                                                    // final jobDescription =
+                                                    // _controller.document.toDelta().toJson();
+                                                    // final delta = _controller.document.toDelta().toJson();
+                                                    //
+                                                    // final jobDescription = jsonEncode(
+                                                    //   List<Map<String, dynamic>>.from(delta),
+                                                    // );
                                                     final jobDescription =
                                                     jsonEncode(_controller.document.toDelta().toJson());
-                                                   // if ((jobController.jobCount ?? 0) > 0) {
+                                                    // if ((jobController.jobCount ?? 0) > 0) {
                                                       await jobController.postJobsAdmin(
                                                          jobController.selectedJobId.toString()??"0",
                                                           //jobController.selectedJobId.toString().isNotEmpty? jobController.selectedJobId.toString():"0",
                                                           loginController.selectUserId!,
                                                           loginController.selectedUserType!,
-                                                          loginController.selectedJobType.toString(),
+                                                          loginController.selectedJobType??"",
                                                           loginController.selectedCategories,
                                                           loginController.typeNameController.text.toString(),
                                                           loginController.jobTitleController.text.toString(),
                                                           jobDescription,
-                                                          //jobDescriptionPlain,
-                                                         // jobDescriptionJson,
-                                                          // loginController.jobDescController.text
-                                                          //     .toString(),
                                                           loginController.selectedSalary.toString(),
                                                           loginController.qualificationJobController.text.toString(),
                                                           loginController.selectedExperience.toString(),
@@ -1012,19 +832,24 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                       child: Padding(
                                         padding: const EdgeInsets.only(left: 20.0,right: 20),
                                         child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             SizedBox(height: size*0.03,),
 
                                             Text(jobController.selectedWebinarId.toString().isNotEmpty? "Edit Webinar":  'Post New Webinar',style: AppTextStyles.subtitle(context,color: AppColors.black),),
                                             SizedBox(height: size*0.01,),
+                                            Text('Webinar Title',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+                                            SizedBox(height: size * 0.005),
+
                                             CustomTextField(
-                                              hint: "Webinar Title",
+                                              hint: "",
                                               icon: Icons.title,
                                               controller: loginController.webinarTitleJobController,
                                               // fillColor: AppColors.white,
                                               // borderColor: AppColors.grey,
                                             ),
-                                            SizedBox(height: size*0.01,),
+                                            SizedBox(height: size * 0.005),
                                             // CustomTextField(
                                             //   hint: "Webinar Description",
                                             //   icon: Icons.text_fields,
@@ -1034,14 +859,20 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                             //   maxLines: 4,
                                             // ),
                                             // SizedBox(height: size * 0.01),
+                                            Text('Webinar description',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+                                            SizedBox(height: size * 0.005),
 
                                             Column(
                                               children: [
                                                 Container(
                                                   decoration: BoxDecoration(
-                                                      color: Colors.grey.shade100,
-                                                      borderRadius: BorderRadius.circular(10)),
+                                                    color: Colors.grey.shade100,
+                                                    borderRadius: const BorderRadius.only(
+                                                      topLeft: Radius.circular(10),
+                                                      topRight: Radius.circular(10),
+                                                    ),),
                                                   height: size*0.05,
+                                                  width: double.infinity,
                                                   child: QuillSimpleToolbar(
                                                     controller: _controller,
                                                     config: QuillSimpleToolbarConfig(
@@ -1049,24 +880,15 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     ),
                                                   ),
                                                 ),
-
-                                                // Row(
-                                                //   children: [
-                                                //     IconButton(
-                                                //       icon:  Icon(Icons.save,color: AppColors.grey,size: size*0.012,),
-                                                //       onPressed: saveDocument,
-                                                //     ),
-                                                //     IconButton(
-                                                //       icon:  Icon(Icons.download,color: AppColors.grey,size: size*0.012,),
-                                                //       onPressed: loadDocument,
-                                                //     ),
-                                                //   ],
-                                                // ),
-
                                                 Container(
+                                                  height: size*0.1,
+                                                  width: double.infinity,
                                                   decoration: BoxDecoration(
-                                                      color: Colors.grey.shade100,
-                                                      borderRadius: BorderRadius.circular(10)),
+                                                    color: Colors.grey.shade100,
+                                                    borderRadius: const BorderRadius.only(
+                                                      bottomLeft: Radius.circular(10),
+                                                      bottomRight: Radius.circular(10),
+                                                    ),),
                                                   child: QuillEditor(
                                                     controller: _controller,
                                                     scrollController: _scrollController,
@@ -1079,9 +901,12 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(height: size * 0.01),
+                                            SizedBox(height: size * 0.005),
+                                            Text('Webinar Date',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+                                            SizedBox(height: size * 0.005),
+
                                             CustomTextField(
-                                              hint: "Webinar Date",
+                                              hint: "",
                                               controller: loginController.webinarDateController, 
                                               // fillColor: AppColors.white,
                                               // borderColor: AppColors.grey,
@@ -1100,10 +925,12 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                 }
                                               },
                                             ),
-                                            SizedBox(height: size * 0.01),
+                                            SizedBox(height: size * 0.005),
+                                            Text('Webinar Link',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+                                            SizedBox(height: size * 0.005),
 
                                             CustomTextField(
-                                              hint: "Webinar Link",
+                                              hint: "",
                                               icon: Icons.person,maxLines: 2,
                                               controller: loginController.webinarLinkController,
                                               //fillColor: AppColors.white,borderColor: AppColors.grey,
@@ -1113,12 +940,12 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                 alignment: Alignment.topLeft,
                                                 child: Text('Webinar Timing',style: AppTextStyles.caption
                                                   (context,color: AppColors.black,fontWeight: FontWeight.bold),)),
-                                            SizedBox(height: size * 0.01),
+                                            SizedBox(height: size * 0.005),
                                             Align(
                                                 alignment: Alignment.topLeft,
                                                 child: Text('Start Time',style: AppTextStyles.caption
                                                   (context,color: AppColors.black,fontWeight: FontWeight.bold),)),
-                                            SizedBox(height: size * 0.01),
+                                            SizedBox(height: size * 0.005),
 
                                             Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1179,11 +1006,11 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     ),
                                                   ),
                                                 ]),
-                                            SizedBox(height: size * 0.01),
+                                            SizedBox(height: size * 0.005),
                                             Align(
                                                 alignment: Alignment.topLeft,
                                                 child: Text('End Time',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),)),
-                                            SizedBox(height: size * 0.01),
+                                            SizedBox(height: size * 0.005),
 
                                             Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1246,181 +1073,161 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     ),
                                                   ),
                                                 ]),
-                                            SizedBox(height: size * 0.01),
+                                            SizedBox(height: size * 0.005),
              Text('Image',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
                                             SizedBox(height: size * 0.005),
 
-                                            Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                              GetBuilder<LoginController>(
-                                              builder: (controller) {
-                                              return SizedBox(
-                                                height: size * 0.1,
-                                                width: size*0.13,
-                                              child: controller.webinarImages.isNotEmpty
-                                              ? _buildSingleImageWidget(image: controller.webinarImages.first)
-                                                  : GestureDetector(
-                                              onTap: pickSingleWebinarImage1,
-                                              child: Container(
-                                                height: size * 0.1,
-                                                width: size*0.13,
-                                              //s * 0.13,
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                              border: Border.all(color: Colors.grey),
-                                              borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              child: Center(
-                                              child: Icon(Icons.add, color: AppColors.grey, size: size * 0.012),
-                                              ),
-                                              ),
-                                              ),
-                                              );
-                                              },
-                                              ),
-
-
-                                                // SizedBox(
-                                                //   height: size * 0.1,
-                                                //   width: size*0.13,
-                                                //   child: GetBuilder<LoginController>(
-                                                //     builder: (controller) {
-                                                //       if (controller.webinarImages.isNotEmpty) {
-                                                //         final file = controller.webinarImages.first;
-                                                //         return _buildSingleImageWidget(file: file);
-                                                //       }
-                                                //       if (controller.webinarFileImages.isNotEmpty) {
-                                                //         final img = controller.webinarFileImages.first;
-                                                //         print('web img url${img.url}');
-                                                //         return _buildSingleImageWidget(url: "${img.url}");
-                                                //       }
-                                                //       return GestureDetector(
-                                                //         onTap: () => pickSingleImage(),
-                                                //         child: Container(
-                                                //           decoration: BoxDecoration(
-                                                //             borderRadius: BorderRadius.circular(10),
-                                                //             border: Border.all(color: Colors.grey),
-                                                //             color: Colors.grey.shade200,
-                                                //           ),
-                                                //           child: const Center(
-                                                //             child: Icon(Icons.add, size: 40, color: Colors.grey),
-                                                //           ),
-                                                //         ),
-                                                //       );
-                                                //     },
+                                            Center(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                // GetBuilder<LoginController>(
+                                                // builder: (controller) {
+                                                // return Center(
+                                                //   child: SizedBox(
+                                                //     height: size * 0.13,
+                                                //     width: size*0.13,
+                                                //   child: controller.webinarImages.isNotEmpty
+                                                //   ? _buildSingleImageWidget(image: controller.webinarImages.first)
+                                                //       : GestureDetector(
+                                                //   onTap: pickSingleWebinarImage1,
+                                                //   child: Container(
+                                                //     height: size * 0.1,
+                                                //     width: size*0.13,
+                                                //   //s * 0.13,
+                                                //   alignment: Alignment.center,
+                                                //   decoration: BoxDecoration(
+                                                //   border: Border.all(color: Colors.grey),
+                                                //   borderRadius: BorderRadius.circular(10),
                                                 //   ),
+                                                //   child: Center(
+                                                //   child: Icon(Icons.add, color: AppColors.grey, size: size * 0.012),
+                                                //   ),
+                                                //   ),
+                                                //   ),
+                                                //   ),
+                                                // );
+                                                // },
                                                 // ),
-                                                const SizedBox(height: 20),
-                                                // Row(
-                                                //   mainAxisAlignment: MainAxisAlignment.center,
-                                                //   children: [
-                                                //     ElevatedButton.icon(
-                                                //       onPressed: () async {
-                                                //         await pickImage();
-                                                //         setState(() {});
-                                                //       },
-                                                //       icon:  Icon(Icons.photo,color: AppColors.primary,size: size*0.06,),
-                                                //       label:  Text("Pick Image",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.primary),),
-                                                //     ),
-                                                //
-                                                //     const SizedBox(width: 15),
-                                                //
-                                                //   ],
-                                                // ),
-                                              ],
+                                                  GetBuilder<LoginController>(
+                                                    builder: (controller) {
+                                                      return SizedBox(
+                                                        height: size * 0.13,
+                                                        width: size * 0.3,
+                                                        child: controller.webinarImages.isNotEmpty
+                                                            ? _buildSingleImageWidget(image: controller.webinarImages.first)
+                                                            : GestureDetector(
+                                                          onTap: pickSingleWebinarImage1,
+                                                          child: Container(
+                                                            alignment: Alignment.center,
+                                                            decoration: BoxDecoration(
+                                                              border: Border.all(color: Colors.grey),
+                                                              borderRadius: BorderRadius.circular(10),
+                                                            ),
+                                                            child: Icon(Icons.add),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+
+                                                  const SizedBox(height: 20),
+                                                ],
+                                              ),
                                             ),
 
                                             SizedBox(height: size * 0.03),
 
-                                            Container(
-                                              width: size*0.25,
-                                              height: size*0.018,
-                                              decoration: BoxDecoration(
-                                                gradient: const LinearGradient(
-                                                  colors: [AppColors.primary, AppColors.secondary],
-                                                  begin: Alignment.topLeft,
-                                                  end: Alignment.bottomRight,
+                                            Center(
+                                              child: Container(
+                                                width: size*0.25,
+                                                height: size*0.018,
+                                                decoration: BoxDecoration(
+                                                  gradient: const LinearGradient(
+                                                    colors: [AppColors.primary, AppColors.secondary],
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(12),
                                                 ),
-                                                borderRadius: BorderRadius.circular(12),
-                                              ),
-                                              child: ElevatedButton(
-                                                onPressed: () async {
-                                                  if (_formKeyCreateWebinarWeb.currentState!.validate()) {
-                                                    saveDocument();
-                                                    if ((loginController.startHour != null && loginController.startHour!.isNotEmpty) &&
-                                                        (loginController.startMinutes != null && loginController.startMinutes!.isNotEmpty) &&
-                                                        (loginController.startPeriod != null && loginController.startPeriod!.isNotEmpty)) {
-                                                      startTime="${loginController.startHour}:${loginController.startMinutes} ${loginController.startPeriod}";
-                                                    } else {
-                                                      startTime = null;
-                                                      showCustomToast(context,  "Please Choose Start Time",);
-                                                      return;
-                                                    }
-                                                    if ((loginController.endHour != null && loginController.endHour!.isNotEmpty) &&
-                                                        (loginController.endMinutes != null && loginController.endMinutes!.isNotEmpty) &&
-                                                        (loginController.endPeriod != null && loginController.endPeriod!.isNotEmpty)) {
-                                                      endTime="${loginController.endHour}:${loginController.endMinutes} ${loginController.endPeriod}";
-                                                    } else {
-                                                      endTime = null;
-                                                      showCustomToast(context,  "Please Choose End Time",);
-                                                      return;
-                                                    }
-                                                    final webinarBytes = await convertImages(loginController.webinarImages ?? []);
+                                                child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    if (_formKeyCreateWebinarWeb.currentState!.validate()) {
+                                                      saveDocument();
+                                                      if ((loginController.startHour != null && loginController.startHour!.isNotEmpty) &&
+                                                          (loginController.startMinutes != null && loginController.startMinutes!.isNotEmpty) &&
+                                                          (loginController.startPeriod != null && loginController.startPeriod!.isNotEmpty)) {
+                                                        startTime="${loginController.startHour}:${loginController.startMinutes} ${loginController.startPeriod}";
+                                                      } else {
+                                                        startTime = null;
+                                                        showCustomToast(context,  "Please Choose Start Time",);
+                                                        return;
+                                                      }
+                                                      if ((loginController.endHour != null && loginController.endHour!.isNotEmpty) &&
+                                                          (loginController.endMinutes != null && loginController.endMinutes!.isNotEmpty) &&
+                                                          (loginController.endPeriod != null && loginController.endPeriod!.isNotEmpty)) {
+                                                        endTime="${loginController.endHour}:${loginController.endMinutes} ${loginController.endPeriod}";
+                                                      } else {
+                                                        endTime = null;
+                                                        showCustomToast(context,  "Please Choose End Time",);
+                                                        return;
+                                                      }
+                                                      final webinarBytes = await convertImages(loginController.webinarImages ?? []);
+                                                      print('webinar img$webinarBytes');
 
-                                                    final jobDescriptionPlain = _controller.document.toPlainText();
-                                                    final webinarDescription =
-                                                    jsonEncode(_controller.document.toDelta().toJson());
-                                                    bool isSameDay= false;
-                                                    if(jobController.webinar.isNotEmpty)
-                                                      isSameDay= isWithinOneDay(jobController.webinar.first.createdDate.toString()??"");
-                                                    print('sameday$isSameDay');
-                                                    if(isSameDay||jobController.selectedWebinarId=="0") {
-                                                      await jobController.postWebinarAdmin(
-                                                        //jobController.selectedWebinarId.toString().isNotEmpty? jobController.selectedWebinarId.toString():"0",
-                                                          jobController.selectedWebinarId
-                                                              .toString(),
-                                                          loginController.selectUserId!,
-                                                          loginController.selectedUserType!,
-                                                          loginController.typeNameController.text
-                                                              .toString(),
-                                                          loginController
-                                                              .webinarTitleJobController.text
-                                                              .toString(),
-                                                          webinarDescription,
-                                                          //jobDescriptionPlain,
-                                                          // loginController
-                                                          //     .webinarDescriptionJobController
-                                                          //     .text.toString(),
-                                                          loginController.webinarLinkController
-                                                              .text.toString(),
-                                                          loginController.webinarDateController
-                                                              .text.toString(),
-                                                          startTime.toString(),
-                                                          endTime.toString(),webinarBytes,
-                                                          // loginController.webinarImages.isNotEmpty
-                                                          //     ? loginController.webinarImages
-                                                          //     : [],
-                                                          context
-                                                      );
-                                                    }
-                                                    else{
-                                                      showSuccessDialog(context, title:"Alert",
-                                                          message :"Oops! Editing is allowed only for one day after you purchase a plan.", onOkPressed: () {});
+                                                      final webinarDescription =
+                                                      jsonEncode(_controller.document.toDelta().toJson());
+                                                      bool isSameDay= false;
+                                                      if(jobController.webinar.isNotEmpty)
+                                                        isSameDay= isWithinOneDay(jobController.webinar.first.createdDate.toString()??"");
+                                                      print('sameday$isSameDay');
+                                                      if(isSameDay||jobController.selectedWebinarId=="0") {
+                                                        await jobController.postWebinarAdmin(
+                                                          //jobController.selectedWebinarId.toString().isNotEmpty? jobController.selectedWebinarId.toString():"0",
+                                                            jobController.selectedWebinarId
+                                                                .toString(),
+                                                            loginController.selectUserId!,
+                                                            loginController.selectedUserType!,
+                                                            loginController.typeNameController.text
+                                                                .toString(),
+                                                            loginController
+                                                                .webinarTitleJobController.text
+                                                                .toString(),
+                                                            webinarDescription,
+                                                            //jobDescriptionPlain,
+                                                            // loginController
+                                                            //     .webinarDescriptionJobController
+                                                            //     .text.toString(),
+                                                            loginController.webinarLinkController
+                                                                .text.toString(),
+                                                            loginController.webinarDateController
+                                                                .text.toString(),
+                                                            startTime.toString(),
+                                                            endTime.toString(),webinarBytes,
+                                                            // loginController.webinarImages.isNotEmpty
+                                                            //     ? loginController.webinarImages
+                                                            //     : [],
+                                                            context
+                                                        );
+                                                      }
+                                                      else{
+                                                        showSuccessDialog(context, title:"Alert",
+                                                            message :"Oops! Editing is allowed only for one day after you purchase a plan.", onOkPressed: () {});
 
+                                                      }
                                                     }
-                                                  }
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(12),
-                                                    ),
-                                                    backgroundColor: Colors.transparent,shadowColor: Colors.transparent
-                                                ),
-                                                child: Text(
-                                                  job=='new'? "Create Webinar":"Edit Webinar",
-                                                  style: AppTextStyles.body(context, color: AppColors.white,fontWeight: FontWeight.bold),
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(12),
+                                                      ),
+                                                      backgroundColor: Colors.transparent,shadowColor: Colors.transparent
+                                                  ),
+                                                  child: Text(
+                                                    job=='new'? "Create Webinar":"Edit Webinar",
+                                                    style: AppTextStyles.body(context, color: AppColors.white,fontWeight: FontWeight.bold),
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -1443,6 +1250,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
             );
           }
       ),
+
     );
   }
   Widget buildWebinarImage(String? imageUrl) {
@@ -1620,8 +1428,8 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
+        Text(label, style:  AppTextStyles.caption(context,fontWeight: FontWeight.bold)),
+        const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

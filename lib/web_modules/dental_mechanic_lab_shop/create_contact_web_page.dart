@@ -152,13 +152,13 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
-          height: size * 0.08,
+          height: size * 0.03,
           title: "LYD",
           onLogout: () {},
           onNotification: () {},
         );
       } else {
-        return const PreferredSize(
+        return  PreferredSize(
           preferredSize: Size.fromHeight(60),
           child: CommonHeader(),
         );
@@ -200,14 +200,20 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                     Text('Contact Form',style: AppTextStyles.subtitle(context,),),
                                     SizedBox(height: size*0.02,),
                                     Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          CommonContactContainer(icons: Icons.call,onTap: (){
+                                          CommonContactContainer(
+                                            icons: Icons.call,onTap: (){
                                             launchCall(mobileNumber);
-                                          },title: 'Call Us',),
+                                          },
+                                            title: 'Call Us',),
+                                          SizedBox(width: size*0.01,),
+
                                           CommonContactContainer(icons: Icons.email,onTap: (){
                                             //_launch('contact@catchytechnologies.com');
                                           },title: 'Email Us',),
+                                          SizedBox(width: size*0.01,),
+
                                           CommonContactContainer(icons: Icons.search,onTap: (){},title: 'Search FAQs',),
                                         ]),
                                     SizedBox(height: size*0.04,),
@@ -215,14 +221,15 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                     CustomTextField(
                                       hint: "Doctor Name",
                                       controller: contactController.doctorNameController,
-                                      borderColor: AppColors.grey,
+                                      borderColor:Colors.black12,
                                       fillColor: AppColors.white,readOnly: true,
                                     ),
                                     SizedBox(height: size*0.01,),
 
                                     CustomTextField(
                                       hint: "Clinic Name",
-                                      controller: contactController.contactClinicNameController,borderColor: AppColors.grey,
+                                      controller: contactController.contactClinicNameController,
+                                      borderColor:Colors.black12,
                                       fillColor: AppColors.white,readOnly: true,
                                     ),
                                     SizedBox(height: size*0.01,),
@@ -230,7 +237,8 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                     CustomTextField(
                                       hint: "Clinic Address",
                                       controller:  contactController.clinicAddressController,
-                                      borderColor: AppColors.grey,readOnly: true,
+                                      borderColor:Colors.black12,
+                                      readOnly: true,
                                       fillColor: AppColors.white,
                                     ),
                                     SizedBox(height: size*0.01,),
@@ -238,7 +246,7 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                     CustomTextField(
                                       hint: "Details on material requirement",
                                       controller: contactController.contactDetailsController,
-                                      borderColor: AppColors.grey,
+                                      borderColor:Colors.black12,
                                       fillColor: AppColors.white,maxLines: 4,
                                     ),
                                     SizedBox(height: size*0.01,),
@@ -350,11 +358,11 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                               height: size * 0.3,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(10),
-                                                border: Border.all(color: Colors.grey),
-                                                color: Colors.grey.shade200,
+                                                border: Border.all(color: Colors.grey.shade100),
+                                                color: Colors.black12,
                                               ),
-                                              child: const Center(
-                                                child: Icon(Icons.add, size: 40, color: Colors.grey),
+                                              child:  Center(
+                                                child: Icon(Icons.add, size: size*0.012, color: Colors.grey),
                                               ),
                                             ),
                                           );
@@ -387,8 +395,11 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                                 //     .where((img) => img.file != null)
                                                 //     .map((img) => img.file!)
                                                 //     .toList();
-                                                final imageBytes =  convertImages(loginController.contactImages ?? []);
-
+                                                //final imageBytes =  convertImages(loginController.contactImages ?? []);
+                                                final imageBytes = loginController.contactImages
+                                                    .where((img) => img.bytes != null)
+                                                    .map((img) => img.bytes!)
+                                                    .toList();
                                                 contactController.postContactDetail(
                                                     senderUserId.toString() ?? "",
                                                     receiverUserId.toString() ?? "",

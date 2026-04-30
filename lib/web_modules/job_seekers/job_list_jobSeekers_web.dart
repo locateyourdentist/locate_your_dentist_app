@@ -64,25 +64,10 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
       if (text.isEmpty) return "";
       return text[0].toUpperCase();
     }
-    PreferredSizeWidget buildAppBar() {
-      if (Api.userInfo.read('token') != null) {
-        return CommonWebAppBar(
-          height: size * 0.08,
-          title: "LYD",
-          onLogout: () {},
-          onNotification: () {},
-        );
-      } else {
-        return const PreferredSize(
-          preferredSize: Size.fromHeight(60),
-          child: CommonHeader(),
-        );
-      }
-    }
     return Scaffold(
      // key:_scaffoldKeyJobSeekers,
       backgroundColor: AppColors.scaffoldBg,
-       appBar: buildAppBar(),
+       appBar: buildAppBar(context),
       body: Row(
         children: [
          if( Api.userInfo.read('token')!=null)
@@ -114,120 +99,7 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Align(
-                                //   alignment:Alignment.topRight,
-                                //   child: Container(
-                                //     padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                                //     height: size * 0.018,
-                                //     width: size*0.2,
-                                //     decoration: BoxDecoration(
-                                //       color: Colors.grey.shade100,
-                                //       borderRadius: BorderRadius.circular(14),
-                                //       boxShadow: [
-                                //         BoxShadow(
-                                //           color: Colors.black.withOpacity(0.05),
-                                //           blurRadius: 8,
-                                //           offset: const Offset(0, 3),
-                                //         ),
-                                //       ],
-                                //     ),
-                                //     child: Row(
-                                //       children: [
-                                //         Expanded(
-                                //           child: TextField(
-                                //             controller: searchController,
-                                //             style: AppTextStyles.caption(
-                                //               context,
-                                //               color: AppColors.black,
-                                //               fontWeight: FontWeight.w500,
-                                //             ),
-                                //             decoration: InputDecoration(
-                                //               hintText: "Search jobs by name, area...",
-                                //               hintStyle: AppTextStyles.caption(
-                                //                 context,
-                                //                 color: AppColors.grey,
-                                //                 fontWeight: FontWeight.normal,
-                                //               ),
-                                //               prefixIcon: Icon(
-                                //                 Icons.search_rounded,
-                                //                 color: AppColors.grey,
-                                //                 size: size * 0.012,
-                                //               ),
-                                //               border: InputBorder.none,
-                                //               contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                                //             ),
-                                //             onSubmitted: (value) {
-                                //               jobController.getJobListJobSeekers(
-                                //                   search: value, context: context);
-                                //             },
-                                //           ),
-                                //         ),
-                                //         Container(
-                                //           height: size * 0.015,
-                                //           width: 1,
-                                //           color: Colors.grey.shade300,
-                                //         ),
-                                //         IconButton(
-                                //           icon: Icon(
-                                //             Icons.tune_rounded,
-                                //             color: AppColors.grey,
-                                //             size: size * 0.012,
-                                //           ),
-                                //           onPressed: () {
-                                //             showDialog(
-                                //               context: context,
-                                //               barrierDismissible: true,
-                                //               builder: (context) {
-                                //                 return Dialog(
-                                //                   shape: RoundedRectangleBorder(
-                                //                     borderRadius: BorderRadius.circular(20),
-                                //                   ),
-                                //                   insetPadding: const EdgeInsets.symmetric(
-                                //                       horizontal: 200, vertical: 40),
-                                //                   child: SizedBox(
-                                //                     width: MediaQuery.of(context).size.width * 0.5,
-                                //                     child: Padding(
-                                //                       padding: const EdgeInsets.all(16.0),
-                                //                       child:
-                                //                       FilterDrawer(
-                                //                         onApply: () async {
-                                //                           await jobController.getJobListJobSeekers(
-                                //                             search: searchController.text,
-                                //                             state: loginController.selectedState,
-                                //                             district: loginController.selectedDistrict,
-                                //                             city: loginController.selectedTaluka,
-                                //                             salary: loginController.selectedSalary,
-                                //                             jobType: loginController.selectedJobType,
-                                //                             jobCategory: loginController.selectedCategories,
-                                //                             context: context,
-                                //                           );
-                                //                           Navigator.pop(context);
-                                //                         },
-                                //                         onReset: () {
-                                //                           loginController.selectedCategories.clear();
-                                //                           loginController.selectedArea = null;
-                                //                           loginController.selectedUserType = null;
-                                //                           loginController.selectedState = null;
-                                //                           loginController.selectedDistrict = null;
-                                //                           loginController.selectedDistance = null;
-                                //                           loginController.selectedTaluka = null;
-                                //                           loginController.selectedJobType = null;
-                                //                           loginController.selectedSalary = null;
-                                //                           loginController.update();
-                                //                         },
-                                //                       ),
-                                //                     ),
-                                //                   ),
-                                //                 );
-                                //               },
-                                //             );
-                                //           },
-                                //         ),
-                                //       ],
-                                //     ),
-                                //   ),
-                                // ),
-                              Align(
+                                Align(
                               alignment: Alignment.topRight,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
@@ -481,11 +353,13 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                                                   padding: const EdgeInsets.only(left: 50.0,right: 50,top: 20,bottom: 20),
                                                   child: GestureDetector(
                                                     onTap: ()async{
-                                                      await jobController.getJobsById(Jobs.jobId!, context);
+                                                      Api.userInfo.write('selectJobId',Jobs.jobId.toString());
+                                                      Api.userInfo.write('activeStatus',Jobs.isActive.toString());
+                                                      //await jobController.getJobsById(Jobs.jobId!, context);
                                                       Get.toNamed('/viewJobDetailWebPage');
                                                     },
                                                     child: Container(
-                                                      height: size*0.11,
+                                                      height: size*0.12,
                                                       width: size*0.15,
                                                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
                                                           color: AppColors.white,border: Border.all(color: AppColors.white,),
@@ -530,7 +404,7 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
 
                                                                   ],
                                                                 ),
-                                                                SizedBox(width: 10,),
+                                                                SizedBox(height: size*0.001,),
                                                                 Container(
                                                                   width: size * 0.025,
                                                                   height: size * 0.025,
@@ -543,40 +417,43 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                                                                         width: 1.5),
                                                                     color: Colors.grey.shade100,
                                                                   ),
-                                                                  child: Image.network(
-                                                                    logoUrl??"",
-                                                                    fit: BoxFit.cover,
-                                                                    width: size * 0.025,
-                                                                    height: size * 0.025,
-                                                                    errorBuilder: (context, error, stackTrace) {
-                                                                      return Container(
-                                                                      //  alignment: Alignment.center,
-                                                                        width: size * 0.025,
-                                                                        height: size * 0.025,
-                                                                        decoration: BoxDecoration(
-                                                                            color: AppColors.white, borderRadius: BorderRadius.circular(10),
-                                                                          //getRandomColor(Jobs.orgName.toString()),
-                                                                        ),
-                                                                        child: Center(
-                                                                          child: Text(
-                                                                            getFirstLetter(Jobs.orgName.toString()),
-                                                                            style: AppTextStyles.body(
-                                                                              context,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: getRandomColor(Jobs.orgName.toString()),
+                                                                  child: ClipRRect(
+                                                                    borderRadius: BorderRadius.circular(10),
+                                                                    child: Image.network(
+                                                                      logoUrl??"",
+                                                                      fit: BoxFit.cover,
+                                                                      width: size * 0.025,
+                                                                      height: size * 0.025,
+                                                                      errorBuilder: (context, error, stackTrace) {
+                                                                        return Container(
+                                                                        //  alignment: Alignment.center,
+                                                                          width: size * 0.025,
+                                                                          height: size * 0.025,
+                                                                          decoration: BoxDecoration(
+                                                                              color: AppColors.white, borderRadius: BorderRadius.circular(10),
+                                                                            //getRandomColor(Jobs.orgName.toString()),
+                                                                          ),
+                                                                          child: Center(
+                                                                            child: Text(
+                                                                              getFirstLetter(Jobs.orgName.toString()),
+                                                                              style: AppTextStyles.body(
+                                                                                context,
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: getRandomColor(Jobs.orgName.toString()),
+                                                                              ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      );
-                                                                    },
+                                                                        );
+                                                                      },
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ],
                                                             ),
-                                                            const SizedBox(height: 15,),
+                                                            SizedBox(height: size*0.001,),
                                                             Text(Jobs.jobTitle.toString(),
                                                               softWrap:true,style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: Colors.black),),
-                                                            const SizedBox(height: 5),
+                                                            SizedBox(height: size*0.001,),
 
                                                             Row(
                                                               crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,12 +1,28 @@
 
 class AppConstants{
+
+  // Platform  Firebase App Id
+  // web       1:831601657278:web:d39cd0bca707c6b917a5ef
+  // android   1:831601657278:android:1060f7947bf4173417a5ef
+  // ios       1:831601657278:ios:57713c33b60c938317a5ef
+  // macos     1:831601657278:ios:57713c33b60c938317a5ef
+
+  // Platform  Firebase App Id
+  // web       1:540179202432:web:659f672b6dbab5793b8165
+  // android   1:540179202432:android:b009329da500f2c73b8165
+  // ios       1:540179202432:ios:b587e52f416ba1ae3b8165
+  // macos     1:540179202432:ios:b587e52f416ba1ae3b8165
+
   static const baseUrl=
-      //'https://lyd-backend-mjvx.onrender.com/';
-      'http://192.168.31.117:3000/';
+ // 'http://192.168.31.117:3000/';
+      'https://lyd-backend-mjvx.onrender.com/';
+      //'http://192.168.31.117:3000/';
   static const razorPayKey='rzp_test_RzNhGYRP9d54Ca';
-  static const webFireBaseVAPID_KEY='BIQ7RfHOZhssH1uXBZpuun3r6D7UhoHuAuqE4QjvpLolyo-E7_LDrYUnUOPYkMCh7VASKy2UWfyDg4DBNl7Khw8';
+  static const webFireBaseVAPID_KEY='BPIa_iU8vOaJk3MquVBrNP0ONtl1Kcf7eMhhArQTXn33d_yPxnsVxcpDulrLu5ijuifyCXZH2MFAWHy7olnTM5o';
+      //'BIQ7RfHOZhssH1uXBZpuun3r6D7UhoHuAuqE4QjvpLolyo-E7_LDrYUnUOPYkMCh7VASKy2UWfyDg4DBNl7Khw8';
   static const appLogo='';
   static const appName='LOCATE YOUR DENTIST';
+  static const appNameShort='LYD';
   static const developerCompanyName='Vorynto Private Limited';
   static const developerCompanyUrl='https://www.vorynto.com/';
   static const companyEmail='support@LYD.com';
@@ -80,6 +96,8 @@ class AppConstants{
   static const String getCompanyDetailsUrl='getCompany_details';
   static const String addCompanyDetailsUrl='update_Company_details';
   static const String addContactDetailsStateWiseUrl='contact_details_state_wise';
+  static const String addPrivacyPolicyUrl='addTextEditorContentForAll';
+  static const String getPrivacyPolicyUrl='gettextEditorContentForAll';
 
   static const String addGstDetailsUrl='update_gst_details';
   static const String getGstDetailsUrl='getGst_details';
@@ -117,6 +135,7 @@ class AppConstants{
 
  //Contact
   static const String postContactFormUrl='postContactDetails';
+  static const String postPublicContactFormUrl='createPublicContact';
   static const String senderContactListUrl='senderContactLists';
   static const String receiverContactListUrl='receiverIdContactLists';
   static const String contactFilterSearchUrl='filterContactLists';

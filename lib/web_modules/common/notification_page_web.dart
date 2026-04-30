@@ -98,7 +98,7 @@ class _ViewNotificationWebState extends State<ViewNotificationWeb> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
-        height: size * 0.08,
+        height: size * 0.03,
         title: "LYD",
         onLogout: () {
         },
@@ -107,19 +107,6 @@ class _ViewNotificationWebState extends State<ViewNotificationWeb> {
       ),
       body: GetBuilder<NotificationController>(
         builder: (controller) {
-          if (controller.isLoading == true) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            );
-          }
-          if (controller.notificationList.isEmpty) {
-            return Center(
-              child: Text(
-                'No data found',
-                style: AppTextStyles.caption(context),
-              ),
-            );
-          }
           final titles = [
             "All",
             ...{
@@ -140,11 +127,12 @@ class _ViewNotificationWebState extends State<ViewNotificationWeb> {
               children: [
                 const AdminSideBar(),
 
-                Expanded(
+                  Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(30.0),
                     child: Column(
                       children: [
+
                         AnimationLimiter(
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,

@@ -90,40 +90,7 @@ class _AddContactFormWebState extends State<AddContactFormWeb> {
                               ),
                               child: ElevatedButton(
 
-                                // onPressed: () async{
-                                //   if (_formKeyAddContactStateWeb.currentState!.validate()) {
-                                //     List<Map<String, dynamic>> expJson =
-                                //     loginController.contactList.map((e) {
-                                //       return {
-                                //         "userId": Api.userInfo.read('userId'),
-                                //         "name": e.name.text.trim(),
-                                //         "state": loginController.selectedState ?? "",
-                                //         "mobileNumber": e.mobile.text.trim(),
-                                //         "whatsapp": e.whatsapp.text.trim(),
-                                //         "email": e.email.text.trim(),
-                                //       };
-                                //     }).toList();
-                                //
-                                //
-                                //     Map<String, dynamic> finalJson = {
-                                //       "details": expJson
-                                //     };
-                                //
-                                //
-                                //
-                                //     print('final jsonn$finalJson');
-                                //     await planController.addContactDetailsStateWise(
-                                //       details: finalJson,
-                                //       context: context,
-                                //     );
-                                //
-                                //   }
-                                //   //print("Company Saved: $companyData");
-                                //   planController.nameController.clear();
-                                //   planController.mobileController.clear();
-                                //   planController.whatsappController.clear();
-                                //   planController.emailController1.clear();
-                                // },
+
                                 onPressed: () async {
                                     if (_formKeyAddContactStateWeb.currentState!.validate()) {
                                       bool hasInvalidState = loginController.contactList.any(

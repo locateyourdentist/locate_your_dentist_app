@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
@@ -8,6 +10,7 @@ import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../common_widgets/color_code.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 
 class WebinarViewPage extends StatefulWidget {
@@ -22,11 +25,50 @@ class _WebinarViewPageState extends State<WebinarViewPage> {
 final loginController=Get.put(LoginController());
 late String appliedKey;
 bool isAlreadyApplied = false;
+  final ScrollController _scrollController = ScrollController();
+  late QuillController _controller;
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta = [];
+
+      if (data == null) {
+        delta = [{"insert": "\n"}];
+      }
+
+      else if (data is List) {
+        delta = List<Map<String, dynamic>>.from(data);
+      }
+
+      else if (data is String) {
+        delta = List<Map<String, dynamic>>.from(jsonDecode(data));
+      }
+
+      _controller = QuillController(
+        document: Document.fromJson(delta),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller = QuillController.basic();
+      setState(() {});
+    }
+  }
 @override
 void initState(){
   super.initState();
   final webinar = jobController.webinar.isNotEmpty ? jobController.webinar[0] : null;
   jobController.getWebinarListJobSeekers('','','',context);
+  _controller = QuillController.basic(
+    config: QuillControllerConfig(
+      clipboardConfig: QuillClipboardConfig(
+        enableExternalRichPaste: true,
+      ),
+
+    ),
+  );
   _refresh();
   appliedKey = "${webinar?.webinarId.toString() ?? ''}_${Api.userInfo.read('userId')}";
   if( appliedKey== Api.userInfo.read('appliedKey')){
@@ -39,6 +81,9 @@ void initState(){
   Future<void> _refresh() async {
     await jobController.getWebinarById(Api.userInfo.read('webinarId')??"", Api.userInfo.read('statusWebinar')??"", context);
     await   jobController.getAppliedWebinarsAdmin(Api.userInfo.read('webinarId')??"",context);
+    loadJobDescription(
+        jobController.webDescriptionData);
+
   }
   @override
   Widget build(BuildContext context) {

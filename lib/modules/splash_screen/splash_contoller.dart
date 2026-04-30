@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
+import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import '../../common_widgets/common-alertdialog.dart';
 import '../auth/login_screen/service_locations.dart';
@@ -31,6 +32,7 @@ class SplashController extends GetxController with GetSingleTickerProviderStateM
       print("Version check failed: $e");
     }
   }
+
   @override
   void onInit() {
     super.onInit();

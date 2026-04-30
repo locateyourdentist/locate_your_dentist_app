@@ -25,15 +25,17 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
   @override
   void initState() {
     super.initState();
-    notificationController.getNotificationListAdmin(context);
-    loginController.getAppLogoImage(context);
-    Api.userInfo.read('userType')=="superAdmin"?
-    loginController.getProfileDetails('', '', '', '', '','','', '','',context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", '', '', '','','','','', context);
-  }
+    _refresh();
+      }
   Future<void> _refresh() async {
-    notificationController.getNotificationListAdmin(context);
+    await loginController.fetchStates();
+    await planController.getIncomeDetailsByPlan(context: context);
+    //await planController.getExpense(month: "", year: "");
+    await loginController.getAppLogoImage(context);
+    await notificationController.getNotificationListAdmin(context);
     Api.userInfo.read('userType')=="superAdmin"?
-    loginController.getProfileDetails('', '', '', '', '','','','','', context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", '', '', '','','','', '',context);
+    await loginController.getProfileDetails('', '', '', '', '','','','','', context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", '', '', '','','','', '',context);
+    //await planController.getIncomeDetailsByPlan(context: context);
   }
   @override
   Widget build(BuildContext context) {
@@ -171,7 +173,8 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
 
                     drawerTitle('Plans', Icons.workspace_premium, '/viewPlanPage', context),
                     SizedBox(height: size * 0.005),
-
+                   if(Api.userInfo.read('userType')=='superAdmin')
+                   Column(children: [
                     drawerTitle('Reports', Icons.bar_chart, '/viewReportPage', context),
                     SizedBox(height: size * 0.005),
 
@@ -181,15 +184,16 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                     drawerTitle('Create Notification', Icons.notifications_active, '/createNotificationPage', context),
                     SizedBox(height: size * 0.005),
 
-                    drawerTitle('Change Password', Icons.lock_reset, '/changePasswordPage', context),
-                    SizedBox(height: size * 0.005),
+
 
                     drawerTitle('Add GST', Icons.receipt_long, '/addGSTPage', context),
                     SizedBox(height: size * 0.005),
 
                     drawerTitle('Add Company', Icons.business, '/addCompanyPage', context),
                     SizedBox(height: size * 0.005),
-
+                    ]),
+                    drawerTitle('Change Password', Icons.lock_reset, '/changePasswordPage', context),
+                    SizedBox(height: size * 0.005),
                     drawerTitle('About Us', Icons.info_outline, '/aboutUsPage', context),
                     SizedBox(height: size * 0.005),
 
@@ -246,8 +250,10 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                             child: GestureDetector(
                             onTap: () async{
                             print('userlistId ${profile.userId}');
-                            Api.userInfo.write(
-                            'selectUserId', profile.userId ?? '');
+                            // Api.userInfo.write(
+                            // 'selectUserId', profile.userId ?? '');
+                            Api.userInfo.write('selectUId',profile.userId ?? '');
+
                             print('ids${profile.userId}');
 
                             await loginController.getProfileByUserId(

@@ -38,7 +38,7 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
   // Common Password Field
   Widget passwordField() {
     return   CustomTextField(
-      hint: "Password",
+      hint: "",
       icon: Icons.lock,
       isPassword: true,
       controller: loginController.passwordController,
@@ -49,15 +49,6 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
         if (value.length < 4) {
           return "Password must be at least 4 characters";
         }
-        // if (!RegExp(r'[a-z]').hasMatch(value)) {
-        //   return "Password must contain at least one lowercase letter";
-        // }
-        // if (!RegExp(r'[A-Z]').hasMatch(value)) {
-        //   return "Password must contain at least one uppercase letter";
-        // }
-        // if (!RegExp(r'[0-9]').hasMatch(value)) {
-        //   return "Password must contain at least one number";
-        // }
         if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
           return "Password must contain at least one special character";
         }
@@ -65,19 +56,15 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
       },
     );
   }
-
-  // Common Confirm Password Field
   Widget confirmPasswordField() {
     return CustomTextField(
-      hint: "Confirm Password",
+      hint: "",
       icon: Icons.lock,
       isPassword: true,
       controller: loginController.confirmPasswordController,
       validator: (value) => confirmPasswordValidator(value, loginController.passwordController),
     );
   }
-
-  // Submit Button
   Widget submitButton() {
     return SizedBox(
       width: double.infinity,
@@ -116,7 +103,7 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
-            ),
+              ),
           ),
         ),
       ),
@@ -128,7 +115,7 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
     loginController.getAppLogoImage(context);
   }
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size.width;
     String platform = kIsWeb
         ? "Web"
         : Platform.isAndroid
@@ -154,7 +141,7 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
             // Centered glass card
             Center(
               child: Container(
-                width: size.width > 800 ? 450 : size.width * 0.85,
+                width: size > 800 ? 450 : size * 0.85,
                 padding: const EdgeInsets.all(40),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.15),
@@ -176,46 +163,60 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
                     builder: (controller) {
                       return Column(
                       mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 80,
-                          width: 80,
-                          child: ClipOval(
-                            child: loginController.appLogoUrl != null
-                                ? Image.network(
-                              loginController.appLogoUrl!,
-                              fit: BoxFit.cover,
-                              width: 80,
-                              height: 80,
-                            )
-                                : Container(
-                              color: Colors.white.withOpacity(0.3),
-                              child: const Icon(
-                                Icons.medical_services,
-                                size: 50,
-                                color: Colors.white,
+                        Center(
+                          child: SizedBox(
+                            height: 80,
+                            width: 80,
+                            child: ClipOval(
+                              child: loginController.appLogoUrl != null
+                                  ? Image.network(
+                                loginController.appLogoUrl!,
+                                fit: BoxFit.cover,
+                                width: 80,
+                                height: 80,
+                              )
+                                  : Container(
+                                color: Colors.white.withOpacity(0.3),
+                                child: const Icon(
+                                  Icons.medical_services,
+                                  size: 50,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
                         ),
                         const SizedBox(height: 20),
 
-                         Text(
-                          "Change Password",
-                          style: AppTextStyles.body(context),),
-                         const SizedBox(height: 10),
-                         Text(
-                          "Forgot Password",
-                        style: AppTextStyles.caption(context,color: AppColors.white),),
-                        const SizedBox(height: 30),
+                         Center(
+                           child: Text(
+                            "Change Password",
+                            style: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),),
+                         ),
+                        SizedBox(height: size*0.01),
+                        //  Text(
+                        //   "Forgot Password",
+                        // style: AppTextStyles.caption(context,color: AppColors.white),),
+                        //
+                        //  SizedBox(height: size*0.01),
+                        Text(
+                          "New Password",
+                          style: AppTextStyles.caption(context,color: AppColors.white),),
+                        SizedBox(height: size*0.005),
 
-                        const SizedBox(height: 30),
                         passwordField(),
-                        const SizedBox(height: 20),
+                        SizedBox(height: size*0.01),
+                        Text(
+                          "Confirm Password",
+                          style: AppTextStyles.caption(context,color: AppColors.white),),
+                        SizedBox(height: size*0.005),
                         confirmPasswordField(),
-                        const SizedBox(height: 30),
+                        SizedBox(height: size*0.02),
                         submitButton(),
-                        const SizedBox(height: 20),
+                        SizedBox(height: size*0.01),
 
                       ],
                     );

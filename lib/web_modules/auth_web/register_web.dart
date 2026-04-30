@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -8,31 +9,40 @@ import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
+import 'package:locate_your_dentist/modules/profiles/clinic_edit_profile.dart';
+import 'package:locate_your_dentist/modules/profiles/pdf_path_view_page.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import '../../common_widgets/color_code.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:video_compress/video_compress.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'dart:io' show File;
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 
 class RegisterWebPage extends StatefulWidget {
  // const RegisterWebPage({super.key});
-
   @override
   State<RegisterWebPage> createState() => _RegisterWebPageState();
 }
-
 class _RegisterWebPageState extends State<RegisterWebPage> {
-
   int currentStep = 0;
   final ImagePicker _picker = ImagePicker();
   final _formKeyRegisterWeb = GlobalKey<FormState>();
   final loginController = Get.put(LoginController());
   final jobController=Get.put(JobController());
   String? branchId;
-
+  final planController = Get.put(PlanController());
+  late QuillController _controller;
+  final FocusNode _focusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
   final allItems = [
     "admin",
     "superAdmin",
@@ -46,7 +56,184 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   final int maxFiles = 3;
   String? selectName;
   bool isPicking = false;
+  Future<String> getAddressFromLatLng(double lat, double lng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+      Placemark place = placemarks.first;
+      return '${place.subLocality}, ${place.locality} ${place.postalCode}';
+    } catch (e) {
+      return '';
+    }
+  }
+  Future<void> pickMedia(String source, BuildContext context) async {
+    try {
+      final controller = loginController;
+      bool isVideo = source == "video";
 
+      if (kIsWeb) {
+        final result = await FilePicker.platform.pickFiles(
+          type: isVideo ? FileType.video : FileType.image,
+          withData: true,
+        );
+
+        if (result == null || result.files.isEmpty) return;
+
+        final file = result.files.first;
+
+        controller.editImages.add(
+          AppImage(
+            bytes: file.bytes,
+            isVideo: isVideo,
+          ),
+        );
+
+        controller.images1.add(
+          AppImage2(bytes: file.bytes),
+        );
+
+      } else {
+        XFile? pickedFile;
+
+        if (isVideo) {
+          pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
+        } else {
+          pickedFile = await _picker.pickImage(
+            source: ImageSource.gallery,
+            imageQuality: 80,
+          );
+        }
+
+        if (pickedFile == null) return;
+
+        File selectedFile = File(pickedFile.path);
+        controller.editImages.add(
+          AppImage(
+            file: selectedFile,
+            isVideo: isVideo,
+          ),
+        );
+        controller.images1.add(
+          AppImage2(file: selectedFile),
+        );
+      }
+
+      controller.update();
+
+    } catch (e) {
+      print("pickMedia error: $e");
+    }
+  }
+  // Future<void> pickMedia(String source, BuildContext context) async {
+  //   try {
+  //     final controller = Get.find<LoginController>();
+  //
+  //     XFile? pickedFile;
+  //     Uint8List? bytes;
+  //
+  //     if (kIsWeb) {
+  //       final result = await FilePicker.platform.pickFiles(
+  //         type: source == "image" ? FileType.image : FileType.video,
+  //         withData: true,
+  //       );
+  //
+  //       if (result == null || result.files.isEmpty) return;
+  //
+  //       final file = result.files.first;
+  //       bytes = file.bytes;
+  //
+  //       controller.editImages.add(
+  //         AppImage(
+  //           bytes: bytes,
+  //           isVideo: source == "video",
+  //         ),
+  //       );
+  //       loginController.images1.add(AppImage2(bytes: bytes));
+  //
+  //     } else {
+  //       if (source == "image") {
+  //         pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+  //       } else {
+  //         pickedFile = await ImagePicker().pickVideo(source: ImageSource.gallery);
+  //       }
+  //
+  //       if (pickedFile == null) return;
+  //
+  //       controller.editImages.add(
+  //         AppImage(
+  //           file: File(pickedFile.path),
+  //           isVideo: source == "video",
+  //         ),
+  //       );
+  //       loginController.images1.add(AppImage2(bytes: bytes));
+  //
+  //     }
+  //
+  //     controller.update();
+  //   } catch (e) {
+  //     print("pickMedia error: $e");
+  //   }
+  // }
+  // Future<void> pickMedia(String source, BuildContext context) async {
+  //   try {
+  //     if (source == null) return;
+  //
+  //     XFile? pickedFile;
+  //     if (kIsWeb) {
+  //       FilePickerResult? result = await FilePicker.platform.pickFiles(
+  //         type: source == "image" ? FileType.image : FileType.video,
+  //       );
+  //       if (result == null) return;
+  //
+  //       pickedFile = XFile(result.files.single.path!);
+  //     } else {
+  //       if (source == "image") {
+  //         pickedFile = await ImagePicker().pickImage(
+  //           source: ImageSource.gallery,
+  //           imageQuality: 80,
+  //         );
+  //       } else {
+  //         pickedFile = await ImagePicker().pickVideo(
+  //           source: ImageSource.gallery,
+  //         );
+  //       }
+  //     }
+  //
+  //     if (pickedFile == null) return;
+  //
+  //     File selectedFile = File(pickedFile.path);
+  //     bool isVideo = source == "video";
+  //
+  //     if (!kIsWeb && isVideo) {
+  //       final compressed = await VideoCompress.compressVideo(
+  //         pickedFile.path,
+  //         quality: VideoQuality.MediumQuality,
+  //       );
+  //       if (compressed?.file != null) {
+  //         selectedFile = compressed!.file!;
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print("Pick media error: $e");
+  //     Get.snackbar("Error", "Failed to pick media");
+  //   }
+  // }
+  Future<void> getLocation() async {
+    final position = await LocationService.getCurrentLocation();
+
+    if (position != null) {
+      loginController.latitude = position.latitude;
+      loginController.longitude = position.longitude;
+
+      final address = await getAddressFromLatLng(loginController.latitude!, loginController.longitude!);
+
+      print('latitude ${loginController.latitude}');
+      print('longitude ${loginController.longitude}');
+
+      planController.currentLocation = address;
+    } else {
+      Get.snackbar('Location', 'Unable to get location');
+    }
+  }
   Future<void> pickLogo() async {
     final XFile? image = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -63,6 +250,29 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
     loginController.update();
   }
+  // Future<List<Uint8List>> convertImages(List<AppImage2> images) async {
+  //   List<Uint8List> result = [];
+  //
+  //   for (var img in images) {
+  //     if (kIsWeb) {
+  //       if (img.bytes != null) {
+  //         result.add(img.bytes!);
+  //         loginController.editImages.add(
+  //           AppImage(
+  //             bytes: img.bytes,
+  //             isVideo: false,
+  //           ),
+  //         );
+  //       }
+  //     } else {
+  //       if (img.file != null) {
+  //         final bytes = await img.file!.readAsBytes();
+  //         result.add(bytes);
+  //       }
+  //     }
+  //   }
+  //   return result;
+  // }
   Future<List<Uint8List>> convertImages(List<AppImage2> images) async {
     List<Uint8List> result = [];
 
@@ -73,8 +283,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         }
       } else {
         if (img.file != null) {
-          final bytes = await img.file!.readAsBytes();
-          result.add(bytes);
+          result.add(await img.file!.readAsBytes());
         }
       }
     }
@@ -84,7 +293,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   Future<void> pickCertificates() async {
     if (isPicking) return;
     isPicking = true;
-
     const maxFiles = 3;
     final existingCount = loginController.certificates1.length;
     final remaining = maxFiles - existingCount;
@@ -135,7 +343,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   Future<void> pickClinicImages() async {
     if (isPicking) return;
     isPicking = true;
-
     const maxImages = 3;
     final existingCount = loginController.images1.length;
     //final remaining = maxImages - existingCount;
@@ -146,17 +353,16 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       isPicking = false;
       return;
     }
-
     try {
       final List<XFile>? selected = await _picker.pickMultiImage();
-
       if (selected != null && selected.isNotEmpty) {
         final limited = selected.take(remaining).toList();
-
         for (final x in limited) {
           if (kIsWeb) {
             final bytes = await x.readAsBytes();
             loginController.images1.add(AppImage2(bytes: bytes));
+            print('dfdg${loginController.images1}');
+            loginController.update();
           } else {
             loginController.images1.add(AppImage2(file: File(x.path)));
           }
@@ -192,23 +398,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       ),
     );
   }
-  // Future<void> pickClinicImages() async {
-  //   if (loginController.images1.length >= maxFiles) {
-  //     Get.snackbar("Error", "Maximum $maxFiles images allowed");
-  //     return;
-  //   }
-  //
-  //   final List<XFile>? pickedFiles = await _picker.pickMultiImage(imageQuality: 80);
-  //   if (pickedFiles == null || pickedFiles.isEmpty) return;
-  //
-  //   int remaining = maxFiles - loginController.images1.length;
-  //   loginController.images1.addAll(pickedFiles.take(remaining));
-  //
-  //   if (pickedFiles.length > remaining) {
-  //     Get.snackbar("Error", "Only $remaining more images allowed");
-  //   }
-  //   loginController.update();
-  // }
   Widget buildImageXFile(XFile file) {
     if (kIsWeb) {
       return FutureBuilder<Uint8List>(
@@ -229,43 +418,24 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     return null;
   }
   List<Step> getSteps() {
-    final stepsList = <Step>[
+    return [
+      Step(title: Text("Personal Info"), content: _step1()),
+      Step(title: Text("Professional Details"), content: _step2()),
+      Step(title: Text("Uploads"), content: _step3()),
       Step(
-        title: Text("Personal Info", style: AppTextStyles.body(context)),
-        isActive: currentStep >= 0,
-        content: _step1(),
-      ),
-      Step(
-        title: Text("Professional Details", style: AppTextStyles.body(context)),
-        isActive: currentStep >= 1,
-        content: _step2(),
-      ),
-      Step(
-        title: Text("Uploads", style: AppTextStyles.body(context)),
-        isActive: currentStep >= 2,
-        content: _step3(),
+        title: Text("Education Details"),
+        content: loginController.selectedUserType == 'Job Seekers'
+            ? _step4()
+            : SizedBox.shrink(),
       ),
     ];
-
-    // Only add Education step for Job Seekers
-    if (loginController.selectedUserType == 'Job Seekers') {
-      stepsList.add(
-        Step(
-          title: Text("Education Details", style: AppTextStyles.body(context)),
-          isActive: currentStep >= 3,
-          //  isActive: currentStep >= stepsList.length,
-          content: _step4(),
-        ),
-      );
-    }
-
-    return stepsList;
   }
+
   Widget _buildSingleImageWidget({required AppImage2 image}) {
     final s = MediaQuery.of(context).size.width;
     return Container(
-      width: s * 0.35,
-      height: s * 0.35,
+      width: s * 0.15,
+      height: s * 0.15,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey),
@@ -286,43 +456,49 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                 loginController.logoImages1.clear();
                 loginController.update();
               },
-              child: const Icon(Icons.cancel, color: Colors.red),
+              child:  Icon(Icons.cancel,size: s*0.013, color: Colors.red),
             ),
           ),
         ],
       ),
     );
-  }  Widget _buildImage(AppImage2 image) {
+  }
+  Widget _buildImage(AppImage2 image) {
+    final s = MediaQuery.of(context).size.width;
     if (kIsWeb) {
       if (image.bytes != null) {
         return Image.memory(
           image.bytes!,
-          fit: BoxFit.cover,
+          fit: BoxFit.cover, width: s * 0.15,
+          height: s * 0.15,
         );
       } else if (image.url != null && image.url!.isNotEmpty) {
         return Image.network(
           image.url!,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
+          fit: BoxFit.cover, width: s * 0.15,
+          height: s * 0.15,
+          errorBuilder: (_, __, ___) =>  Center(child: Icon(Icons.broken_image,size: s*0.016,color: AppColors.grey,)),
         );
       }
     } else {
       if (image.file != null) {
         return Image.file(
           image.file!,
-          fit: BoxFit.cover,
+          fit: BoxFit.cover,width: s * 0.15,
+          height: s * 0.15,
         );
       } else if (image.url != null && image.url!.isNotEmpty) {
         return Image.network(
           image.url!,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
+          fit: BoxFit.cover,width: s * 0.15,
+          height: s * 0.15,
+          errorBuilder: (_, __, ___) =>Center(child: Icon(Icons.broken_image,size: s*0.016,color: AppColors.grey,)),
         );
       }
     }
 
-    return const Center(
-      child: Icon(Icons.image_not_supported, color: Colors.red),
+    return  Center(
+      child: Icon(Icons.image_not_supported, color: Colors.grey,size: s*0.016,),
     );
   }
   Widget buildGridXFile(List<XFile> files) {
@@ -359,14 +535,112 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       },
     );
   }
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta;
+
+      if (data == null || data.toString().trim().isEmpty) {
+        delta = [
+          {"insert": "\n"}
+        ];
+      }
+
+      else if (data is String) {
+        final trimmed = data.trim();
+
+        if (trimmed.isEmpty || trimmed == "[]") {
+          delta = [
+            {"insert": "\n"}
+          ];
+        } else {
+          final decoded = jsonDecode(trimmed);
+
+          if (decoded is List && decoded.isNotEmpty) {
+            delta = List<Map<String, dynamic>>.from(decoded);
+          } else {
+            delta = [
+              {"insert": "\n"}
+            ];
+          }
+        }
+      }
+
+      else if (data is List && data.isNotEmpty) {
+        delta = List<Map<String, dynamic>>.from(data);
+      }
+
+      else {
+        delta = [
+          {"insert": "\n"}
+        ];
+      }
+
+      _controller.document = Document.fromJson(delta);
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller.document = Document.fromJson([
+        {"insert": "\n"}
+      ]);
+
+      setState(() {});
+    }
+  }
   @override
   void initState(){
-    //loginController.clearProfileData();
-    loginController.fetchStates();
-    jobController.getJobCategoryLists("",context);
-    branchId = Get.arguments?['branchId'] ??"";
-    //getLocation();
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
+    _refresh();
     super.initState();
+  }
+  Future<void> _refresh() async {
+    await getLocation();
+    loadJobDescription(loginController.descriptionData);
+    await loginController.fetchStates();
+    loginController.userData.isNotEmpty?getPlanLimits():"";
+    await jobController.getJobCategoryLists("",context);
+    branchId = Get.arguments?['branchId'] ??"";
+    if(Get.arguments?['userId']=="0"){
+      loginController.clearProfileData();
+    }
+  }
+  Map<String, int> getPlanLimits() {
+    final userData = loginController.userData.first;
+    final planDetails = userData.details?["plan"]?["basePlan"]?["details"];
+    if (planDetails != null) {
+      loginController.maxFilesImage = int.tryParse(planDetails["imageCount"]?.toString() ?? "0") ?? 2;
+      loginController.filesImageSize = int.tryParse(planDetails["imageSize"]?.toString() ?? "0") ?? 0;
+      loginController.maxFilesVideo = int.tryParse(planDetails["videoCount"]?.toString() ?? "0") ?? 1;
+      loginController.filesVideoSize = int.tryParse(planDetails["videoSize"]?.toString() ?? "0") ?? 0;
+    } else {
+      loginController.maxFilesImage = 2;
+      loginController.filesImageSize = 0;
+      loginController.maxFilesVideo = 1;
+      loginController.filesVideoSize = 0;
+    }
+
+    print('Max Images: ${loginController.maxFilesImage}, Image Size: ${loginController.filesImageSize}');
+    print('Max Videos: ${loginController.maxFilesVideo}, Video Size: ${loginController.filesVideoSize}');
+
+    return {
+      "maxFilesImage": loginController.maxFilesImage,
+      "filesImageSize": loginController.filesImageSize,
+      "maxFilesVideo": loginController.maxFilesVideo,
+      "maxFilesVideoSize": loginController.filesVideoSize,
+    };
+  }
+  bool getPlanActive() {
+    final userData = loginController.userData;
+    if (userData.isEmpty) return false;
+    final raw = userData.first.details["plan"]?["basePlan"]?["isActive"]??"";
+    return raw == true || raw == "true";
   }
   @override
   Widget build(BuildContext context) {
@@ -398,7 +672,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                           SizedBox(height: size*0.02),
 
                           Text(
-                              loginController.fullNameController.text.isNotEmpty? "Register New User":"Edit Details",
+                              loginController.fullNameController.text.isNotEmpty?"Edit Details": "Register New User",
                               style: AppTextStyles.body(context,fontWeight: FontWeight.bold,color: AppColors.black)
                           ),
                           SizedBox(height: size*0.01),
@@ -412,6 +686,8 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                           Expanded(
                             child: Stepper(
                               type: StepperType.horizontal,
+                              key: ValueKey(loginController.selectedUserType),
+                              steps: getSteps(),
                               currentStep: currentStep,connectorColor: MaterialStateProperty.all(AppColors.primary),
                               onStepContinue: () async{
                                // if (currentStep == 3)
@@ -425,6 +701,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                   // }
                                   //debugPrint('User location: Lat ${position.latitude}, Lng ${position.longitude}');
                                   print("FULL NAME = ${loginController.fullNameController.text}");
+                                  print("user type = ${loginController.selectedUserType}");
                                   print("MOBILE = ${loginController.mobileController.text}");
                                   print("EMAIL = ${loginController.emailController.text}");
                                   print("STATE = ${loginController.selectedState.toString()}");
@@ -432,12 +709,45 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                   print("CITY = ${loginController.selectedTaluka.toString()}");
                                   print("PINCODE = ${loginController.selectedVillage.toString()}");
                                   print("LAB NAME = ${loginController.typeNameController.text}");
-                                  print("IMAGES = ${loginController.images}");
-                                  print('logo${loginController.logoImages}');
-                                  print("CERTIFICATES = ${loginController.certificates}");
+                                  print("IMAGES = ${loginController.images1}");
+                                  print('logo${loginController.logoImages1}');
+                                  print("CERTIFICATES = ${loginController.certificates1}");
+                                 // print('latituse${loginController.latitude.toString()??""}');
+                                  print("branchId = $branchId");
+                                  print("selectUserId = ${loginController.selectUserId}");
+                                  //print('branchid${branchId=="0"?Api.userInfo.read('userId'):loginController.selectUserId!}');
                                   print('dob ${loginController.dobController.text}');
+                                  print('userid${Api.userInfo.read('token')==null||Get.arguments?['userId']=="0"?"0":loginController.userData.first.userId??""}');
+                                  //final imageBytes = await convertImages(loginController.images1 ?? []);
+                                  // Future<List<Uint8List>> convertEditImages(List<AppImage> images) async {
+                                  //   List<Uint8List> result = [];
+                                  //
+                                  //   for (var img in images) {
+                                  //     if (img.isVideo) continue; // ❗ skip videos
+                                  //
+                                  //     if (kIsWeb && img.bytes != null) {
+                                  //       result.add(img.bytes!);
+                                  //     } else if (img.file != null) {
+                                  //       result.add(await img.file!.readAsBytes());
+                                  //     }
+                                  //   }
+                                  //
+                                  //   return result;
+                                  // }
+                                  Future<List<Uint8List>> convertEditImages(List<AppImage> images) async {
+                                    List<Uint8List> result = [];
 
-                                  final imageBytes = await convertImages(loginController.images1 ?? []);
+                                    for (var img in images) {
+                                      if (kIsWeb && img.bytes != null) {
+                                        result.add(img.bytes!);
+                                      } else if (img.file != null) {
+                                        result.add(await img.file!.readAsBytes());
+                                      }
+                                    }
+
+                                    return result;
+                                  }
+                                  final imageBytes = await convertEditImages(loginController.editImages ?? []);
                                   final logoBytes = await convertImages(loginController.logoImages1 ?? []);
                                   final certificateBytes = await convertImages(loginController.certificates1 ?? []);
 
@@ -456,7 +766,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                         loginController.selectedUserType != 'superAdmin' &&
                                         loginController.selectedUserType != 'Job Seekers') {
 
-                                      if (loginController.images1 == null || loginController.images1.isEmpty) {
+                                      if (loginController.editImages == null || loginController.editImages.isEmpty) {
                                         await showSuccessDialog(
                                           context,
                                           title: "Error",
@@ -468,6 +778,15 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                       }
                                     }
                                   }
+                                  final oldImageUrls = loginController.editImages
+                                      .where((e) => e.url != null)
+                                      .map((e) => e.url!)
+                                      .toList();
+
+                                  final oldCertificateUrls = loginController.certificates1
+                                      .where((e) => e.url != null)
+                                      .map((e) => e.url!)
+                                      .toList();
                                   if(loginController.selectedState==null){
                                     showCustomToast(context,"Please  Select State",);
                                   }
@@ -480,9 +799,11 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                   if(loginController.selectedVillage==null){
                                     showCustomToast(context,"Please Select Village",);
                                   }
+                                  final descriptionAbout =
+                                  jsonEncode(_controller.document.toDelta().toJson());
                                   //print('usertype${loginController.selectedUserType} married${loginController.selectedMartialStatus!}');
                                   await loginController.registerUser(
-                                    userId: Api.userInfo.read('token')==null?"0":loginController.userData.first.userId??"",
+                                    userId: Api.userInfo.read('token')==null||Get.arguments?['userId']=="0"?"0":loginController.userData.first.userId??"",
                                     userType: loginController.selectedUserType!,
                                     //martialStatus: loginController.selectedMartialStatus!,
                                     fullName: loginController.fullNameController.text,
@@ -499,22 +820,25 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                     image: imageBytes,
                                     logoImage: logoBytes,
                                     certificate: certificateBytes,
+                                    oldImageUrl:oldImageUrls??[] ,
+                                    oldCertificatesUrl: oldCertificateUrls??[],
                                     //image: loginController.selectedUserType=="Job Seekers"?loginController.logoImages1 ?? []:loginController.images1 ?? [],
                                    // certificate: loginController.certificates1 ?? [],
                                     location: loginController.locationController.text,
                                     website: loginController.websiteController.text,
-                                    description: loginController.descriptionController.text??"N/A",
+                                    description:descriptionAbout,
+                                    //loginController.descriptionController.text??"N/A",
                                    // logoImage: loginController.selectedUserType!="Job Seekers"?loginController.logoImages1 ?? []:[],
-                                    adminId:branchId=="0"?Api.userInfo.read('userId'):loginController.selectUserId! ,
-                                    isAdmin: branchId=="0"?"true":"false",
+                                    adminId: branchId == "0" ? (Api.userInfo.read('userId') ?? "") : (loginController.selectUserId ?? ""),
+                                    //  adminId:branchId=="0"?Api.userInfo.read('userId'):"0" ,
+                                     isAdmin: branchId=="0"?"true":"false",
                                     latitude: loginController.latitude.toString()??"",
                                     longitude: loginController.longitude.toString()??"",
-                                    jobCategory:loginController.selectedCategories,
-                                   // isAdmin: Api.userInfo.read('isAdmin')=='true'? "true": "false",
+                                    jobCategory: loginController.selectedUserType == 'Job Seekers'
+                                        ? (loginController.selectedCategories ?? []) : [],
                                     context: context,
                                   );
-
-                                }
+                                  }
                                 if (currentStep < (loginController.selectedUserType == 'Job Seekers' ? 3 : 2)) {
                                   setState(() => currentStep++);
                                 }
@@ -526,11 +850,10 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                               },
                               controlsBuilder: (context, details) {
                                 return Padding(
-                                  padding: const EdgeInsets.all(10.0),
+                                  padding: const EdgeInsets.all(30.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-
                                       if (currentStep != 0)
                                         ElevatedButton(
                                           onPressed: details.onStepCancel,
@@ -542,16 +865,13 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                               borderRadius: BorderRadius.circular(8),
                                             ),
                                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                            textStyle: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                            textStyle: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold)
                                           ),
                                           child:  Text("Back",style: AppTextStyles.caption(context,color: AppColors.white),),
                                         ),
 
 
-                                      const SizedBox(width: 20),
+                                       SizedBox(width: size*0.02),
 
                                       ElevatedButton(
                                         onPressed: details.onStepContinue,
@@ -563,7 +883,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                             borderRadius: BorderRadius.circular(8),
                                           ),
                                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                          textStyle: AppTextStyles.caption(context,color: AppColors.white)
+                                            textStyle: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold)
                                         ),
                                         child: Text(
                                           (loginController.selectedUserType == 'Job Seekers'
@@ -572,14 +892,13 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                               ? "Submit"
                                               : "Next",
                                           style: AppTextStyles.caption(context, color: AppColors.white),
-                                        ),                                      ),
+                                        ),),
 
                                     ],
                                   ),
                                 );
                               },
-                              steps: getSteps(),
-
+                              //steps: getSteps(),
                               // steps: [
                               //   Step(
                               //     title:  Text("Personal Info",style: AppTextStyles.body(context,),),
@@ -784,7 +1103,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             ),
           ]),
         const SizedBox(height: 10),
-     Text('Address',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+     Text('Add Address',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
         const SizedBox(height: 10),
 
         Row(
@@ -863,7 +1182,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                         width: 1.5,
                       ),
                     ),
-                    onChanged: (val) {
+                    onChanged: (val) async{
                       if (val != null) {
                         controller.selectedDistrict = val;
                         controller.talukas.clear();
@@ -871,7 +1190,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                         controller.selectedVillage = null;
                         final district = controller.districts.firstWhere((d) => d == val);
                         print('sub district selected$district');
-                        controller.fetchTalukas(district.toString());
+                        await controller.fetchTalukas(district.toString());
                         controller.update();
                       }
                     },
@@ -916,13 +1235,13 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                             ? controller.selectedTaluka
                             : null,
                         excludeSelected: false,
-                        onChanged: (val) {
+                        onChanged: (val) async{
                           setState(() => loginController.selectedTaluka = val);
                           if (val != null) {
                             final taluka =
                             loginController. talukas.firstWhere((t) => t == val);
                             controller.villages.clear();
-                            loginController.fetchVillages(taluka.toString());
+                            await loginController.fetchVillages(taluka.toString());
                             loginController.update();
                             print('taluka${loginController.selectedTaluka}');
                           }
@@ -989,24 +1308,69 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             icon: Icons.pin,
             controller: loginController.locationController,
           ),
+        SizedBox(height: size * 0.01),
+        Text("Description",
+          style: AppTextStyles.caption(fontWeight: FontWeight.w400,context),),
+        SizedBox(height: size * 0.002),
+        Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),),
+              height: size*0.05,
+              width: double.infinity,
+              child: QuillSimpleToolbar(
+                controller: _controller,
+                config: QuillSimpleToolbarConfig(
+                  // embedButtons: FlutterQuillEmbeds.toolbarButtons(),
+                  embedButtons: [],
+                  showBackgroundColorButton: false,
+                ),
+              ),
+            ),
+            Container(
+              height: size*0.1,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),),
+              child: QuillEditor(
+                controller: _controller,
+                scrollController: _scrollController,
+                focusNode: _focusNode,
+                config: QuillEditorConfig(
+                  placeholder: "Enter  description...",
+                  padding: const EdgeInsets.all(16),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: size * 0.01),
+
         if(loginController.selectedUserType=="Job Seekers")
           Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
             //SizedBox(height: size * 0.03),
-                Text("Job Category Preferences",
-                  style: AppTextStyles.caption(fontWeight: FontWeight.w400,context),),
-                SizedBox(height: size * 0.01),
-                CustomTextField(
-                  hint: "About Me",
-                  icon: Icons.location_on,maxLines: 5,
-                  controller: loginController.descriptionController,
-                ),
-                SizedBox(height: size*0.03,),
+
+                // CustomTextField(
+                //   hint: "About Me",
+                //   icon: Icons.location_on,maxLines: 5,
+                //   controller: loginController.descriptionController,
+                // ),
+                SizedBox(height: size*0.01,),
             Text("Job Category Preferences",
               style: AppTextStyles.caption(fontWeight: FontWeight.w400,context),),
-            SizedBox(height: size * 0.01),
+            SizedBox(height: size * 0.002),
             GetBuilder<JobController>(
               builder: (jobController) {
                 // final List<MultiSelectItem<String>> categoryItems =
@@ -1066,94 +1430,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
               style: AppTextStyles.caption(fontWeight: FontWeight.bold, context)),
         ),
         const SizedBox(height: 10),
-        // GetBuilder<LoginController>(
-        //   builder: (controller) {
-        //     return GridView.builder(
-        //       shrinkWrap: true,
-        //       physics: const NeverScrollableScrollPhysics(),
-        //       itemCount: loginController.selectedUserType == 'Job Seekers'?1:maxFiles,
-        //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        //         crossAxisCount: 3,
-        //         crossAxisSpacing: 10,
-        //         mainAxisSpacing: 10,
-        //         childAspectRatio: 1,
-        //       ),
-        //       itemBuilder: (context, index) {
-        //        // if (index < controller.certificates1.length) {
-        //         if (controller.certificates1 != null && index < controller.certificates1.length) {
-        //           final file = controller.certificates1[index];
-        //         //   return buildImageXFile(file);
-        //         // } else {
-        //           return GestureDetector(
-        //             onTap: pickCertificates,
-        //             child: Container(
-        //               margin: const EdgeInsets.all(8),
-        //               width: s * 0.095,
-        //               height: s * 0.021,
-        //               decoration: BoxDecoration(
-        //                 borderRadius: BorderRadius.circular(10),
-        //                 border: Border.all(color: Colors.grey),
-        //                 color: Colors.grey.shade200,
-        //               ),
-        //               child:  Center(
-        //                 child: Icon(Icons.add, size: s*0.012, color: Colors.grey),
-        //               ),
-        //             ),
-        //             // Container(
-        //             //   height: 150,
-        //             //   width: 200,
-        //             //   alignment: Alignment.center,
-        //             //   decoration: BoxDecoration(
-        //             //     border: Border.all(color: Colors.grey),
-        //             //     borderRadius: BorderRadius.circular(10),
-        //             //   ),
-        //             //   child:   Center(child: Icon(Icons.add,color: AppColors.grey,size:s*0.014,)),
-        //             // ),
-        //           );
-        //         }
-        //         final img = loginController.certificates1[index];
-        //         Widget imageWidget;
-        //         if (kIsWeb && img.bytes != null) {
-        //           imageWidget = Image.memory(img.bytes!, fit: BoxFit.cover,width: s * 0.095,
-        //             height: s * 0.021,);
-        //         } else if (img.file != null) {
-        //           imageWidget = Image.file(img.file!, fit: BoxFit.cover,width: s * 0.095,
-        //             height: s * 0.021,);
-        //         } else if (img.url != null && img.url!.isNotEmpty) {
-        //           imageWidget = Image.network(
-        //             img.url!,
-        //             fit: BoxFit.cover,width: s * 0.095,
-        //             height: s * 0.021,
-        //             errorBuilder: (_, __, ___) =>  Icon(Icons.broken_image,size: s*0.012),
-        //           );
-        //         } else {
-        //           imageWidget =  Container(child: Center(child: Icon(Icons.image_not_supported,color: Colors.red, size: s*0.02)));
-        //         }
-        //         return Container(
-        //           margin: const EdgeInsets.all(8),
-        //           width: s * 0.095,
-        //           height: s * 0.021,
-        //           child: Stack(
-        //             children: [
-        //               ClipRRect(borderRadius: BorderRadius.circular(12), child: imageWidget),
-        //               Positioned(
-        //                 right: 0,
-        //                 top: 0,
-        //                 child: GestureDetector(
-        //                   onTap: () {
-        //                     loginController.certificates1.removeAt(index);
-        //                     loginController.update();
-        //                   },
-        //                   child:  Icon(Icons.cancel, color: Colors.red, size: s*0.012),
-        //                 ),
-        //               ),
-        //             ],
-        //           ),
-        //         );
-        //       },
-        //     );
-        //   },
-        // ),
           GetBuilder<LoginController>(
             builder: (controller) {
               final certs = controller.certificates1 ?? [];
@@ -1180,7 +1456,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                           color: Colors.grey.shade200,
                         ),
                         child: Center(
-                          child: Icon(Icons.add, size: s * 0.012, color: Colors.grey),
+                          child: Icon(Icons.add,size: s * 0.013, color: Colors.grey),
                         ),
                       ),
                     );
@@ -1190,36 +1466,49 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                   bool isPdf = (img.name != null && img.name!.toLowerCase().endsWith('.pdf')) ||
                       (img.url != null && img.url!.toLowerCase().endsWith('.pdf'));
                   if (isPdf) {
-                    imageWidget = Container(
-                      color: Colors.red.shade100,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.picture_as_pdf, color: Colors.red, size: 30),
-                          SizedBox(height: 5),
-                          Text(
-                            "PDF",
-                            style: AppTextStyles.caption(context),
+                    imageWidget = GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ViewPDFPage(pdfUrl:  loginController.userData.first.certificates[0]??""),
                           ),
-                        ],
+                        );
+                      },
+                      child: Container(
+                        color: Colors.red.shade100,
+                        width: s * 0.15,
+                        height: s * 0.15,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.picture_as_pdf, color: Colors.red, size: s*0.012),
+                            SizedBox(height: 5),
+                            Text(
+                              "PDF",
+                              style: AppTextStyles.caption(context),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }
                   else if (kIsWeb && img.bytes != null) {
-                    imageWidget = Image.memory(img.bytes!, fit: BoxFit.cover,  width: s * 0.35,
-                      height: s * 0.35,);
+                    imageWidget = Image.memory(img.bytes!, fit: BoxFit.cover,  width: s * 0.15,
+                      height: s * 0.15,);
                   }
                   else if (img.file != null) {
-                    imageWidget = Image.file(img.file!, fit: BoxFit.cover,  width: s * 0.35,
-                      height: s * 0.35,
+                    imageWidget = Image.file(img.file!, fit: BoxFit.cover,  width: s * 0.15,
+                      height: s * 0.15,
                     );
                   }
                   else if (img.url != null && img.url!.isNotEmpty) {
                     imageWidget = Image.network(
                       img.url!,
                       fit: BoxFit.cover,
-                      width: s * 0.35,
-                      height: s * 0.35,
+                      width: s * 0.15,
+                      height: s * 0.15,
                       errorBuilder: (_, __, ___) => Icon(Icons.broken_image,color: AppColors.grey,size: s*0.012,),
                     );
                   }
@@ -1262,121 +1551,115 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
               style: AppTextStyles.caption(fontWeight: FontWeight.bold, context)),
         ),
       SizedBox(height: s*0.01),
-        // GetBuilder<LoginController>(
-        //   builder: (controller) {
-        //     return GridView.builder(
-        //       shrinkWrap: true,
-        //       physics: const NeverScrollableScrollPhysics(),
-        //       itemCount: maxFiles,
-        //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        //         crossAxisCount: 3,
-        //         crossAxisSpacing: 10,
-        //         mainAxisSpacing: 10,
-        //         childAspectRatio: 1,
-        //       ),
-        //       itemBuilder: (context, index) {
-        //         if (index < controller.images1.length)
-        //         //   final file = controller.images1[index];
-        //         //   return buildImageXFile(file);
-        //         // } else {
-        //           return GestureDetector(
-        //             onTap: pickClinicImages,
-        //             child: Container(
-        //               // height: 150,
-        //               // width: 200,
-        //               width: s * 0.095,
-        //               height: s * 0.021,
-        //               alignment: Alignment.center,
-        //               decoration: BoxDecoration(
-        //                 border: Border.all(color: Colors.grey),
-        //                 borderRadius: BorderRadius.circular(10),
-        //               ),
-        //               child:   Center(child: Icon(Icons.add,color: AppColors.grey,size:s*0.012,)),
-        //             ),
-        //           );
-        //        // }
-        //       },
-        //     );
-        //   },
-        // ),
-      GetBuilder<LoginController>(
-        builder: (controller) {
-          final images = controller.images1;
-          final gridCount = images.length < maxFiles ? images.length + 1 : maxFiles;
-          return GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: gridCount,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: 1,
-            ),
-            itemBuilder: (context, index) {
-              if (index >= images.length) {
-                return GestureDetector(
-                  onTap: pickClinicImages,
-                  child: Container(
-                    width: s * 0.095,
-                    height: s * 0.021,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey.shade200,
-                    ),
-                    child: Center(
-                      child: Icon(Icons.add, color: AppColors.grey, size: s * 0.012),
-                    ),
-                  ),
-                );
-              }
-              final img = images[index];
-              Widget imageWidget;
-              if (kIsWeb && img.bytes != null) {
-                imageWidget = Image.memory(img.bytes!, fit: BoxFit.cover, width: s * 0.35,
-                  height: s * 0.35,);
-              } else if (img.file != null) {
-                imageWidget = Image.file(img.file!, fit: BoxFit.cover,  width: s * 0.35,
-                  height: s * 0.35,);
-              } else if (img.url != null && img.url!.isNotEmpty) {
-                imageWidget = Image.network(
-                  img.url!,
-                  fit: BoxFit.cover,  width: s * 0.35,
-                  height: s * 0.35,
-                  errorBuilder: (_, __, ___) => Icon(Icons.broken_image, color: Colors.red,size: s*0.012),
-                );
-              } else {
-                imageWidget = Icon(Icons.image_not_supported, color: Colors.grey.shade100,size: s*0.012);
-              }
-              return Container(
-                margin: const EdgeInsets.all(8),
-                child: Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: imageWidget,
-                    ),
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: GestureDetector(
-                        onTap: () {
-                          controller.images1.removeAt(index);
-                          controller.update();
-                        },
-                        child: Icon(Icons.cancel, color: Colors.red,size: s*0.012),
-                      ),
-                    ),
-                  ],
-                ),
+      SizedBox(
+        height: s * 0.135,
+        child: GetBuilder<LoginController>(
+          builder: (controller) {
+            final images = controller.editImages.where((e) => !e.isVideo).toList();
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: loginController.maxFilesImage,
+              itemBuilder: (_, index) {
+                if (index < images.length) {
+                  final media = images[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: buildMediaItem(media, s, () {
+                      controller.editImages.remove(media);
+                      controller.update();
+                    },context),
+                  );
+                }
+                return buildAddButton(() {
+                  // final planActive = getPlanActive();
+                  // if(planActive==true&&(loginController.userData.first.details["plan"]?["basePlan"]?["details"]["video"]==true)) {
+                   pickMedia("image", context);
+                  // }
+                  // else{
+                  //   showSuccessDialog(
+                  //       context,
+                  //       title: "Alert",
+                  //       message: "Please activate Base Plan to Edit/Upload Video",
+                  //       onOkPressed: () {
+                  //         Get.toNamed('/viewPlanPage');
+                  //       });
+                  // }
+                }, s);
+              },
+            );
+          },
+        ),
+      ),
+
+      const SizedBox(height: 10),
+      Center(
+        child: Text(
+          "** Maximum ${loginController.maxFilesImage} images allowed",
+          style:AppTextStyles.caption(context,color: Colors.red)
+        ),
+      ),
+
+      Text("Videos",
+          style: AppTextStyles.caption(context,fontWeight: FontWeight.bold)),
+      if(Api.userInfo.read('userType')!='admin'||Api.userInfo.read('userType')!='superAdmin')
+
+        SizedBox(
+          height: s * 0.135,
+          child: GetBuilder<LoginController>(
+            builder: (controller) {
+              final videos = controller.editImages
+                  .where((e) => e.isVideo)
+                  .toList();
+
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: loginController.maxFilesVideo,
+                itemBuilder: (_, index) {
+                  if (index < videos.length) {
+                    final media = videos[index];
+
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: buildMediaItem(media, s, () {
+                        controller.editImages.remove(media);
+                        controller.update();
+                      },context),
+                    );
+                  }
+
+                  return buildAddButton(() {
+                    // final planActive = getPlanActive();
+                    // if(planActive==true&&(loginController.userData.first.details["plan"]?["basePlan"]?["details"]["video"]==true)) {
+                      pickMedia("video", context);
+                    // }
+                    // else{
+                    //   showSuccessDialog(
+                    //       context,
+                    //       title: "Alert",
+                    //       message: "Please activate Base Plan to Edit/Upload Video",
+                    //       onOkPressed: () {
+                    //         Get.toNamed('/viewPlanPage');
+                    //       });
+                    // }
+                  }, s);
+                },
               );
             },
-          );
-        },
+          ),
+        ),
+
+      const SizedBox(height: 10),
+
+      Center(
+        child: Text(
+          "** Maximum ${loginController.maxFilesVideo} videos allowed",
+            style:AppTextStyles.caption(context,color: Colors.red)
+        ),
       ),
-      SizedBox(height: s*0.01,)]),],
+      SizedBox(height: s*0.01,)
+
+
+    ]),],
 
 
         Center(
@@ -1386,46 +1669,26 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
               style: AppTextStyles.caption(fontWeight: FontWeight.bold, context)),
         ),
         const SizedBox(height: 10),
-        // GetBuilder<LoginController>(
-        //   builder: (controller) {
-        //     return SizedBox(
-        //       height: 200,
-        //       child: controller.logoImages1.isNotEmpty
-        //           ? _buildSingleImageWidget(image: controller.logoImages1.first)
-        //           : GestureDetector(
-        //         onTap: pickLogo,
-        //         child: Container(
-        //           height: s*0.12,
-        //           width: s*0.13,
-        //           alignment: Alignment.center,
-        //           decoration: BoxDecoration(
-        //             border: Border.all(color: Colors.grey),
-        //             borderRadius: BorderRadius.circular(10),
-        //           ),
-        //           child:   Center(child: Icon(Icons.add,color: AppColors.grey,size:s*0.012,)),
-        //         ),
-        //       ),
-        //     );
-        //   },
-        // ),
         GetBuilder<LoginController>(
           builder: (controller) {
-            return SizedBox(
-              height: 200,
-              child: controller.logoImages1.isNotEmpty
-                  ? _buildSingleImageWidget(image: controller.logoImages1.first)
-                  : GestureDetector(
-                onTap: pickLogo,
-                child: Container(
-                  width: s * 0.35,
-                  height: s * 0.35,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Icon(Icons.add, color: AppColors.grey, size: s * 0.012),
+            return Center(
+              child: SizedBox(
+                height:  s * 0.15,
+                child: controller.logoImages1.isNotEmpty
+                    ? _buildSingleImageWidget(image: controller.logoImages1.first)
+                    : GestureDetector(
+                  onTap: pickLogo,
+                  child: Container(
+                    width: s * 0.15,
+                    height: s * 0.15,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Icon(Icons.add, color: AppColors.grey, size: s * 0.013),
+                    ),
                   ),
                 ),
               ),
@@ -1531,7 +1794,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(12),)),
         onPressed: () => loginController.addExperienceField(),
-        icon:  Icon(Icons.add,size: size*0.012,color: AppColors.white),
+        icon:  Icon(Icons.add,size: size * 0.012,color: AppColors.white),
         label:  Text("Add Experience",style: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold),),
       ),
       SizedBox(height: size * 0.01),

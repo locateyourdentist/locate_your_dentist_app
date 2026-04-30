@@ -7,10 +7,13 @@ import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/model/profile_model.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:get/get.dart';
+import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:locate_your_dentist/web_modules/common/filter_side_bar.dart';
+import 'package:excel/excel.dart';
+
 
 class ModernUserTable extends StatefulWidget {
   @override
@@ -33,6 +36,63 @@ class _ModernUserTableState extends State<ModernUserTable> {
         .where((p) => p.userType.toLowerCase() == userType!.toLowerCase())
         .toList();
   }
+  bool isExporting = false;
+  List<int>? generateExcel(List profiles) {
+    final excel = Excel.createExcel();
+    const sheetName = "Users";
+    excel.rename('Sheet1', sheetName);
+
+    final sheet = excel[sheetName];
+
+    final titleStyle = CellStyle(
+      bold: true,
+      fontSize: 16,
+      horizontalAlign: HorizontalAlign.Center,
+    );
+
+    final headerStyle = CellStyle(
+      bold: true,
+    );
+
+    sheet.appendRow([
+      TextCellValue("User Report"),
+    ]);
+
+    sheet.merge(
+      CellIndex.indexByString("A1"),
+      CellIndex.indexByString("F1"),
+    );
+
+    sheet.cell(CellIndex.indexByString("A1")).cellStyle = titleStyle;
+
+    sheet.appendRow([
+      TextCellValue("S.No"),
+      TextCellValue("Name"),
+      TextCellValue("User ID"),
+      TextCellValue("User Type"),
+      TextCellValue("Mobile"),
+      TextCellValue("Email Id"),
+    ]);
+
+    for (var col in ["A2", "B2", "C2", "D2", "E2", "F2"]) {
+      sheet.cell(CellIndex.indexByString(col)).cellStyle = headerStyle;
+    }
+
+    for (int i = 0; i < profiles.length; i++) {
+      final user = profiles[i];
+
+      sheet.appendRow([
+        TextCellValue("${i + 1}"),
+        TextCellValue(user.name ?? ""),
+        TextCellValue(user.userId ?? ""),
+        TextCellValue(user.userType ?? ""),
+        TextCellValue(user.mobileNumber ?? ""),
+        TextCellValue(user.email ?? ""),
+      ]);
+    }
+
+    return excel.encode();
+  }
   @override
   void initState(){
     super.initState();
@@ -49,6 +109,9 @@ class _ModernUserTableState extends State<ModernUserTable> {
       context,
     );
    await loginController.fetchStates();
+    loginController.selectedState=null;
+    loginController.selectedDistrict=null;
+    loginController.selectedTaluka=null;
   }
   @override
   Widget build(BuildContext context) {
@@ -56,16 +119,13 @@ class _ModernUserTableState extends State<ModernUserTable> {
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
-          height: size * 0.08,
+          height: size * 0.03,
           title: "LYD",
           onLogout: () {},
           onNotification: () {},
         );
       } else {
-        return const PreferredSize(
-          preferredSize: Size.fromHeight(60),
-          child: CommonHeader(),
-        );
+        return CommonHeader();
       }
     }
       return WillPopScope(
@@ -81,14 +141,6 @@ class _ModernUserTableState extends State<ModernUserTable> {
       },
       child: Scaffold(
         appBar: buildAppBar(),
-        // appBar: CommonWebAppBar(
-        //   height: size * 0.08,
-        //   title: "LYD",
-        //   onLogout: () {
-        //   },
-        //   onNotification: () {
-        //   },
-        // ),
         body: GetBuilder<LoginController>(
             builder: (controller) {
               final filteredProfiles = (userType == null || userType!.isEmpty)
@@ -120,9 +172,13 @@ class _ModernUserTableState extends State<ModernUserTable> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                width: size*0.15,
-                                child: FilterSidebar(),
+                              GetBuilder<LoginController>(
+                                  builder: (controller) {
+                                  return SizedBox(
+                                    width: size*0.15,
+                                    child: FilterSidebar(),
+                                  );
+                                }
                               ),
                               Expanded(
                                 child: SingleChildScrollView(
@@ -154,21 +210,43 @@ class _ModernUserTableState extends State<ModernUserTable> {
                                                 child: TextField(
                                                   controller: searchController,
                                                   onChanged: (value)async {
-                                                    Api.userInfo.read('userType')!='superAdmin'?
-                                                    await loginController.getProfileDetails(
-                                                      userType ?? "",
-                                                      loginController.selectedState,
-                                                      loginController.selectedDistrict,
-                                                      loginController.selectedTaluka,"true",'','','',searchController.text.toString(),
-                                                      context,
-                                                    )
-                                                        :await loginController.getProfileDetails(
-                                                      userType ?? "",
-                                                      loginController.selectedState,
-                                                      loginController.selectedDistrict,
-                                                      loginController.selectedTaluka,"",'','','',searchController.text.toString(),
-                                                      context,
-                                                    );
+                                                    if (loginController.selectedDistance != null) {
+                                                      final position = await LocationService.getCurrentLocation();
+
+                                                      if (position == null) {
+                                                        return;
+                                                      }
+
+                                                      loginController.latitude = position.latitude;
+                                                      loginController.longitude = position.longitude;
+
+                                                      print("LAT: ${loginController.latitude}");
+                                                      print("LNG: ${loginController.longitude}");
+                                                    }
+                                                    String distance = loginController.selectedDistance ?? "";
+                                                    String safeLat = (loginController.latitude == null) ? "" : loginController.latitude.toString();
+                                                    String safeLng = (loginController.longitude == null) ? "" : loginController.longitude.toString();
+                                                    if( Api.userInfo.read('userType')=="superAdmin") {
+                                                      await   loginController.getProfileDetails('',  loginController.selectedState,
+                                                          loginController.selectedDistrict,
+                                                          loginController.selectedTaluka, '',safeLat,
+                                                          safeLng,distance,searchController.text.toString(),  context);
+                                                    }
+                                                    else if( Api.userInfo.read('userType')=="admin") {
+                                                      await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict,
+                                                          loginController.selectedTaluka, '',safeLat,
+                                                          safeLng,distance,searchController.text.toString(), context);
+                                                    }
+                                                    else{
+                                                      await  loginController.getProfileDetails(
+                                                        userType,
+                                                        loginController.selectedState,
+                                                        loginController.selectedDistrict,
+                                                        loginController.selectedTaluka,'true',safeLat,
+                                                        safeLng,distance, searchController.text.toString(),
+                                                        context,
+                                                      );
+                                                    }
                                                   },
                                                   decoration: InputDecoration(
                                                     icon: Icon(
@@ -235,7 +313,173 @@ class _ModernUserTableState extends State<ModernUserTable> {
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(height: 20,),
+                                      const SizedBox(height: 10,),
+                                      if (loginController.selectedDistance != null ||loginController.selectedState != null||
+                                      loginController.selectedDistrict != null ||
+                                          loginController.selectedTaluka != null ||
+                                          loginController.selectedJobType != null ||
+                                          loginController.selectedSalary != null ||
+                                          loginController.selectedCategories.isNotEmpty)
+                                        GetBuilder<LoginController>(
+                                            builder: (_) {
+                                              return  Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                                                child: Wrap(
+                                                  spacing: 8,
+                                                  runSpacing: 8,
+                                                  children: [
+                                                    if (loginController.selectedState != null)
+                                                      InputChip(
+                                                        label: Text(loginController.selectedState!),
+                                                        onDeleted: () {
+                                                          loginController.selectedState = null;
+                                                          loginController.update();
+                                                        },
+                                                      ),
+                                                    if (loginController.selectedDistrict != null)
+                                                      InputChip(
+                                                        label: Text(loginController.selectedDistrict!),
+                                                        onDeleted: () {
+                                                          loginController.selectedDistrict = null;
+                                                          loginController.update();
+                                                        },
+                                                      ),
+                                                    if (loginController.selectedTaluka != null)
+                                                      InputChip(
+                                                        label: Text(loginController.selectedTaluka!),
+                                                        onDeleted: () {
+                                                          loginController.selectedTaluka = null;
+                                                          loginController.update();
+                                                        },
+                                                      ),
+                                                    if (loginController.selectedJobType != null)
+                                                      InputChip(
+                                                        label: Text(loginController.selectedJobType!),
+                                                        onDeleted: () {
+                                                          loginController.selectedJobType = null;
+                                                          loginController.update();
+                                                        },
+                                                      ),
+                                                    if (loginController.selectedSalary != null)
+                                                      InputChip(
+                                                        label: Text(loginController.selectedSalary!),
+                                                        onDeleted: () {
+                                                          loginController.selectedSalary = null;
+                                                          loginController.update();
+                                                        },
+                                                      ),
+                                                    for (var category in loginController.selectedCategories)
+                                                      InputChip(
+                                                        label: Text(category,style: AppTextStyles.caption(context),),
+                                                        onDeleted: () {
+                                                          loginController.selectedCategories.remove(category);
+                                                          loginController.update();
+                                                        },
+                                                      ),
+                                                    TextButton(
+                                                      onPressed: () async{
+                                                        loginController.selectedCategories.clear();
+                                                        loginController.selectedArea = null;
+                                                        loginController.selectedUserType = null;
+                                                        loginController.selectedState = null;
+                                                        loginController.selectedDistrict = null;
+                                                        loginController.selectedDistance = null;
+                                                        loginController.selectedTaluka = null;
+                                                        loginController.selectedJobType = null;
+                                                        loginController.selectedSalary = null;
+                                                        loginController.update();
+                                                            await loginController.getProfileDetails(
+                                                          "",
+                                                          "",
+                                                          "",
+                                                          "",
+                                                          "",
+                                                          "",
+                                                          "",
+                                                          "",
+                                                          "",
+                                                          context,
+                                                        );
+
+
+                                                      },
+                                                      child: const Text(
+                                                        "Clear All",
+                                                        style: TextStyle(
+                                                          color: Colors.red,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                        ),
+
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: SizedBox(
+                                            height: size * 0.016,
+                                            child: ElevatedButton.icon(
+                                              onPressed: isExporting
+                                                  ? null
+                                                  : () async {
+                                                setState(() {
+                                                  isExporting = true;
+                                                });
+
+                                                final listToExport = (userType == null || userType!.isEmpty)
+                                                    ? loginController.profileList
+                                                    : loginController.profileList
+                                                    .where((p) =>
+                                                (p.userType ?? '').toLowerCase() ==
+                                                    userType!.toLowerCase())
+                                                    .toList();
+
+                                                print("EXPORT LENGTH: ${listToExport.length}");
+
+                                                try {
+                                                  await generateExcel(listToExport);
+                                                } catch (e) {
+                                                  print("Export error: $e");
+                                                }
+
+                                                setState(() {
+                                                  isExporting = false;
+                                                });
+                                              },
+
+                                              icon: isExporting
+                                                  ? const SizedBox(
+                                                height: 16,
+                                                width: 16,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                                  : const Icon(Icons.download, size: 18, color: Colors.white),
+
+                                              label: Text(
+                                                isExporting ? "Exporting..." : "Export Excel",
+                                                style: const TextStyle(color: Colors.white),
+                                              ),
+
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: AppColors.primary,
+                                                elevation: 4,
+                                                padding: const EdgeInsets.symmetric(horizontal: 14),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                       if(filteredProfiles.length==0)
                                         Padding(
                                           padding: const EdgeInsets.all(12.0),

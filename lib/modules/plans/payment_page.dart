@@ -517,7 +517,8 @@ String formatDate(String date) {
       );
       final invoiceId = (planController.invoiceId ?? "").isNotEmpty ? planController.invoiceId! : "";
       print('inv$invoiceId');
-      String name = Api.userInfo.read('name') ?? "";
+      String name = Api.userInfo.read('orgName') ?? "";
+      print('org name$name');
       final pdfFile = await PdfGenerator.generateInvoicePdf(
         userName: name,
         planName: planName,
