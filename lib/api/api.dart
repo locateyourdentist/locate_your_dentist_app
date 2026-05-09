@@ -1150,9 +1150,10 @@ class Api {
     }
   }
   Future<http.Response> uploadImagesUserType(
-      String userId, String userType,String imageId,String preference,String startDate,String endDate,String isActive, List<Uint8List> images) async {
+      String userId, String userType,String planId,String preference,String startDate,String endDate,String isActive, List<Uint8List> images, {String? recordId}) async {
     String url = "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants.uploadImagesUrl}";
     print('API uploadImagesUrl $url');
+    print('FIELDS: userId=$userId, userType=$userType, planId=$planId, isActive=$isActive, recordId=$recordId');
     String token = Api.userInfo.read('token') ?? "";
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -1162,7 +1163,10 @@ class Api {
     });
     request.fields['userId'] = userId;
     request.fields['userType'] = userType;
-    request.fields['imageId'] = imageId;
+    request.fields['imageId'] = planId;
+    if (recordId != null && recordId.isNotEmpty) {
+      request.fields['id'] = recordId;
+    }
     request.fields['preference'] = preference;
     request.fields['startDate'] = startDate;
     request.fields['endDate'] = endDate;

@@ -791,7 +791,7 @@ import 'package:geocoding/geocoding.dart';
                                color: Colors.grey.shade200,
                              ),
                              child:  Center(
-                               child: Icon(Icons.add, size: size*0.016, color: Colors.grey),
+                               child: Icon(Icons.add, size: size*0.03, color: Colors.grey),
                              ),
                            ),
                          );
@@ -829,7 +829,7 @@ import 'package:geocoding/geocoding.dart';
                                    color: Colors.grey.shade200,
                                  ),
                                  child:  Center(
-                                   child: Icon(Icons.add, size: size*0.016, color: Colors.grey),
+                                   child: Icon(Icons.add, size: size*0.03, color: Colors.grey),
                                  ),
                                ),
                              );
@@ -1251,120 +1251,19 @@ Widget buildAddButton(VoidCallback onTap, double size) {
     onTap: onTap,
     child: Container(
       margin:  EdgeInsets.all(8),
-      width: size * 0.15,
-      height: size * 0.15,
+      width: size * 0.3,
+      height: size * 0.3,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey),
         color: Colors.grey.shade200,
       ),
       child:  Center(
-        child: Icon(Icons.add, size: size*0.016, color: Colors.grey),
+        child: Icon(Icons.add, size: size*0.03, color: Colors.grey),
       ),
     ),
   );
 }
-// class MediaPreviewWidget extends StatefulWidget {
-//   final AppImage media;
-//   final double size;
-//
-//   const MediaPreviewWidget({super.key, required this.media, required this.size});
-//
-//   @override
-//   State<MediaPreviewWidget> createState() => _MediaPreviewWidgetState();
-// }
-//
-// class _MediaPreviewWidgetState extends State<MediaPreviewWidget> {
-//   String? thumbnailPath;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     if (widget.media.isVideo && widget.media.file != null) {
-//       generateThumbnail();
-//     }
-//   }
-//
-//   Future<void> generateThumbnail() async {
-//     final thumb = await VideoThumbnail.thumbnailFile(
-//       video: widget.media.file!.path,
-//       imageFormat: ImageFormat.JPEG,
-//       maxWidth: 300,
-//       quality: 75,
-//     );
-//     setState(() {
-//       thumbnailPath = thumb;
-//     });
-//   }
-//
-//   // void _openMedia() {
-//   //   if (widget.media.isVideo) {
-//   //     print('vedeo file${widget.media}');
-//   //     Get.to(() => VideoPlayerScreen(media: widget.media));
-//   //   } else {
-//   //
-//   //     Get.toNamed('/viewImagePage',arguments: {'url': widget.media.url, 'file': widget.media.file});
-//   //    // Get.to(() => ViewImage(url: widget.media.url, file: widget.media.file));
-//   //   }
-//   // }
-//   void _openMedia() {
-//     print("Tapped media: isVideo=${widget.media.isVideo}, file=${widget.media.file}, url=${widget.media.url}");
-//     if (widget.media.isVideo) {
-//       if (widget.media.file != null || (widget.media.url != null && widget.media.url!.isNotEmpty)) {
-//         Get.to(() => VideoPlayerScreen(media: widget.media));
-//       } else {
-//         Get.snackbar("Error", "Video not available");
-//       }
-//     } else {
-//       Get.toNamed('/viewImagePage', arguments: {'url': widget.media.url, 'file': widget.media.file});
-//     }
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTap: _openMedia,
-//       child: ClipRRect(
-//         borderRadius: BorderRadius.circular(10),
-//         child: widget.media.isVideo
-//             ? Stack(
-//           children: [
-//             thumbnailPath == null
-//                 ? Container(
-//               width: widget.size,
-//               height: widget.size,
-//               color: Colors.black12,
-//               child: const Center(child: CircularProgressIndicator()),
-//             )
-//                 : Image.file(
-//               File(thumbnailPath!),
-//               width: widget.size,
-//               height: widget.size,
-//               fit: BoxFit.cover,
-//             ),
-//             const Positioned.fill(
-//               child: Center(
-//                 child: Icon(Icons.play_circle_fill, color: Colors.white, size: 50),
-//               ),
-//             ),
-//           ],
-//         )
-//             : widget.media.file != null
-//             ? Image.file(
-//           widget.media.file!,
-//           width: widget.size,
-//           height: widget.size,
-//           fit: BoxFit.cover,
-//         )
-//             : Image.network(
-//           widget.media.url ?? "",
-//           width: widget.size,
-//           height: widget.size,
-//           fit: BoxFit.cover,
-//         ),
-//       ),
-//     );
-//   }
-// }
 class MediaPreviewWidget extends StatefulWidget {
   final AppImage media;
   final double size;

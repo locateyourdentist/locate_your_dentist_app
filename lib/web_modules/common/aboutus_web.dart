@@ -10,11 +10,13 @@ class AboutUsWebPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    PreferredSizeWidget buildAppBar() {
+    final double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;    PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
-          height: width * 0.03,
+          height: isMobile ? 60 : (isTablet ? 70 : 80),
           title: "LYD",
           onLogout: () {},
           onNotification: () {},

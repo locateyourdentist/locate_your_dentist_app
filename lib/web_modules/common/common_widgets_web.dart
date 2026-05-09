@@ -16,46 +16,47 @@ import 'package:google_fonts/google_fonts.dart';
 
 
 
-class CustomAppBar extends StatefulWidget {
-  @override
-  _CustomAppBarState createState() => _CustomAppBarState();
-}
+// class CustomAppBar extends StatefulWidget {
+//   @override
+//   _CustomAppBarState createState() => _CustomAppBarState();
+// }
+//
+// class _CustomAppBarState extends State<CustomAppBar> {
+//   bool isScrolled = false;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return NotificationListener<ScrollNotification>(
+//       onNotification: (scroll) {
+//         if (scroll.metrics.pixels > 50 && !isScrolled) {
+//           setState(() => isScrolled = true);
+//         } else if (scroll.metrics.pixels <= 50 && isScrolled) {
+//           setState(() => isScrolled = false);
+//         }
+//         return true;
+//       },
+//       child: AnimatedContainer(
+//         duration: Duration(milliseconds: 300),
+//         color: isScrolled ? Colors.green.shade900 : Colors.transparent,
+//         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//         child: Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//             Row(
+//               children: [
+//                 TextButton(onPressed: () {}, child: Text("Home",style: AppTextStyles.caption(context),)),
+//                 TextButton(onPressed: () {}, child: Text("About",style: AppTextStyles.caption(context),)),
+//                 TextButton(onPressed: () {}, child: Text("Products",style: AppTextStyles.caption(context),)),
+//                 TextButton(onPressed: () {}, child: Text("Contact",style: AppTextStyles.caption(context),)),
+//               ],
+//             )
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-class _CustomAppBarState extends State<CustomAppBar> {
-  bool isScrolled = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (scroll) {
-        if (scroll.metrics.pixels > 50 && !isScrolled) {
-          setState(() => isScrolled = true);
-        } else if (scroll.metrics.pixels <= 50 && isScrolled) {
-          setState(() => isScrolled = false);
-        }
-        return true;
-      },
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        color: isScrolled ? Colors.green.shade900 : Colors.transparent,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                TextButton(onPressed: () {}, child: Text("Home",style: AppTextStyles.caption(context),)),
-                TextButton(onPressed: () {}, child: Text("About",style: AppTextStyles.caption(context),)),
-                TextButton(onPressed: () {}, child: Text("Products",style: AppTextStyles.caption(context),)),
-                TextButton(onPressed: () {}, child: Text("Contact",style: AppTextStyles.caption(context),)),
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
 PreferredSizeWidget buildAppBar(dynamic context) {
   double size=MediaQuery.of(context).size.width;
   if (Api.userInfo.read('token') != null) {
@@ -70,6 +71,7 @@ PreferredSizeWidget buildAppBar(dynamic context) {
   }
 }
 
+
 class CommonFooter extends StatefulWidget {
   const CommonFooter({super.key});
 
@@ -79,7 +81,8 @@ class CommonFooter extends StatefulWidget {
 
 class _CommonFooterState extends State<CommonFooter> {
   final LoginController loginController = Get.find();
-  final PlanController planController=Get.put(PlanController());
+  final PlanController planController = Get.put(PlanController());
+
   final List<String> titles = const [
     "Privacy Policy",
     "Terms & Conditions",
@@ -87,15 +90,17 @@ class _CommonFooterState extends State<CommonFooter> {
     "Refund Policy",
     "Disclaimer",
   ];
+
   @override
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
   }
+
   Future<void> launchWebsite(String url) async {
     String safeUrl = url.trim();
 
-    if (!safeUrl.startsWith('http://') && !safeUrl.startsWith('https://')) {
+    if (!safeUrl.startsWith('http')) {
       safeUrl = 'https://$safeUrl';
     }
 
@@ -104,19 +109,24 @@ class _CommonFooterState extends State<CommonFooter> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      Get.snackbar(
-        "Error",
-        "Could not open website",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar("Error", "Could not open website",
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    double s=MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width;
+
+    bool isMobile = width < 768;
+    bool isTablet = width >= 768 && width < 1024;
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+      padding: EdgeInsets.symmetric(
+        vertical: 20,
+        horizontal: isMobile ? 20 : 40,
+      ),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(15),
@@ -138,210 +148,67 @@ class _CommonFooterState extends State<CommonFooter> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              Row(
+              /// 🔹 MAIN CONTENT
+              isMobile
+                  ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    flex: 3,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            GetBuilder<LoginController>(
-                              builder: (controller) {
-                                return GestureDetector(
-                                  onTap: () {
-                                  },
-                                  child: Container(
-                                    height: 50,
-                                    width: 50,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: Colors.white.withOpacity(0.4),
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: controller.appLogoFile != null
-                                          ? Image.file(
-                                        controller.appLogoFile!,
-                                        fit: BoxFit.cover,
-                                      )
-                                          : controller.appLogoUrl != null
-                                          ? Image.network(
-                                        controller.appLogoUrl!,
-                                        fit: BoxFit.cover,
-                                      )
-                                          : const Icon(
-                                        Icons.image_outlined,
-                                        color: Colors.white,
-                                        size: 26,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                  _buildLogoSection(context),
+                  const SizedBox(height: 20),
 
-                            const SizedBox(width: 12),
-                            Text(
-                              AppConstants.appName,
-                              style: AppTextStyles.subtitle(
-                                context,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ],
-                        ),
+                  _buildCompanySection(context),
+                  const SizedBox(height: 20),
 
-                        const SizedBox(height: 10),
+                  _buildContactSection(context),
+                  const SizedBox(height: 20),
 
-                        Text(
-                          AppConstants.appDescription,
-                          style: AppTextStyles.caption(
-                            context,
-                            color: AppColors.white.withOpacity(0.9),
-                          ),
-                        ),
-
-                        const SizedBox(height: 15),
-
-                        Row(
-                          children: [
-                            _socialIcon("assets/images/facebook.png",(){
-                              launchWebsite("https://facebook.com");}),
-                            const SizedBox(width: 10),
-                            _socialIcon("assets/images/instagram.png",(){
-                              launchWebsite("https://instagram.com");}),
-                            const SizedBox(width: 10),
-                            _socialIcon("assets/images/youtube.png",(){
-                              launchWebsite("https://youtube.com");}),
-                            const SizedBox(width: 10),
-                            _socialIcon("assets/images/linkein.png",(){
-                              launchWebsite("https://www.linkedin.com");}),
-                          ],
-                        ),
-
-                      ],
-                    ),
-                  ),
-
+                  _buildLegalSection(context),
+                ],
+              )
+                  : Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 3, child: _buildLogoSection(context)),
                   const SizedBox(width: 40),
 
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _footerTitle(context, "Company",),
-                        const SizedBox(height: 10),
-                        _footerLink(context, "About Us",(){}),
-                        _footerLink(context, "Contact Us",(){}),
-                      ],
+                  Expanded(flex: 1, child: _buildCompanySection(context)),
+
+                  Expanded(flex: 2, child: _buildContactSection(context)),
+
+                  Expanded(flex: 2, child: _buildLegalSection(context)),
+                ],
+              ),
+
+              const SizedBox(height: 20),
+              Divider(color: AppColors.white, thickness: 0.2),
+
+              isMobile
+                  ? Column(
+                children: [
+                  Text(
+                    "© ${DateTime.now().year} ${AppConstants.appName}. All rights reserved.",
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.caption(
+                      context,
+                      color: AppColors.white.withOpacity(0.9),
                     ),
                   ),
-
-                  // Expanded(
-                  //   flex: 2,
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       _footerTitle(context, "Legal"),
-                  //       const SizedBox(height: 10),
-                  //       _footerLink(context, "Privacy Policy"),
-                  //       _footerLink(context, "Terms of Service"),
-                  //     ],
-                  //   ),
-                  // ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _footerTitle(context, "Contact"),
-
-                        const SizedBox(height: 10),
-
-                        Row(
-                          children: [
-                            const Icon(Icons.location_on,
-                                color: Colors.white, size: 16),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                "${planController.streetController.text??""},${planController.cityController.text??""},${planController.stateController.text??""},${planController.zipController.text}",
-                                style: AppTextStyles.caption(
-                                  context,
-                                  color: AppColors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        Row(
-                          children: [
-                            const Icon(Icons.phone, color: Colors.white, size: 16),
-                            const SizedBox(width: 8),
-                            Text(
-                              planController.phoneController.text??"",
-                              style: AppTextStyles.caption(
-                                context,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        Row(
-                          children: [
-                            const Icon(Icons.email, color: Colors.white, size: 16),
-                            const SizedBox(width: 8),
-                            Text(
-                              planController.emailController.text??"",
-                              style: AppTextStyles.caption(
-                                context,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                       // SizedBox(height: s*0.025,),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _footerTitle(context, "Legal"),
-                        const SizedBox(height: 10),
-
-                        ...titles.map((title) {
-                          return _footerLink(context, title,   () {
-                            Api.userInfo.write('legalPage',title);
-                            Get.toNamed('/viewLegalPage',
-                              arguments: {'title':title},
-                            );
-                          },
-                          );
-                        }).toList(),
-                      ],
+                  TextButton(
+                    onPressed: () {
+                      launchWebsite(
+                          AppConstants.developerCompanyUrl);
+                    },
+                    child: Text(
+                      "Developed by @ ${AppConstants.developerCompanyName}",
+                      style: AppTextStyles.caption(
+                        context,
+                        color: AppColors.white.withOpacity(0.9),
+                      ),
                     ),
                   ),
                 ],
-              ),
-              Divider(color: AppColors.white,thickness: 0.2,),
-              Row(
+              )
+                  : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
@@ -353,17 +220,19 @@ class _CommonFooterState extends State<CommonFooter> {
                   ),
                   TextButton(
                     onPressed: () {
-                      launchWebsite(AppConstants.developerCompanyUrl);
+                      launchWebsite(
+                          AppConstants.developerCompanyUrl);
                     },
-                    child:Text(
-                        "Developed by @ ${AppConstants.developerCompanyName}",
-                        style: AppTextStyles.caption(
-                          context,
-                          color: AppColors.white.withOpacity(0.9),
-                        )
-                    ),),
+                    child: Text(
+                      "Developed by @ ${AppConstants.developerCompanyName}",
+                      style: AppTextStyles.caption(
+                        context,
+                        color: AppColors.white.withOpacity(0.9),
+                      ),
+                    ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -371,6 +240,124 @@ class _CommonFooterState extends State<CommonFooter> {
     );
   }
 
+  Widget _buildLogoSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            GetBuilder<LoginController>(
+              builder: (controller) {
+                return Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.4),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: controller.appLogoFile != null
+                        ? Image.file(controller.appLogoFile!,
+                        fit: BoxFit.cover)
+                        : controller.appLogoUrl != null
+                        ? Image.network(controller.appLogoUrl!,
+                        fit: BoxFit.cover)
+                        : const Icon(Icons.image_outlined,
+                        color: Colors.white),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                AppConstants.appName,
+                style: AppTextStyles.subtitle(
+                  context,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+
+        Text(
+          AppConstants.appDescription,
+          style: AppTextStyles.caption(
+            context,
+            color: AppColors.white.withOpacity(0.9),
+          ),
+        ),
+
+        const SizedBox(height: 15),
+
+        Wrap(
+          spacing: 10,
+          children: [
+            _socialIcon("assets/images/facebook.png",
+                    () => launchWebsite("https://facebook.com")),
+            _socialIcon("assets/images/instagram.png",
+                    () => launchWebsite("https://instagram.com")),
+            _socialIcon("assets/images/youtube.png",
+                    () => launchWebsite("https://youtube.com")),
+            _socialIcon("assets/images/linkein.png",
+                    () => launchWebsite("https://linkedin.com")),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCompanySection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _footerTitle(context, "Company"),
+        const SizedBox(height: 10),
+        _footerLink(context, "About Us", () {}),
+        _footerLink(context, "Contact Us", () {}),
+      ],
+    );
+  }
+
+  Widget _buildContactSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _footerTitle(context, "Contact"),
+        const SizedBox(height: 10),
+
+        _infoRow(Icons.location_on,
+            "${planController.streetController.text}, ${planController.cityController.text}, ${planController.stateController.text}, ${planController.zipController.text}"),
+
+        _infoRow(Icons.phone, planController.phoneController.text),
+
+        _infoRow(Icons.email, planController.emailController.text),
+      ],
+    );
+  }
+  Widget _buildLegalSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _footerTitle(context, "Legal"),
+        const SizedBox(height: 10),
+        ...titles.map((title) {
+          return _footerLink(context, title, () {
+            Api.userInfo.write('legalPage', title);
+            Get.toNamed('/viewLegalPage',
+                arguments: {'title': title});
+          });
+        }).toList(),
+      ],
+    );
+  }
   Widget _footerTitle(BuildContext context, String title) {
     return Text(
       title,
@@ -382,7 +369,8 @@ class _CommonFooterState extends State<CommonFooter> {
     );
   }
 
-  Widget _footerLink(BuildContext context, String title,VoidCallback onTap) {
+  Widget _footerLink(
+      BuildContext context, String title, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: GestureDetector(
@@ -392,8 +380,29 @@ class _CommonFooterState extends State<CommonFooter> {
           style: AppTextStyles.caption(
             context,
             color: AppColors.white,
-          )
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _infoRow(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: AppTextStyles.caption(
+                context,
+                color: AppColors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -410,7 +419,6 @@ class _CommonFooterState extends State<CommonFooter> {
     );
   }
 }
-
 
 class EnlargeOnTapCard extends StatefulWidget {
   final Widget child;
@@ -933,11 +941,200 @@ class _EnlargeOnTapCardState extends State<EnlargeOnTapCard> {
 //       ],
 //     );
 
+// class CommonHeader extends StatefulWidget implements PreferredSizeWidget {
+//   const CommonHeader({super.key});
+//
+//   @override
+//   Size get preferredSize => const Size.fromHeight(140);
+//
+//   @override
+//   State<CommonHeader> createState() => _CommonHeaderState();
+// }
+//
+// class _CommonHeaderState extends State<CommonHeader> {
+//   final loginController = Get.put(LoginController());
+//   final planController = Get.put(PlanController());
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     loginController.getAppLogoImage(context);
+//     planController.getCompanyDetails();
+//   }
+//
+//   Widget _navItem(String title, String route) {
+//     return InkWell(
+//       onTap: () => Get.toNamed(route),
+//       child: Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 8),
+//         child: Text(title),
+//       ),
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final double size = MediaQuery.of(context).size.width;
+//
+//     return SizedBox(
+//       height: 90,
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Image.network(
+//             loginController.appLogoUrl ?? "",
+//             height: 28,
+//             errorBuilder: (_, __, ___) =>
+//             const Icon(Icons.image, size: 30),
+//           ),
+//
+//           const SizedBox(width: 10),
+//
+//           Text(
+//             AppConstants.appNameShort,
+//             style: AppTextStyles.body(
+//               context,
+//               fontWeight: FontWeight.bold,
+//               color: Colors.black,
+//             ),
+//           ),
+//               Spacer(),
+//           Column(
+//             children: [
+//
+//               Container(
+//                 height: 45,
+//                 width: double.infinity,
+//                 color: AppColors.primary,
+//                 padding: const EdgeInsets.symmetric(horizontal: 20),
+//                 child: Row(
+//                   children: [
+//                     Icon(Icons.email, size: 14, color: Colors.white),
+//                     const SizedBox(width: 6),
+//
+//                     Expanded(
+//                       child: Text(
+//                         planController.emailController.text ?? "",
+//                         overflow: TextOverflow.ellipsis,
+//                         style: AppTextStyles.caption(
+//                           context,
+//                           color: Colors.white,
+//                         ),
+//                       ),
+//                     ),
+//
+//                    // const SizedBox(width: 20),
+//
+//                     Icon(Icons.call, size: 14, color: Colors.white),
+//                     const SizedBox(width: 6),
+//
+//                     Text(
+//                       planController.phoneController.text ?? "",
+//                       style: AppTextStyles.caption(
+//                         context,
+//                         color: Colors.white,
+//                       ),
+//                     ),
+//
+//                     const Spacer(),
+//
+//                     Row(
+//                       children: const [
+//                         Icon(Icons.facebook, size: 18, color: Colors.white),
+//                         SizedBox(width: 10),
+//                         Icon(Icons.camera_alt, size: 18, color: Colors.white),
+//                         SizedBox(width: 10),
+//                         Icon(Icons.alternate_email, size: 18, color: Colors.white),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//
+//               Expanded(
+//                 child: Container(
+//                   width: double.infinity,
+//                   color: Colors.white,
+//                   padding: const EdgeInsets.symmetric(horizontal: 20),
+//                   child: Row(
+//                     children: [
+//
+//                       // Image.network(
+//                       //   loginController.appLogoUrl ?? "",
+//                       //   height: 28,
+//                       //   errorBuilder: (_, __, ___) =>
+//                       //   const Icon(Icons.image, size: 30),
+//                       // ),
+//                       //
+//                       // const SizedBox(width: 10),
+//                       //
+//                       // Text(
+//                       //   AppConstants.appNameShort,
+//                       //   style: AppTextStyles.body(
+//                       //     context,
+//                       //     fontWeight: FontWeight.bold,
+//                       //     color: Colors.black,
+//                       //   ),
+//                       // ),
+//
+//                     //  const Spacer(),
+//
+//                       Flexible(
+//                         child: Wrap(
+//                           spacing: 20,
+//                           runSpacing: 5,
+//                           children: [
+//                             _navItem("Home", '/landingPage'),
+//                             _navItem("Jobs", '/jobListJobSeekersWebPage'),
+//                             _navItem("About", '/aboutUsWebPage'),
+//                             _navItem("Contact", '/contactWebPage'),
+//                           ],
+//                         ),
+//                       ),
+//
+//                       const SizedBox(width: 20),
+//
+//                       ElevatedButton(
+//                         style: ElevatedButton.styleFrom(
+//                           backgroundColor: AppColors.primary,
+//                           padding: const EdgeInsets.symmetric(
+//                             horizontal: 20,
+//                             vertical: 10,
+//                           ),
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(10),
+//                           ),
+//                           elevation: 0,
+//                         ),
+//                         onPressed: () {
+//                           Get.to(() => WebLoginPage());
+//                         },
+//                         child: Text(
+//                           "Login",
+//                           style: AppTextStyles.caption(
+//                             context,
+//                             color: Colors.white,
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
 class CommonHeader extends StatefulWidget implements PreferredSizeWidget {
   const CommonHeader({super.key});
 
   @override
-  Size get preferredSize => const Size.fromHeight(140);
+  Size get preferredSize => const Size.fromHeight(100);
 
   @override
   State<CommonHeader> createState() => _CommonHeaderState();
@@ -957,145 +1154,150 @@ class _CommonHeaderState extends State<CommonHeader> {
   Widget _navItem(String title, String route) {
     return InkWell(
       onTap: () => Get.toNamed(route),
+      borderRadius: BorderRadius.circular(6),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Text(title),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final double size = MediaQuery.of(context).size.width;
-
-    return SizedBox(
-      height: 90,
-      child: Column(
-        children: [
-
-          Container(
-            height: 45,
-            width: double.infinity,
-            color: AppColors.primary,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Icon(Icons.email, size: 14, color: Colors.white),
-                const SizedBox(width: 6),
-
-                Expanded(
-                  child: Text(
-                    planController.emailController.text ?? "",
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.caption(
-                      context,
-                      color: Colors.white,
+    final size = MediaQuery.of(context).size.width;
+    return Material(
+      elevation: 4,
+      child: SizedBox(
+        height: 90,
+        child: Row(
+          children: [
+              Container(
+                decoration:BoxDecoration(borderRadius: const BorderRadius.only( topRight: Radius.circular(180),
+                  bottomRight: Radius.circular(140, ),),),
+                child: Row(
+                  children: [
+                    Image.network(
+                      loginController.appLogoUrl ?? "",
+                      height: 100,
+                      width: 130,
+                      errorBuilder: (_, __, ___) =>
+                      const Icon(Icons.image, size: 30),
                     ),
-                  ),
-                ),
-
-               // const SizedBox(width: 20),
-
-                Icon(Icons.call, size: 14, color: Colors.white),
-                const SizedBox(width: 6),
-
-                Text(
-                  planController.phoneController.text ?? "",
-                  style: AppTextStyles.caption(
-                    context,
-                    color: Colors.white,
-                  ),
-                ),
-
-                const Spacer(),
-
-                Row(
-                  children: const [
-                    Icon(Icons.facebook, size: 18, color: Colors.white),
-                    SizedBox(width: 10),
-                    Icon(Icons.camera_alt, size: 18, color: Colors.white),
-                    SizedBox(width: 10),
-                    Icon(Icons.alternate_email, size: 18, color: Colors.white),
+                    const SizedBox(width: 8),
+                    Text(
+                      AppConstants.appNameShort,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ),
-
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
+              ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
                 children: [
-
-                  // LOGO
-                  Image.network(
-                    loginController.appLogoUrl ?? "",
-                    height: 28,
-                    errorBuilder: (_, __, ___) =>
-                    const Icon(Icons.image, size: 30),
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  Text(
-                    AppConstants.appNameShort,
-                    style: AppTextStyles.body(
-                      context,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  // NAV ITEMS (Responsive safe)
-                  Flexible(
-                    child: Wrap(
-                      spacing: 20,
-                      runSpacing: 5,
+                  Container(
+                    height: 40,
+                    width: double.infinity,
+                    color: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
                       children: [
-                        _navItem("Home", '/landingPage'),
-                        _navItem("Jobs", '/jobListJobSeekersWebPage'),
-                        _navItem("About", '/aboutUsWebPage'),
-                        _navItem("Contact", '/contactWebPage'),
+                        const Icon(Icons.email, size: 14, color: Colors.white),
+                        const SizedBox(width: 5),
+
+                        Expanded(
+                          child: Text(
+                            planController.emailController.text,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(width: 10),
+
+                        const Icon(Icons.call, size: 14, color: Colors.white),
+                        const SizedBox(width: 5),
+
+                        Text(
+                          planController.phoneController.text,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+
+                        Row(
+                                      children: [
+                                        Icon(Icons.facebook, color: Colors.white,size:  size*0.013,),
+                                        SizedBox(width: 10),
+                                        Icon(Icons.camera_alt, color: Colors.white,size:  size*0.013,),
+                                        SizedBox(width: 10),
+                                        Icon(Icons.alternate_email, color: Colors.white,size:size*0.013,),
+                                      ],
+                                    ),
+
                       ],
                     ),
                   ),
 
-                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      color: Colors.white,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Wrap(
+                              spacing: 15,
+                              runSpacing: 5,
+                              children: [
+                                _navItem("Home", '/landingPage'),
+                                _navItem("Jobs", '/jobListJobSeekersWebPage'),
+                                _navItem("About", '/aboutUsWebPage'),
+                                _navItem("Contact", '/contactWebPage'),
+                              ],
+                            ),
+                          ),
 
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      elevation: 0,
-                    ),
-                    onPressed: () {
-                      Get.to(() => WebLoginPage());
-                    },
-                    child: Text(
-                      "Login",
-                      style: AppTextStyles.caption(
-                        context,
-                        color: Colors.white,
+                          const SizedBox(width: 10),
+
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 8,
+                              ),
+                            ),
+                            onPressed: () {
+                              Get.to(() => WebLoginPage());
+                            },
+                            child:  Text("Login",style: AppTextStyles.caption(context,color: AppColors.white),),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 }
@@ -1283,6 +1485,484 @@ void showFilterDialog(BuildContext context,
   );
 }
 
+// class CommonWebAppBar extends StatefulWidget implements PreferredSizeWidget {
+//   final double height;
+//   final String title;
+//   final VoidCallback? onLogout;
+//   final VoidCallback? onNotification;
+//
+//   const CommonWebAppBar({
+//     super.key,
+//     required this.height,
+//     this.title = "Admin Dashboard",
+//     this.onLogout,
+//     this.onNotification,
+//   });
+//
+//   @override
+//   State<CommonWebAppBar> createState() => _CommonWebAppBarState();
+//
+//   @override
+//   Size get preferredSize => Size.fromHeight(height);
+// }
+//
+// class _CommonWebAppBarState extends State<CommonWebAppBar> {
+//   final notificationController = Get.put(NotificationController());
+//   final loginController = Get.put(LoginController());
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _refresh();
+//   }
+//
+//   Future<void> _refresh() async {
+//     await loginController.getAppLogoImage(context);
+//     await notificationController.getNotificationListAdmin(context);
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     bool multipleBranches = loginController.userBranchesList.length > 1;
+//     double size=MediaQuery.of(context).size.width;
+//
+//     return GetBuilder<LoginController>(
+//       builder: (_) {
+//         return Container(
+//           height: size * 0.03,
+//          // height: widget.height,
+//           padding: const EdgeInsets.symmetric(horizontal: 25),
+//           decoration: BoxDecoration(
+//             gradient: const LinearGradient(
+//               colors: [AppColors.primary, AppColors.secondary],
+//             ),
+//           ),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//
+//               Row(
+//                 children: [
+//                   loginController.appLogoUrl != null
+//                       ? ClipRRect(
+//                     borderRadius: BorderRadius.circular(10),
+//                     child: Image.network(
+//                       loginController.appLogoUrl!,
+//                       width: widget.height * 0.65,
+//                       height: widget.height * 0.65,
+//                       fit: BoxFit.cover,
+//                     ),
+//                   )
+//                       : Icon(Icons.medical_services,
+//                       size: widget.height * 0.45, color: Colors.white),
+//
+//                   const SizedBox(width: 10),
+//
+//                   Text(
+//                     widget.title,
+//                     style: AppTextStyles.body(
+//                       context,
+//                       color: Colors.white,fontWeight: FontWeight.bold
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//
+//               Row(
+//                 children: [
+//
+//                   if (multipleBranches)
+//                     GestureDetector(
+//                       onTap: () async {
+//                         await loginController.getBranchDetails(context);
+//                         await showBranchSelectionDialog(
+//                           context: context,
+//                           pageRoute: "dashboard",
+//                         );
+//                       },
+//                       child: Row(
+//                         children: [
+//                           Text(
+//                             'Switch Account',
+//                             style: AppTextStyles.caption(
+//                               context,
+//                               color: Colors.white,
+//                               fontWeight: FontWeight.bold,
+//                             ),
+//                           ),
+//                           const SizedBox(width: 6),
+//                           Image.asset(
+//                             'assets/images/switch_account.png',
+//                             height: widget.height * 0.3,
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//
+//                   const SizedBox(width: 10),
+//
+//                   GetBuilder<NotificationController>(
+//                     builder: (_) {
+//                       int unread = int.tryParse(
+//                           notificationController.unreadCount ?? "0") ??
+//                           0;
+//
+//                       return Stack(
+//                         children: [
+//                           IconButton(
+//                             icon: Icon(
+//                               Icons.notifications_none,
+//                               color: Colors.white,
+//                               size: widget.height * 0.45,
+//                             ),
+//                             onPressed: () async {
+//                               await notificationController
+//                                   .getNotificationListAdmin(context);
+//                               await notificationController
+//                                   .updateNotificationListAdmin(context);
+//
+//                               Get.toNamed('/viewNotificationWebPage');
+//                             },
+//                           ),
+//
+//                           if (unread > 0)
+//                             Positioned(
+//                               right: 6,
+//                               top: 6,
+//                               child: Container(
+//                                 padding: const EdgeInsets.all(4),
+//                                 decoration: const BoxDecoration(
+//                                   color: Colors.red,
+//                                   shape: BoxShape.circle,
+//                                 ),
+//                                 child: Text(
+//                                   unread.toString(),
+//                                   style: AppTextStyles.caption(
+//                                       context, color: Colors.white),
+//                                 ),
+//                               ),
+//                             ),
+//                         ],
+//                       );
+//                     },
+//                   ),
+//
+//                   const SizedBox(width: 10),
+//
+//                   GestureDetector(
+//                     onTap: () async {
+//                       String uId = Api.userInfo.read('userId') ?? "";
+//                       await Api.userInfo.write('selectUId', uId);
+//                       Get.toNamed('/clinicProfileWebPage');
+//                     },
+//                     child: CircleAvatar(
+//                       radius: widget.height * 0.35,
+//                       backgroundImage: NetworkImage(
+//                         Api.userInfo.read("profileImage") ?? "",
+//                       ),
+//                     ),
+//                   ),
+//
+//                   const SizedBox(width: 12),
+//
+//                   TextButton.icon(
+//                     onPressed: () {
+//                       showLogoutDialog(context);
+//                     },
+//                     icon: Icon(Icons.logout,
+//                         color: Colors.white, size: widget.height * 0.35),
+//                     label: Text(
+//                       "Logout",
+//                       style: AppTextStyles.caption(
+//                         context,
+//                         color: Colors.white,
+//                         fontWeight: FontWeight.bold,
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
+// class CommonWebAppBar extends StatefulWidget implements PreferredSizeWidget {
+//   final double height;
+//   final String title;
+//
+//   const CommonWebAppBar({
+//     super.key,
+//     this.height = 70,
+//     this.title = "Admin Dashboard",
+//   });
+//
+//   @override
+//   State<CommonWebAppBar> createState() => _CommonWebAppBarState();
+//
+//   @override
+//   Size get preferredSize => Size.fromHeight(height);
+// }
+// class CommonWebAppBar extends StatefulWidget implements PreferredSizeWidget {
+//   final double height;
+//   final String title;
+//   final VoidCallback? onLogout;
+//   final VoidCallback? onNotification;
+//
+//   const CommonWebAppBar({
+//     super.key,
+//     this.height = 300,
+//     this.title = "Admin Dashboard",
+//     this.onLogout,
+//     this.onNotification,
+//   });
+//
+//   @override
+//   Size get preferredSize => Size.fromHeight(height);
+//
+//   @override
+//   State<CommonWebAppBar> createState() => _CommonWebAppBarState();
+// }
+// class _CommonWebAppBarState extends State<CommonWebAppBar> {
+//   final notificationController = Get.put(NotificationController());
+//   final loginController = Get.put(LoginController());
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _refresh();
+//   }
+//
+//   Future<void> _refresh() async {
+//     await loginController.getAppLogoImage(context);
+//     await notificationController.getNotificationListAdmin(context);
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final width = MediaQuery.of(context).size.width;
+//
+//     bool isMobile = width < 768;
+//     bool isTablet = width >= 768 && width < 1024;
+//
+//     return GetBuilder<LoginController>(
+//       builder: (_) {
+//         return Container(
+//           height: widget.height,
+//           padding: EdgeInsets.symmetric(
+//             horizontal: isMobile ? 12 : 25,
+//           ),
+//           decoration: BoxDecoration(
+//             gradient: const LinearGradient(
+//               colors: [AppColors.primary, AppColors.secondary],
+//             ),
+//             boxShadow: [
+//               BoxShadow(
+//                 color: Colors.black.withOpacity(0.2),
+//                 blurRadius: 8,
+//               )
+//             ],
+//           ),
+//
+//           child: isMobile
+//               ? _mobileLayout()
+//               : _desktopLayout(isTablet),
+//         );
+//       },
+//     );
+//   }
+//
+//   Widget _mobileLayout() {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       crossAxisAlignment: CrossAxisAlignment.center,
+//       children: [
+//         Row(
+//           children: [
+//             _logo(),
+//             const SizedBox(width: 8),
+//             Text(
+//               "Admin",
+//               style: AppTextStyles.body(
+//                 context,
+//                 color: Colors.white,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//           ],
+//         ),
+//         Row(
+//           children: [
+//             _notificationIcon(),
+//             _profileAvatar(),
+//           ],
+//         ),
+//       ],
+//     );
+//   }
+//
+//   Widget _desktopLayout(bool isTablet) {
+//     bool multipleBranches = loginController.userBranchesList.length > 1;
+//
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         Row(
+//           children: [
+//             _logo(),
+//             const SizedBox(width: 12),
+//
+//             Text(
+//               widget.title,
+//               style: AppTextStyles.body(
+//                 context,
+//                 color: Colors.white,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//           ],
+//         ),
+//
+//         Row(
+//           children: [
+//             if (multipleBranches && !isTablet)
+//               _switchAccount(),
+//
+//             const SizedBox(width: 10),
+//
+//             _notificationIcon(),
+//
+//             const SizedBox(width: 10),
+//
+//             _profileAvatar(),
+//
+//             if (!isTablet) const SizedBox(width: 10),
+//
+//             if (!isTablet) _logoutButton(),
+//           ],
+//         ),
+//       ],
+//     );
+//   }
+//
+//   Widget _logo() {
+//     return loginController.appLogoUrl != null
+//         ? ClipRRect(
+//       borderRadius: BorderRadius.circular(8),
+//       child: Image.network(
+//         loginController.appLogoUrl!,
+//         width: 40,
+//         height: 40,
+//         fit: BoxFit.cover,
+//       ),
+//     )
+//         : const Icon(Icons.medical_services, color: Colors.white);
+//   }
+//
+//   Widget _switchAccount() {
+//     return InkWell(
+//       onTap: () async {
+//         await loginController.getBranchDetails(context);
+//         await showBranchSelectionDialog(
+//           context: context,
+//           pageRoute: "dashboard",
+//         );
+//       },
+//       child: Row(
+//         children: [
+//           const Icon(Icons.swap_horiz, color: Colors.white, size: 18),
+//           const SizedBox(width: 4),
+//           Text(
+//             "Switch",
+//             style: AppTextStyles.caption(
+//               context,
+//               color: Colors.white,
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _notificationIcon() {
+//     return GetBuilder<NotificationController>(
+//       builder: (_) {
+//         int unread =
+//             int.tryParse(notificationController.unreadCount ?? "0") ?? 0;
+//
+//         return Stack(
+//           children: [
+//             IconButton(
+//               icon: const Icon(Icons.notifications_none,
+//                   color: Colors.white),
+//               onPressed: () async {
+//                 await notificationController
+//                     .getNotificationListAdmin(context);
+//                 await notificationController
+//                     .updateNotificationListAdmin(context);
+//
+//                 Get.toNamed('/viewNotificationWebPage');
+//               },
+//             ),
+//
+//             if (unread > 0)
+//               Positioned(
+//                 right: 6,
+//                 top: 6,
+//                 child: Container(
+//                   padding: const EdgeInsets.all(4),
+//                   decoration: const BoxDecoration(
+//                     color: Colors.red,
+//                     shape: BoxShape.circle,
+//                   ),
+//                   child: Text(
+//                     unread.toString(),
+//                     style: const TextStyle(
+//                         color: Colors.white, fontSize: 10),
+//                   ),
+//                 ),
+//               ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+//
+//   Widget _profileAvatar() {
+//     return GestureDetector(
+//       onTap: () {
+//         Get.toNamed('/clinicProfileWebPage');
+//       },
+//       child: CircleAvatar(
+//         radius: 18,
+//         backgroundImage: NetworkImage(
+//           Api.userInfo.read("profileImage") ?? "",
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _logoutButton() {
+//     return TextButton.icon(
+//       onPressed: () {
+//         showLogoutDialog(context);
+//       },
+//       icon: const Icon(Icons.logout, color: Colors.white),
+//       label: Text(
+//         "Logout",
+//         style: AppTextStyles.caption(
+//           context,
+//           color: Colors.white,
+//           fontWeight: FontWeight.bold,
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 class CommonWebAppBar extends StatefulWidget implements PreferredSizeWidget {
   final double height;
   final String title;
@@ -1291,17 +1971,17 @@ class CommonWebAppBar extends StatefulWidget implements PreferredSizeWidget {
 
   const CommonWebAppBar({
     super.key,
-    required this.height,
+    this.height = 80,
     this.title = "Admin Dashboard",
     this.onLogout,
     this.onNotification,
   });
 
   @override
-  State<CommonWebAppBar> createState() => _CommonWebAppBarState();
+  Size get preferredSize => Size.fromHeight(height < 60 ? 60 : height);
 
   @override
-  Size get preferredSize => Size.fromHeight(height);
+  State<CommonWebAppBar> createState() => _CommonWebAppBarState();
 }
 
 class _CommonWebAppBarState extends State<CommonWebAppBar> {
@@ -1321,371 +2001,249 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    bool multipleBranches = loginController.userBranchesList.length > 1;
-    double size=MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width;
+
+    bool isMobile = width < 768;
+    bool isTablet = width >= 768 && width < 1024;
+
+    double safeHeight = widget.height < 60 ? 60 : widget.height;
 
     return GetBuilder<LoginController>(
       builder: (_) {
         return Container(
-          height: size * 0.03,
-         // height: widget.height,
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AppColors.primary, AppColors.secondary],
+          height: safeHeight,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.primary,AppColors.secondary],
             ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-
-              Row(
-                children: [
-                  loginController.appLogoUrl != null
-                      ? ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      loginController.appLogoUrl!,
-                      width: widget.height * 0.65,
-                      height: widget.height * 0.65,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                      : Icon(Icons.medical_services,
-                      size: widget.height * 0.45, color: Colors.white),
-
-                  const SizedBox(width: 10),
-
-                  Text(
-                    widget.title,
-                    style: AppTextStyles.body(
-                      context,
-                      color: Colors.white,fontWeight: FontWeight.bold
-                    ),
-                  ),
-                ],
-              ),
-
-              Row(
-                children: [
-
-                  if (multipleBranches)
-                    GestureDetector(
-                      onTap: () async {
-                        await loginController.getBranchDetails(context);
-                        await showBranchSelectionDialog(
-                          context: context,
-                          pageRoute: "dashboard",
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          Text(
-                            'Switch Account',
-                            style: AppTextStyles.caption(
-                              context,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Image.asset(
-                            'assets/images/switch_account.png',
-                            height: widget.height * 0.3,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  const SizedBox(width: 10),
-
-                  GetBuilder<NotificationController>(
-                    builder: (_) {
-                      int unread = int.tryParse(
-                          notificationController.unreadCount ?? "0") ??
-                          0;
-
-                      return Stack(
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.notifications_none,
-                              color: Colors.white,
-                              size: widget.height * 0.45,
-                            ),
-                            onPressed: () async {
-                              await notificationController
-                                  .getNotificationListAdmin(context);
-                              await notificationController
-                                  .updateNotificationListAdmin(context);
-
-                              Get.toNamed('/viewNotificationWebPage');
-                            },
-                          ),
-
-                          if (unread > 0)
-                            Positioned(
-                              right: 6,
-                              top: 6,
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  color: Colors.red,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Text(
-                                  unread.toString(),
-                                  style: AppTextStyles.caption(
-                                      context, color: Colors.white),
-                                ),
-                              ),
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  GestureDetector(
-                    onTap: () async {
-                      String uId = Api.userInfo.read('userId') ?? "";
-                      await Api.userInfo.write('selectUId', uId);
-                      Get.toNamed('/clinicProfileWebPage');
-                    },
-                    child: CircleAvatar(
-                      radius: widget.height * 0.35,
-                      backgroundImage: NetworkImage(
-                        Api.userInfo.read("profileImage") ?? "",
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  TextButton.icon(
-                    onPressed: () {
-                      showLogoutDialog(context);
-                    },
-                    icon: Icon(Icons.logout,
-                        color: Colors.white, size: widget.height * 0.35),
-                    label: Text(
-                      "Logout",
-                      style: AppTextStyles.caption(
-                        context,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          child: isMobile
+              ? _mobileLayout()
+              : _desktopLayout(isTablet),
         );
       },
     );
   }
+
+  Widget _mobileLayout() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              _logo(),
+              const SizedBox(width: 8),
+              const Text(
+                "Admin",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              _notificationModern(),
+              const SizedBox(width: 8),
+              _profileModern(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _desktopLayout(bool isTablet) {
+    bool multipleBranches = loginController.userBranchesList.length > 1;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        border: Border(
+          bottom: BorderSide(color: Colors.white.withOpacity(0.1)),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+
+          Row(
+            children: [
+              _logo(),
+              const SizedBox(width: 14),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  // Text(
+                  //   "Welcome back 👋",
+                  //   style: TextStyle(
+                  //     fontSize: 12,
+                  //     color: Colors.white.withOpacity(0.7),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              if (multipleBranches && !isTablet)
+                _switchAccountModern(),
+
+              const SizedBox(width: 16),
+              _notificationModern(),
+
+              const SizedBox(width: 16),
+              _profileModern(),
+
+              const SizedBox(width: 16),
+              if (!isTablet) _logoutModern(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _logo() {
+    return loginController.appLogoUrl != null
+        ? ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Image.network(
+        loginController.appLogoUrl!,
+        width: 42,
+        height: 42,
+        fit: BoxFit.cover,
+      ),
+    )
+        : const Icon(Icons.local_hospital, color: Colors.white, size: 32);
+  }
+
+  Widget _switchAccountModern() {
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: () async {
+        await loginController.getBranchDetails(context);
+        await showBranchSelectionDialog(
+          context: context,
+          pageRoute: "dashboard",
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white.withOpacity(0.1),
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.swap_horiz, size: 16, color: Colors.white),
+            SizedBox(width: 6),
+            Text("Switch", style: TextStyle(color: Colors.white)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _notificationModern() {
+    return GetBuilder<NotificationController>(
+      builder: (_) {
+        int unread =
+            int.tryParse(notificationController.unreadCount ?? "0") ?? 0;
+
+        return Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.1),
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.notifications, color: Colors.white),
+                onPressed: () async {
+                  await notificationController
+                      .getNotificationListAdmin(context);
+                  await notificationController
+                      .updateNotificationListAdmin(context);
+
+                  Get.toNamed('/viewNotificationWebPage');
+                },
+              ),
+            ),
+
+            if (unread > 0)
+              Positioned(
+                right: 4,
+                top: 4,
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    unread.toString(),
+                    style: const TextStyle(
+                        fontSize: 10, color: Colors.white),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _profileModern() {
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed('/clinicProfileWebPage');
+      },
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 18,
+            backgroundImage: NetworkImage(
+              Api.userInfo.read("profileImage") ?? "",
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _logoutModern() {
+    return TextButton(
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.red.withOpacity(0.15),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      onPressed: () {
+        showLogoutDialog(context);
+      },
+      child:  Text(
+        "Logout",
+        style: AppTextStyles.caption(context,color: Colors.white),
+      ),
+    );
+  }
 }
-
-// class CommonWebAppBar extends StatelessWidget implements PreferredSizeWidget {
-//   final double height;
-//   final String title;
-//   final VoidCallback? onLogout;
-//   final VoidCallback? onNotification;
-//   final context;
-//
-//    CommonWebAppBar({
-//     super.key,
-//     required this.height,
-//     this.title = "Admin Dashboard",
-//     this.onLogout,
-//     this.onNotification,
-//      this.context
-//   });
-//   final notificationController=Get.put(NotificationController());
-//   final loginController = Get.put(LoginController());
-//   @override
-//   void initState() {
-//     //super.initState();
-//     _refresh();
-//   }
-//   Future<void> _refresh() async {
-//     await  loginController.getAppLogoImage(context);
-//     await notificationController.getNotificationListAdmin(context);
-//     }
-//   @override
-//   Widget build(BuildContext context) {
-//     bool multipleBranches = loginController.userBranchesList.length > 1;
-//     return  GetBuilder<LoginController>(
-//         builder: (controller) {
-//           return Container(
-//           padding: const EdgeInsets.symmetric(horizontal: 25),
-//           decoration: BoxDecoration(
-//             gradient: const LinearGradient(
-//               colors: [AppColors.primary,AppColors.secondary],
-//               begin: Alignment.topLeft,
-//               end: Alignment.bottomRight,
-//             ),
-//             boxShadow: [
-//               BoxShadow(
-//                 color: Colors.grey.withOpacity(0.15),
-//                 blurRadius: 10,
-//                 offset: const Offset(0, 3),
-//               )
-//             ],
-//           ),
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               Row(
-//                 children: [
-//                   // Icon(Icons.dashboard,
-//                   //     color: AppColors.white, size: height * 0.22),
-//                   loginController.appLogoUrl != null
-//                       ? ClipRRect(
-//                     borderRadius: BorderRadius.circular(10),
-//                         child: Image.network(
-//                         loginController.appLogoUrl!,
-//                         fit: BoxFit.cover,
-//                         width: height*0.25,
-//                         height: height*0.25,
-//                       ),
-//                       )
-//                       : Container(
-//                     color: Colors.transparent,
-//                     child:  Icon(
-//                       Icons.medical_services,
-//                       size: height*0.02,
-//                       color: Colors.white,
-//                     ),
-//                   ),
-//                   const SizedBox(width: 10),
-//                   Text(
-//                     title,
-//                     style: AppTextStyles.subtitle(
-//                       context,
-//                       color: Colors.white,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//
-//               Row(
-//                 children: [
-//                   if(multipleBranches)
-//                     GestureDetector(
-//                         onTap: ()async{
-//                           await   loginController.getBranchDetails(context);
-//                           await showBranchSelectionDialog(
-//                             context: context,
-//                             pageRoute: "dashboard",);
-//                         },
-//                         child: Row(
-//                             children:[
-//                               Text('Switch Account',style: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold),),
-//                               Image.asset('assets/images/switch_account.png',height: height*0.016,width: height*0.022,)
-//                             ])
-//                     ),
-//                   // if(multipleBranches)
-//                   //   GestureDetector(
-//                   //       onTap: ()async{
-//                   //         await   loginController.getBranchDetails(context);
-//                   //         await showBranchSelectionDialog(
-//                   //         context: context,
-//                   //         pageRoute: "dashboard",);
-//                   //       },
-//                   //       child: Row(
-//                   //           children:[
-//                   //             Text('Switch Account',style: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold),),
-//                   //            Image.asset('assets/images/switch_account.png',height: height*0.16,width: height*0.22,)])),
-//
-//                   const SizedBox(width: 10,),
-//                   GetBuilder<NotificationController>(
-//                       builder: (controller) {
-//                         return Stack(
-//                         children: [
-//                           IconButton(
-//                             icon: Icon(
-//                               Icons.notifications_none,
-//                               color: AppColors.white,
-//                               size: height * 0.21,
-//                             ),
-//                             onPressed: ()async{
-//                               await  notificationController.getNotificationListAdmin(context);
-//                               await notificationController.updateNotificationListAdmin(context);
-//                               notificationController.unreadCount==0;
-//                               Get.toNamed('/viewNotificationWebPage');
-//                               },
-//                           ),
-//                           if (int.tryParse(notificationController.unreadCount ?? "0")! > 0)
-//
-//                           Positioned(
-//                             right: 6,
-//                             top: 6,
-//                             child: Container(
-//                               padding: const EdgeInsets.all(4),
-//                               decoration: const BoxDecoration(
-//                                 color: Colors.red,
-//                                 shape: BoxShape.circle,
-//                               ),
-//                               child:  Text(
-//                                 notificationController.unreadCount.toString()??"",
-//                                 style: AppTextStyles.caption(context,color: AppColors.white)
-//                               ),
-//                             ),
-//                           )
-//                         ],
-//                       );
-//                     }
-//                   ),
-//
-//                   const SizedBox(width: 10),
-//
-//                   GestureDetector(
-//                     onTap: ()async{
-//                       String uId=Api.userInfo.read('userId')??"";
-//                    await   Api.userInfo.write('selectUId',uId);
-//                    print('fdfid$uId');
-//                      //await loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-//
-//                       Get.toNamed('/clinicProfileWebPage');
-//                     },
-//                     child: CircleAvatar(
-//                       radius: height * 0.11,
-//                       backgroundColor: Colors.grey.shade200,
-//                       backgroundImage: NetworkImage(
-//                         Api.userInfo.read("profileImage") ?? "",
-//                       ),
-//                     ),
-//                   ),
-//
-//                   const SizedBox(width: 12),
-//
-//                   TextButton.icon(
-//                     onPressed: (){
-//                       showLogoutDialog(context);
-//                       },
-//                     icon:  Icon(Icons.logout,color:Colors.white,size: height*0.12,),
-//                     label: Text(
-//                       "Logout",
-//                       style:
-//                       AppTextStyles.caption(context, color: Colors.white,fontWeight: FontWeight.bold),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//         );
-//       }
-//     );
-//   }
-//
-//   @override
-//   Size get preferredSize => Size.fromHeight(height);
-// }
-
 
 Widget gradientButton({
   required String text,
@@ -1731,12 +2289,16 @@ Widget gradientButton({
                 Icon(icon, color: AppColors.primary, size: 18),
                 const SizedBox(width: 8),
               ],
-              Text(
-                text,
-                style: AppTextStyles.caption(
-                  context,
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.bold,
+              Flexible(
+                child: Text(
+                  text,
+                  style: AppTextStyles.caption(
+                    context,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],

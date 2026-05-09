@@ -12,8 +12,6 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 
-
-
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
 
@@ -22,7 +20,7 @@ class AdminDashboard extends StatefulWidget {
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
-  @override
+  final GlobalKey<ScaffoldState> _scaffoldKeyAdmin = GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
   final notificationController=Get.put(NotificationController());
   final PlanController planController = Get.put(PlanController());
@@ -47,220 +45,231 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Widget build(BuildContext context) {
     int total = loginController.profileList.length;
     int active = loginController.profileList.where((p) => p.isActive).length;
-    int inactive = total - active;
-    Map<String, int> typeCounts = {};
-    for (var p in loginController.profileList) {
-      typeCounts[p.userType] = (typeCounts[p.userType] ?? 0) + 1;
-    }
-    double size=MediaQuery.of(context).size.width;
+    
+    double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isMobile = width < 700;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+
     return Scaffold(
-      backgroundColor: AppColors.white,
+      key: _scaffoldKeyAdmin,
+      backgroundColor: Colors.white,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       body: GetBuilder<LoginController>(
           builder: (controller) {
             return RefreshIndicator(
               onRefresh: _refresh,
               child: Row(
               children: [
-                 const AdminSideBar(),
+                 if (isLoggedIn && isDesktop) const AdminSideBar(),
                 Expanded(
                   child: Container(
                     color: Colors.grey[100],
                     child: Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 1300),
-                        child:  Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-
-                                Container(
-                                  height: size * 0.18,
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Container(
-                                        height: size * 0.13,
-                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          gradient: const LinearGradient(
-                                            colors: [AppColors.primary, AppColors.secondary],
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.withOpacity(0.15),
-                                              blurRadius: 6,
-                                              offset: const Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Admin Dashboard",
-                                                style: AppTextStyles.subtitle(context, color: AppColors.white),
+                        child:  Stack(
+                          children: [
+                            if ( !isDesktop)
+                              Positioned(
+                                top: 10,
+                                left: 10,
+                                child: IconButton(
+                                  icon: const Icon(Icons.menu),
+                                  onPressed: () => _scaffoldKeyAdmin.currentState?.openDrawer(),
+                                ),
+                              ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(isMobile ? 10 : 20, isLoggedIn && !isDesktop ? 60 : 20, isMobile ? 10 : 20, 20),
+                              child: SingleChildScrollView(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      constraints: BoxConstraints(minHeight: isMobile ? 350 : 200),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Container(
+                                            height: isMobile ? 180 : 150,
+                                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              gradient: const LinearGradient(
+                                                colors: [AppColors.primary, AppColors.secondary],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
                                               ),
-                                              Row(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey.withOpacity(0.15),
+                                                  blurRadius: 6,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(12.0),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  IconButton(
-                                                    icon: Icon(Icons.notifications_none,
-                                                        color: AppColors.white, size: size * 0.013),
-                                                    onPressed: () {
-                                                      Get.toNamed('/viewNotificationWebPage');
-                                                    },
-                                                  ),
-                                                  const SizedBox(width: 10),
-                                                  GestureDetector(
-                                                    onTap: () => showLogoutDialog(context),
-                                                    child:  CircleAvatar(radius: size*0.008,
-                                                      backgroundColor: Colors.white,
-                                                      child: Icon(Icons.logout, color: AppColors.primary,size: size*0.009,),
-
+                                                  Expanded(
+                                                    child: Text(
+                                                      "Admin Dashboard",
+                                                      style: AppTextStyles.subtitle(context, color: AppColors.white),
                                                     ),
                                                   ),
+                                                  Row(
+                                                    children: [
+                                                      IconButton(
+                                                        icon: const Icon(Icons.notifications_none,
+                                                            color: AppColors.white, size: 24),
+                                                        onPressed: () {
+                                                          Get.toNamed('/viewNotificationWebPage');
+                                                        },
+                                                      ),
+                                                      const SizedBox(width: 10),
+                                                      GestureDetector(
+                                                        onTap: () => showLogoutDialog(context),
+                                                        child:  const CircleAvatar(radius: 18,
+                                                          backgroundColor: Colors.white,
+                                                          child: Icon(Icons.logout, color: AppColors.primary,size: 20,),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
                                                 ],
-                                              )
-                                            ],
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          Positioned(
+                                            bottom: isMobile ? 0 : -30,
+                                            left: 10,
+                                            right: 10,
+                                            child: isMobile 
+                                              ? Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Expanded(child: StatCard(title: "Total Users", value: total.toString(), icon: Icons.people, color: Colors.blue)),
+                                                        const SizedBox(width: 10),
+                                                        Expanded(child: StatCard(title: "Active Users", value: active.toString(), icon: Icons.verified_user, color: Colors.green)),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 10),
+                                                    Row(
+                                                      children: [
+                                                        Expanded(child: StatCard(title: "Revenue", value: "\₹ ${planController.income?.total.toStringAsFixed(2)}", icon: Icons.currency_rupee, color: Colors.orange)),
+                                                        const SizedBox(width: 10),
+                                                        Expanded(child: StatCard(title: "Expenses", value: "\₹ ${planController.total.toStringAsFixed(2)}", icon: Icons.money_off, color: Colors.red)),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                )
+                                              : Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Expanded(child: StatCard(title: "Total Users", value: total.toString(), icon: Icons.people, color: Colors.blue)),
+                                                    const SizedBox(width: 15),
+                                                    Expanded(child: StatCard(title: "Active Users", value: active.toString(), icon: Icons.verified_user, color: Colors.green)),
+                                                    const SizedBox(width: 15),
+                                                    Expanded(child: StatCard(title: "Total Revenue", value: "\₹ ${planController.income?.total.toStringAsFixed(2)}", icon: Icons.currency_rupee, color: Colors.orange)),
+                                                    const SizedBox(width: 15),
+                                                    Expanded(child: StatCard(title: "Total Expenses", value: "\₹ ${planController.total.toStringAsFixed(2)}", icon: Icons.money_off, color: Colors.red)),
+                                                  ],
+                                                ),
+                                          ),
+                                        ],
                                       ),
-
-                                      Positioned(
-                                        bottom: -size * 0.0009,
-                                        left: 20,
-                                        right: 20,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            StatCard(
-                                              title: "Total Users",
-                                              value: total.toString(),
-                                              icon: Icons.people,
-                                              color: Colors.blue,
-                                            ),
-                                            StatCard(
-                                              title: "Active Users",
-                                              value: active.toString(),
-                                              icon: Icons.verified_user,
-                                              color: Colors.green,
-                                            ),
-                                             StatCard(
-                                              title: "Total Revenue",
-                                              value:  "\₹ ${planController.income?.total.toStringAsFixed(2)}",
-                                               //"₹1,25,000",
-                                              icon: Icons.currency_rupee,
-                                              color: Colors.orange,
-                                            ),
-                                             StatCard(
-                                              title: "Total Expenses",
-                                              value: "\₹ ${planController.total.toStringAsFixed(2)}",
-                                               //"₹40,000",
-                                              icon: Icons.money_off,
-                                              color: Colors.red,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 25,),
-
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.15),
-                                        blurRadius: 6,
-                                      )
-                                    ],
-                                  ),
-                                  child: TextField(
-                                    onChanged: (value)async {
-                                      if( Api.userInfo.read('userType')=="superAdmin") {
-                                        await   loginController.getProfileDetails('', '', '', '', '','','','',searchController.text.toString(),  context);
-                                      }
-                                      if( Api.userInfo.read('userType')=="admin") {
-                                        await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','',searchController.text.toString(), context);
-                                      }                                    },
-                                    controller:searchController,
-                                    decoration:  InputDecoration(
-                                      icon: Icon(Icons.search,color: AppColors.grey,size: size*0.008,),
-                                      hintText: "Search by name, userId, clinic...",
-                                      hintStyle: AppTextStyles.caption(context,color: AppColors.grey),
-                                      border: InputBorder.none,
                                     ),
-                                  ),
-                                ),
-
-
-                                UserTypeDashboardModern(
-                                  userTypeCounts: buildUserTypeCounts(loginController.profileList),
-                                ),
-                                const SizedBox(height: 30),
-
-                                Column(children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("User Lists", style: AppTextStyles.body(context, color: AppColors.black,fontWeight: FontWeight.bold)),
-                                      TextButton(
-                                        onPressed: () {
-                                          Get.toNamed('/userTypeListWeb');
-                                        },
-                                        child: Text(
-                                          "View All",
-                                          style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold)
-                                              .copyWith(decoration: TextDecoration.underline),
+                                    const SizedBox(height: 40,),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.15),
+                                            blurRadius: 6,
+                                          )
+                                        ],
+                                      ),
+                                      child: TextField(
+                                        onChanged: (value)async {
+                                          if( Api.userInfo.read('userType')=="superAdmin") {
+                                            await   loginController.getProfileDetails('', '', '', '', '','','','',searchController.text.toString(),  context);
+                                          }
+                                          if( Api.userInfo.read('userType')=="admin") {
+                                            await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','',searchController.text.toString(), context);
+                                          }                                    },
+                                        controller:searchController,
+                                        decoration:  const InputDecoration(
+                                          icon: Icon(Icons.search,color: AppColors.grey,size: 24,),
+                                          hintText: "Search by name, userId, clinic...",
+                                          hintStyle: TextStyle(color: AppColors.grey),
+                                          border: InputBorder.none,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                  AnimationLimiter(
-                                    child: GridView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: loginController.profileList.length > 10
-                                          ? 10 : loginController.profileList.length,
-                                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 280,
-                                        mainAxisSpacing: 20,
-                                        crossAxisSpacing: 20,
-                                        childAspectRatio: 0.7,
-                                      ),
-                                      itemBuilder: (context, index) {
-                                        return AnimationConfiguration.staggeredList(
-                                            position: index,
-                                            duration: const Duration(milliseconds: 700),
-                                            child: SlideAnimation(
-                                                horizontalOffset: 80.0,
-                                                curve: Curves.easeOutCubic,
-                                                child: FadeInAnimation(
-                                                    child: EnlargeOnTapCard(child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: clinicCard(loginController.profileList[index]),
-                                                    )))));
-                                      },
                                     ),
-                                  ),
-                                ],),
-
-                                const SizedBox(height: 60),
-                              ],
+                                    UserTypeDashboardModern(
+                                      userTypeCounts: buildUserTypeCounts(loginController.profileList),
+                                    ),
+                                    const SizedBox(height: 30),
+                                    Column(children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text("User Lists", style: AppTextStyles.body(context, color: AppColors.black,fontWeight: FontWeight.bold)),
+                                          TextButton(
+                                            onPressed: () {
+                                              Get.toNamed('/userTypeListWeb');
+                                            },
+                                            child: Text(
+                                              "View All",
+                                              style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold)
+                                                  .copyWith(decoration: TextDecoration.underline),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 10),
+                                      AnimationLimiter(
+                                        child: GridView.builder(
+                                          shrinkWrap: true,
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          itemCount: loginController.profileList.length > 10
+                                              ? 10 : loginController.profileList.length,
+                                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                            maxCrossAxisExtent: 280,
+                                            mainAxisSpacing: 20,
+                                            crossAxisSpacing: 20,
+                                            childAspectRatio: 0.7,
+                                          ),
+                                          itemBuilder: (context, index) {
+                                            return AnimationConfiguration.staggeredList(
+                                                position: index,
+                                                duration: const Duration(milliseconds: 700),
+                                                child: SlideAnimation(
+                                                    horizontalOffset: 80.0,
+                                                    curve: Curves.easeOutCubic,
+                                                    child: FadeInAnimation(
+                                                        child: EnlargeOnTapCard(child: Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: clinicCard(loginController.profileList[index], context),
+                                                        )))));
+                                          },
+                                        ),
+                                      ),
+                                    ],),
+                                    const SizedBox(height: 60),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
                     ),
@@ -273,10 +282,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
       ),
     );
   }
-  Widget clinicCard(ProfileModel clinic) {
+  Widget clinicCard(ProfileModel clinic, BuildContext context) {
     String firstImage = clinic.images.firstWhere((img) => img.toLowerCase().endsWith('.jpg') || img.toLowerCase().endsWith('.png'),
         orElse: () => "");
-    //String addOnsPlanStatus = clinic.details?["plan"]?["addonsPlan"]?["isActive"]?.toString() ?? "";
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0.95, end: 1.0),
       duration: const Duration(milliseconds: 400),
@@ -288,9 +296,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
       },
       child: GestureDetector(
         onTap: ()async{
-          Api.userInfo.write('selectUId', clinic.userId.toString() ?? "");
+          Api.userInfo.write('selectUId', clinic.userId.toString());
           Get.toNamed('/clinicProfileWebPage');
-         //await loginController.getProfileByUserId(clinic.userId.toString() ?? "", context);
         },
         child: Stack(
           children: [
@@ -323,31 +330,32 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                         "Name: ${clinic.name.toString() ?? ""}",
+                         "Name: ${clinic.name}",
                           textAlign: TextAlign.center,
                           style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          "UserId: ${clinic.userId.toString() ?? ""}",
+                          "UserId: ${clinic.userId}",
                           textAlign: TextAlign.center,
                           style: AppTextStyles.caption(context),
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          "UserType: ${clinic.userType.toString() ?? ""}",
+                          "UserType: ${clinic.userType}",
                           textAlign: TextAlign.center,
                           style: AppTextStyles.caption(context),
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          "Mobile : ${clinic.mobileNumber.toString()}",
+                          "Mobile : ${clinic.mobileNumber}",
                           style: AppTextStyles.caption(context),
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          "Address: ${clinic.address['city']?.toString() ?? ""}, ${clinic.address['state']?.toString() ?? ""},${clinic.address['district']?.toString() ?? ""}",
+                          "Address: ${clinic.address['city'] ?? ""}, ${clinic.address['state'] ?? ""},${clinic.address['district'] ?? ""}",
                           style: AppTextStyles.caption(context, color: AppColors.grey),
+                          maxLines: 1, overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 10),
                         ElevatedButton(
@@ -366,68 +374,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 ],
               ),
             ),
-            // if (addOnsPlanStatus == "true")
-            //   Positioned(
-            //     top: 8,
-            //     right: 8,
-            //     child: Container(
-            //       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            //       decoration: BoxDecoration(
-            //         color: Colors.orangeAccent,
-            //         borderRadius: BorderRadius.circular(12),
-            //       ),
-            //       child: Text("SPONSORED", style: AppTextStyles.caption(context)),
-            //     ),
-            //   ),
           ],
         ),
       ),
     );
   }
 }
-
-class SideBar extends StatelessWidget {
-  const SideBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 230,
-      color: const Color(0xff111827),
-      child: Column(
-        children: [
-
-          const SizedBox(height: 40),
-
-          const Text(
-            "ADMIN",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 30),
-
-          menuItem(Icons.dashboard, "Dashboard"),
-          menuItem(Icons.people, "Users"),
-          menuItem(Icons.attach_money, "Revenue"),
-          menuItem(Icons.settings, "Settings"),
-        ],
-      ),
-    );
-  }
-
-  Widget menuItem(IconData icon, String title) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.white),
-      title: Text(title, style: const TextStyle(color: Colors.white)),
-    );
-  }
-}
-
-
 
 class StatCard extends StatelessWidget {
   final String title;
@@ -445,10 +397,7 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width;
     return Container(
-      height: size*0.06,
-      width: size*0.14,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -461,39 +410,37 @@ class StatCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-
-            CircleAvatar(
-              radius: size*0.0067,
-              backgroundColor: color.withOpacity(0.2),
-              child: Icon(icon, color: color,size: size*0.013,),
-            ),
-
-             SizedBox(width: size*0.005),
-
-            Column(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: color.withOpacity(0.2),
+            child: Icon(icon, color: color, size: 20,),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(title, style: AppTextStyles.caption(context,color: AppColors.grey)),
-                const SizedBox(height: 5),
+                Text(title, 
+                    style: AppTextStyles.caption(context, color: AppColors.grey),
+                    maxLines: 1, overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 2),
                 Text(
                   value,
-                  style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),
+                  style: AppTextStyles.body(context, color: AppColors.black, fontWeight: FontWeight.bold),
+                  maxLines: 1, overflow: TextOverflow.ellipsis,
                 ),
               ],
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
 }
-
-
 
 class UserTypeDashboardModern extends StatefulWidget {
   final Map<String, int> userTypeCounts;
@@ -507,28 +454,18 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
   final loginController = Get.put(LoginController());
   String imgUserType(String userType) {
     switch (userType) {
-      case "Dental Clinic":
-        return "assets/images/Dental_clinic.jpg";
-      case "Dental Shop":
-        return "assets/images/dental_shop.jpg";
-      case "Dental Mechanic":
-        return "assets/images/lp3.jpg";
-      case "Dental Lab":
-        return "assets/images/Dental_Lab02.jpg";
-      case "Dental Consultant":
-        return "assets/images/doctor1.jpg";
-      case "Job Seekers":
-        return "assets/images/hospital2.png";
-      case "superAdmin":
-      case "admin":
-      default:
-        return "assets/images/hospital2.png";
+      case "Dental Clinic": return "assets/images/Dental_clinic.jpg";
+      case "Dental Shop": return "assets/images/dental_shop.jpg";
+      case "Dental Mechanic": return "assets/images/lp3.jpg";
+      case "Dental Lab": return "assets/images/Dental_Lab02.jpg";
+      case "Dental Consultant": return "assets/images/doctor1.jpg";
+      case "Job Seekers": return "assets/images/hospital2.png";
+      default: return "assets/images/hospital2.png";
     }
   }
   @override
   Widget build(BuildContext context) {
     final loggedInUserType = Api.userInfo.read('userType')??"";
-
     final allItems = widget.userTypeCounts.keys.where((type) {
       if (loggedInUserType == 'admin') {
         return type != 'admin' && type != 'superAdmin';
@@ -536,9 +473,7 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
       return true;
     }).toList();
     final startIndex = currentPage * rowsPerPage;
-    final endIndex = (startIndex + rowsPerPage > allItems.length)
-        ? allItems.length
-        : startIndex + rowsPerPage;
+    final endIndex = (startIndex + rowsPerPage > allItems.length) ? allItems.length : startIndex + rowsPerPage;
     final pagedItems = allItems.sublist(startIndex, endIndex);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -564,19 +499,9 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
                 final image = imgUserType(typeKey);
                 return GestureDetector(
                     onTap:()async{
-                      print('dgfdh$typeKey');
                       Api.userInfo.write('selectedUserType1', typeKey);
                       Api.userInfo.write('sUserType1', typeKey);
-                      //Get.toNamed('/userTypeListPage');
-
-                      await  loginController.getProfileDetails(
-                        Api.userInfo.read('selectedUserType1'),
-                        '',
-                        '',
-                        '','',
-                        '','','','',
-                        context,
-                      );
+                      await loginController.getProfileDetails(typeKey, '', '', '', '', '', '', '', '', context);
                       Get.toNamed('/userTypeListWeb');
                       },
                   child: Stack(
@@ -584,52 +509,23 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          image: DecorationImage(
-                            image: AssetImage(image),
-                            fit: BoxFit.cover,
-                          ),
-                          boxShadow: const [
-                            BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 6,
-                                offset: Offset(0, 4))
-                          ],
+                          image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
+                          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 4))],
                         ),
                       ),
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.black.withOpacity(0.5),
-                              Colors.transparent
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                          ),
+                          gradient: LinearGradient(colors: [Colors.black.withOpacity(0.5), Colors.transparent], begin: Alignment.bottomCenter, end: Alignment.topCenter),
                         ),
                       ),
                       Positioned(
-                        bottom: 15,
-                        left: 15,
-                        right: 15,
+                        bottom: 15, left: 15, right: 15,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Flexible(
-                              child: Text(typeKey,
-                                  style: AppTextStyles.body(context,
-                                      color: AppColors.white,
-                                      fontWeight: FontWeight.bold),
-                                  overflow: TextOverflow.ellipsis),
-                            ),
-                            CircleAvatar(
-                              backgroundColor: Colors.white.withOpacity(0.9),
-                              child: Text(count.toString(),
-                                  style: AppTextStyles.body(context,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold)),
-                            ),
+                            Flexible(child: Text(typeKey, style: AppTextStyles.body(context, color: AppColors.white, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis)),
+                            CircleAvatar(backgroundColor: Colors.white.withOpacity(0.9), child: Text(count.toString(), style: AppTextStyles.body(context, color: Colors.black, fontWeight: FontWeight.bold))),
                           ],
                         ),
                       ),
@@ -640,51 +536,27 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
             );
           }
         ),
-
-        const SizedBox(height: 20),
-
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(
-                "Page ${currentPage + 1} of ${((allItems.length - 1) ~/ rowsPerPage) + 1}"),
-            IconButton(
-              icon: const Icon(Icons.arrow_back_ios, size: 16),
-              onPressed: currentPage > 0
-                  ? () => setState(() => currentPage--)
-                  : null,
-            ),
-            IconButton(
-              icon: const Icon(Icons.arrow_forward_ios, size: 16),
-              onPressed: endIndex < allItems.length
-                  ? () => setState(() => currentPage++)
-                  : null,
-            ),
+            Text("Page ${currentPage + 1} of ${((allItems.length - 1) ~/ rowsPerPage) + 1}"),
+            IconButton(icon: const Icon(Icons.arrow_back_ios, size: 16), onPressed: currentPage > 0 ? () => setState(() => currentPage--) : null),
+            IconButton(icon: const Icon(Icons.arrow_forward_ios, size: 16), onPressed: endIndex < allItems.length ? () => setState(() => currentPage++) : null),
           ],
         ),
       ],
     );
   }
 }
+
 Map<String, int> buildUserTypeCounts(List<ProfileModel> profiles) {
   final Map<String, int> counts = {
-    "admin": 0,
-    "superAdmin": 0,
-    "Dental Clinic": 0,
-    "Dental Lab": 0,
-    "Dental Shop": 0,
-    "Dental Mechanic": 0,
-    "Job Seekers": 0,
-    "Dental Consultant": 0,
+    "admin": 0, "superAdmin": 0, "Dental Clinic": 0, "Dental Lab": 0, "Dental Shop": 0, "Dental Mechanic": 0, "Job Seekers": 0, "Dental Consultant": 0,
   };
-
   for (var p in profiles) {
     final type = (p.userType ?? '').trim();
-    if (counts.containsKey(type)) {
-      counts[type] = counts[type]! + 1;
-    } else {
-      counts['Unknown'] = (counts['Unknown'] ?? 0) + 1;
-    }
+    if (counts.containsKey(type)) counts[type] = counts[type]! + 1;
   }
   return counts;
 }

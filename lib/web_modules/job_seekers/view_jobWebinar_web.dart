@@ -25,6 +25,7 @@ class ViewJobWebinarWebPage extends StatefulWidget {
 }
 
 class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final jobController=Get.put(JobController());
   final loginController=Get.put(LoginController());
   final ScrollController _scrollController = ScrollController();
@@ -50,12 +51,12 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
         selection: const TextSelection.collapsed(offset: 0),
       );
 
-      setState(() {});
+      if (mounted) setState(() {});
     } catch (e) {
       print("Quill load error: $e");
 
       _controller = QuillController.basic();
-      setState(() {});
+      if (mounted) setState(() {});
     }
   }
   @override
@@ -73,352 +74,326 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
   }
   Future<void> _refresh() async {
     await jobController.getJobListAdmin(context);
+    if (jobController.jobList.isNotEmpty) {
+      await jobController.getAppliedJobsAdmin(jobController.jobList[0].jobId.toString(), context);
+    }
     await jobController.getWebinarListAdmin(context);
-    loadJobDescription(
-        jobController.webDescriptionData);
-
+    loadJobDescription(jobController.webDescriptionData);
   }
   @override
   Widget build(BuildContext context) {
-    double size=MediaQuery.of(context).size.width;
-    final jobId = jobController.jobList.isNotEmpty ? jobController.jobList[0].jobId : null;
-    jobController.getAppliedJobsAdmin(jobId.toString(),context);
+    final double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+
     final totalApplicants = jobController.jobList.isNotEmpty ? jobController.jobList[0].totalApplicants : 0;
     int shortlistedCount = jobController.jobIdListAdmin.where((e) => e.status == "Shortlisted").length;
     int rejectedCount = jobController.jobIdListAdmin.where((e) => e.status == "Rejected").length;
-    print("Shortlisted: $shortlistedCount");
-    print("Rejected: $rejectedCount");
+    
     String getPlainText(List<Map<String, dynamic>>? delta) {
       if (delta == null) return "";
       return delta.map((e) => e['insert'] ?? "").join();
     }
-    Future<void> _refresh() async {
-      jobController.getJobListAdmin(context);
-      jobController.getWebinarListAdmin(context);
-    }
+
     return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: AppColors.backGroundColor,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
-        height: size * 0.03,
+        height: isMobile ? 60 : 80,
         title: "Job Posts / Webinars",
         onLogout: () {},
         onNotification: () {},
       ),
-      backgroundColor: AppColors.backGroundColor,
       body: GetBuilder<JobController>(
           builder: (controller) {
-            return RefreshIndicator(
-              onRefresh: _refresh,
-              child: Row(
-                children: [
-                  const AdminSideBar(),
+            return Row(
+              children: [
+                if (isLoggedIn && isDesktop) const AdminSideBar(),
 
-                  Expanded(
-                    child: DefaultTabController(
-                      length: 2,
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child:ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 1400),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: const [
-                                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
-                                ],
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  // physics: const AlwaysScrollableScrollPhysics(),
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Center(child: Text("Last Job Posts Details",style: AppTextStyles.body(context,fontWeight: FontWeight.bold,color: Colors.black),)),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width:size*0.2,
-                                          child: _statCard(
-                                            title: "Total Applicants",
-                                            value: totalApplicants.toString(),
-                                            icon: Icons.people_alt_outlined,
-                                            color: Colors.blue,context: context
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-
-                                        SizedBox(
-                                          width:size*0.2,
-                                          child: _statCard(
-                                            title: "Shortlisted",
-                                            value: shortlistedCount.toString(),
-                                            icon: Icons.check_circle_outline,
-                                            color: Colors.green,context: context
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-
-                                        SizedBox(
-                                          width:size*0.2,
-                                          child: _statCard(
-                                            title: "Rejected",
-                                            value: rejectedCount.toString(),
-                                            icon: Icons.cancel_outlined,
-                                            color: Colors.redAccent,context: context
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: size*0.01,),
-                                    Align(
-                                      alignment: Alignment.topRight,
-                                      child: TextButton(
-                                        onPressed: () {
-                                          jobController.job.clear();
-                                          jobController.webinar.clear();
-                                          loginController.selectedJobType="";
-                                          jobController.selectedJobId='';
-                                          jobController.selectedWebinarId='';
-                                          loginController.typeNameController.clear();
-                                          loginController.jobTitleController.clear();
-                                          loginController.jobDescController.clear();
-                                          loginController.selectedSalary="";
-                                          loginController.qualificationJobController.clear();
-                                          loginController.selectedExperience="";
-                                          loginController.selectedJobType="";
-                                          loginController.selectedExperience="";
-                                          loginController.selectedSalary="";
-                                          loginController.webinarTitleJobController.clear();
-                                          loginController.webinarDescriptionJobController.clear();
-                                          loginController.webinarLinkController.clear();
-                                          loginController.webinarDateController.clear();
-                                          loginController.startHour='';
-                                          loginController.startMinutes="";
-                                          loginController.startPeriod="";
-                                          loginController.endHour="";
-                                          loginController.endMinutes="";
-                                          loginController.endPeriod="";
-                                          jobController.webinarImage="";
-                                          jobController.startHour='';
-                                          jobController.startMinutes="";
-                                          jobController.startPeriod="";
-                                          jobController.endHour="";
-                                          jobController.endMinutes="";
-                                          jobController.endPeriod="";
-                                          jobController.jobImage="";
-                                          // loginController.jobFileImages="";
-                                          jobController.selectedWebinarId="0";
-                                          jobController.selectedJobId="0";
-                                          loginController.update();
-                                          jobController.update();
-                                          Get.toNamed('/createJobWebPage',arguments:{'job':'new'});
-                                        },
-                                        child: Text("Create Job/Webinars",style: AppTextStyles.body(context,fontWeight: FontWeight.bold,color: AppColors.primary),),
-                                      ),
-                                    ),
-                                    SizedBox(height: size*0.01,),
-                    
-                                    GetBuilder<JobController>(
-                                        builder: (controller){
-                                          return Center(
-                                            child: Container(
-                                              height: size*0.023,
-                                              width: size*0.35,
-                                              margin: const EdgeInsets.symmetric(horizontal: 20),
-                                              decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(10),),
-                                                  color: Colors.grey.shade100
-                                              ),
-                                              child: TabBar(
-                                                indicatorSize: TabBarIndicatorSize.tab,
-                                                dividerColor: Colors.transparent,
-                                                indicator:
-                                                BoxDecoration(borderRadius: BorderRadius.circular(10),
-                                                  gradient: const LinearGradient(
-                                                    colors: [AppColors.primary,AppColors.secondary],
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
-                                                  ),
-                                                ),
-                                                labelColor: AppColors.white,
-                                                unselectedLabelColor: AppColors.black,
-                                                tabs: const [
-                                                  Tab(
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Text('Jobs'),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Tab(
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Text('Webinars',)
-                                                      ],
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                    ),
-                                    if(jobController.jobList.isEmpty)
-                                      Center(child: Column(
-                                        children: [
-                                          const SizedBox(height: 15,),
-                                          Text('No data found',style: AppTextStyles.caption(context,color: AppColors.black),),
-                                        ],
-                                      ),),                    if(jobController.jobList.isNotEmpty)
-                    
-                                      Expanded(
-                                          child: RefreshIndicator(
-                                            onRefresh: _refresh,
-                                            //height: MediaQuery.of(context).size.height * 1,
-                                            child: TabBarView(
-                                              children: [
-                    
-                                                jobController.jobList.isEmpty
-                                                    ? _emptyState(context)
-                                                    : AnimationLimiter(
-                                                      child: GridView.builder(
-                                                        padding: const EdgeInsets.all(10),
-                                                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 3,
-                                                      crossAxisSpacing: 20,
-                                                      mainAxisSpacing: 30,
-                                                      childAspectRatio: 2.7,
-                                                        ),
-                                                        itemCount: jobController.jobList.length,
-                                                        itemBuilder: (context, index) {
-                                                      final jobs = jobController.jobList[index];
-                                                      String getPlainText(List<Map<String, dynamic>>? delta) {
-                                                        if (delta == null) return "";
-                                                        return delta.map((e) => e['insert'] ?? "").join();
-                                                      }
-                                                      return AnimationConfiguration.staggeredList(
-                                                        position: index,
-                                                        duration: const Duration(milliseconds: 1300),
-                                                        child: SlideAnimation(
-                                                          verticalOffset: 120.0,
-                                                          curve: Curves.easeOutBack,
-                                                          child: FadeInAnimation(
-                                                            child: InkWell(
-                                                              onTap: () async{
-                                                                Api.userInfo.write('selectJobId',jobs.jobId.toString());
-                                                                Api.userInfo.write('activeStatus',jobs.isActive.toString());
-                                                              //  print("nnn${Api.userInfo.read('selectJobId')}");
-                                                               // await jobController.getJobsById(jobs.jobId.toString(), context);
-                                                                //await  jobController.getAppliedJobsAdmin(jobs.jobId.toString(), context);
-                                                                Get.toNamed('/viewJobDetailWebPage');
-                                                              },
-                                                              child: _modernCard(
-                                                                  title: jobs.jobTitle ?? "",
-                                                                  desc: getPlainText(jobs.jobDescription),
-                                                                  status: (jobs.isActive ?? false) ? "Open" : "Closed",
-                                                                  statusColor: (jobs.isActive ?? false)
-                                                                      ? Colors.green
-                                                                      : Colors.red,
-                                                                  subtitle: jobs.jobType ?? "",
-                                                                  trailing: "${jobs.totalApplicants} Applicants",
-                                                                  onTap: ()async {
-                    
-                                                                   await jobController.getJobsById(jobs.jobId.toString(), context);
-                                                                    Get.toNamed('/createJobWebPage');
-                                                                  },context: context
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                                                                      },
-                                                                                                    ),
-                                                    ),
-                    
-                                                jobController.webinarList.isEmpty
-                                                    ? _emptyState(context)
-                                                    : AnimationLimiter(
-                                                      child: GridView.builder(
-                                                        padding: const EdgeInsets.all(10),
-                                                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 3,
-                                                      crossAxisSpacing: 20,
-                                                      mainAxisSpacing: 20,
-                                                      childAspectRatio: 3,
-                                                        ),
-                                                        itemCount: jobController.webinarList.length,
-                                                        itemBuilder: (context, index) {
-                                                      final webinars = jobController.webinarList[index];
-                                                      return AnimationConfiguration.staggeredList(
-                                                        position: index,
-                                                        duration: const Duration(milliseconds: 1300),
-                                                        child: SlideAnimation(
-                                                          verticalOffset: 120.0,
-                                                          curve: Curves.easeOutBack,
-                                                          child: FadeInAnimation(
-                                                            child: GestureDetector(
-                                                              onTap: () async{
-                                                                Api.userInfo.write('webinarId', webinars.webinarId.toString());
-                                                                Api.userInfo.write('activeStatus1',webinars.isActive.toString());
-                                                                await jobController.getWebinarById(
-                                                                    webinars.webinarId.toString(),
-                                                                    webinars.isActive.toString(),
-                                                                    context);
-                                                                Get.toNamed('/viewWebinarDetailWebPage');
-                                                                },
-                                                              child: _modernCard(
-                                                                  title: webinars.webinarTitle ?? "",
-                                                                  desc: getPlainText(webinars.webinarDescription),
-                                                                 // desc: webinars.webinarDescription ?? "",
-                                                                  status: webinars.isActive == true ? "Open" : "Closed",
-                                                                  statusColor: webinars.isActive == true
-                                                                      ? Colors.green
-                                                                      : Colors.red,
-                                                                  subtitle: "Webinar",
-                                                                  trailing: "${webinars.totalApplicants ?? 0} Joined",
-                                                                  onTap: () async{
-                                                                    Api.userInfo.write('webinarId',webinars.webinarId.toString());
-                                                                    Api.userInfo.write('activeStatus1',webinars.isActive.toString());
-                                                                  // await  jobController.getWebinarById(
-                                                                  //       webinars.webinarId.toString(),
-                                                                  //       webinars.isActive.toString(),
-                                                                  //       context);
-                                                                    Get.toNamed('/createJobWebPage', arguments: {"selectedString": "Webinar"},
-                                                                    );
-                                                                  },
-                                                                  context: context
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                                                                      },
-                                                                                                    ),
-                                                    ),
-                                              ],
-                                            ),
-                                          )
-                                      )],
-                                ),
+                Expanded(
+                  child: DefaultTabController(
+                    length: 2,
+                    child: RefreshIndicator(
+                      onRefresh: _refresh,
+                      child: Stack(
+                        children: [
+                          if (isLoggedIn && !isDesktop)
+                            Positioned(
+                              top: 10,
+                              left: 10,
+                              child: IconButton(
+                                icon: const Icon(Icons.menu),
+                                onPressed: () => _scaffoldKey.currentState?.openDrawer(),
                               ),
                             ),
+                          NestedScrollView(
+                            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(isMobile ? 10 : 20, isLoggedIn && !isDesktop ? 60 : 20, isMobile ? 10 : 20, 20),
+                                  child: Align(
+                                    alignment: Alignment.topCenter,
+                                    child: ConstrainedBox(
+                                      constraints: const BoxConstraints(maxWidth: 1400),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors.white,
+                                          borderRadius: BorderRadius.circular(12),
+                                          boxShadow: const [
+                                            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                                          ],
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Last Job Posts Details",
+                                                    style: AppTextStyles.body(context, fontWeight: FontWeight.bold, color: Colors.black),
+                                                  ),
+                                                ),
+                                              ),
+                                              Center(
+                                                child: Wrap(
+                                                  alignment: WrapAlignment.center,
+                                                  spacing: 15,
+                                                  runSpacing: 15,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: isMobile ? width * 0.85 : (isTablet ? width * 0.25 : width * 0.2),
+                                                      child: _statCard(
+                                                        title: "Total Applicants",
+                                                        value: totalApplicants.toString(),
+                                                        icon: Icons.people_alt_outlined,
+                                                        color: Colors.blue, context: context
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: isMobile ? width * 0.85 : (isTablet ? width * 0.25 : width * 0.2),
+                                                      child: _statCard(
+                                                        title: "Shortlisted",
+                                                        value: shortlistedCount.toString(),
+                                                        icon: Icons.check_circle_outline,
+                                                        color: Colors.green, context: context
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: isMobile ? width * 0.85 : (isTablet ? width * 0.25 : width * 0.2),
+                                                      child: _statCard(
+                                                        title: "Rejected",
+                                                        value: rejectedCount.toString(),
+                                                        icon: Icons.cancel_outlined,
+                                                        color: Colors.redAccent, context: context
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(height: 20),
+                                              Align(
+                                                alignment: Alignment.centerRight,
+                                                child: TextButton.icon(
+                                                  onPressed: () {
+                                                    jobController.job.clear();
+                                                    jobController.webinar.clear();
+                                                    loginController.selectedJobType = "";
+                                                    jobController.selectedJobId = '';
+                                                    jobController.selectedWebinarId = '';
+                                                    loginController.typeNameController.clear();
+                                                    loginController.jobTitleController.clear();
+                                                    loginController.jobDescController.clear();
+                                                    loginController.selectedSalary = "";
+                                                    loginController.qualificationJobController.clear();
+                                                    loginController.selectedExperience = "";
+                                                    loginController.webinarTitleJobController.clear();
+                                                    loginController.webinarDescriptionJobController.clear();
+                                                    loginController.webinarLinkController.clear();
+                                                    loginController.webinarDateController.clear();
+                                                    loginController.startHour = '';
+                                                    loginController.startMinutes = "";
+                                                    loginController.startPeriod = "";
+                                                    loginController.endHour = "";
+                                                    loginController.endMinutes = "";
+                                                    loginController.endPeriod = "";
+                                                    jobController.webinarImage = "";
+                                                    jobController.jobImage = "";
+                                                    jobController.selectedWebinarId = "0";
+                                                    jobController.selectedJobId = "0";
+                                                    loginController.update();
+                                                    jobController.update();
+                                                    Get.toNamed('/createJobWebPage', arguments: {'job': 'new'});
+                                                  },
+                                                  icon: const Icon(Icons.add_circle_outline, size: 20),
+                                                  label: Text(
+                                                    "Create Job/Webinars",
+                                                    style: AppTextStyles.body(context, fontWeight: FontWeight.bold, color: AppColors.primary),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 15),
+                                              Center(
+                                                child: Container(
+                                                  height: 45,
+                                                  width: isMobile ? width * 0.9 : 400,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                    color: Colors.grey.shade100
+                                                  ),
+                                                  child: TabBar(
+                                                    indicatorSize: TabBarIndicatorSize.tab,
+                                                    dividerColor: Colors.transparent,
+                                                    indicator: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      gradient: const LinearGradient(
+                                                        colors: [AppColors.primary, AppColors.secondary],
+                                                        begin: Alignment.topLeft,
+                                                        end: Alignment.bottomRight,
+                                                      ),
+                                                    ),
+                                                    labelColor: AppColors.white,
+                                                    unselectedLabelColor: AppColors.black,
+                                                    tabs: const [
+                                                      Tab(text: 'Jobs'),
+                                                      Tab(text: 'Webinars'),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                            body: TabBarView(
+                              children: [
+                                _buildJobGrid(context, isMobile, isTablet, getPlainText),
+                                _buildWebinarGrid(context, isMobile, isTablet, getPlainText),
+                              ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           }
+      ),
+    );
+  }
+
+  Widget _buildJobGrid(BuildContext context, bool isMobile, bool isTablet, String Function(List<Map<String, dynamic>>?) getPlainText) {
+    if (jobController.jobList.isEmpty) return _emptyState(context);
+    
+    return AnimationLimiter(
+      child: GridView.builder(
+        padding: const EdgeInsets.all(20),
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: isMobile ? 1 : (isTablet ? 2 : 3),
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
+          childAspectRatio: isMobile ? 1.8 : (isTablet ? 2.2 : 2.7),
+        ),
+        itemCount: jobController.jobList.length,
+        itemBuilder: (context, index) {
+          final jobs = jobController.jobList[index];
+          return AnimationConfiguration.staggeredList(
+            position: index,
+            duration: const Duration(milliseconds: 1000),
+            child: SlideAnimation(
+              verticalOffset: 50.0,
+              child: FadeInAnimation(
+                child: InkWell(
+                  onTap: () {
+                    Api.userInfo.write('selectJobId', jobs.jobId.toString());
+                    Api.userInfo.write('activeStatus', jobs.isActive.toString());
+                    Get.toNamed('/viewJobDetailWebPage');
+                  },
+                  child: _modernCard(
+                    title: jobs.jobTitle ?? "",
+                    desc: getPlainText(jobs.jobDescription),
+                    status: (jobs.isActive ?? false) ? "Open" : "Closed",
+                    statusColor: (jobs.isActive ?? false) ? Colors.green : Colors.red,
+                    subtitle: jobs.jobType ?? "",
+                    trailing: "${jobs.totalApplicants} Applicants",
+                    onTap: () async {
+                      await jobController.getJobsById(jobs.jobId.toString(), context);
+                      Get.toNamed('/createJobWebPage');
+                    },
+                    context: context
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildWebinarGrid(BuildContext context, bool isMobile, bool isTablet, String Function(List<Map<String, dynamic>>?) getPlainText) {
+    if (jobController.webinarList.isEmpty) return _emptyState(context);
+
+    return AnimationLimiter(
+      child: GridView.builder(
+        padding: const EdgeInsets.all(20),
+        physics: const BouncingScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: isMobile ? 1 : (isTablet ? 2 : 3),
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
+          childAspectRatio: isMobile ? 1.8 : (isTablet ? 2.2 : 3),
+        ),
+        itemCount: jobController.webinarList.length,
+        itemBuilder: (context, index) {
+          final webinars = jobController.webinarList[index];
+          return AnimationConfiguration.staggeredList(
+            position: index,
+            duration: const Duration(milliseconds: 1000),
+            child: SlideAnimation(
+              verticalOffset: 50.0,
+              child: FadeInAnimation(
+                child: GestureDetector(
+                  onTap: () async {
+                    Api.userInfo.write('webinarId', webinars.webinarId.toString());
+                    Api.userInfo.write('activeStatus1', webinars.isActive.toString());
+                    await jobController.getWebinarById(webinars.webinarId.toString(), webinars.isActive.toString(), context);
+                    Get.toNamed('/viewWebinarDetailWebPage');
+                  },
+                  child: _modernCard(
+                    title: webinars.webinarTitle ?? "",
+                    desc: getPlainText(webinars.webinarDescription),
+                    status: webinars.isActive == true ? "Open" : "Closed",
+                    statusColor: webinars.isActive == true ? Colors.green : Colors.red,
+                    subtitle: "Webinar",
+                    trailing: "${webinars.totalApplicants ?? 0} Joined",
+                    onTap: () async {
+                      Api.userInfo.write('webinarId', webinars.webinarId.toString());
+                      Api.userInfo.write('activeStatus1', webinars.isActive.toString());
+                      Get.toNamed('/createJobWebPage', arguments: {"selectedString": "Webinar"});
+                    },
+                    context: context
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -435,11 +410,12 @@ Widget _modernCard({
   required context
 }) {
   final double size = MediaQuery.of(context).size.width;
+  final bool isMobile = size < 700;
   return Container(
-    padding: const EdgeInsets.all(12),
+    padding: const EdgeInsets.all(15),
     decoration: BoxDecoration(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.05),
@@ -459,97 +435,80 @@ Widget _modernCard({
                 title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption(
-                  context,
-                  fontWeight: FontWeight.bold,color: AppColors.black
-                ),
+                style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: AppColors.black),
               ),
             ),
+            const SizedBox(width: 8),
             Container(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 color: statusColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 status,
-                style: AppTextStyles.caption(context,
-                  color: statusColor,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTextStyles.caption(context, color: statusColor, fontWeight: FontWeight.w600),
               ),
             ),
           ],
         ),
-
-        const SizedBox(height: 8),
-
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              subtitle,
-              style: AppTextStyles.caption(context,
+            Expanded(
+              child: Text(
+                subtitle,
+                style: AppTextStyles.caption(context, color: Colors.grey.shade600),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(width: size*0.001,),
-            SizedBox(
-              height: size*0.012,
-              child: Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  icon: Icon(Icons.edit,color: AppColors.grey,size: size*0.01,),
-                  onPressed: onTap,
-                ),),
+            IconButton(
+              icon: Icon(Icons.edit_note, color: AppColors.primary, size: isMobile ? 22 : 24),
+              onPressed: onTap,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
             ),
           ],
         ),
-
         const SizedBox(height: 10),
-
         Expanded(
           child: Text(
-            //"A clinic is a healthcare facility focused on outpatient care, providing diagnosis, treatment, and preventive services for non-life-threatening conditions without overnight stays. Often staffed by specialized doctors, nurses, or general practitioners, they are typically smaller than hospitals and offer accessible, specialized care (e.g., dental, mental health, or pediatric)",
             desc,
-            maxLines: 2,
+            maxLines: isMobile ? 2 : 3,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.caption(context,
-              color: Colors.grey.shade700,
-            ),
+            style: AppTextStyles.caption(context, color: Colors.grey.shade700),
           ),
         ),
-
-        SizedBox(height: size*0.001),
-
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              trailing,
-              style: AppTextStyles.caption(context,
-                fontWeight: FontWeight.normal,
+            Expanded(
+              child: Text(
+                trailing,
+                style: AppTextStyles.caption(context, fontWeight: FontWeight.w500, color: AppColors.secondary),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            Icon(Icons.arrow_forward_ios, size: size*0.012,color: AppColors.grey,),
+            const Icon(Icons.arrow_forward, size: 16, color: AppColors.grey),
           ],
         )
       ],
     ),
   );
 }
+
 Widget _emptyState(dynamic context) {
-  final double size = MediaQuery
-      .of(context)
-      .size
-      .width;
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.inbox, size: size * 0.012, color: Colors.grey),
-        const SizedBox(height: 10),
-        Text("No data found", style: AppTextStyles.caption(context),),
+        const Icon(Icons.inbox_outlined, size: 60, color: Colors.grey),
+        const SizedBox(height: 15),
+        Text("No data found", style: AppTextStyles.body(context, color: Colors.grey)),
       ],
     ),
   );
@@ -559,19 +518,18 @@ Widget _statCard({
   required String title,
   required String value,
   required IconData icon,
-  required Color color,dynamic context
+  required Color color,
+  required BuildContext context
 }) {
-  final size = MediaQuery.of(context).size.width;
-
   return Container(
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
-      color: color,
-     // color: Colors.white,
+      color: Colors.white,
       borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: color.withOpacity(0.2)),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.05),
+          color: color.withOpacity(0.05),
           blurRadius: 10,
           offset: const Offset(0, 4),
         ),
@@ -582,27 +540,32 @@ Widget _statCard({
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.white,
-            //color: color.withOpacity(0.1),
+            color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color:color, size: 26),
+          child: Icon(icon, color: color, size: 28),
         ),
-
         const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: AppTextStyles.caption(context)
-            ),
-            const SizedBox(height: 6),
-            Text(
-              value,
-              style: AppTextStyles.caption(context)
-            ),
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: AppTextStyles.caption(context, color: Colors.grey.shade600),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: AppTextStyles.body(context, fontWeight: FontWeight.bold, color: Colors.black),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ],
     ),

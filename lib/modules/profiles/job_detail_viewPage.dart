@@ -61,7 +61,15 @@ class _ViewJobPageState extends State<ViewJobPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refresh());
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
+    _refresh();
   }
   Future<void> _refresh() async {
     final selectJobId = Api.userInfo.read('selectJobId') ?? "";

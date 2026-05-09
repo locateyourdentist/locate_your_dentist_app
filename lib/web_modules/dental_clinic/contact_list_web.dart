@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -24,6 +24,7 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
   final contactController = Get.put(ContactController());
   final loginController = Get.put(LoginController());
   final TextEditingController searchController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKeyContact = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -36,233 +37,287 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
     final userId = Api.userInfo.read('userId') ?? "";
     await contactController.getSenderContactFormLists(userId, '', '', '', context);
   }
+
   @override
   Widget build(BuildContext context) {
-    final double size = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isMobile = width < 600;
+    final bool isTablet = width >= 600 && width < 1024;
+    final bool isDesktop = width >= 1100;
+
     return Scaffold(
+    key: _scaffoldKeyContact,
       backgroundColor: AppColors.scaffoldBg,
+      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
-        height: size * 0.03,
+        height: width * 0.03 > 60 ? width * 0.03 : 60,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
       ),
       body: GetBuilder<ContactController>(
         builder: (controller) {
-          return RefreshIndicator(
-            onRefresh: _refresh,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                const AdminSideBar(),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(50.0),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 900),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: const [
-                        BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
-                      ],
-                    ),
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: Container(
-                                height: size*0.022,
-                                width: size*0.4,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.04),
-                                      blurRadius: 15,
-                                      offset: const Offset(0, 6),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 12),
-                                    Icon(Icons.search, color: Colors.grey.shade500),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: TextField(
-                                        controller: searchController,
-                                        decoration: InputDecoration(
-                                          hintText: "Search contacts...",
-                                          hintStyle: AppTextStyles.caption(context),
-                                          border: InputBorder.none,
-                                        ),
-                                        onSubmitted: (value) async {
-                                          await contactController.getSenderContactFormLists(
-                                            Api.userInfo.read('userId') ?? "",
-                                            '',
-                                            '',
-                                            searchController.text,
-                                            context,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.tune_rounded, color: AppColors.primary),
-                                      onPressed: () {
-                                        showDateFilterPopup(context);
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) =>
-                                        //     //const DateFilterPopup(selectedContactType: 'sender'),
-                                        //   ),
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                             SizedBox(height: size*0.01),
-
-                            if (controller.isLoading)
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20),
-                                child: CircularProgressIndicator(color: AppColors.primary),
-                              ),
-
-                            if (!controller.isLoading && controller.senderContactLists.isEmpty)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 20),
-                                child: Center(
-                                  child: Text('No data found', style: AppTextStyles.caption(context, fontWeight: FontWeight.normal)),
-                                ),
-                              ),
-
-                            if (controller.senderContactLists.isNotEmpty)
-
-
-                                Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Column(
-                                    children: [
-
-                                       Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Text(
-                                          "Contacts",
-                                          style: AppTextStyles.body(context,fontWeight: FontWeight.bold, color: Colors.black),
-                                        ),
-                                      ),
-
-                                      // Header Row
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.primary,
-                                          borderRadius: BorderRadius.circular(2),
-                                        ),
-                                        child: const Row(
-                                          children: [
-                                            Expanded(child: Center(child: Center(child: Text("Org Name", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))))),
-                                            Expanded(child: Center(child: Center(child: Text("User Type", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))))),
-                                            Expanded(child: Center(child: Center(child: Text("Name", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))))),
-                                            Expanded(child: Center(child: Center(child: Text("Mobile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))))),
-                                            Expanded(child: Center(child: Center(child: Text("Date", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))))),
-                                            Expanded(child: Center(child: Center(child: Text("Action", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))))),
-                                          ],
-                                        ),
-                                      ),
-
-                                      const SizedBox(height: 8),
-
-                                      AnimationLimiter(
-                                        child: ListView.builder(
-                                          itemCount: controller.senderContactLists.length,
-                                          shrinkWrap: true,
-                                          itemBuilder: (context, index) {
-                                            final contact = controller.senderContactLists[index];
-                                            final isEven = index % 2 == 0;
-                                            final rowColor = isEven ? Colors.grey.shade100 : Colors.white;
-
-                                            DateTime dateTime;
-                                            try {
-                                              dateTime = DateTime.parse(contact.createdAt.toString() ?? '');
-                                            } catch (_) {
-                                              dateTime = DateTime.now();
-                                            }
-                                            final formattedDate = DateFormat('MMM dd, yyyy').format(dateTime);
-
-                                            return AnimationConfiguration.staggeredList(
-                                                      position: index,
-                                                      duration: const Duration(milliseconds: 1300),
-                                                      child: SlideAnimation(
-                                                        verticalOffset: 120.0,
-                                                        curve: Curves.easeOutBack,
-                                                        child: FadeInAnimation(
-                                                  child: Container(
-                                                    color: rowColor,
-                                                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(child: Center(child: Text(contact.orgName ?? "",style: AppTextStyles.caption(context),))),
-                                                        Expanded(child: Center(child: Text(contact.userType ?? "",style: AppTextStyles.caption(context),))),
-                                                        Expanded(child: Center(child: Text(contact.Name ?? "",style: AppTextStyles.caption(context)))),
-                                                        Expanded(child: Center(child: Text(contact.mobileNumber ?? "",style: AppTextStyles.caption(context)))),
-                                                        Expanded(child: Center(child: Text(formattedDate,style: AppTextStyles.caption(context)))),
-                                                        Expanded(
-                                                          child:Center(
-                                                            child: ElevatedButton.icon(
-                                                              icon: Icon(
-                                                                Icons.remove_red_eye,
-                                                                size: size * 0.014,
-                                                                color: AppColors.primary,
-                                                              ),
-                                                              label: Text(
-                                                                "View",
-                                                                style: AppTextStyles.caption(context),
-                                                              ),
-                                                              onPressed: () {
-                                                                Api.userInfo.write('contactId1', contact.id);
-                                                                showContactDetailsDialog(context);
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
+          return Row(
+            children: [
+              if (isDesktop) const AdminSideBar(),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: Stack(
+                    children: [
+                      if (!isDesktop)
+                        Positioned(
+                          top: 10,
+                          left: 10,
+                          child: IconButton(
+                            icon: const Icon(Icons.menu),
+                            onPressed: () => _scaffoldKeyContact.currentState?.openDrawer(),
+                          ),
+                        ),
+                      SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: EdgeInsets.fromLTRB(isMobile ? 15 : 30, isDesktop ? 30 : 60, isMobile ? 15 : 30, 30),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 1200),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildHeader(context, width, isMobile),
+                                const SizedBox(height: 20),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))
                                     ],
                                   ),
-                                )
-                          ],
+                                  child: Column(
+                                    children: [
+                                      if (controller.isLoading)
+                                        _buildShimmer(context)
+                                      else if (controller.senderContactLists.isEmpty)
+                                        _buildEmptyState(context)
+                                      else
+                                        _buildContactTable(context, controller.senderContactLists, width, isMobile, isTablet),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
-            ),
-         ] ),
+            ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context, double width, bool isMobile) {
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 20,
+      runSpacing: 20,
+      children: [
+        Text(
+          "Contact Submissions",
+          style: AppTextStyles.subtitle(context, color: Colors.black),
+        ),
+        Container(
+          height: 45,
+          width: isMobile ? double.infinity : 400,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade200),
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)],
+          ),
+          child: Row(
+            children: [
+              const SizedBox(width: 15),
+              Icon(Icons.search, color: Colors.grey.shade400, size: 20),
+              const SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  controller: searchController,
+                  decoration: const InputDecoration(
+                    hintText: "Search by name or org...",
+                    border: InputBorder.none,
+                    isDense: true,
+                  ),
+                  onSubmitted: (value) => _refresh(),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.tune_rounded, color: AppColors.primary, size: 20),
+                onPressed: () => showDateFilterPopup(context),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShimmer(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[200]!,
+      highlightColor: Colors.grey[50]!,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: List.generate(
+            6,
+            (index) => Container(
+              height: 50,
+              margin: const EdgeInsets.only(bottom: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[200]!,
+      highlightColor: Colors.grey[50]!,
+      child: Padding(
+        padding: const EdgeInsets.all(50.0),
+        child: Center(
+          child: Column(
+            children: [
+              Icon(Icons.contact_mail_outlined, size: 60, color: Colors.grey.shade300),
+              const SizedBox(height: 15),
+              Text('No contacts found', style: AppTextStyles.caption(context, color: Colors.grey)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContactTable(BuildContext context, List contacts, double width, bool isMobile, bool isTablet) {
+    return Column(
+      children: [
+        if (!isMobile)
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            ),
+            child: Row(
+              children: [
+                _headerCell("Org Name", 2),
+                _headerCell("User Type", 1.5),
+                _headerCell("Name", 1.5),
+                if (!isTablet) _headerCell("Mobile", 1.5),
+                if (!isTablet) _headerCell("Date", 1.5),
+                _headerCell("Action", 1),
+              ],
+            ),
+          ),
+        AnimationLimiter(
+          child: ListView.separated(
+            itemCount: contacts.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            separatorBuilder: (context, index) => Divider(height: 1, color: Colors.grey.shade100),
+            itemBuilder: (context, index) {
+              final contact = contacts[index];
+              final formattedDate = DateFormat('MMM dd, yyyy').format(
+                DateTime.tryParse(contact.createdAt.toString()) ?? DateTime.now(),
+              );
+
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                duration: const Duration(milliseconds: 500),
+                child: FadeInAnimation(
+                  child: isMobile 
+                    ? _buildMobileCard(context, contact, formattedDate)
+                    : _buildDataRow(context, contact, formattedDate, isTablet),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _headerCell(String text, double flex) {
+    return Expanded(
+      flex: (flex * 10).toInt(),
+      child: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+    );
+  }
+
+  Widget _buildDataRow(BuildContext context, dynamic contact, String date, bool isTablet) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      child: Row(
+        children: [
+          Expanded(flex: 20, child: Text(contact.orgName ?? "-", style: AppTextStyles.caption(context))),
+          Expanded(flex: 15, child: Text(contact.userType ?? "-", style: AppTextStyles.caption(context))),
+          Expanded(flex: 15, child: Text(contact.Name ?? "-", style: AppTextStyles.caption(context))),
+          if (!isTablet) Expanded(flex: 15, child: Text(contact.mobileNumber ?? "-", style: AppTextStyles.caption(context))),
+          if (!isTablet) Expanded(flex: 15, child: Text(date, style: AppTextStyles.caption(context))),
+          Expanded(
+            flex: 10,
+            child: TextButton(
+              onPressed: () {
+                Api.userInfo.write('contactId1', contact.id);
+                showContactDetailsDialog(context);
+              },
+              child: const Text("View", style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileCard(BuildContext context, dynamic contact, String date) {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(child: Text(contact.orgName ?? "-", style: AppTextStyles.body(context, fontWeight: FontWeight.bold))),
+              Text(date, style: AppTextStyles.caption(context, color: Colors.grey)),
+            ],
+          ),
+          const SizedBox(height: 5),
+          Text(contact.Name ?? "-", style: AppTextStyles.caption(context)),
+          Text(contact.mobileNumber ?? "-", style: AppTextStyles.caption(context, color: Colors.grey)),
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerRight,
+            child: OutlinedButton(
+              onPressed: () {
+                Api.userInfo.write('contactId1', contact.id);
+                showContactDetailsDialog(context);
+              },
+              child: const Text("View Details"),
+            ),
+          ),
+        ],
       ),
     );
   }

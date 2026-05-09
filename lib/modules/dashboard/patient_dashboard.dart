@@ -56,6 +56,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
   }
   Future<void> _refresh() async {
     getLocation();
+    await loginController.fetchStates();
     await loginController.getProfileDetails('Dental Clinic', '', '', '',"true",'', '','','', context);
    // await loginController.getProfileDetails('Dental Clinic', '', '', '',"true",loginController.latitude.toString(), loginController.longitude.toString(),'','', context);
    await planController.getUploadImages(userType: "Dental Clinic",context: context);

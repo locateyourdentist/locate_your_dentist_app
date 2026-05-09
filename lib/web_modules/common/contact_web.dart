@@ -38,11 +38,14 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isMobile = width < 600;
+    final bool isTablet = width >= 600 && width < 1024;
+    final bool isDesktop = width >= 1100;
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
-          height: width * 0.03,
+          height: width * 0.03 > 60 ? width * 0.032 : 65,
           title: "LYD",
           onLogout: () {},
           onNotification: () {},

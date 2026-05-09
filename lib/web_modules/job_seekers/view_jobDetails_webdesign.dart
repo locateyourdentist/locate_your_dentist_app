@@ -211,22 +211,23 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                               Icon(Icons.place, color: AppColors.grey, size: screenWidth * 0.015),
                                               const SizedBox(width: 6),
                                               Flexible(child: Text("${job.city ?? ''}, ${job.district ?? ''}, ${job.state ?? ''}", style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.grey))),
+                                              Container(
+                                                decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(3.0),
+                                                  child: Text(job.jobType ?? '', style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: Colors.white)),
+                                                ),
+                                              ),
                                             ]),
                                   
                                             const SizedBox(height: 12),
                                   
                                             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                                               Text("Posted: ${job.createdDate != null ? DateFormat('MMM dd, yyyy').format(job.createdDate!) : ''}", style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.grey)),
-                                              const SizedBox(width: 12),
+                                              //const SizedBox(width: 5),
                                               Text("Applicants: ${job.totalApplicants ?? 0}", style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.grey)),
-                                              const SizedBox(width: 12),
-                                              Container(
-                                                decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(6.0),
-                                                  child: Text(job.jobType ?? '', style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: Colors.white)),
-                                                ),
-                                              ),
+                                              //const SizedBox(width: 5),
+
                                             ]),
                                   
                                             const SizedBox(height: 12),

@@ -97,7 +97,6 @@ class Media {
     _tabController1.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -132,10 +131,8 @@ class Media {
                      Column(
                        crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Stack(
                           children: [
-
                             MediaCarousel(
                               images: loginController.editImages
                                   .where((img) =>
@@ -303,12 +300,12 @@ class Media {
                             }
                           }, icon: Icon(Icons.place,color: AppColors.primary,size: size*0.05,)),
 
-
                             Center(
                               child: Text(
                                 loginController.userData.isNotEmpty && user?.address != null
                                     ? "${user?.address['state'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['city'] ?? ''}"
-                                    : "",  style: const TextStyle(color: Colors.grey),
+                                    : "", maxLines: 2,
+                                overflow: TextOverflow.ellipsis,  style: const TextStyle(color: Colors.grey),
                               ),
                             ),
                           ],
@@ -354,7 +351,6 @@ class Media {
                               if (!planActive) return;
                               if (!isMobileAllowed && !isAdminUser) return;
 
-                              // WhatsApp call (single place)
                               WhatsAppUtils.openWhatsApp(
                               phoneNumber: userData.mobileNumber?.toString() ?? '',
                               message: "Hi Message From ${userData.details?["name"] ?? ''}",
@@ -453,10 +449,7 @@ class Media {
                        //    if (serviceController.serviceList.isNotEmpty && (
                        //        planActive == true && loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"] == true ||
                        //            isAdminUser == true || userId == editUserId))
-                        if (
-                        serviceController.serviceList.isNotEmpty &&
-                            ((planActive == true && user?.details["plan"]?["basePlan"]?["details"]["services"] == true)
-                                    || isAdminUser == true || userId == editUserId))
+
                        ListView(
                          // crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -466,8 +459,13 @@ class Media {
                                 return Column(
                                   children: [
                                     SizedBox(height: size*0.02,),
+
                                     if(serviceController.serviceList.isEmpty)
                                       Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
+                                    if (
+                                    serviceController.serviceList.isNotEmpty &&
+                                        ((planActive == true && user?.details["plan"]?["basePlan"]?["details"]["services"] == true)
+                                            || isAdminUser == true || userId == editUserId))
                                     if(serviceController.isLoading)
                                       const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
 

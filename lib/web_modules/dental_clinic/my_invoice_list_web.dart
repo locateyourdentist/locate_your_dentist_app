@@ -24,9 +24,13 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isMobile = width < 600;
+    final bool isTablet = width >= 600 && width < 1024;
+    final bool isDesktop = width >= 1100;
     return Scaffold(
       appBar: CommonWebAppBar(
-        height: size * 0.03,
+        height: width * 0.03 > 60 ? width * 0.03 : 60,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},

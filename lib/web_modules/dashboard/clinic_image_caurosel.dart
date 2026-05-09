@@ -25,7 +25,7 @@ class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-            height: size * 0.4,
+            height: size * 0.35,
             autoPlay: true,
             enlargeCenterPage: true,
             viewportFraction: 0.33,

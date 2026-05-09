@@ -13,6 +13,7 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/clinic_image_caurosel.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:video_player/video_player.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LandingPage extends StatefulWidget {
@@ -434,31 +435,36 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                           ],
                                         ),
                                         const SizedBox(height: 10),
-                                        AnimationLimiter(
-                                          child: GridView.builder(
-                                            shrinkWrap: true,
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            itemCount: loginController.profileList.length > 10
-                                                ? 10
-                                                : loginController.profileList.length,
-                                            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                              maxCrossAxisExtent: 280,
-                                              mainAxisSpacing: 20,
-                                              crossAxisSpacing: 20,
-                                              childAspectRatio: 0.9,
+                                        if (loginController.isLoading)
+                                          _buildClinicShimmerGrid(context)
+                                        else if (loginController.profileList.isEmpty)
+                                          _buildEmptyStateWithShimmer(context)
+                                        else
+                                          AnimationLimiter(
+                                            child: GridView.builder(
+                                              shrinkWrap: true,
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              itemCount: loginController.profileList.length > 10
+                                                  ? 10
+                                                  : loginController.profileList.length,
+                                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                maxCrossAxisExtent: 280,
+                                                mainAxisSpacing: 20,
+                                                crossAxisSpacing: 20,
+                                                childAspectRatio: 0.9,
+                                              ),
+                                              itemBuilder: (context, index) {
+                                                return AnimationConfiguration.staggeredList(
+                                                    position: index,
+                                                    duration: const Duration(milliseconds: 700),
+                                                    child: SlideAnimation(
+                                                        horizontalOffset: 80.0,
+                                                        curve: Curves.easeOutCubic,
+                                                        child: FadeInAnimation(
+                                                            child: EnlargeOnTapCard(child: clinicCard(loginController.profileList[index])))));
+                                              },
                                             ),
-                                            itemBuilder: (context, index) {
-                                              return AnimationConfiguration.staggeredList(
-                                                  position: index,
-                                                  duration: const Duration(milliseconds: 700),
-                                                  child: SlideAnimation(
-                                                      horizontalOffset: 80.0,
-                                                      curve: Curves.easeOutCubic,
-                                                      child: FadeInAnimation(
-                                                          child: EnlargeOnTapCard(child: clinicCard(loginController.profileList[index])))));
-                                            },
                                           ),
-                                        ),
                                       ]),
                                 ),
                               ),
@@ -1155,6 +1161,47 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
   //  _controller.dispose();
     super.dispose();
   }
+
+  Widget _buildClinicShimmerGrid(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 8,
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 280,
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
+          childAspectRatio: 0.9,
+        ),
+        itemBuilder: (context, index) => Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyStateWithShimmer(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Center(
+        child: Column(
+          children: [
+            Icon(Icons.search_off_outlined, size: 80, color: Colors.grey[300]),
+            const SizedBox(height: 15),
+            Text('No clinics found matching your location', 
+              style: AppTextStyles.subtitle(context, color: Colors.grey)),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 
@@ -1174,7 +1221,7 @@ class _HeroBannerState extends State<HeroBanner>
 
   final List<Map<String, String>> banners = [
     {
-      "image": "images/welcome.png",
+      "image": "images/1.png",
       "title": "Find Your Dental Clinic near you",
       "button": "Enquire Now",
       "route": "/userTypeListWeb",
@@ -1254,10 +1301,11 @@ class _HeroBannerState extends State<HeroBanner>
 
   @override
   Widget build(BuildContext context) {
-    final double size = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isMobile = width < 700;
 
     return SizedBox(
-      height: size * 0.5,
+      height: isMobile ? 300 : width * 0.4,
       width: double.infinity,
       child: Stack(
         children: [
@@ -1299,54 +1347,57 @@ class _HeroBannerState extends State<HeroBanner>
 
           /// 🔹 Animated Text Content
           Center(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 600),
-              transitionBuilder: (child, animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0, 0.3),
-                      end: Offset.zero,
-                    ).animate(animation),
-                    child: child,
-                  ),
-                );
-              },
-              child: Column(
-                key: ValueKey(currentPage),
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-
-                  AnimatedText(
-                    banners[currentPage]["title"]!,
-                    size,
-                  ),
-                  const SizedBox(height: 20),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      final route = banners[currentPage]["route"];
-                      if (route != null) {
-                        Get.toNamed(route);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 25,
-                        vertical: 15,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 600),
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.3),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Column(
+                  key: ValueKey(currentPage),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+  
+                    AnimatedText(
+                      banners[currentPage]["title"]!,
+                      width,
+                    ),
+                    const SizedBox(height: 20),
+  
+                    ElevatedButton(
+                      onPressed: () {
+                        final route = banners[currentPage]["route"];
+                        if (route != null) {
+                          Get.toNamed(route);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isMobile ? 20 : 25,
+                          vertical: isMobile ? 12 : 15,
+                        ),
+                      ),
+                      child: Text(
+                        banners[currentPage]["button"]!,
+                        style: AppTextStyles.body(
+                          context,
+                          color: AppColors.white,
+                        ),
                       ),
                     ),
-                    child: Text(
-                      banners[currentPage]["button"]!,
-                      style: AppTextStyles.body(
-                        context,
-                        color: AppColors.white,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -1357,12 +1408,13 @@ class _HeroBannerState extends State<HeroBanner>
 }
 class AnimatedText extends StatelessWidget {
   final String text;
-  final double size;
+  final double width;
 
-  const AnimatedText(this.text, this.size);
+  const AnimatedText(this.text, this.width);
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = width < 700;
     return Wrap(
       alignment: WrapAlignment.center,
       children: List.generate(text.length, (index) {
@@ -1388,7 +1440,7 @@ class AnimatedText extends StatelessWidget {
             char,
             style: GoogleFonts.poppins( // change font here
               color: AppColors.white,
-              fontSize: size * 0.03,
+              fontSize: isMobile ? 22 : width * 0.03,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -1438,7 +1490,6 @@ class AboutUsSection extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
 
-      /// ❌ REMOVED extra Center + maxWidth from here
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -38,10 +38,14 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
   }
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
+    final double size = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;
     return  Scaffold(
       appBar: CommonWebAppBar(
-        height: size * 0.03,
+        height: isMobile ? 60 : (isTablet ? 70 : 80),
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
@@ -88,8 +92,8 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                                 for (int i = 0; i < loginController.branchList.length; i++)
                                                   _branchListFields(i,size),
                                                 Container(
-                                                  height:size * 0.018,
-                                                  width:size*0.12,
+                                                  //height:size * 0.018,
+                                                width:size*0.12,
                                                   decoration: BoxDecoration(
                                                     gradient: const LinearGradient(
                                                       colors: [AppColors.primary, AppColors.secondary],

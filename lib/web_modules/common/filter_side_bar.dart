@@ -51,7 +51,6 @@ class _FilterSidebarState extends State<FilterSidebar> {
                     child: Column(
                       children: [
 
-                        // ================= DISTANCE =================
                         _sectionTitle("Distance"),
 
                         Slider(

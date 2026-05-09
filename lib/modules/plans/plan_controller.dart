@@ -25,16 +25,23 @@ class AppImage2 {
   String? url;
   String? name;
   String? id;
+  String? planId;
   final File? file;
   bool? isActive;
   final bool isVideo;
-  AppImage2({this.bytes, this.url,this.name,this.id,this.file, this.isActive = true,this.isVideo=false});
+  AppImage2({this.bytes, this.url,this.name,this.id,this.planId,this.file, this.isActive = true,this.isVideo=false});
 }
 
 
   class PlanController extends GetxController{
   bool isLoading=false;
   Api api =Api();
+  int selectedIndex = -1;
+
+  void updateSelectedIndex(int index) {
+    selectedIndex = index;
+    update();
+  }
   List<PlanModel>_basePlanList=[];
   List<PlanModel> get basePlanList=>_basePlanList;
   IncomeDashboardModel? _income;
@@ -1062,6 +1069,7 @@ class AppImage2 {
         editUploadImage1 = (data["data"] as List).map((u) {
           return AppImage2(
             id: u["_id"],
+            planId: u["imageId"],
             url: u["path"],
             isActive: u["isActive"] ?? false,
             //startDate: u["startDate"] == "null" ? "" : u["startDate"],
@@ -1094,9 +1102,7 @@ class AppImage2 {
       final response = await api.uploadImagesUserType( userId,userType, imageId, preference, startDate, endDate,isActive,posterImage);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
-        await showSuccessDialog(context, title:"Success",message :"image uploaded", onOkPressed: () {
-          Navigator.pop(context);
-        });
+        showCustomToast(context, "Image updated successfully");
       } else {
         showCustomToast(context, "image not upload error,${data["message"] ?? "error"}",);
       }

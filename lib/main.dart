@@ -7,10 +7,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:locate_your_dentist/common_widgets/platform_helper.dart';
-import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api/api.dart';
-import 'api/firebase_options.dart';
+import 'firebase_options.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -40,6 +39,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+
   print("Background message received: ${message.messageId}");
 }
 Future<void> setupFCM() async {
@@ -61,13 +61,13 @@ Future<void> setupFCM() async {
     // print("FCM Token: $token");
     String? token;
 
-    if (kIsWeb) {
-      token = await messaging.getToken(
-        vapidKey: AppConstants.webFireBaseVAPID_KEY,
-      );
-    } else {
+    // if (kIsWeb) {
+    //   token = await messaging.getToken(
+    //     vapidKey: AppConstants.webFireBaseVAPID_KEY,
+    //   );
+    // } else {
       token = await messaging.getToken();
-    }
+    //}
 
     print("FCM Token: $token");
 
@@ -85,16 +85,16 @@ Future<void> setupFCM() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-  //
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-  //
-  // FirebaseMessaging.onBackgroundMessage(
-  //   firebaseMessagingBackgroundHandler,
-  // );
 
-  //await setupFCM();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  FirebaseMessaging.onBackgroundMessage(
+    firebaseMessagingBackgroundHandler,
+  );
+
+  await setupFCM();
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
@@ -132,7 +132,6 @@ class _MyAppState extends State<MyApp> {
       handleInitialLink();
     });
   }
-
   void handleInitialLink() {
     final initialRoute = PlatformDispatcher.instance.defaultRouteName;
     if (initialRoute != "/") {

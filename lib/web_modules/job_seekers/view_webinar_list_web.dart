@@ -5,6 +5,7 @@ import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
@@ -18,6 +19,7 @@ class WebinarListWebPage extends StatefulWidget {
 }
 
 class _WebinarListWebPageState extends State<WebinarListWebPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKeyWebinarList = GlobalKey<ScaffoldState>();
   final jobController = Get.put(JobController());
   final loginController=Get.put(LoginController());
   @override
@@ -27,136 +29,151 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
   }
   @override
   Widget build(BuildContext context) {
-    double size=MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isMobile = width < 700;
+
     return Scaffold(
+      key: _scaffoldKeyWebinarList,
+      backgroundColor: AppColors.scaffoldBg,
+      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: buildAppBar(context),
       body: GetBuilder<JobController>(
           builder: (controller) {
             return Row(
               children: [
-                const AdminSideBar(),
+                if (isDesktop) const AdminSideBar(),
                 Expanded(
                   child: Center(
                     child: SingleChildScrollView(
+                      padding: EdgeInsets.all(isMobile ? 10 : 20),
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 1200),
-                        child: Padding(
-                          padding: const EdgeInsets.all(30.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: const [
-                                BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                children: [
-                                  Text('Webinar List',style: AppTextStyles.subtitle(context),),
-                                  const SizedBox(height: 10,),
-                                  if (jobController.webinarListJobSeekers.isEmpty)
-                                    Center(child: Text('No data found', style: AppTextStyles.caption(context, color: AppColors.black,fontWeight: FontWeight.normal),)),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                            ],
+                          ),
+                          child: Stack(
+                            children: [
+                              if (!isDesktop)
+                                Positioned(
+                                  top: 10,
+                                  left: 10,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.menu),
+                                    onPressed: () => _scaffoldKeyWebinarList.currentState?.openDrawer(),
+                                  ),
+                                ),
+                              Padding(
+                                padding: EdgeInsets.all(isMobile ? 15 : 20.0),
+                                child: Column(
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    Text('Webinar List',style: AppTextStyles.subtitle(context),),
+                                    const SizedBox(height: 20,),
+                                    if (jobController.isLoading)
+                                      _buildWebinarShimmer(width)
+                                    else if (jobController.webinarListJobSeekers.isEmpty)
+                                      _buildEmptyWebinarState(context)
+                                    else
+                                      AnimationLimiter(
+                                        child: LayoutBuilder(
+                                          builder: (context, constraints) {
+                                            final w = constraints.maxWidth;
+                                            int crossAxisCount = w > 1200 ? 3 : (w > 800 ? 2 : 1);
+                                            double childAspectRatio = w < 600 ? 1.3 : 1.0;
 
-                                  if( jobController.webinarListJobSeekers.isNotEmpty)
-                                    GetBuilder<JobController>(
-                                        builder: (controller) {
-                                          return AnimationLimiter(
-                                            child:GridView.builder(
+                                            return GridView.builder(
                                               itemCount: jobController.webinarListJobSeekers.length,
                                               padding: const EdgeInsets.all(1),
                                               shrinkWrap: true,
                                               physics: const NeverScrollableScrollPhysics(),
-                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: size > 1200 ? 3 : 2,
-                                                  crossAxisSpacing: 20,
-                                                  mainAxisSpacing: 20,
-                                                  childAspectRatio: 1,
-                                                ),
+                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: crossAxisCount,
+                                                crossAxisSpacing: 20,
+                                                mainAxisSpacing: 20,
+                                                childAspectRatio: childAspectRatio,
+                                              ),
                                               itemBuilder: (context, index) {
                                                 final appliersList = jobController.webinarListJobSeekers[index];
-                                                   print('wefsdf lst${jobController.webinarListJobSeekers}');
-                                                return GestureDetector(
-                                                  onTap: ()async{
-                                                    //await jobController.getWebinarById(appliersList.webinarId.toString(), appliersList.isActive.toString(), context);
-                                                   // await jobController.getApplie
-                                                    //
-                                                    // dWebinarsAdmin(appliersList.webinarId.toString(),context);
-                                                    print('dsfwebid${appliersList.isActive.toString()}');
-                                                    Api.userInfo.write('webinarId', appliersList.webinarId.toString());
-                                                    Api.userInfo.write('activeStatus1', appliersList.isActive.toString());
-                                                    Get.toNamed('/viewWebinarDetailWebPage');
-                                                    },
-                                                  child: MouseRegion(
-                                                    cursor: SystemMouseCursors.click,
-                                                    child: AnimatedContainer(
-                                                      duration: const Duration(milliseconds: 200),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius: BorderRadius.circular(16),
-                                                        border: Border.all(color: Colors.grey.shade200),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.black.withOpacity(0.05),
-                                                            blurRadius: 10,
-                                                            offset: const Offset(0, 4),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      padding: const EdgeInsets.all(16),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-
-                                                            Image.network( "${appliersList.webinarImage}",width: double.infinity,
-                                                            height: size*0.13,  fit: BoxFit.cover,
-                                                              errorBuilder: (context, error, stackTrace) {
-                                                                return Container(
-                                                                  width: double.infinity,
-                                                                  height: size*0.13,
-                                                                  color: Colors.grey.shade200,
-                                                                  child: const Icon(Icons.image_not_supported, color: Colors.grey),
-                                                                );
-                                                              },),
-                                                          SizedBox(height: size*0.005),
-
-                                                          Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            children: [
-                                                              Center(
-                                                                child: Text(
-                                                                 appliersList.orgName ?? "",
-                                                                  style:AppTextStyles.caption(context,fontWeight: FontWeight.bold)
-                                                                ),
+                                                return AnimationConfiguration.staggeredList(
+                                                  position: index,
+                                                  duration: const Duration(milliseconds: 500),
+                                                  child: FadeInAnimation(
+                                                    child: GestureDetector(
+                                                      onTap: () async {
+                                                        Api.userInfo.write('webinarId', appliersList.webinarId.toString());
+                                                        Api.userInfo.write('activeStatus1', appliersList.isActive.toString());
+                                                        Get.toNamed('/viewWebinarDetailWebPage');
+                                                      },
+                                                      child: MouseRegion(
+                                                        cursor: SystemMouseCursors.click,
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius: BorderRadius.circular(16),
+                                                            border: Border.all(color: Colors.grey.shade200),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors.black.withOpacity(0.05),
+                                                                blurRadius: 10,
+                                                                offset: const Offset(0, 4),
                                                               ),
-                                                              SizedBox(height: size*0.001),
-
-                                                              Text(
-                                                                "Webinar Title: ${appliersList.webinarTitle ?? ""}",
-                                                                  style:AppTextStyles.caption(context,fontWeight: FontWeight.w400)
-
-                                                              ),
-
-                                                              const SizedBox(height: 2),
-
                                                             ],
                                                           ),
-                                                        ],
+                                                          padding: const EdgeInsets.all(16),
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              ClipRRect(
+                                                                borderRadius: BorderRadius.circular(8),
+                                                                child: Image.network(
+                                                                  "${appliersList.webinarImage}",
+                                                                  width: double.infinity,
+                                                                  height: isMobile ? 180 : 150,
+                                                                  fit: BoxFit.cover,
+                                                                  errorBuilder: (context, error, stackTrace) {
+                                                                    return Container(
+                                                                      width: double.infinity,
+                                                                      height: isMobile ? 180 : 150,
+                                                                      color: Colors.grey.shade200,
+                                                                      child: const Icon(Icons.image_not_supported, color: Colors.grey),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 12),
+                                                              Center(
+                                                                child: Text(
+                                                                  appliersList.orgName ?? "",
+                                                                  style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 4),
+                                                              Text(
+                                                                "Webinar Title: ${appliersList.webinarTitle ?? ""}",
+                                                                style: AppTextStyles.caption(context, fontWeight: FontWeight.w400),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 );
-                                              }
-
-                                              ),
-                                        );
-                                      }
-                                    )
-                                ],
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                  ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ),
@@ -166,6 +183,47 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
               ],
             );
           }
+      ),
+    );
+  }
+
+  Widget _buildWebinarShimmer(double size) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 6,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
+          childAspectRatio: 1,
+        ),
+        itemBuilder: (context, index) => Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyWebinarState(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Center(
+        child: Column(
+          children: [
+            const Icon(Icons.video_camera_back_outlined, size: 80, color: Colors.grey),
+            const SizedBox(height: 15),
+            Text('No webinars currently available', 
+              style: AppTextStyles.subtitle(context, color: Colors.grey)),
+          ],
+        ),
       ),
     );
   }

@@ -20,6 +20,7 @@ class CreatePlanWeb extends StatefulWidget {
 }
 
 class _CreatePlanWebState extends State<CreatePlanWeb> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final planController = Get.put(PlanController());
   final _formKeyPlanProfileWeb = GlobalKey<FormState>();
   String? planId;
@@ -207,10 +208,15 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
   }
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isMobile = width < 700;
+
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
-        height: size * 0.03,
+        height: isMobile ? 60 : 80,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
@@ -221,17 +227,16 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
               onRefresh: _refresh,
               child: Row(
                 children: [
-                  const AdminSideBar(),
+                  if (isDesktop) const AdminSideBar(),
 
                   Expanded(
                     child: Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: EdgeInsets.all(isMobile ? 10 : 20.0),
                         child:ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 700),
                           child: Container(
                             width: double.infinity,
-                            //color: Colors.grey[100],
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
@@ -239,45 +244,54 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                 BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
                               ],
                             ),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                   SizedBox(height: size*0.01,),
-                                  // if(planController.selectedString=="BasePlan")
-                                  Wrap(
-                                    alignment: WrapAlignment.center,
-                                    spacing: 12,
-                                    runSpacing: 8,
-                                    children: [
-
-                                      radioItem("BasePlan", "Base Plan"),
-                                      radioItem("AddOnsPlan", "AddOns Plan"),
-                                      radioItem("JobPlan", "Job Plan"),
-                                      radioItem("WebinarPlan", "Webinar Plan"),
-                                      radioItem("PostImagePlan", "Post Image Plan"),
-
-                                    ],
+                            child: Stack(
+                              children: [
+                                if (!isDesktop)
+                                  Positioned(
+                                    top: 10,
+                                    left: 10,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.menu),
+                                      onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+                                    ),
                                   ),
-
-                                  Form(
-                                    key: _formKeyPlanProfileWeb,
-                                    child: SingleChildScrollView(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(25.0),
+                                SingleChildScrollView(
+                                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: isMobile ? 10 : 30),
+                                  child: Column(
+                                    children: [
+                                       const SizedBox(height: 20,),
+                                      // if(planController.selectedString=="BasePlan")
+                                      Wrap(
+                                        alignment: WrapAlignment.center,
+                                        spacing: 12,
+                                        runSpacing: 8,
+                                        children: [
+                
+                                          radioItem("BasePlan", "Base Plan"),
+                                          radioItem("AddOnsPlan", "AddOns Plan"),
+                                          radioItem("JobPlan", "Job Plan"),
+                                          radioItem("WebinarPlan", "Webinar Plan"),
+                                          radioItem("PostImagePlan", "Post Image Plan"),
+                
+                                        ],
+                                      ),
+                                      const SizedBox(height: 10),
+                
+                                      Form(
+                                        key: _formKeyPlanProfileWeb,
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text('Add Plan Details', style: AppTextStyles.subtitle(
                                               context, color: AppColors.black,)),
-                                            SizedBox(height: size * 0.01,),
+                                            const SizedBox(height: 10,),
                                             Text('Add/edit user Plan details',
                                                 style: AppTextStyles.caption(
                                                   context, color: AppColors.grey,)),
-                                            SizedBox(height: size * 0.01,),
+                                            const SizedBox(height: 15,),
                                             CustomDropdownField(
                                               hint: "Select User Type",
-                                              //icon: Icons.person_outline,
                                               items: const [
                                                 "Dental Clinic",
                                                 "Dental Lab",
@@ -291,19 +305,16 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                               onChanged: (value) {
                                                 setState(() {
                                                   planController.selectedUserType = value;
-                                                  // _updateFields();
                                                 });
                                               },
                                             ),
-
-                                            SizedBox(height: size * 0.01,),
+                
+                                            const SizedBox(height: 15,),
                                             CustomTextField(
                                               hint: "Plan Name",
                                               controller: planController.planNameController,
                                             ),
-                                            // SizedBox(height:size* 0.01,),
-                                            // Text('Price Name',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold)),
-                                            SizedBox(height: size * 0.01,),
+                                            const SizedBox(height: 15,),
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
@@ -315,7 +326,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                     maxLength: 4,
                                                   ),
                                                 ),
-                                                SizedBox(width: size*0.01,),
+                                                const SizedBox(width: 15,),
                                                 Expanded(
                                                   child: CustomTextField(
                                                     hint: "Mark Price",
@@ -326,7 +337,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(height: size * 0.01,),
+                                            const SizedBox(height: 15,),
                                             Row(
                                               children: [
                                                 Expanded(
@@ -337,7 +348,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                     keyboardType: TextInputType.number,
                                                   ),
                                                 ),
-                                                SizedBox(width: size*0.01,),
+                                                const SizedBox(width: 15,),
                                                 Expanded(
                                                   child: CustomTextField(
                                                     hint: "Duration Days",
@@ -348,7 +359,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(height: size * 0.01,),
+                                            const SizedBox(height: 15,),
                                             if(planController.selectedString=="BasePlan")
                                               GetBuilder<PlanController>(
                                                   builder: (controller) {
@@ -367,7 +378,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                                 keyboardType: TextInputType.number,
                                                               ),
                                                             ),
-                                                            SizedBox(width: size*0.01,),
+                                                            const SizedBox(width: 15,),
                                                             Expanded(
                                                               child: CustomTextField(
                                                                 hint: "Image Size (MB)",
@@ -378,7 +389,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                             ),
                                                           ],
                                                         ),
-                                                        const SizedBox(height: 5,),
+                                                        const SizedBox(height: 10,),
                                                         Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
@@ -390,7 +401,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                                 keyboardType: TextInputType.number,
                                                               ),
                                                             ),
-                                                            SizedBox(width: size*0.01,),
+                                                            const SizedBox(width: 15,),
                                                             Expanded(
                                                               child: CustomTextField(
                                                                 hint: "Video Size (MB)",
@@ -405,7 +416,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                     );
                                                   }
                                               ),
-                                            SizedBox(height: size * 0.01,),
+                                            const SizedBox(height: 15,),
                                             if (planController.selectedString == "JobPlan")
                                               CustomTextField(
                                                 hint: "Job Count",
@@ -413,19 +424,19 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                 maxLength: 3,
                                                 keyboardType: TextInputType.number,
                                               ),
-                                            SizedBox(height: size * 0.01,),
-
+                                            const SizedBox(height: 15,),
+                
                                             if(planController.selectedString=="BasePlan")
                                               Column(
                                                 children: [
-
+                
                                                   buildSwitchRow(
                                                     label: "Show Image",
                                                     value: planController.isImageAndroid,
                                                     onChanged: (val) => setState((){
                                                       planController.isImageAndroid = val;
                                                       planController.update();
-
+                
                                                     }),
                                                   ),
                                                   buildSwitchRow(
@@ -434,7 +445,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                     onChanged: (val) => setState((){
                                                       planController.isVideoAndroid = val;
                                                       planController.update();
-
+                
                                                     }),
                                                   ),
                                                   buildSwitchRow(
@@ -472,7 +483,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                     onChanged: (val) => setState((){
                                                       planController.isStateWise = val;
                                                       planController.update();
-
+                
                                                     }),
                                                   ),
                                                   buildSwitchRow(
@@ -501,11 +512,11 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                   ),
                                                 ],
                                               ),
-                                            SizedBox(height: size * 0.04,),
+                                            const SizedBox(height: 40,),
                                             Center(
                                               child: Container(
-                                                width: size*0.5,
-                                                height:size*0.018,
+                                                width: double.infinity,
+                                                height: 50,
                                                 decoration: BoxDecoration(
                                                   gradient: const LinearGradient(
                                                     colors: [AppColors.primary, AppColors.secondary],
@@ -525,9 +536,9 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                     if (!_formKeyPlanProfileWeb.currentState!.validate()) return;
                                                     int days = int.tryParse(planController.durationDaysController.text) ?? 0;
                                                     int months = int.tryParse(planController.durationMonthsController.text) ?? 0;
-
+                
                                                     int duration = days + (months * 30);
-
+                
                                                     String durationDays = duration.toString();
                                                     if (planController.selectedUserType == null ||
                                                         planController.selectedUserType!.isEmpty) {
@@ -570,7 +581,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                         features.toSet().toList(),
                                                         context,
                                                       );
-
+                
                                                       await planController.getBasePlanList(Api.userInfo.read('userType') ?? "", context);
                                                     }
                                                     else if (planController.selectedString == "AddOnsPlan") {
@@ -600,7 +611,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                         features.toSet().toList(),
                                                         context,
                                                       );
-
+                
                                                       await planController.getAddOnPlansList(
                                                           planController.selectedUserType!, context);
                                                     }
@@ -632,7 +643,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                         features.toSet().toList(),
                                                         context,
                                                       );
-
+                
                                                       await planController.getJobPlansList(
                                                           planController.selectedUserType!, context);
                                                     }
@@ -652,8 +663,8 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                       );
                                                     }
                                                     else if (planController.selectedString == "PostImagePlan") {
-
-
+                
+                
                                                       await planController.createPostImagesPlans(
                                                         planController.selectedUserType!,
                                                         postImagePlanId!,
@@ -676,14 +687,14 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(height: size * 0.04,),
+                                            const SizedBox(height: 40,),
                                           ],
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -708,28 +719,25 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
         builder: (controller) {
           double s=MediaQuery.of(context).size.width;
 
-          return  SizedBox(
-            width: s*0.14,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    label,
-                    style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
-                  ),
+          return  Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
                 ),
-                Switch(
-                  activeColor: AppColors.white,
-                  activeTrackColor: AppColors.primary,
-                  inactiveThumbColor: Colors.blueGrey.shade600,
-                  inactiveTrackColor: Colors.grey.shade400,
-                  splashRadius: s*0.005,
-                  value: value,
-                  onChanged: onChanged,
-                ),
-              ],
-            ),
+              ),
+              Switch(
+                activeColor: AppColors.white,
+                activeTrackColor: AppColors.primary,
+                inactiveThumbColor: Colors.blueGrey.shade600,
+                inactiveTrackColor: Colors.grey.shade400,
+                splashRadius: s*0.005,
+                value: value,
+                onChanged: onChanged,
+              ),
+            ],
           );
         }
     );
