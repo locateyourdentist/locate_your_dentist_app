@@ -317,12 +317,13 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: GestureDetector(
                                                       onTap: ()async{
-                                                                 await jobController.getJobsById(Jobs.jobId!, context);
+                                                                 Api.userInfo.write('selectJobId',Jobs.jobId!);
+
                                                                  Get.toNamed('/jobViewProfilePage');
                                                                  isSelected = currentIndex == index;
                                                       },
                                                       child: Container(
-                                                                  height: size*0.58,
+                                                                  //height: size*0.58,
                                                                     width: size*0.8,
                                                                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),
                                                                       color: AppColors.white,border: Border.all(color: AppColors.primary,width: 1.5)
@@ -392,7 +393,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                             ),
                                           ],
                                         ),
-                                        Text(Jobs.jobTitle.toString(),softWrap:true,style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
+                                        Text(Jobs.jobTitle.toString(),softWrap:true,overflow:TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.032,fontWeight: FontWeight.bold,color: Colors.black),),
                                         const SizedBox(height: 2),
 
                                         Row(

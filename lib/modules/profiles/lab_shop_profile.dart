@@ -254,6 +254,7 @@ import 'package:flutter_quill/flutter_quill.dart';
                                     ),
                                   ),
                                 ),
+                                if(userId != editUserId)
                                 Container(
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(

@@ -638,9 +638,7 @@ class JobController extends GetxController{
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-
     isLoading = true;
-
     try {
       print('API request for jobId: $jobId');
       _job = [];

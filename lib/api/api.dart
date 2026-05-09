@@ -1150,10 +1150,10 @@ class Api {
     }
   }
   Future<http.Response> uploadImagesUserType(
-      String userId, String userType,String planId,String preference,String startDate,String endDate,String isActive, List<Uint8List> images, {String? recordId}) async {
+      String userId, String userType,String imageId,String preference,String startDate,String endDate,String isActive, List<Uint8List> images) async {
     String url = "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants.uploadImagesUrl}";
     print('API uploadImagesUrl $url');
-    print('FIELDS: userId=$userId, userType=$userType, planId=$planId, isActive=$isActive, recordId=$recordId');
+    print('FIELDS: userId=$userId, userType=$userType, imageId=$imageId, isActive=$isActive');
     String token = Api.userInfo.read('token') ?? "";
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -1163,10 +1163,7 @@ class Api {
     });
     request.fields['userId'] = userId;
     request.fields['userType'] = userType;
-    request.fields['imageId'] = planId;
-    if (recordId != null && recordId.isNotEmpty) {
-      request.fields['id'] = recordId;
-    }
+    request.fields['imageId'] = imageId;
     request.fields['preference'] = preference;
     request.fields['startDate'] = startDate;
     request.fields['endDate'] = endDate;
@@ -2958,26 +2955,20 @@ class Api {
     }
   }
 
-  Future<http.Response> getJobByJobId(
-      String jobId,
-      ) async {
-    String url =
-        "${AppConstants.baseUrl}${AppConstants.jobUrl}${AppConstants.getJobById}";
+  Future<http.Response> getJobByJobId(String jobId) async {
+    String url = "${AppConstants.baseUrl}${AppConstants.jobUrl}${AppConstants.getJobById}";
     print('API getJob id Url $url');
     String? token = Api.userInfo.read('token');
     try {
       final headers = <String, String>{
         'Content-Type': 'application/json',
       };
-
       if (token != null) {
         headers['Authorization'] = 'Bearer $token';
       }
       Uri uri = Uri.parse("$url/$jobId");
       print('Full API URL: $uri');
-
       final response = await http.get(uri, headers: headers);
-
       print('request$jobId');
       print('API response: ${response.body}');
       return response;

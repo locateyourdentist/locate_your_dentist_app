@@ -1167,11 +1167,14 @@ Widget buildMediaItem(AppImage media, double size, VoidCallback onDelete, BuildC
   Widget content;
 
   if (media.isVideo) {
-    content = Container(
-      height: size * 0.15,
-      width: size * 0.15,
-      color: Colors.black12,
-      child: const Center(child: Icon(Icons.play_circle_fill)),
+    content = Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        height: size * 0.3,
+        width: size * 0.3,
+        color: Colors.black12,
+        child: const Center(child: Icon(Icons.play_circle_fill)),
+      ),
     );
   }
 

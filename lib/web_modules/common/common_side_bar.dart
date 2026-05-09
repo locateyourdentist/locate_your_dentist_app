@@ -76,7 +76,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Dashboard", "page": "/superAdminWebDashboard"},
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "User List", "page": "/userTypeListWeb"},
-          {"title": "Add admin", "page": "/registerPageWeb"},
+          {"title": "Add User", "page": "/registerPageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "Reports", "page": "/reportPageWeb"},
           {"title": "Create Scrolling Ads Post", "page": "/scrollingAdsWebPage"},
@@ -94,7 +94,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Dashboard", "page": "/superAdminWebDashboard"},
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "User List", "page": "/userTypeListWeb"},
-          {"title": "Add admin", "page": "/registerPageWeb"},
+          {"title": "Add User", "page": "/registerPageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "Reports", "page": "/reportPageWeb"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
@@ -273,6 +273,11 @@ class _AdminSideBarState extends State<AdminSideBar> {
                           String userId=Api.userInfo.read('userId')??"";
                           Api.userInfo.write('selectUId',userId);
                           Get.offAllNamed("/viewProfilePageWeb");
+                        }
+                        if (setting['title'] == "Add User") {
+                          String userId=Api.userInfo.read('userId')??"";
+                          Api.userInfo.write('selectUId',userId);
+                          Get.offAllNamed("/registerPageWeb",arguments: {"userId":0});
                         }
                         else {
                           Get.toNamed(setting['page'] ?? "");

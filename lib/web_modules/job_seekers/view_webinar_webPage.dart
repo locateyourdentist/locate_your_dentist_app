@@ -93,149 +93,178 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
       body: GetBuilder<JobController>(
         builder: (controller) {
           if (controller.isLoading) return const Center(child: CircularProgressIndicator());
-          if (controller.webinar.isEmpty) return  Center(child: Text("No data found",style: AppTextStyles.caption(context),));
+          if (controller.webinar.isEmpty) return Center(child: Text("No data found", style: AppTextStyles.caption(context)));
           final webinar = controller.webinar.first;
-          return RefreshIndicator(
-            onRefresh: _refresh,
-            child: Row(
-              children: [
-                if (isDesktop) const AdminSideBar(),
-                Expanded(
-                  child: Center(
-                    child: DefaultTabController(
-                      length: 2,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 1000),
-                        child: Padding(
-                          padding: EdgeInsets.all(isMobile ? 10 : 30.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: const [
-                                BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
-                              ],
-                            ),
-                            child: Stack(
-                              children: [
-                                if (!isDesktop)
-                                  Positioned(
-                                    top: 10,
-                                    left: 10,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.menu),
-                                      onPressed: () => _scaffoldKeyWebinar.currentState?.openDrawer(),
-                                    ),
+          
+          return Row(
+            children: [
+              if (isDesktop) const AdminSideBar(),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: DefaultTabController(
+                    length: 2,
+                    child: NestedScrollView(
+                      headerSliverBuilder: (context, innerBoxIsScrolled) {
+                        return [
+                          SliverToBoxAdapter(
+                            child: Center(
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(maxWidth: 1000),
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                    isMobile ? 10 : 30.0,
+                                    isMobile ? 10 : 30.0,
+                                    isMobile ? 10 : 30.0,
+                                    0,
                                   ),
-                                Column(
-                                  children: [
-                                    if (!isDesktop) const SizedBox(height: 40),
-                                    SizedBox(
-                                      height: isMobile ? 200 : (width > 900 ? 350 : 220),
-                                      width: double.infinity,
-                                      child: Stack(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: (){
-                                              print( loginController.webinarFileImages.first.url.toString());
-                                              Get.toNamed('/viewImagePage', arguments: {'url':  loginController.webinarFileImages.first.url.toString()});
-                    
-                                            },
-                                            child: Image.network(
-                                              loginController.webinarFileImages.isNotEmpty
-                                                  ? loginController.webinarFileImages.first.url.toString()
-                                                  : '',
-                                              width: double.infinity,
-                                              height: isMobile ? 200 : (width > 900 ? 350 : 220),
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (_, __, ___) => Container(
-                                                color: Colors.grey.shade200,
-                                                alignment: Alignment.center,
-                                                child:  const Icon(Icons.image, color:AppColors.grey, size: 40),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                colors: [Colors.black.withOpacity(0.6), Colors.transparent],
-                                                begin: Alignment.bottomCenter,
-                                                end: Alignment.topCenter,
-                                              ),
-                                            ),
-                                          ),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.white,
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                                      boxShadow: [
+                                        BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                                      ],
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        if (!isDesktop)
                                           Align(
-                                            alignment: Alignment.bottomLeft,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(20),
-                                              child: Text(
-                                                webinar.webinarTitle ?? "",
-                                                style: AppTextStyles.body(context,
-                                                  fontWeight: FontWeight.bold,color: AppColors.white,
+                                            alignment: Alignment.topLeft,
+                                            child: IconButton(
+                                              icon: const Icon(Icons.menu),
+                                              onPressed: () => _scaffoldKeyWebinar.currentState?.openDrawer(),
+                                            ),
+                                          ),
+                                        SizedBox(
+                                          height: isMobile ? 200 : (width > 900 ? 350 : 220),
+                                          width: double.infinity,
+                                          child: Stack(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  if (loginController.webinarFileImages.isNotEmpty) {
+                                                    Get.toNamed('/viewImagePage', arguments: {
+                                                      'url': loginController.webinarFileImages.first.url.toString()
+                                                    });
+                                                  }
+                                                },
+                                                child: Image.network(
+                                                  loginController.webinarFileImages.isNotEmpty
+                                                      ? loginController.webinarFileImages.first.url.toString()
+                                                      : '',
+                                                  width: double.infinity,
+                                                  height: isMobile ? 200 : (width > 900 ? 350 : 220),
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (_, __, ___) => Container(
+                                                    color: Colors.grey.shade200,
+                                                    alignment: Alignment.center,
+                                                    child: const Icon(Icons.image, color: AppColors.grey, size: 40),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                                                    begin: Alignment.bottomCenter,
+                                                    end: Alignment.topCenter,
+                                                  ),
+                                                ),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.bottomLeft,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(20),
+                                                  child: Text(
+                                                    webinar.webinarTitle ?? "",
+                                                    style: AppTextStyles.body(context,
+                                                      fontWeight: FontWeight.bold, color: AppColors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    TabBar(
-                                      indicatorColor: AppColors.primary,
-                                      indicatorWeight: 3,
-                                      labelColor: AppColors.black,
-                                      unselectedLabelColor: AppColors.black,
-                                      tabs: [
-                                        const Tab(text: 'Webinar Description'),
-                                        Tab(
-                                          text: Api.userInfo.read('userType').toString() == 'Job Seekers'
-                                              ? 'Clinic Description'
-                                              : "Applicants List",
+                                        ),
+                                        TabBar(
+                                          indicatorColor: AppColors.primary,
+                                          indicatorWeight: 3,
+                                          labelColor: AppColors.black,
+                                          unselectedLabelColor: AppColors.black,
+                                          tabs: [
+                                            const Tab(text: 'Webinar Description'),
+                                            Tab(
+                                              text: Api.userInfo.read('userType').toString() == 'Job Seekers'
+                                                  ? 'Clinic Description'
+                                                  : "Applicants List",
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                    Expanded(
-                                      child: TabBarView(
-                                        children: [
-                                          SingleChildScrollView(
-                                            padding: EdgeInsets.all(isMobile ? 15 : 24),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                _leftSection(webinar, isMobile),
-                                                const SizedBox(height: 20),
-                                                _rightSection(webinar, isMobile),
-                                              ],
-                                            ),
-                                          ),
-                                          Api.userInfo.read('userType') != 'Job Seekers'
-                                              ? _buildApplicationsTab(
-                                            jobController.appliedWebinarList,
-                                            width,
-                                            context,
-                                          )
-                                              : (webinar.description != null &&
-                                              webinar.description
-                                                  .toString()
-                                                  .isNotEmpty) ?
-                                          Padding(
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ];
+                      },
+                      body: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1000),
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              isMobile ? 10 : 30.0,
+                              0,
+                              isMobile ? 10 : 30.0,
+                              isMobile ? 10 : 30.0,
+                            ),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
+                                boxShadow: [
+                                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                                ],
+                              ),
+                              child: TabBarView(
+                                children: [
+                                  SingleChildScrollView(
+                                    padding: EdgeInsets.all(isMobile ? 15 : 24),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _leftSection(webinar, isMobile),
+                                        const SizedBox(height: 20),
+                                        _rightSection(webinar, isMobile),
+                                      ],
+                                    ),
+                                  ),
+                                  Api.userInfo.read('userType') != 'Job Seekers'
+                                      ? _buildApplicationsTab(
+                                          jobController.appliedWebinarList,
+                                          width,
+                                          context,
+                                        )
+                                      : (webinar.description != null && webinar.description.toString().isNotEmpty)
+                                          ? Padding(
                                               padding: const EdgeInsets.all(8.0),
-                                              child:  IgnorePointer(
+                                              child: IgnorePointer(
                                                 child: QuillEditor(
                                                   controller: _controller,
-                                                  scrollController: _scrollController,
+                                                  scrollController: ScrollController(),
                                                   focusNode: FocusNode(),
                                                   config: const QuillEditorConfig(
                                                     showCursor: false,
                                                     expands: false,
                                                   ),
                                                 ),
-                                              ))
-                                              : const SizedBox()     ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                              ),
+                                            )
+                                          : const Center(child: Text("No Description")),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -243,8 +272,8 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),

@@ -429,8 +429,8 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
 
   Widget _buildOrgLogo(dynamic job, String? logoUrl) {
     return Container(
-      width: 50,
-      height: 50,
+      width: 120,
+      height: 100,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey.shade200),

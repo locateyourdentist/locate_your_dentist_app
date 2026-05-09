@@ -70,16 +70,17 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
     String userType=Api.userInfo.read('userType')??"";
     final hasData = loginController.userData.isNotEmpty;
     final user = hasData ? loginController.userData.first : null;
-    final collegeDetails = (hasData) ? user!.details['collegeDetails'] ?? {} : {};
+    final collegeDetails =
+    hasData ? (user?.details['collegeDetails'] ?? {}) : {};
     final ug = collegeDetails['ugDegree'] ?? {};
     final pg = collegeDetails['pgDegree'] ?? {};
-    final experiences = (hasData) ? user!.details['experienceDetails'] ?? [] : [];
-    final description = (hasData && user!.details["description"] != null)
-        ? user.details["description"].toString() : "";
-    final categoryString = (user!.details['jobCategory'] is List)
-        ? (user.details['jobCategory'] as List).join(", ")
-        : user.details['jobCategory']?.toString() ?? "";
-    return Scaffold(
+    final experiences = hasData ? (user?.details['experienceDetails'] ?? []) : [];
+    final description = hasData ? user?.details["description"]?.toString() ?? "" : "";
+    final categoryString =
+    (hasData && user?.details['jobCategory'] is List)
+        ? (user!.details['jobCategory'] as List).join(", ")
+        : user?.details['jobCategory']?.toString() ?? "";
+        return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
         child: SingleChildScrollView(

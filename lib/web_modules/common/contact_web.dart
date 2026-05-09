@@ -159,8 +159,9 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
     );
   }
   Widget _buildContactList(LoginController controller) {
-    double width = MediaQuery.of(context).size.width;
-
+    final double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isMobile = width < 700;
     int crossAxisCount = 3;
     if (width < 1000) crossAxisCount = 2;
     if (width < 600) crossAxisCount = 1;
@@ -175,7 +176,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 2,
+          childAspectRatio: 1.8,
         ),
         itemBuilder: (context, index) {
           return _modernContactCard(controller.contactListApi[index]);
@@ -278,7 +279,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
   Widget _modernContactCard(ContactApiModel contact) {
     final size = MediaQuery.of(context).size.width;
     return Container(
-      width: size*0.13,
+      //width: size*0.13,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
