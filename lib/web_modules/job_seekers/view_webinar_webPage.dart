@@ -27,6 +27,8 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
   final jobController = Get.put(JobController());
   final loginController = Get.put(LoginController());
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _quillScrollController = ScrollController();
+  final FocusNode _focusNode = FocusNode();
   late QuillController _controller;
   void loadJobDescription(dynamic data) {
     try {
@@ -253,8 +255,8 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                                               child: IgnorePointer(
                                                 child: QuillEditor(
                                                   controller: _controller,
-                                                  scrollController: ScrollController(),
-                                                  focusNode: FocusNode(),
+                                                  scrollController: _quillScrollController,
+                                                  focusNode: _focusNode,
                                                   config: const QuillEditorConfig(
                                                     showCursor: false,
                                                     expands: false,
@@ -280,6 +282,15 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
     );
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _quillScrollController.dispose();
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
   Widget _leftSection(var webinar, bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,8 +314,8 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
             child:  IgnorePointer(
               child: QuillEditor(
                 controller: _controller,
-                scrollController: _scrollController,
-                focusNode: FocusNode(),
+                scrollController: _quillScrollController,
+                focusNode: _focusNode,
                 config: const QuillEditorConfig(
                   showCursor: false,
                   expands: false,
@@ -383,7 +394,7 @@ Widget _buildApplicationsTab(List applicants, double width, BuildContext context
 
 Widget _applicationCard(dynamic applier, double width, BuildContext context) {
   double cardWidth = width > 1200 ? 400 : width * 0.45;
-  final loginController = Get.put(LoginController());
+  final loginController = Get.find<LoginController>();
   final screenWidth = MediaQuery.of(context).size.width;
 
   return MouseRegion(
@@ -391,8 +402,7 @@ Widget _applicationCard(dynamic applier, double width, BuildContext context) {
     child: GestureDetector(
       onTap: () async {
         await loginController.getProfileByUserId(applier.jobSeekerId ?? "", context);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (_) =>  ViewWebProfilePage()));
+        Get.to(() => const ViewWebProfilePage());
       },
       child: Container(
         width: cardWidth,

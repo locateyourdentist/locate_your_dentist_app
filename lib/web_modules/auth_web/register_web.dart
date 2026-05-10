@@ -1,10 +1,9 @@
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
-import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
-import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
@@ -12,10 +11,8 @@ import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
-import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import '../../common_widgets/color_code.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -49,6 +46,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     _controller = QuillController.basic();
     _refresh();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _scrollController.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
   Future<void> _refresh() async {
@@ -206,6 +211,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                 child: Theme(
                                   data: Theme.of(context).copyWith(colorScheme: const ColorScheme.light(primary: AppColors.primary)),
                                   child: Stepper(
+                                    key: ValueKey(loginController.selectedUserType),
                                     type: isMobile ? StepperType.vertical : StepperType.horizontal,
                                     steps: getSteps(isMobile),
                                     currentStep: currentStep,
@@ -430,50 +436,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     );
   }
 
-  // Widget _buildTalukaDropdown() {
-  //   return GetBuilder<LoginController>(
-  //     builder: (c) {
-  //       final talukaItems =
-  //       c.talukas.map((e) => e.toString()).toList();
-  //
-  //       return CustomDropdown<String>.search(
-  //         hintText: "Taluka",
-  //         items: talukaItems,
-  //         initialItem: talukaItems.contains(c.selectedTaluka)
-  //             ? c.selectedTaluka
-  //             : null,
-  //         onChanged: (v) {
-  //           if (v != null) {
-  //             c.selectedTaluka = v;
-  //
-  //             c.selectedVillage = null;
-  //             c.villages.clear();
-  //
-  //             c.fetchVillages(v);
-  //             c.update();
-  //           }
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-  // Widget _buildStateDropdown() {
-  //   return GetBuilder<LoginController>(builder: (c) => CustomDropdown<String>.search(hintText: "State", items: c.states.map((e) => e.toString()).toList(), initialItem: c.selectedState, onChanged: (v) {
-  //     if (v != null) { c.selectedState = v; c.districts.clear(); c.selectedDistrict = null; c.fetchDistricts(v); c.update(); }
-  //   }));
-  // }
-  //
-  // Widget _buildDistrictDropdown() {
-  //   return GetBuilder<LoginController>(builder: (c) => CustomDropdown<String>.search(hintText: "District", items: c.districts.map((e) => e.toString()).toList(), initialItem: c.selectedDistrict, onChanged: (v) {
-  //     if (v != null) { c.selectedDistrict = v; c.talukas.clear(); c.selectedTaluka = null; c.fetchTalukas(v); c.update(); }
-  //   }));
-  // }
-
-  // Widget _buildTalukaDropdown() {
-  //   return GetBuilder<LoginController>(builder: (c) => CustomDropdown<String>.search(hintText: "Taluka", items: c.talukas.map((e) => e.toString()).toList(), initialItem: c.selectedTaluka, onChanged: (v) {
-  //     if (v != null) { c.selectedTaluka = v; c.villages.clear(); c.selectedVillage = null; c.fetchVillages(v); c.update(); }
-  //   }));
-  // }
   Widget _buildTalukaDropdown() {
     return GetBuilder<LoginController>(
       builder: (c) {
@@ -510,7 +472,24 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     );
   }
   Widget _buildAreaDropdown() {
-    return GetBuilder<LoginController>(builder: (c) => CustomDropdown<String>.search(hintText: "Area", items: c.villages.map((e) => e.toString()).toList(), initialItem: c.selectedVillage, onChanged: (v) => setState(() => loginController.selectedVillage = v)));
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        final villageItems = c.villages.map((e) => e.toString()).toList();
+        final selectedVillage = villageItems.contains(c.selectedVillage) ? c.selectedVillage : null;
+
+        return CustomDropdown<String>.search(
+          hintText: "Area",
+          items: villageItems,
+          initialItem: selectedVillage,
+          onChanged: (v) {
+            if (v != null) {
+              c.selectedVillage = v;
+              c.update();
+            }
+          },
+        );
+      },
+    );
   }
 
   Widget _step3() {

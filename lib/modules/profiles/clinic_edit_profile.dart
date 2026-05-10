@@ -449,8 +449,8 @@ import 'package:geocoding/geocoding.dart';
                           headerStyle: AppTextStyles.caption(context, color: Colors.black),
                           listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
                         items: controller.states.map((s) => s.toString()).toList(),
-                        //initialItem: controller.selectedState,
-                        initialItem: items.contains(controller.selectedState) ? controller.selectedState : null,
+                        initialItem: controller.selectedState,
+                        //initialItem: items.contains(controller.selectedState) ? controller.selectedState : null,
                         onChanged: (val) {
                           if (val != null) {
                             controller.selectedState = val;
@@ -476,10 +476,10 @@ import 'package:geocoding/geocoding.dart';
                       return CustomDropdown<String>.search(
                         hintText: "Select District",
                         items: controller.districts.map((d) => d.toString()).toList(),
-                        //initialItem: controller.selectedDistrict,
-                        initialItem: items.contains(controller.selectedDistrict)
-                            ? controller.selectedDistrict
-                            : null,
+                        initialItem: controller.selectedDistrict,
+                        // initialItem: items.contains(controller.selectedDistrict)
+                        //     ? controller.selectedDistrict
+                        //     : null,
                         decoration: CustomDropdownDecoration(
                           hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
                           headerStyle: AppTextStyles.caption(context, color: Colors.black),
@@ -537,10 +537,10 @@ import 'package:geocoding/geocoding.dart';
                                 width: 1.5,
                               ),
                             ),
-                            //initialItem: loginController.selectedTaluka,
-                            initialItem: items.contains(controller.selectedTaluka)
-                                ? controller.selectedTaluka
-                                : null,
+                            initialItem: loginController.selectedTaluka,
+                            // initialItem: items.contains(controller.selectedTaluka)
+                            //     ? controller.selectedTaluka
+                            //     : null,
                             excludeSelected: false,
                             onChanged: (val) {
                               setState(() => loginController.selectedTaluka = val);
@@ -583,9 +583,10 @@ import 'package:geocoding/geocoding.dart';
                               ),
 
                             ),
-                            initialItem: items.contains(controller.selectedVillage)
-                                ? controller.selectedVillage
-                                : null,
+                            initialItem:controller.selectedVillage,
+                            // initialItem: items.contains(controller.selectedVillage)
+                            //     ? controller.selectedVillage
+                            //     : null,
                             excludeSelected: false,
                             onChanged: (val) {
                               setState(() => loginController.selectedVillage = val);

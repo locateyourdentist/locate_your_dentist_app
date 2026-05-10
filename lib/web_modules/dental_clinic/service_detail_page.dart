@@ -19,7 +19,7 @@ class ServiceDetailPageWeb extends StatefulWidget {
 
 class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyServiceDetail = GlobalKey<ScaffoldState>();
   final serviceController = Get.put(ServiceController());
   final loginController = Get.put(LoginController());
 
@@ -42,8 +42,6 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
   @override
   void initState() {
     super.initState();
-
-    /// Get service id
     final args = Get.arguments as Map<String, dynamic>?;
     if (args != null && args['serviceId'] != null) {
       serviceId = args['serviceId'].toString();
@@ -51,14 +49,10 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
         serviceController.getServiceDetailAdmin(serviceId!, context);
       });
     }
-
-    /// Animation Controller
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-
-    /// Title Animation
     _titleFade = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
@@ -152,9 +146,8 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-
     return Scaffold(
-      key: _scaffoldKey,
+      key: _scaffoldKeyServiceDetail,
       backgroundColor: AppColors.white,
       drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
@@ -179,13 +172,13 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
                 Expanded(
                   child: Stack(
                     children: [
-                      if (isLoggedIn && !isDesktop)
+                      if (!isDesktop)
                         Positioned(
                           top: 10,
                           left: 10,
                           child: IconButton(
                             icon: const Icon(Icons.menu),
-                            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+                            onPressed: () => _scaffoldKeyServiceDetail.currentState?.openDrawer(),
                           ),
                         ),
                       SingleChildScrollView(

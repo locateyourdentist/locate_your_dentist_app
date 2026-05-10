@@ -16,8 +16,8 @@ import 'package:locate_your_dentist/modules/dashboard/date_filter_drawer.dart';
   const ViewContactList({super.key});
   @override
   State<ViewContactList> createState() => _ViewContactListState();
-}
-class _ViewContactListState extends State<ViewContactList> {
+  }
+  class _ViewContactListState extends State<ViewContactList> {
   final contactController=Get.put(ContactController());
   final loginController=Get.put(LoginController());
   TextEditingController searchController=TextEditingController();

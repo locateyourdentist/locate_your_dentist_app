@@ -16,9 +16,11 @@ class ViewWebProfilePage extends StatefulWidget {
   State<ViewWebProfilePage> createState() => _ViewWebProfilePageState();
 }
 class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyProfile = GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _quillScrollController = ScrollController();
+  final FocusNode _focusNode = FocusNode();
   late QuillController _controller;
   void loadJobDescription(dynamic data) {
     try {
@@ -74,6 +76,15 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     loadJobDescription(data);
   }
   @override
+  void dispose() {
+    _scrollController.dispose();
+    _quillScrollController.dispose();
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     final bool isDesktop = width >= 1100;
@@ -85,10 +96,9 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     final ug = collegeDetails['ugDegree'] ?? {};
     final pg = collegeDetails['pgDegree'] ?? {};
     final experiences = (hasData) ? user!.details['experienceDetails'] ?? [] : [];
-    loadJobDescription(user?.details["description"]);
 
     return Scaffold(
-      key: _scaffoldKey,
+      key: _scaffoldKeyProfile,
       backgroundColor: AppColors.scaffoldBg,
       drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
@@ -114,8 +124,8 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                       children: [
                         if (!isDesktop)
                           IconButton(
-                            icon: const Icon(Icons.menu),
-                            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+                            icon: const Icon(Icons.menu,color: AppColors.black,),
+                            onPressed: () => _scaffoldKeyProfile.currentState?.openDrawer(),
                           ),
 
                         _headerHero(user, width, context),
@@ -133,8 +143,8 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                                     child:  IgnorePointer(
                                       child: QuillEditor(
                                         controller: _controller,
-                                        scrollController: _scrollController,
-                                        focusNode: FocusNode(),
+                                        scrollController: _quillScrollController,
+                                        focusNode: _focusNode,
                                         config: const QuillEditorConfig(
                                           showCursor: false,
                                           expands: false,
@@ -383,65 +393,6 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
       ),
     );
   }
-}
-Widget _profileHeader(user, double size,dynamic context) {
-  double size=MediaQuery.of(context).size.width;
-  final loginController=Get.put(LoginController());
-  return Container(
-    padding: const EdgeInsets.all(24),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      gradient: const LinearGradient(
-        colors: [AppColors.primary, AppColors.secondary],
-      ),
-    ),
-    child: Row(
-      children: [
-        CircleAvatar(
-          radius: size*0.15,
-          backgroundImage: (user?.images.isNotEmpty ?? false)
-              ? NetworkImage(user.images[0])
-              : null,
-          child: (user?.images.isEmpty ?? true)
-              ? const Icon(Icons.person, size: 40)
-              : null,
-        ),
-
-        const SizedBox(width: 20),
-
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(user?.name ?? "",
-                  style: AppTextStyles.caption(context)),
-
-              const SizedBox(height: 6),
-
-              Text(user?.email ?? "",
-                  style: AppTextStyles.caption(context)),
-
-              const SizedBox(height: 10),
-
-              ElevatedButton(
-                onPressed: () async{
-                 //await loginController.getProfileByUserId(user?.userId??"", context);
-                  Api.userInfo.write('selectUId',user?.userId??"");
-
-                  Get.toNamed('/registerPageWeb');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: AppColors.primary,
-                ),
-                child:  Text("Edit Profile",style: AppTextStyles.caption(context),),
-              )
-            ],
-          ),
-        )
-      ],
-    ),
-  );
 }
 Widget _card({required Widget child}) {
   return Container(

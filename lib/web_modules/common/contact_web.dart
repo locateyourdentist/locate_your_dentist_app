@@ -28,6 +28,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
   final contactController=Get.put(ContactController());
   final _formKeyPublicContactProfile = GlobalKey<FormState>();
   final loginController=Get.put(LoginController());
+  final GlobalKey<ScaffoldState> _scaffoldKeyContactView = GlobalKey<ScaffoldState>();
 
   List<Map<String, dynamic>> contacts = [];
   @override
@@ -54,13 +55,15 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
         return CommonHeader();
       }
     }
+
     return Scaffold(
+      key: _scaffoldKeyContactView,
       appBar: buildAppBar(),
       body: GetBuilder<LoginController>(
         builder: (controller) {
           return Row(
             children: [
-              Api.userInfo.read('token') != null?AdminSideBar():SizedBox(),
+              if (isDesktop) const AdminSideBar(),
 
               Expanded(
                 child: SingleChildScrollView(
@@ -76,11 +79,20 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
                             fit: BoxFit.cover,
                           ),
                         ),
+
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-
+                            if (!isDesktop)
+                              Positioned(
+                                top: 10,
+                                left: 10,
+                                child: IconButton(
+                                  icon: const Icon(Icons.menu,color: AppColors.black,),
+                                  onPressed: () => _scaffoldKeyContactView.currentState?.openDrawer(),
+                                ),
+                              ),
                             Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Text(

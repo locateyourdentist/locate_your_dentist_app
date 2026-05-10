@@ -20,7 +20,7 @@ class CreatePlanWeb extends StatefulWidget {
 }
 
 class _CreatePlanWebState extends State<CreatePlanWeb> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyCreatePlan = GlobalKey<ScaffoldState>();
   final planController = Get.put(PlanController());
   final _formKeyPlanProfileWeb = GlobalKey<FormState>();
   String? planId;
@@ -211,10 +211,12 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
     double width = MediaQuery.of(context).size.width;
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
 
     return Scaffold(
-      key: _scaffoldKey,
-      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      key: _scaffoldKeyCreatePlan,
+      backgroundColor: Colors.white,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
         height: isMobile ? 60 : 80,
         title: "LOCATE YOUR DENTIST",
@@ -251,8 +253,8 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                     top: 10,
                                     left: 10,
                                     child: IconButton(
-                                      icon: const Icon(Icons.menu),
-                                      onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+                                      icon: const Icon(Icons.menu,color: AppColors.black),
+                                      onPressed: () => _scaffoldKeyCreatePlan.currentState?.openDrawer(),
                                     ),
                                   ),
                                 SingleChildScrollView(

@@ -125,6 +125,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   void initState() {
     super.initState();
@@ -145,6 +147,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      navigatorKey: _navigatorKey,
       title: 'Locate Your Dentist',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

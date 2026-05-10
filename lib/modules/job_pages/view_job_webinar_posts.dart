@@ -74,7 +74,6 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
     await jobController.getWebinarListAdmin(context);
     loadJobDescription(
         jobController.webDescriptionData);
-
   }
   @override
   Widget build(BuildContext context) {
@@ -281,9 +280,11 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                     Center(child: Column(
                       children: [
                         const SizedBox(height: 0.05,),
-                        Text('No data found',style: AppTextStyles.caption(context,color: AppColors.black),),
+                        buildShimmerEmptyWidget(size)
+                        // Text('No data found',style: AppTextStyles.caption(context,color: AppColors.black),),
                       ],
-                    ),),                    if(jobController.jobList.isNotEmpty)
+                    ),),
+                    if(jobController.jobList.isNotEmpty)
 
                       Expanded(
                           child: RefreshIndicator(
@@ -355,7 +356,8 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                               Center(child: Column(
                                 children: [
                                   const SizedBox(height: 0.05,),
-                                  Text('No data found',style: AppTextStyles.caption(context,color: AppColors.black),),
+                                  buildShimmerEmptyWidget(size)
+                                  //Text('No data found',style: AppTextStyles.caption(context,color: AppColors.black),),
                                 ],
                               ),),
                             if(jobController.webinarList.isNotEmpty)

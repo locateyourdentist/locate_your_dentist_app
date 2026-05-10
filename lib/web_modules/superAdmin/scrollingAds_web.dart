@@ -11,7 +11,10 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import '../../common_widgets/color_code.dart';
 import '../../common_widgets/common_textstyles.dart';
+import '../../common_widgets/common-alertdialog.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 class UploadImagesWeb extends StatefulWidget {
   const UploadImagesWeb({super.key});
@@ -20,9 +23,8 @@ class UploadImagesWeb extends StatefulWidget {
 }
 
 class _UploadImagesWebState extends State<UploadImagesWeb> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final PlanController planController = Get.put(PlanController());
-  final LoginController loginController = Get.put(LoginController());
+  final GlobalKey<ScaffoldState> _scaffoldKeyAds = GlobalKey<ScaffoldState>();
   final List<String> userTypes = const [
     "Dental Clinic",
     "Dental Lab",
@@ -37,19 +39,18 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
   void initState() {
     super.initState();
     planController.selectedUserType = "Dental Clinic";
-    _initData();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initData());
   }
 
   Future<void> _initData() async {
     String userType = Api.userInfo.read('userType') ?? "";
     String userIdForFetch = userType == 'superAdmin' ? "" : Api.userInfo.read('userId') ?? "";
-    
+
     await planController.getUploadImages(
       userId: userIdForFetch,
       userType: planController.selectedUserType!,
       context: context,
     );
-    await planController.checkPlansStatus(Api.userInfo.read('userId') ?? "", context);
     await planController.getPostImagePlanList(planController.selectedUserType.toString(), context);
     planController.update();
   }
@@ -72,21 +73,13 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
       if (result == null) continue;
       final Uint8List croppedBytes = result;
 
-      final appImage2 = AppImage2(
+      planController.editUploadImage1.add(AppImage2(
         bytes: croppedBytes,
         isActive: true,
-      );
-
-      planController.editUploadImage1.add(appImage2);
+        id: "0",
+      ));
     }
     planController.update();
-  }
-
-  Map<String, dynamic>? getSafePosterPlan(PlanController controller) {
-    if (controller.checkPlanList.isEmpty) return null;
-    final data = controller.checkPlanList.first;
-    if (data == null || data is! Map<String, dynamic>) return null;
-    return data["details"]?["plan"]?["posterPlan"];
   }
 
   @override
@@ -97,7 +90,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     final String userType = Api.userInfo.read('userType') ?? "";
 
     return Scaffold(
-      key: _scaffoldKey,
+      key: _scaffoldKeyAds,
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
         height: isMobile ? 60 : 80,
@@ -106,100 +99,127 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
         onNotification: () {},
       ),
       drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
-      body: GetBuilder<PlanController>(
-        builder: (controller) {
-          return Row(
-            children: [
-              if (isDesktop) const AdminSideBar(),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: _refresh,
-                  child: Stack(
-                    children: [
-                      if (!isDesktop)
-                        Positioned(
-                          top: 10, left: 10,
-                          child: IconButton(
-                            icon: const Icon(Icons.menu),
-                            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-                          ),
-                        ),
-                      SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.fromLTRB(isMobile ? 10 : 30, !isDesktop ? 60 : 30, isMobile ? 10 : 30, 30),
-                        child: Center(
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 1300),
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: const [
-                                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
-                                ],
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(isMobile ? 15 : 30.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+      body: Row(
+        children: [
+          if (isDesktop) const AdminSideBar(),
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: _refresh,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.all(isMobile ? 15 : 30),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1300),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
+                                ),
+                                child: Stack(
                                   children: [
-                                    if (userType == 'superAdmin') _buildUserTypeSelector(controller, isMobile),
-                                    const SizedBox(height: 30),
-                                    _buildHeaderRow(context, isMobile),
-                                    const SizedBox(height: 20),
-                                    _buildImageGrid(controller, isMobile, width, userType),
+                                    if (!isDesktop)
+                                      Positioned(
+                                        top: 10,
+                                        left: 10,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.menu),
+                                          onPressed: () => _scaffoldKeyAds.currentState?.openDrawer(),
+                                        ),
+                                      ),
+                                    Padding(
+                                      padding: EdgeInsets.all(isMobile ? 15 : 30.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          if (!isDesktop) const SizedBox(height: 40),
+                                          if (userType == 'superAdmin') _buildUserTypeSelector(isMobile),
+                                          const SizedBox(height: 30),
+                                          _buildHeaderRow(context, isMobile),
+                                          const SizedBox(height: 20),
+                                          GetBuilder<PlanController>(
+                                            builder: (controller) {
+                                              if (controller.isLoading) {
+                                                return _buildShimmerGrid(isMobile);
+                                              }
+                                              return _buildImageGrid(controller, isMobile, userType);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-                            ),
+                              const SizedBox(height: 30),
+                            ],
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          );
-        },
+                GetBuilder<PlanController>(
+                  builder: (controller) {
+                    if (controller.editUploadImage1.isEmpty) return const SizedBox.shrink();
+                    return Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, -2))],
+                      ),
+                      child: Center(
+                        child: SizedBox(
+                          width: 300,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () => _saveAll(controller),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                            child: const Text("Save All Changes", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildUserTypeSelector(PlanController controller, bool isMobile) {
+  Widget _buildUserTypeSelector(bool isMobile) {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 15,
       runSpacing: 15,
       children: [
-        Text(
-          "Select User Type",
-          style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
-        ),
+        Text("Select User Type", style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
         SizedBox(
           width: isMobile ? double.infinity : 350,
           child: CustomDropdownField(
             hint: "Select User Type",
             borderColor: AppColors.grey,
             fillColor: AppColors.white,
-
-            items: userTypes.toSet().toList(),
-            selectedValue:
-            (controller.selectedUserType != null &&
-                controller.selectedUserType!.isNotEmpty &&
-                userTypes.contains(controller.selectedUserType))
-                ? controller.selectedUserType
-                : null,
-
+            items: userTypes,
+            selectedValue: planController.selectedUserType,
             onChanged: (value) async {
               if (value == null) return;
-              controller.selectedUserType = value;
-              String userType = Api.userInfo.read('userType') ?? "";
-              String userIdForFetch = userType == 'superAdmin' ? "" : Api.userInfo.read('userId') ?? "";
-              await controller.getUploadImages(userId: userIdForFetch, userType: value, context: context);
-              await controller.getPostImagePlanList(value, context);
-              controller.update();
+              planController.selectedUserType = value;
+              await _refresh();
             },
           ),
         ),
@@ -211,29 +231,45 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("Manage Uploads", style: AppTextStyles.subtitle(context)),
+        Text("Manage Scrolling Ads", style: AppTextStyles.subtitle(context)),
         ElevatedButton.icon(
           onPressed: () => pickImages(context),
           icon: const Icon(Icons.add),
-          label: const Text("Upload Images"),
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: isMobile ? 12 : 20, vertical: 15),
-          ),
+          label: const Text("Add Image"),
+          style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: isMobile ? 12 : 20, vertical: 15)),
         )
       ],
     );
   }
 
-  Widget _buildImageGrid(PlanController controller, bool isMobile, double width, String userType) {
-    if (controller.editUploadImage1.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(50.0),
-          child: Text("No images found", style: AppTextStyles.caption(context)),
+  Widget _buildShimmerGrid(bool isMobile) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 6,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 450,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 20,
+        mainAxisExtent: 450,
+      ),
+      itemBuilder: (_, __) => Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+          ),
         ),
-      );
-    }
+      ),
+    );
+  }
 
+  Widget _buildImageGrid(PlanController controller, bool isMobile, String userType) {
+    if (controller.editUploadImage1.isEmpty) {
+      return const Center(child: Padding(padding: EdgeInsets.all(50.0), child: Text("No ads found")));
+    }
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -242,23 +278,22 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
         maxCrossAxisExtent: 450,
         mainAxisSpacing: 20,
         crossAxisSpacing: 20,
-        mainAxisExtent: 420,
+        mainAxisExtent: 450,
       ),
-      itemBuilder: (_, index) {
-        final image = controller.editUploadImage1[index];
-        return _buildImageCard(controller, image, index, userType);
-      },
+      itemBuilder: (_, index) => _buildImageCard(controller, controller.editUploadImage1[index], index, userType),
     );
   }
 
   Widget _buildImageCard(PlanController controller, AppImage2 image, int index, String userType) {
+    final usedPlans = controller.editUploadImage1.where((o) => o != image && o.planId != null).map((o) => o.planId!).toSet();
+    final availablePlans = controller.postImagePlanList.where((p) => !usedPlans.contains(p.id) || p.id == image.planId).toList();
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(blurRadius: 10, color: Colors.grey.withOpacity(0.2))
-        ],
+        boxShadow: [BoxShadow(blurRadius: 10, color: Colors.grey.withOpacity(0.2))],
+        border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -268,83 +303,59 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
               borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
               child: image.bytes != null
                   ? Image.memory(image.bytes!, width: double.infinity, fit: BoxFit.cover)
-                  : image.url != null
-                  ? Image.network(image.url!, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.broken_image))
-                  : const Icon(Icons.image_not_supported),
+                  : Image.network(image.url ?? "", width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.image)),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 DropdownButtonFormField<String>(
                   isExpanded: true,
-                  value: controller.postImagePlanList.any((plan) => plan.id == image.planId) ? image.planId : null,
-                  hint: Text("Select Plan", style: AppTextStyles.caption(context)),
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    border: OutlineInputBorder(),
-                  ),
-                  items: controller.postImagePlanList.map((plan) {
-                    return DropdownMenuItem<String>(
-                      value: plan.id,
-                      child: Text("${plan.postPlanName} (${plan.duration} days)", 
-                        style: AppTextStyles.caption(context),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) async {
-                    if (value == null) return;
-                    image.planId = value;
+                  value: availablePlans.any((p) => p.id == image.planId) ? image.planId : null,
+                  hint: const Text("Select Plan"),
+                  decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 10), border: OutlineInputBorder()),
+                  items: availablePlans.map((p) => DropdownMenuItem(value: p.id, child: Text("${p.postPlanName} (${p.duration} days)"))).toList(),
+                  onChanged: (val) {
+                    if (val == null) return;
+                    image.planId = val;
+                    final p = controller.postImagePlanList.firstWhere((element) => element.id == val);
+                    DateFormat formatter = DateFormat('dd-MM-yyyy');
+                    DateTime now = DateTime.now();
+                    image.startDate = formatter.format(now);
+                    image.endDate = formatter.format(now.add(Duration(days: int.tryParse(p.duration.toString()) ?? 0)));
                     controller.update();
-                    await _handleStatusChange(controller, image, index, userType, image.isActive ?? false);
                   },
                 ),
                 const SizedBox(height: 10),
-                Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 10,
-                  runSpacing: 5,
+                if (image.startDate != null && image.startDate!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text("Validity: ${image.startDate} to ${image.endDate}", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
+                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
-                          height: 35,
-                          child: Switch(
-                            value: image.isActive ?? false,
-                            onChanged: (val) => _handleStatusChange(controller, image, index, userType, val),
-                          ),
-                        ),
-                        Text(image.isActive == true ? "Active" : "Inactive", 
-                          style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          icon: const Icon(Icons.edit, color: Colors.blue, size: 20),
-                          onPressed: () {},
-                        ),
-                        const SizedBox(width: 15),
-                        IconButton(
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                          onPressed: () {
-                            controller.editUploadImage1.removeAt(index);
-                            controller.update();
+                        Switch(
+                          value: image.isActive ?? true,
+                          onChanged: (val) {
+                            showDeactivateConfirmDialog(
+                              context: context,
+                              isActivating: val,
+                              onConfirm: () {
+                                image.isActive = val;
+                                controller.update();
+                              },
+                            );
                           },
                         ),
+                        Text(image.isActive == true ? "Active" : "Inactive", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
-                    )
+                    ),
+                    IconButton(icon: const Icon(Icons.delete, color: Colors.red, size: 20), onPressed: () => _confirmDelete(index, image)),
                   ],
                 ),
               ],
@@ -355,45 +366,46 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     );
   }
 
-  Future<void> _handleStatusChange(PlanController controller, AppImage2 image, int index, String userType, bool val) async {
-    image.isActive = val;
-    controller.editUploadImage1[index] = image;
-    controller.update();
-
-    if (image.planId == null || image.planId == "0") {
-      Get.snackbar("Error", "Please select a plan first");
-      return;
-    }
-
-    final posterPlan = getSafePosterPlan(controller);
-    final startDate = posterPlan?["startDate"]?.toString() ?? "";
-    final endDate = posterPlan?["endDate"]?.toString() ?? "";
-
-    // Only upload the specific image being edited
-    List<Uint8List> currentFile = image.bytes != null ? [image.bytes!] : [];
-
-    String currentUserId = Api.userInfo.read('userId')?.toString() ?? "";
-    String storedUserType = Api.userInfo.read('userType')?.toString() ?? "";
-    String targetUserType = (storedUserType.toLowerCase() == 'superadmin') 
-        ? (controller.selectedUserType ?? "Dental Clinic") 
-        : storedUserType;
-
-    if (currentUserId.isEmpty || targetUserType.isEmpty) {
-      Get.snackbar("Error", "Missing session data. Please login again.");
-      return;
-    }
-
-    await controller.uploadImagesUserType(
-      currentUserId,
-      targetUserType,
-      image.id!,
-      "1",
-      startDate,
-      endDate,
-      val.toString(),
-      currentFile,
-      context,
+  void _confirmDelete(int index, AppImage2 image) {
+    showDeleteDialog(
+      context: context,
+      title: "Remove Ad?",
+      message: "Are you sure you want to remove this scrolling ad?",
+      onConfirm: () async {
+        if (image.url != null) await planController.loginController.deleteAwsFile(image.url!, 'postImage', context);
+        planController.editUploadImage1.removeAt(index);
+        planController.update();
+      },
     );
-    await _refresh();
+  }
+
+  Future<void> _saveAll(PlanController controller) async {
+    Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
+    try {
+      String userId = Api.userInfo.read('userId')?.toString() ?? "";
+      String type = controller.selectedUserType ?? "Dental Clinic";
+
+      for (var img in controller.editUploadImage1) {
+        if (img.id == "0" && img.bytes == null) continue;
+
+        await controller.api.uploadImagesUserType(
+          userId,
+          type,
+          img.id?.toString() ?? "0",
+          img.planId?.toString() ?? "1",
+          img.startDate ?? "",
+          img.endDate ?? "",
+          (img.isActive ?? true).toString(),
+          img.bytes != null ? [img.bytes!] : [],
+        );
+      }
+
+      if (Get.isDialogOpen ?? false) Get.back();
+      Get.snackbar("Success", "All changes saved successfully");
+      await _refresh();
+    } catch (e) {
+      if (Get.isDialogOpen ?? false) Get.back();
+      Get.snackbar("Error", "Failed to save: $e");
+    }
   }
 }

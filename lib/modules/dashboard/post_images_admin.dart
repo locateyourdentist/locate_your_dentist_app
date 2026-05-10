@@ -1,30 +1,32 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:locate_your_dentist/api/api.dart';
-import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
-import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
-import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
-import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
-import 'package:locate_your_dentist/modules/dashboard/crop_screen.dart';
-import '../../common_widgets/color_code.dart';
-import '../../common_widgets/common_textstyles.dart';
-import '../plans/plan_controller.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:crop_your_image/crop_your_image.dart';
-import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
+import '../../api/api.dart';
+import '../../common_widgets/color_code.dart';
+import '../../common_widgets/common-alertdialog.dart';
+import '../../common_widgets/common_bottom_navigation.dart';
+import '../../common_widgets/common_textfield.dart';
+import '../../common_widgets/common_textstyles.dart';
+import '../auth/login_screen/login_controller.dart';
+import '../plans/plan_controller.dart';
+import 'crop_screen.dart';
 
 class UploadImages extends StatefulWidget {
   const UploadImages({super.key});
+
   @override
   State<UploadImages> createState() => _UploadImagesState();
 }
+
 class _UploadImagesState extends State<UploadImages> {
-  final PlanController planController = Get.put(PlanController());
-  final LoginController loginController=Get.put(LoginController());
+  final PlanController controller = Get.put(PlanController());
+  final LoginController loginController = Get.put(LoginController());
+  final ImagePicker picker = ImagePicker();
+
   final List<String> userTypes = const [
     "Dental Clinic",
     "Dental Lab",
@@ -33,143 +35,142 @@ class _UploadImagesState extends State<UploadImages> {
     "Dental Consultant",
     "Job Seekers"
   ];
-  final ImagePicker picker = ImagePicker();
-  int? editingIndex;
-  String ? startDate;
-  String ? endDate;
-  // Future<void> pickImages() async {
-  //   final List<XFile>? pickedImages = await picker.pickMultiImage();
-  //
-  //   if (pickedImages != null && pickedImages.isNotEmpty) {
-  //     const int maxImages = 20;
-  //     final int availableSlots = maxImages - planController.editUploadImage.length;
-  //     if (availableSlots <= 0) {
-  //       Get.snackbar("Limit reached", "You can upload only $maxImages images");
-  //       return;
-  //     }
-  //     final limited = pickedImages.take(availableSlots);
-  //     setState(() {
-  //       planController.editUploadImage.addAll(
-  //         limited.map((x) => AppImage(file: File(x.path))),
-  //       );
-  //     });
-  //     print('upload img${planController.editUploadImage}');
-  //     String? isActive1;
-  //     String?  startDate1;
-  //     String? endDate1;
-  //     String userType=Api.userInfo.read('userType');
-  //     // List<File> filesToUpload = [];
-  //     // int? selectedImageIndex;
-  //     //
-  //     // if (selectedImageIndex != null) {
-  //     //   final selectedImage =
-  //     //   planController.editUploadImage[selectedImageIndex!];
-  //     //   if (selectedImage.file != null) {
-  //     //     filesToUpload.add(selectedImage.file!);
-  //     //   }
-  //     // }
-  //     // List<Uint8List> filesToUpload = planController.editUploadImage
-  //     //     .where((img) => img.file != null).map((img) => img.file!).toList();
-  //     List<Uint8List> filesToUpload = await Future.wait(
-  //       planController.editUploadImage
-  //           .where((img) => img.file != null)
-  //           .map((img) async => await img.file!.readAsBytes()),
-  //     );
-  //     if(userType!='superAdmin') {
-  //       isActive1  = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["isActive"] ?? "false";
-  //       startDate1 = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["startDate"] ?? "";
-  //       endDate1   = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["endDate"] ?? "";
-  //     }
-  //     final posterId = planController.posterImage.isNotEmpty ? planController.posterImage.first.id.toString() : "0";
-  //     print('FDGFN $posterId fgfile upload $filesToUpload');
-  //     userType=='superAdmin'?
-  //     // await  planController.uploadImagesUserType(Api.userInfo.read('userId'), planController.selectedUserType!,"0","0",startDate.toString(),endDate.toString(),"true",filesToUpload, context):
-  //     await  planController.uploadImagesUserType(Api.userInfo.read('userId'), planController.selectedUserType!,"0","1",startDate.toString(),endDate.toString(),planController.posterImage.first.isActive.toString(),filesToUpload, context):
-  //    // await  planController.uploadImagesUserType(Api.userInfo.read('userId'), userType,planController.posterImage.first.id.toString(),planController.posterImage.first.preference.toString(),startDate1.toString(),endDate1.toString(),isActive1.toString(),filesToUpload,context);
-  //     await  planController.uploadImagesUserType(Api.userInfo.read('userId'), userType,"0","1",startDate1.toString(),endDate1.toString(),isActive1.toString(),filesToUpload,context);
-  //   }
-  // }
-  Future<void> pickImages(BuildContext context) async {
-    final List<XFile>? pickedImages = await picker.pickMultiImage();
-
-    if (pickedImages == null || pickedImages.isEmpty) return;
-
-    for (var file in pickedImages) {
-      final bytes = await file.readAsBytes();
-
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => CropScreen(imageBytes: bytes),
-        ),
-      );
-
-      if (result == null) continue;
-      final Uint8List croppedBytes = result;
-
-      final appImage2 = AppImage2(
-        bytes: croppedBytes,
-        isActive: true,
-      );
-
-      planController.editUploadImage1.add(appImage2);
-    }
-
-    planController.update();
-  }
-  Map<String, String> calculatePlanDates(String durationStr) {
-    int duration = int.tryParse(durationStr) ?? 0;
-    DateTime start = DateTime.now();
-    DateTime end = start.add(Duration(days: duration));
-    return {
-      "startDate": "${start.day}-${start.month}-${start.year}",
-      "endDate": "${end.day}-${end.month}-${end.year}",
-    };
-  }
-  DateTime parseDate(String date) {
-    final parts = date.split("-");
-    return DateTime(
-      int.parse(parts[2]),
-      int.parse(parts[1]),
-      int.parse(parts[0]),
-    );
-  }
-  int calculateDuration(String start, String end) {
-    final startDate = parseDate(start);
-    final endDate = parseDate(end);
-    return endDate.difference(startDate).inDays;
-  }
 
   @override
   void initState() {
     super.initState();
-    String userType=  Api.userInfo.read('userType')??"";
-    planController.selectedUserType="Dental Clinic";
-    planController.getUploadImages(userId:userType=='superAdmin'?"":Api.userInfo.read('userId')??"",userType: planController.selectedUserType!,context: context);
-    planController.checkPlansStatus(Api.userInfo.read('userId')??"",context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadInitialData();
+    });
   }
-  Future<void> _refresh() async {
-    planController.selectedUserType=null;
-    Api.userInfo.read('userType')=='superAdmin'? planController.getUploadImages(userType: Api.userInfo.read('userType')??"",context: context):
-    planController.getUploadImages(userId:Api.userInfo.read('userId')??"",userType: Api.userInfo.read('userType')??"", context: context);
+
+  Future<void> loadInitialData() async {
+    String userType = Api.userInfo.read('userType') ?? "";
+    if (userType == 'superAdmin') {
+      controller.selectedUserType = "Dental Clinic";
+    } else {
+      controller.selectedUserType = userType;
+    }
+    await refreshData();
   }
+
+  Future<void> refreshData() async {
+    String userType = Api.userInfo.read('userType') ?? "";
+    String targetUserType = controller.selectedUserType ?? userType;
+
+    String userId = userType == 'superAdmin' ? "" : (Api.userInfo.read('userId') ?? "");
+
+    await controller.getUploadImages(
+      userId: userId,
+      userType: targetUserType,
+      context: context,
+    );
+
+    await controller.getPostImagePlanList(targetUserType, context);
+    controller.update();
+  }
+
+  Future<void> pickAndCropImage() async {
+    if (controller.editUploadImage1.length >= 20) {
+      Get.snackbar("Limit reached", "You can upload only 20 images total.");
+      return;
+    }
+    final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked == null) return;
+    final bytes = await picked.readAsBytes();
+    final croppedBytes = await Navigator.push<Uint8List>(
+      context,
+      MaterialPageRoute(builder: (_) => CropScreen(imageBytes: bytes)),
+    );
+
+    if (croppedBytes != null) {
+      controller.editUploadImage1.add(AppImage2(
+        bytes: croppedBytes,
+        isActive: true,
+        id: "0", 
+      ));
+      controller.update();
+    }
+  }
+  Future<void> saveAll() async {
+    String userType = Api.userInfo.read('userType') ?? "";
+    String targetUserType = controller.selectedUserType ?? userType;
+    String currentUserId = Api.userInfo.read('userId') ?? "";
+
+    if (controller.editUploadImage1.isEmpty) {
+      Get.snackbar("No Changes", "Add or modify images before saving.");
+      return;
+    }
+
+   // for (var img in controller.editUploadImage1) {
+     // if (img.planId == null || img.planId!.isEmpty) {
+       // Get.snackbar("Error", "Please select a plan for all images.");
+        //return;
+     // }
+    //}
+
+    Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
+
+    bool allSuccess = true;
+    String lastError = "";
+
+    try {
+      for (var img in controller.editUploadImage1) {
+        final String isActiveStr = (img.isActive == true).toString();
+        debugPrint("SAVING IMAGE: id=${img.id}, plan=${img.planId}, active=$isActiveStr");
+
+        final response = await controller.api.uploadImagesUserType(
+          currentUserId,
+          targetUserType,
+          img.id ?? "0", 
+          img.planId!??"1",
+          img.startDate ?? "",
+          img.endDate ?? "",
+          isActiveStr,
+          img.bytes != null ? [img.bytes!] : [],
+        );
+
+        final data = jsonDecode(response.body);
+        if (data["status"].toString().toLowerCase() != "success") {
+          allSuccess = false;
+          lastError = data["message"] ?? "Unknown error";
+        }
+      }
+
+      if (Get.isDialogOpen ?? false) Get.back();
+
+      if (allSuccess) {
+        Get.snackbar("Success", "All changes saved successfully.");
+        await refreshData();
+      } else {
+        Get.snackbar("Partial Error", "Some updates failed: $lastError");
+        await refreshData();
+      }
+    } catch (e) {
+      if (Get.isDialogOpen ?? false) Get.back();
+      Get.snackbar("Error", "Failed to save: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.width;
-   String userType=  Api.userInfo.read('userType')??"";
+    String userType = Api.userInfo.read('userType') ?? "";
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,backgroundColor: AppColors.white,
-        title: Text('Upload Images',
-          style: AppTextStyles.subtitle(context,color: AppColors.black),),automaticallyImplyLeading: true,iconTheme: IconThemeData(color: AppColors.black,size: size*0.05),
+        backgroundColor: AppColors.white,
+        centerTitle: true,
+        title: Text(
+          'Manage Scrolling Ads',
+          style: AppTextStyles.subtitle(context, color: AppColors.black),
+        ),
+        automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(color: AppColors.black),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
+            onTap: () => Navigator.pop(context),
             child: Container(
-              decoration:  const BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [AppColors.primary, AppColors.secondary],
@@ -177,12 +178,7 @@ class _UploadImagesState extends State<UploadImages> {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
-              ),
+              child: const Center(child: Icon(Icons.arrow_back, color: AppColors.white)),
             ),
           ),
         ),
@@ -190,907 +186,238 @@ class _UploadImagesState extends State<UploadImages> {
       body: GetBuilder<PlanController>(
         builder: (controller) {
           return RefreshIndicator(
-            onRefresh:_refresh ,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if(userType=='superAdmin')
-                  Row(
-                    children: [
-                      Text(
-                        "Select User Type",
-                        style: AppTextStyles.caption(
-                          context,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+            onRefresh: refreshData,
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        if (userType == 'superAdmin')
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: DropdownButtonFormField<String>(
+                              value: controller.selectedUserType,
+                              decoration: const InputDecoration(
+                                labelText: "Select User Type",
+                                border: OutlineInputBorder(),
+                              ),
+                              items: userTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+                              onChanged: (val) {
+                                if (val != null) {
+                                  controller.selectedUserType = val;
+                                  refreshData();
+                                }
+                              },
+                            ),
+                          ),
 
-                  const SizedBox(width: 10),
-                  SizedBox(
-                    width: size * 0.55,
-                    child: GetBuilder<PlanController>(
-                      builder: (controller) {
-                        return CustomDropdownField(
-                          hint: "Select User Type",
-                          borderColor: AppColors.grey,
-                          fillColor: AppColors.white,
-                          items: userTypes,
-                          selectedValue: controller.selectedUserType,
-                          onChanged: (value)async {
-                              controller.selectedUserType = value;
-                              await planController.getUploadImages(userType:controller.selectedUserType!,context: context);
-                              await  planController.getPostImagePlanList(controller.selectedUserType!,context);
-                              planController.update();
-                          },
-                        );
-                      }
-                    ),
-                  ),
-                    ],
-                  ),
-                  SizedBox(height: size*0.03),
-                  SizedBox(
-                    height: size * 1.4,
-                    child: GetBuilder<PlanController>(
-                        builder: (controller) {
-                          return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          physics: const AlwaysScrollableScrollPhysics(),
+                        ListView.builder(
                           shrinkWrap: true,
-                        itemCount: controller.editUploadImage1.length < 20 ? controller.editUploadImage1.length + 1
-                             : controller.editUploadImage1.length,
-                          itemBuilder: (_, index) {
-                            if (index < controller.editUploadImage1.length) {
-                              //final img = controller.editUploadImage[index];
-                             // final image = controller.posterImage[index];
-                              final image = controller.posterImage[index];
-                              final img = index < controller.editUploadImage1.length
-                                  ? controller.editUploadImage1[index]
-                                  : null;
-                              return Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        width:size*0.5,
-                                        child: GetBuilder<PlanController>(
-                                            builder: (controller) {
-                                              // void setInitialSelectedPlan() {
-                                              //   if (controller.posterImage.isEmpty || controller.postImagePlanList.isEmpty) return;
-                                              //
-                                              //   final image = controller.posterImage.first;
-                                              //   if (image.startDate == null || image.endDate == null) return;
-                                              //
-                                              //   int imageDuration = calculateDuration(image.startDate!, image.endDate!);
-                                              //   for (var plan in controller.postImagePlanList) {
-                                              //     if (plan.duration == imageDuration) {
-                                              //       controller.selectedPlanId = plan.id;
-                                              //       break;
-                                              //     }
-                                              //   }
-                                              //
-                                              //   controller.update();
-                                              // }
-                                              // setInitialSelectedPlan();
-                                              return GestureDetector(
-                                                child: DropdownButtonFormField<String>(
-                                                //value: controller.selectedPlanId,
-                                                  value:controller.selectedPlanId,
-                                                  // controller.postImagePlanList
-                                                  //     .any((plan) => plan.id == controller.selectedPlanId)
-                                                  //     ? controller.selectedPlanId
-                                                  //     : null,
-                                                  hint: Text(
-                                                  "Select Plan",
-                                                  style: AppTextStyles.caption(context),
-                                                ),
-                                                items: controller.postImagePlanList.map((plan) {
-                                                  var dates=  calculatePlanDates(plan.duration.toString());
-                                                  //var dates=  calculatePlanDates("5");
-                                                  print(dates["startDate"]);
-                                                  print("duration${plan.duration.toString()}");
-                                                  print("endDate ${dates["endDate"]}");
-                                                  startDate=dates["startDate"].toString();
-                                                  endDate=dates["endDate"].toString();
-                                                  return DropdownMenuItem<String>(
-                                                    value: plan.id,
-                                                    child: Text(
-                                                      "${plan.postPlanName} - (${plan.duration} days)",
-                                                      style: AppTextStyles.caption(context),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                                onChanged: (value) async{
-                                                  //setState(()async {
-                                                    //controller.selectedPlanId = value;
-                                                    image.id=value;
-                                                    String? isActive1;
-                                                    String?  startDate1;
-                                                    String? endDate1;
-                                                    if(userType!='superAdmin') {
-                                                       isActive1  = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["isActive"] ?? "false";
-                                                       startDate1 = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["startDate"] ?? "";
-                                                       endDate1   = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["endDate"] ?? "";
-                                                    }
-                                                    // List<File> filesToUpload = planController.editUploadImage1
-                                                    //     .where((img) => img.file != null)
-                                                    //     .map((img) => img.file!)
-                                                    //     .toList();
-                                                    // if (img != null && img.file != null) {
-                                                    //   filesToUpload.add(img.file!);
-                                                    // }
-                                                    List<Uint8List> filesToUpload = [];
-                                                    for (var img in planController.editUploadImage1) {
-                                                      if (img.file != null) {
-                                                        filesToUpload.add(await img.file!.readAsBytes());
-                                                      }
-                                                    }
-
-                                                    // Optionally include first posterImage file
-                                                    if (planController.posterImage.isNotEmpty) {
-                                                      final path = planController.posterImage.first?.path;
-                                                      if (path != null) {
-                                                        filesToUpload.add(await File(path).readAsBytes());
-                                                      }
-                                                    }
-                                                    final posterId = planController.posterImage.isNotEmpty
-                                                        ? image.id.toString() : "0";
-
-                                                    print('FDGFN $posterId fgf');
-                                                    final isActive = planController.posterImage.isNotEmpty
-                                                        ? image.isActive.toString()
-                                                        : "false";
-
-                                                    print('ffvxcb $isActive');
-                                                    userType=='superAdmin'?
-                                                    // await  planController.uploadImagesUserType(Api.userInfo.read('userId'), planController.selectedUserType!,"0","0",startDate.toString(),endDate.toString(),"true",filesToUpload, context):
-                                                    await  planController.uploadImagesUserType(Api.userInfo.read('userId'), planController.selectedUserType!,posterId,"1",startDate.toString(),endDate.toString(),isActive,filesToUpload, context):
-                                                   // await  planController.uploadImagesUserType(Api.userInfo.read('userId'), userType,planController.posterImage.first.id.toString().isNotEmpty?planController.posterImage.first.id.toString():"0",planController.posterImage.first.preference.toString(),startDate1.toString(),endDate1.toString(),isActive1.toString(),filesToUpload,context);
-                                                    await  planController.uploadImagesUserType(Api.userInfo.read('userId'), userType,posterId,"1",startDate1.toString(),endDate1.toString(),isActive1.toString(),filesToUpload,context);
-                                                    },),
-                                              );
-                                          }
-                                        ),
-                                      ),
-
-                                      GetBuilder<PlanController>(
-                                          builder: (controller) {
-                                            return Switch(
-                                            value: image.isActive ?? true,
-                                              activeColor: (image.isActive == true) ? AppColors.primary : Colors.red,
-                                              activeTrackColor: AppColors.primary.withOpacity(0.5),
-                                              inactiveThumbColor: Colors.red,
-                                              inactiveTrackColor: Colors.grey.shade400,
-                                              onChanged: (value) {
-                                                showDeactivateConfirmDialog(
-                                                  context: context,
-                                                  isActivating: value,
-                                                  onConfirm: () async {
-                                                    final posterId = planController.posterImage.isNotEmpty
-                                                        ? image.id.toString()
-                                                        : "0";
-                                                    // List<File> filesToUpload = planController.editUploadImage1
-                                                    //     .where((img) => img.file != null)
-                                                    //     .map((img) => img.file!)
-                                                    //     .toList();
-
-                                                    // if (planController.posterImage.isNotEmpty) {
-                                                    //   final path = planController.posterImage.first?.path;
-                                                    //   if (path != null) filesToUpload.add(File(path));
-                                                    // }
-                                                    List<Uint8List> filesToUpload = [];
-                                                    for (var img in planController.editUploadImage1) {
-                                                      if (img.file != null) {
-                                                        filesToUpload.add(await img.file!.readAsBytes());
-                                                      }
-                                                    }
-
-                                                    // Optionally include first posterImage file
-                                                    if (planController.posterImage.isNotEmpty) {
-                                                      final path = planController.posterImage.first?.path;
-                                                      if (path != null) {
-                                                        filesToUpload.add(await File(path).readAsBytes());
-                                                      }
-                                                    }
-
-                                                    await planController.uploadImagesUserType(
-                                                      Api.userInfo.read('userId'),
-                                                      planController.selectedUserType!,
-                                                      posterId,
-                                                      "1",
-                                                      startDate.toString(),
-                                                      endDate.toString(),
-                                                      value.toString(),
-                                                      filesToUpload,
-                                                      context,
-                                                    );
-                                                    setState(() {
-                                                      if (controller.posterImage.isNotEmpty) {
-                                                        image.isActive = value;
-                                                      }
-                                                    });
-                                                  },
-                                                );
-                                              },
-
-                                              //  onChanged: (value) {
-                                            //   showDeactivateConfirmDialog(
-                                            //     context: context,
-                                            //     isActivating: value,
-                                            //     onConfirm: () async{
-                                            //       final posterId = planController.posterImage.isNotEmpty
-                                            //           ? planController.posterImage.first.id.toString()
-                                            //           : "0";
-                                            //       List<File> filesToUpload = planController.editUploadImage
-                                            //           .where((img) => img.file != null)
-                                            //           .map((img) => img.file!)
-                                            //           .toList();
-                                            //         if (planController.posterImage.isNotEmpty) {
-                                            //         final path = planController.posterImage.first?.path;
-                                            //         if (path != null) {
-                                            //           filesToUpload.add(File(path));
-                                            //         }}
-                                            //       if(controller.posterImage.first.isActive==true)
-                                            //       await  planController.uploadImagesUserType(Api.userInfo.read('userId'), planController.selectedUserType!,posterId,"1",startDate.toString(),endDate.toString(),"false",filesToUpload, context);
-                                            //       else{
-                                            //         await  planController.uploadImagesUserType(Api.userInfo.read('userId'), planController.selectedUserType!,posterId,"1",startDate.toString(),endDate.toString(),"true",filesToUpload, context);
-                                            //         planController.getUploadImages(userId:userType=='superAdmin'?"":Api.userInfo.read('userId')??"",userType: Api.userInfo.read('userType')??"",context: context);
-                                            //
-                                            //       }
-                                            //
-                                            //     },
-                                            //   );
-                                            // },
-                                          );
-                                        }
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.all(8),
-                                    width: size ,
-                                    height: size * 0.3,
-                                    child: Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(10),
-                                          child: img!.file != null
-                                              ? Image.file(
-                                            img.file!,
-                                            fit: BoxFit.cover,
-                                            width: size ,
-                                            height: size * 0.35,
-                                          )
-                                              : (img.url != null && img.url!.isNotEmpty
-                                              ? Image.network(
-                                            img.url!, width: size ,
-
-                                            fit: BoxFit.cover,
-                                          )
-                                              : Container(
-                                            color: Colors.grey.shade200,
-                                            child: const Center(child: Icon(Icons.image)),
-                                          )),
-                                          // Image.network(
-                                          //   img.url!,
-                                          //   // img.url!,
-                                          //   fit: BoxFit.cover,
-                                          //   width: size ,
-                                          //   height: size * 0.35,
-                                          // ),
-                                        ),
-                                        Positioned(
-                                          right: 0,
-                                          top: 0,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (_) => AlertDialog(
-                                                  title:  Text("Remove Image?",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
-                                                  actions: [
-                                                    TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(context),
-                                                        child:  Text("Cancel",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),)),
-                                                    TextButton(
-                                                      onPressed: () async{
-                                                      if (index >= controller.editUploadImage1.length) return;
-                                                      final removedImage = controller.editUploadImage1[index];
-                                                      setState(() {
-                                                      controller.editUploadImage1.removeAt(index);
-                                                      });
-                                                      if (removedImage.url != null && removedImage.url!.isNotEmpty) {
-                                                      await loginController.deleteAwsFile(removedImage.url!,'postImage', context);
-                                                      }
-                                                       loginController.update();
-                                                        // setState(() async{
-                                                        //   controller.editUploadImage.removeAt(index);
-                                                        //   final certToDelete = loginController.editCertificates[index];
-                                                        //   if (certToDelete.url != null) {
-                                                        //     await loginController.deleteAwsFile(certToDelete.toString(), context);
-                                                        //     print('deleteFile ${certToDelete.url}');
-                                                        //   }
-                                                        //   controller.editUploadImage.removeAt(index);
-                                                        //   controller.editUploadImage.forEach((img) {
-                                                        //     print('after delete URL: ${img.url}');
-                                                        //   });
-                                                        //   loginController.update();
-                                                        //   Get.back();
-                                                        // });
-                                                        // Navigator.pop(context);
-                                                      },
-                                                      child:  Text("Remove",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: Colors.red),),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                            child: const Icon(Icons.cancel,
-                                                color: Colors.black),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          right: 5,
-                                          bottom: 5,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(4),
-                                            decoration: BoxDecoration(
-                                              color: Colors.black54,
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child:  IconButton(
-                                                onPressed:  () async {
-                                                          editingIndex = index;
-                                                          final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
-                                                          if (picked != null) {
-                                                          setState(() {
-                                                            controller.editUploadImage1[index] = AppImage2(
-                                                              file: File(picked.path),
-                                                             // id: controller.editUploadImage[index].id,
-                                                              //isActive: controller.editUploadImage[index].isActive,
-                                                            );
-
-                                                            controller.update();
-                                                          //controller.editUploadImage[index] = AppImage(file: File(picked.path));
-                                                          });
-                                                          }},
-                                                icon:Icon(Icons.edit,
-                                                color: Colors.white, size: size*0.03),
-                                          ),
-                                        ),
-                                        )],
-                                    ),
-                                  ),
-                                ],
-                              );
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: controller.editUploadImage1.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == controller.editUploadImage1.length) {
+                              return _buildAddButton();
                             }
-                            // Add image button
-                            return GestureDetector(
-                              onTap:() {
-                                pickImages(context);
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.all(8),
-                                  width: size * 0.3,
-                                  height: size * 0.3,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: Colors.grey),
-                                    color: Colors.grey.shade200,
-                                  ),
-                                  child: const Center(
-                                    child: Icon(Icons.add, size: 40, color: Colors.grey),
-                                  ),
-                                ),
-                            );
+
+                            final img = controller.editUploadImage1[index];
+                            return _buildImageItem(img, index);
                           },
-                        );
-                      }
+                        ),
+                      ],
                     ),
                   ),
-
-                  const SizedBox(height: 15,),
-                ],
-              ),
+                ),
+                if (controller.editUploadImage1.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: saveAll,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: const Text("Save All Changes", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           );
         },
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
+    );
+  }
 
+  Widget _buildAddButton() {
+    return GestureDetector(
+      onTap: pickAndCropImage,
+      child: Container(
+        height: 120,
+        margin: const EdgeInsets.only(bottom: 20),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, style: BorderStyle.solid),
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.grey.shade100,
+        ),
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.add_a_photo, size: 40, color: Colors.grey),
+              SizedBox(height: 8),
+              Text("Add New Image", style: TextStyle(color: Colors.grey)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageItem(AppImage2 img, int index) {
+    final usedPlanIds = controller.editUploadImage1
+        .where((other) => other != img && other.planId != null)
+        .map((other) => other.planId!)
+        .toSet();
+
+    final availablePlans = controller.postImagePlanList
+        .where((p) => !usedPlanIds.contains(p.id) || p.id == img.planId)
+        .toList();
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(12),
+        color: AppColors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5, offset: const Offset(0, 2)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  value: availablePlans.any((p) => p.id == img.planId) ? img.planId : null,
+                  decoration: const InputDecoration(
+                    hintText: "Select Plan",
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: availablePlans.map((p) {
+                    return DropdownMenuItem(value: p.id, child: Text("${p.postPlanName} (${p.duration} days)"));
+                  }).toList(),
+                  onChanged: (val) {
+                    if (val == null) return;
+                    final selected = controller.postImagePlanList.firstWhere((p) => p.id == val);
+                    final int duration = int.tryParse(selected.duration.toString()) ?? 0;
+                    DateFormat formatter = DateFormat('dd-MM-yyyy');
+                    DateTime now = DateTime.now();
+                    img.planId = val;
+                    img.startDate = formatter.format(now);
+                    img.endDate = formatter.format(now.add(Duration(days: duration)));
+                    controller.update();
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Column(
+                children: [
+                  const Text("Active", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                  Switch(
+                    value: img.isActive ?? true,
+                    activeColor: AppColors.primary,
+                    onChanged: (val) {
+                      showDeactivateConfirmDialog(
+                        context: context,
+                        isActivating: val,
+                        onConfirm: () {
+                          img.isActive = val;
+                          controller.update();
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: () => _confirmDelete(index, img),
+              ),
+            ],
+          ),
+
+          if (img.startDate != null && img.startDate!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Row(
+                children: [
+                  const Icon(Icons.calendar_today, size: 14, color: Colors.blueGrey),
+                  const SizedBox(width: 5),
+                  Text(
+                    "Validity: ${img.startDate} to ${img.endDate}",
+                    style: const TextStyle(fontSize: 12, color: Colors.blueGrey, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+
+          const SizedBox(height: 10),
+
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Stack(
+              children: [
+                img.bytes != null
+                    ? Image.memory(img.bytes!, height: 180, width: double.infinity, fit: BoxFit.cover)
+                    : (img.url != null && img.url!.isNotEmpty)
+                        ? Image.network(img.url!, height: 180, width: double.infinity, fit: BoxFit.cover)
+                        : Container(height: 180, width: double.infinity, color: Colors.grey.shade200, child: const Icon(Icons.image, size: 50, color: Colors.grey)),
+                
+                if (img.id == "0")
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(4)),
+                      child: const Text("NEW", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDelete(int index, AppImage2 img) {
+    showDeleteDialog(
+      context: context,
+      title: "Remove Image?",
+      message: "Are you sure you want to remove this image? This action cannot be undone.",
+      onConfirm: () async {
+        if (img.url != null && img.url!.isNotEmpty) {
+          Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
+          await loginController.deleteAwsFile(img.url!, 'postImage', context);
+          Get.back();
+        }
+        controller.editUploadImage1.removeAt(index);
+        controller.update();
+      },
     );
   }
 }
-// import 'dart:io';
-// import 'dart:typed_data';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:locate_your_dentist/api/api.dart';
-// import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
-// import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
-// import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
-// import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
-// import '../../common_widgets/color_code.dart';
-// import '../../common_widgets/common_textstyles.dart';
-// import '../plans/plan_controller.dart';
-// import 'package:image_picker/image_picker.dart';
-//
-//
-// class UploadImages extends StatefulWidget {
-//   const UploadImages({super.key});
-//   @override
-//   State<UploadImages> createState() => _UploadImagesState();
-// }
-// class _UploadImagesState extends State<UploadImages> {
-//   final PlanController planController = Get.put(PlanController());
-//   final LoginController loginController=Get.put(LoginController());
-//   final List<String> userTypes = const [
-//     "Dental Clinic",
-//     "Dental Lab",
-//     "Dental Shop",
-//     "Dental Mechanic",
-//     "Dental Consultant",
-//     "Job Seekers"
-//   ];
-//   final ImagePicker picker = ImagePicker();
-//   int? editingIndex;
-//   String ? startDate;
-//   String ? endDate;
-//   Future<void> pickImages() async {
-//     final List<XFile>? pickedImages = await picker.pickMultiImage();
-//
-//     if (pickedImages != null && pickedImages.isNotEmpty) {
-//       const int maxImages = 20;
-//       final int availableSlots = maxImages - planController.editUploadImage.length;
-//       if (availableSlots <= 0) {
-//         Get.snackbar("Limit reached", "You can upload only $maxImages images");
-//         return;
-//       }
-//       for (var file in pickedImages) {
-//         final bytes = await file.readAsBytes();
-//         final appImage2 = AppImage2(bytes: bytes, isActive: true);
-//         setState(() {
-//           planController.editUploadImage1.add(appImage2);
-//         });
-//       }
-//       print('upload img${planController.editUploadImage1}');
-//       String? isActive1;
-//       String?  startDate1;
-//       String? endDate1;
-//       String userType=Api.userInfo.read('userType');
-//       // List<File> filesToUpload = [];
-//       // int? selectedImageIndex;
-//       //
-//       // if (selectedImageIndex != null) {
-//       //   final selectedImage =
-//       //   planController.editUploadImage[selectedImageIndex!];
-//       //   if (selectedImage.file != null) {
-//       //     filesToUpload.add(selectedImage.file!);
-//       //   }
-//       // }
-//       List<Uint8List> filesToUpload = planController.editUploadImage1
-//           .where((img) => img.bytes != null).map((img) => img.bytes!).toList();
-//       if(userType!='superAdmin') {
-//         isActive1  = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["isActive"] ?? "false";
-//         startDate1 = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["startDate"] ?? "";
-//         endDate1   = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["endDate"] ?? "";
-//       }
-//       final posterId = planController.posterImage.isNotEmpty ? planController.posterImage.first.id.toString() : "0";
-//       print('FDGFN $posterId fgfile upload $filesToUpload');
-//       userType=='superAdmin'?
-//       // await  planController.uploadImagesUserType(Api.userInfo.read('userId'), planController.selectedUserType!,"0","0",startDate.toString(),endDate.toString(),"true",filesToUpload, context):
-//       await  planController.uploadImagesUserType(Api.userInfo.read('userId'), planController.selectedUserType!,"0","1",startDate.toString(),endDate.toString(),planController.posterImage.first.isActive.toString(),filesToUpload.cast<AppImage2>(), context):
-//       // await  planController.uploadImagesUserType(Api.userInfo.read('userId'), userType,planController.posterImage.first.id.toString(),planController.posterImage.first.preference.toString(),startDate1.toString(),endDate1.toString(),isActive1.toString(),filesToUpload,context);
-//       await  planController.uploadImagesUserType(Api.userInfo.read('userId'), userType,"0","1",startDate1.toString(),endDate1.toString(),isActive1.toString(),filesToUpload.cast<AppImage2>(),context);
-//     }
-//   }
-//   Map<String, String> calculatePlanDates(String durationStr) {
-//     int duration = int.tryParse(durationStr) ?? 0;
-//     DateTime start = DateTime.now();
-//     DateTime end = start.add(Duration(days: duration));
-//     return {
-//       "startDate": "${start.day}-${start.month}-${start.year}",
-//       "endDate": "${end.day}-${end.month}-${end.year}",
-//     };
-//   }
-//   DateTime parseDate(String date) {
-//     final parts = date.split("-");
-//     return DateTime(
-//       int.parse(parts[2]),
-//       int.parse(parts[1]),
-//       int.parse(parts[0]),
-//     );
-//   }
-//   int calculateDuration(String start, String end) {
-//     final startDate = parseDate(start);
-//     final endDate = parseDate(end);
-//     return endDate.difference(startDate).inDays;
-//   }
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     String userType=  Api.userInfo.read('userType')??"";
-//     planController.selectedUserType="Dental Clinic";
-//     planController.getUploadImages(userId:userType=='superAdmin'?"":Api.userInfo.read('userId')??"",userType: planController.selectedUserType!,context: context);
-//     planController.checkPlansStatus(Api.userInfo.read('userId')??"",context);
-//   }
-//   Future<void> _refresh() async {
-//     planController.selectedUserType=null;
-//     Api.userInfo.read('userType')=='superAdmin'? planController.getUploadImages(userType: Api.userInfo.read('userType')??"",context: context):
-//     planController.getUploadImages(userId:Api.userInfo.read('userId')??"",userType: Api.userInfo.read('userType')??"", context: context);
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     double size = MediaQuery.of(context).size.width;
-//     String userType=  Api.userInfo.read('userType')??"";
-//     return Scaffold(
-//       appBar: AppBar(
-//         centerTitle: true,backgroundColor: AppColors.white,
-//         title: Text('Upload Images',
-//           style: AppTextStyles.subtitle(context,color: AppColors.black),),automaticallyImplyLeading: true,iconTheme: IconThemeData(color: AppColors.black,size: size*0.05),
-//         leading: Padding(
-//           padding: const EdgeInsets.all(8.0),
-//           child: GestureDetector(
-//             onTap: () {
-//               Navigator.pop(context);
-//             },
-//             child: Container(
-//               decoration:  const BoxDecoration(
-//                 shape: BoxShape.circle,
-//                 gradient: LinearGradient(
-//                   colors: [AppColors.primary, AppColors.secondary],
-//                   begin: Alignment.topLeft,
-//                   end: Alignment.bottomRight,
-//                 ),
-//               ),
-//               child: const Center(
-//                 child: Icon(
-//                   Icons.arrow_back,
-//                   color: AppColors.white,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//       body: GetBuilder<PlanController>(
-//         builder: (controller) {
-//           return RefreshIndicator(
-//             onRefresh:_refresh ,
-//             child: SingleChildScrollView(
-//               padding: const EdgeInsets.all(16),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   if(userType=='superAdmin')
-//                     Row(
-//                       children: [
-//                         Text(
-//                           "Select User Type",
-//                           style: AppTextStyles.caption(
-//                             context,
-//                             fontWeight: FontWeight.bold,
-//                           ),
-//                         ),
-//
-//                         const SizedBox(width: 10),
-//                         SizedBox(
-//                           width: size * 0.55,
-//                           child: GetBuilder<PlanController>(
-//                               builder: (controller) {
-//                                 return CustomDropdownField(
-//                                   hint: "Select User Type",
-//                                   borderColor: AppColors.grey,
-//                                   fillColor: AppColors.white,
-//                                   items: userTypes,
-//                                   selectedValue: controller.selectedUserType,
-//                                   onChanged: (value)async {
-//                                     controller.selectedUserType = value;
-//                                     await planController.getUploadImages(userType:controller.selectedUserType!,context: context);
-//                                     await  planController.getPostImageList(controller.selectedUserType!,context);
-//                                     planController.update();
-//                                   },
-//                                 );
-//                               }
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   SizedBox(height: size*0.03),
-//                   SizedBox(
-//                     height: size * 1.4,
-//                     child: GetBuilder<PlanController>(
-//                         builder: (controller) {
-//                           return ListView.builder(
-//                             scrollDirection: Axis.vertical,
-//                             physics: const AlwaysScrollableScrollPhysics(),
-//                             shrinkWrap: true,
-//                             itemCount: controller.editUploadImage1.length < 20 ? controller.editUploadImage1.length + 1
-//                                 : controller.editUploadImage1.length,
-//                             itemBuilder: (_, index) {
-//                               if (index < controller.editUploadImage1.length) {
-//                                 final image = controller.posterImage[index];
-//                                 final img = index < controller.editUploadImage1.length
-//                                     ? controller.editUploadImage1[index]
-//                                     : null;
-//                                 return Column(
-//                                   children: [
-//                                     Row(
-//                                       children: [
-//                                         SizedBox(
-//                                           width:size*0.5,
-//                                           child: GetBuilder<PlanController>(
-//                                               builder: (controller) {
-//                                                 return GestureDetector(
-//                                                   child: DropdownButtonFormField<String>(
-//                                                     value:controller.selectedPlanId,
-//                                                     hint: Text(
-//                                                       "Select Plan",
-//                                                       style: AppTextStyles.caption(context),
-//                                                     ),
-//                                                     items: controller.postImagePlanList.map((plan) {
-//                                                       var dates=  calculatePlanDates(plan.duration.toString());
-//                                                       //var dates=  calculatePlanDates("5");
-//                                                       print(dates["startDate"]);
-//                                                       print("duration${plan.duration.toString()}");
-//                                                       print("endDate ${dates["endDate"]}");
-//                                                       startDate=dates["startDate"].toString();
-//                                                       endDate=dates["endDate"].toString();
-//                                                       return DropdownMenuItem<String>(
-//                                                         value: plan.id,
-//                                                         child: Text(
-//                                                           "${plan.postPlanName} - (${plan.duration} days)",
-//                                                           style: AppTextStyles.caption(context),
-//                                                         ),
-//                                                       );
-//                                                     }).toList(),
-//                                                     onChanged: (value) async{
-//                                                       //setState(()async {
-//                                                       //controller.selectedPlanId = value;
-//                                                       image.id=value;
-//                                                       String? isActive1;
-//                                                       String?  startDate1;
-//                                                       String? endDate1;
-//                                                       if(userType!='superAdmin') {
-//                                                         isActive1  = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["isActive"] ?? "false";
-//                                                         startDate1 = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["startDate"] ?? "";
-//                                                         endDate1   = planController.checkPlanList[0]["details"]?["plan"]["posterPlan"]?["endDate"] ?? "";
-//                                                       }
-//                                                       List<AppImage2> filesToUpload = planController.editUploadImage1
-//                                                           .where((img) => img != null)
-//                                                           .map((img) => img!)
-//                                                           .toList();
-//                                                       if (img != null && img != null) {
-//                                                         filesToUpload.add(img!);
-//                                                       }
-//                                                       final posterId = planController.posterImage.isNotEmpty
-//                                                           ? image.id.toString() : "0";
-//
-//                                                       print('FDGFN $posterId fgf');
-//                                                       final isActive = planController.posterImage.isNotEmpty
-//                                                           ? image.isActive.toString()
-//                                                           : "false";
-//
-//                                                       print('ffvxcb $isActive');
-//                                                       userType=='superAdmin'?
-//                                                       // await  planController.uploadImagesUserType(Api.userInfo.read('userId'), planController.selectedUserType!,"0","0",startDate.toString(),endDate.toString(),"true",filesToUpload, context):
-//                                                       await  planController.uploadImagesUserType(Api.userInfo.read('userId'), planController.selectedUserType!,posterId,"1",startDate.toString(),endDate.toString(),isActive,filesToUpload, context):
-//                                                       // await  planController.uploadImagesUserType(Api.userInfo.read('userId'), userType,planController.posterImage.first.id.toString().isNotEmpty?planController.posterImage.first.id.toString():"0",planController.posterImage.first.preference.toString(),startDate1.toString(),endDate1.toString(),isActive1.toString(),filesToUpload,context);
-//                                                       await  planController.uploadImagesUserType(Api.userInfo.read('userId'), userType,posterId,"1",startDate1.toString(),endDate1.toString(),isActive1.toString(),filesToUpload,context);
-//                                                     },),
-//                                                 );
-//                                               }
-//                                           ),
-//                                         ),
-//
-//                                         GetBuilder<PlanController>(
-//                                             builder: (controller) {
-//                                               return Switch(
-//                                                 value: image.isActive ?? true,
-//                                                 activeColor: (image.isActive == true) ? AppColors.primary : Colors.red,
-//                                                 activeTrackColor: AppColors.primary.withOpacity(0.5),
-//                                                 inactiveThumbColor: Colors.red,
-//                                                 inactiveTrackColor: Colors.grey.shade400,
-//                                                 onChanged: (value) {
-//                                                   showDeactivateConfirmDialog(
-//                                                     context: context,
-//                                                     isActivating: value,
-//                                                     onConfirm: () async {
-//                                                       final posterId = planController.posterImage.isNotEmpty
-//                                                           ? image.id.toString()
-//                                                           : "0";
-//                                                       // List<AppImage2> filesToUpload = planController.editUploadImage
-//                                                       //     .where((img) => img != null)
-//                                                       //     .map((img) => img!)
-//                                                       //     .toList();
-//                                                       //
-//                                                       // if (planController.posterImage.isNotEmpty) {
-//                                                       //   final path = planController.posterImage.first?.path;
-//                                                       //   if (path != null) filesToUpload.add(File(path));
-//                                                       // }
-//                                                       // await planController.uploadImagesUserType(
-//                                                       //   Api.userInfo.read('userId'),
-//                                                       //   planController.selectedUserType!,
-//                                                       //   posterId,
-//                                                       //   "1",
-//                                                       //   startDate.toString(),
-//                                                       //   endDate.toString(),
-//                                                       //   value.toString(),
-//                                                       //   filesToUpload,
-//                                                       //   context,
-//                                                       // );
-//                                                       // 1. Convert AppImage2 objects to Uint8List
-//                                                       List<Uint8List> filesToUpload = planController.editUploadImage1
-//                                                           .where((img) => img.bytes != null)
-//                                                           .map((img) => img.bytes!)
-//                                                           .toList();
-//
-// // 2. Include poster image if exists (convert File to Uint8List)
-//                                                       if (planController.posterImage.isNotEmpty) {
-//                                                         final path = planController.posterImage.first?.path;
-//                                                         if (path != null) {
-//                                                           final posterBytes = await File(path).readAsBytes();
-//                                                           filesToUpload.add(posterBytes);
-//                                                         }
-//                                                       }
-//
-// // 3. Call upload
-//                                                       await planController.uploadImagesUserType(
-//                                                         Api.userInfo.read('userId'),
-//                                                         planController.selectedUserType!,
-//                                                         posterId,
-//                                                         "1",
-//                                                         startDate.toString(),
-//                                                         endDate.toString(),
-//                                                         value.toString(),
-//                                                         filesToUpload.cast<AppImage2>(),
-//                                                         context,
-//                                                       );
-//                                                       setState(() {
-//                                                         if (controller.posterImage.isNotEmpty) {
-//                                                           image.isActive = value;
-//                                                         }
-//                                                       });
-//                                                     },
-//                                                   );
-//                                                 },
-//                                               );
-//                                             }
-//                                         ),
-//                                       ],
-//                                     ),
-//                                     Container(
-//                                       margin: const EdgeInsets.all(8),
-//                                       width: size ,
-//                                       height: size * 0.3,
-//                                       child: Stack(
-//                                         children: [
-//                                           ClipRRect(
-//                                             borderRadius: BorderRadius.circular(10),
-//                                             child: img! != null
-//                                                 ? Image.memory(
-//                                               img as Uint8List,
-//                                               fit: BoxFit.cover,
-//                                               width: size ,
-//                                               height: size * 0.35,
-//                                             )
-//                                                 : (img.url != null && img.url!.isNotEmpty
-//                                                 ? Image.network(
-//                                               img.url!, width: size ,
-//
-//                                               fit: BoxFit.cover,
-//                                             )
-//                                                 : Container(
-//                                               color: Colors.grey.shade200,
-//                                               child: const Center(child: Icon(Icons.image)),
-//                                             )),
-//                                           ),
-//                                           Positioned(
-//                                             right: 0,
-//                                             top: 0,
-//                                             child: GestureDetector(
-//                                               onTap: () {
-//                                                 showDialog(
-//                                                   context: context,
-//                                                   builder: (_) => AlertDialog(
-//                                                     title: const Text("Remove Image?"),
-//                                                     actions: [
-//                                                       TextButton(
-//                                                           onPressed: () =>
-//                                                               Navigator.pop(context),
-//                                                           child: const Text("Cancel")),
-//                                                       TextButton(
-//                                                         onPressed: () async{
-//                                                           if (index >= controller.editUploadImage1.length) return;
-//                                                           final removedImage = controller.editUploadImage1[index];
-//                                                           setState(() {
-//                                                             controller.editUploadImage1.removeAt(index);
-//                                                           });
-//                                                           if (removedImage.url != null && removedImage.url!.isNotEmpty) {
-//                                                             await loginController.deleteAwsFile(removedImage.url!,'postImage', context);
-//                                                           }
-//                                                           loginController.update();
-//                                                         },
-//                                                         child: const Text("Remove"),
-//                                                       ),
-//                                                     ],
-//                                                   ),
-//                                                 );
-//                                               },
-//                                               child: const Icon(Icons.cancel,
-//                                                   color: Colors.black),
-//                                             ),
-//                                           ),
-//                                           Positioned(
-//                                             right: 5,
-//                                             bottom: 5,
-//                                             child: Container(
-//                                               padding: const EdgeInsets.all(4),
-//                                               decoration: BoxDecoration(
-//                                                 color: Colors.black54,
-//                                                 borderRadius: BorderRadius.circular(8),
-//                                               ),
-//                                               child:  IconButton(
-//                                                 onPressed:  () async {
-//                                                   editingIndex = index;
-//                                                   final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
-//                                                   if (picked != null) {
-//                                                     setState(() async{
-//                                                       final bytes = await picked.readAsBytes(); // works on web
-//                                                       controller.editUploadImage1[index] = AppImage2(
-//                                                         bytes: bytes,
-//                                                       );
-//
-//                                                       controller.update();
-//                                                       //controller.editUploadImage[index] = AppImage(file: File(picked.path));
-//                                                     });
-//                                                   }},
-//                                                 icon:Icon(Icons.edit,
-//                                                     color: Colors.white, size: size*0.03),
-//                                               ),
-//                                             ),
-//                                           )],
-//                                       ),
-//                                     ),
-//                                   ],
-//                                 );
-//                               }
-//                               // Add image button
-//                               return GestureDetector(
-//                                 onTap: pickImages,
-//                                 child: Container(
-//                                   margin: const EdgeInsets.all(8),
-//                                   width: size * 0.3,
-//                                   height: size * 0.3,
-//                                   decoration: BoxDecoration(
-//                                     borderRadius: BorderRadius.circular(10),
-//                                     border: Border.all(color: Colors.grey),
-//                                     color: Colors.grey.shade200,
-//                                   ),
-//                                   child: const Center(
-//                                     child: Icon(Icons.add, size: 40, color: Colors.grey),
-//                                   ),
-//                                 ),
-//                               );
-//                             },
-//                           );
-//                         }
-//                     ),
-//                   ),
-//
-//                   const SizedBox(height: 15,),
-//                 ],
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
-//
-//     );
-//   }
-// }

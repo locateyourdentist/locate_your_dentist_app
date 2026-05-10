@@ -141,30 +141,35 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
             duration: const Duration(milliseconds: 500),
             child: ScaleAnimation(
               child: FadeInAnimation(
-                child: Card(
-                  clipBehavior: Clip.antiAlias,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  child: Column(
-                    children: [
-                      Expanded(child: Image.network(imgUrl, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(color: Colors.grey[200], child: const Icon(Icons.image)))),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(service.serviceTitle ?? "", style: const TextStyle(fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
-                            Text("₹ ${service.serviceCost}", style: const TextStyle(color: AppColors.primary)),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(icon: const Icon(Icons.edit, size: 20), onPressed: () async { await serviceController.getServiceDetailAdmin(service.serviceId.toString(), context); Get.toNamed('/addServicesListWebPage'); }),
-                                IconButton(icon: const Icon(Icons.delete, color: Colors.red, size: 20), onPressed: () => _confirmDelete(service.serviceId.toString())),
-                              ],
-                            ),
-                          ],
+                child: GestureDetector(
+                  onTap: (){
+                    Get.toNamed('/serviceDetailPageWeb',arguments: {'serviceId':'${service.serviceId}'});
+                  },
+                  child: Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      children: [
+                        Expanded(child: Image.network(imgUrl, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(color: Colors.grey[200], child: const Icon(Icons.image)))),
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(service.serviceTitle ?? "", style: const TextStyle(fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
+                              Text("₹ ${service.serviceCost}", style: const TextStyle(color: AppColors.primary)),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(icon: const Icon(Icons.edit, size: 20), onPressed: () async { await serviceController.getServiceDetailAdmin(service.serviceId.toString(), context); Get.toNamed('/addServicesListWebPage'); }),
+                                  IconButton(icon: const Icon(Icons.delete, color: Colors.red, size: 20), onPressed: () => _confirmDelete(service.serviceId.toString())),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

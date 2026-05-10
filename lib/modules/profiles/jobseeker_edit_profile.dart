@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
@@ -881,7 +882,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     }).toList();
 
                     Map<String, dynamic> finalJson = {
-                      "details": {
                         "collegeDetails": {
                           "ugDegree": {
                             "name": loginController.ugCollege.text ?? "",
@@ -895,7 +895,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           },
                         },
                         "experienceDetails": expJson,
-                      }
                     };
                     print("Details JSON: $finalJson");
                     final userType = "${Api.userInfo.read('userType')}";
@@ -905,6 +904,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     }
                       print('userid${Api.userInfo.read('userId')} ');
                     try {
+                      Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
+                        return await Future.wait(files.map((file) => file.readAsBytes()));
+                      }
+                      final imageBytes = loginController.selectedUserType == "Job Seekers"
+                          ? await convertFilesToBytes(loginController.logoImages)
+                          : await convertFilesToBytes(loginController.images);
+
+                      final logoBytes = loginController.selectedUserType != "Job Seekers"
+                          ? await convertFilesToBytes(loginController.logoImages)
+                          : [];
+                      final certBytes = await convertFilesToBytes(loginController.certificates);
+
                       await loginController.registerUser(
                         userId: Api.userInfo.read('userId') ?? "",
                         userType: userType,
@@ -924,8 +935,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         // city: loginController.cityController.text ?? "",area: loginController.areaController.text??"",
                         pinCode: loginController.pinCodeController.text ?? "",
                         typeName: loginController.typeNameController.text ?? "",
-                        image: loginController.images.isNotEmpty ? loginController.images : [],
-                        certificate: loginController.certificates.isNotEmpty ? loginController.certificates : [],
+                        //: loginController.images.isNotEmpty ? loginController.images : [],
+                        //certificate: loginController.certificates.isNotEmpty ? loginController.certificates : [],
+                        image: loginController.selectedUserType=="Job Seekers"?logoBytes ?? []:imageBytes ?? [],
+                        certificate: certBytes,
+                        logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
                         description: loginController.descriptionController.text,
                         jobCategory:loginController.selectedCategories,
                         details: finalJson,

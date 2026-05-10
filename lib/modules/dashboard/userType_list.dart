@@ -561,7 +561,8 @@ class _userTypeListState extends State<userTypeList> {
                       ),
                       SizedBox(height: 10,),
                       if (loginController.profileList.isEmpty)
-                        Center(child: Text('No data found', style: AppTextStyles.caption(context))),
+                        buildShimmerEmptyWidget(size),
+                      //  Center(child: Text('No data found', style: AppTextStyles.caption(context))),
                       if (loginController.profileList.isNotEmpty)
                         AnimationLimiter(
                           child: Column(

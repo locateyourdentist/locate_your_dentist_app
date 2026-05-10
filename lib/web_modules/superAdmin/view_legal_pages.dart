@@ -20,6 +20,7 @@ class LegalPagesWebView extends StatefulWidget {
 
 class _LegalPagesWebViewState extends State<LegalPagesWebView> {
   final ServiceController serviceController = Get.put(ServiceController());
+  final GlobalKey<ScaffoldState> _scaffoldKeyLegal = GlobalKey<ScaffoldState>();
 
   final ScrollController _scrollController = ScrollController();
   final FocusNode focusNode = FocusNode();
@@ -105,6 +106,10 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
@@ -118,12 +123,13 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
       }
     }
     return Scaffold(
+      key: _scaffoldKeyLegal,
       appBar: buildAppBar(),
       backgroundColor: Colors.grey.shade100,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       body: Row(
         children: [
-          if( Api.userInfo.read('token')!=null)
-            const AdminSideBar(),
+          if (isDesktop) const AdminSideBar(),
           Expanded(
             child: Column(
               children: [
@@ -139,6 +145,15 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
                   ),
                   child:  Column(
                     children: [
+                      if (!isDesktop)
+                        Positioned(
+                          top: 10,
+                          left: 10,
+                          child: IconButton(
+                            icon: const Icon(Icons.menu),
+                            onPressed: () => _scaffoldKeyLegal.currentState?.openDrawer(),
+                          ),
+                        ),
                       Text(
                           selectedTitle,
                           style: AppTextStyles.subtitle(context,color: AppColors.white)

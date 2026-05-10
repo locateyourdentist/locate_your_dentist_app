@@ -80,19 +80,6 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
 
                   child: Stack(
                     children: [
-
-                      // MENU BUTTON
-                      if (!isDesktop)
-                        Positioned(
-                          top: 10,
-                          left: 10,
-                          child: IconButton(
-                            icon: const Icon(Icons.menu),
-                            onPressed: () =>
-                                _scaffoldKey.currentState?.openDrawer(),
-                          ),
-                        ),
-
                       // MAIN CONTENT
                       DefaultTabController(
                         length: 2,
@@ -140,6 +127,16 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                                         // TOP SPACE
                                         if (isLoggedIn && !isDesktop)
                                           const SizedBox(height: 40),
+                                        if (!isDesktop)
+                                          Positioned(
+                                            top: 10,
+                                            left: 10,
+                                            child: IconButton(
+                                              icon: const Icon(Icons.menu,color: AppColors.black,),
+                                              onPressed: () =>
+                                                  _scaffoldKey.currentState?.openDrawer(),
+                                            ),
+                                          ),
 
                                         // SEARCH
                                         Align(

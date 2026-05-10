@@ -284,9 +284,14 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                               GetBuilder<PlanController>(
                                 builder: (controller) {
                                   final imageUrls = controller.editUploadImage1
-                                      .map((clinic) => clinic.url ?? "")
+                                      .where((img) => img.isActive == true)
+                                      .map((img) => img.url ?? "")
                                       .where((url) => url.isNotEmpty)
                                       .toList();
+                                  // final imageUrls = controller.editUploadImage1
+                                  //     .map((clinic) => clinic.url ?? "")
+                                  //     .where((url) => url.isNotEmpty)
+                                  //     .toList();
                                   return Padding(
                                     padding: const EdgeInsets.all(20.0),
                                     child: ClinicImageCarousel(imageUrls: imageUrls),

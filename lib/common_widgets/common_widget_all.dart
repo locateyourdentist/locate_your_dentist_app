@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/platform_helper.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
 import 'color_code.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shimmer/shimmer.dart';
 
 
 class ProfileImageWidget extends StatelessWidget {
@@ -441,40 +443,54 @@ class _CommonContactContainerState extends State<CommonContactContainer> {
   @override
   Widget build(BuildContext context) {
     double s = MediaQuery.of(context).size.width;
+    bool isWeb = PlatformHelper.platform == "Web";
+    
     return Container(
-      height:PlatformHelper.platform != "Web"? s * 0.25:s*0.04,
-      width: PlatformHelper.platform != "Web"?s * 0.26:s*0.06,
+      height: !isWeb ? s * 0.25 : (s * 0.08).clamp(60.0, 100.0),
+      width: !isWeb ? s * 0.26 : (s * 0.1).clamp(80.0, 150.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.grey, width: 0.3),
         color: AppColors.white,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: ShaderMask(
-                shaderCallback: (Rect bounds) {
-                  return const LinearGradient(
-                    colors: [
-                     AppColors.primary,AppColors.secondary
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ).createShader(bounds);
-                },
-                child: IconButton(
-                 onPressed: widget.onTap,icon: Icon(widget.icons,color: AppColors.white,size:PlatformHelper.platform != "Web"? s * 0.08: s*0.012,),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: ShaderMask(
+              shaderCallback: (Rect bounds) {
+                return const LinearGradient(
+                  colors: [
+                   AppColors.primary,AppColors.secondary
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ).createShader(bounds);
+              },
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: widget.onTap,
+                icon: Icon(
+                  widget.icons,
+                  color: AppColors.white,
+                  size: !isWeb ? s * 0.08 : 24.0,
                 ),
               ),
             ),
-            PlatformHelper.platform != "Web"?   SizedBox(height: s*0.02,):SizedBox(height: s*0.001,),
-            Flexible(child: Text(widget.title.toString(),  overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,style: AppTextStyles.caption(context,color: AppColors.grey),))
-          ],
-        ),
+          ),
+          SizedBox(height: !isWeb ? s * 0.02 : 4.0),
+          Flexible(
+            child: Text(
+              widget.title.toString(),
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.caption(context, color: AppColors.grey),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -574,4 +590,43 @@ class _AnimatedIconButtonState extends State<AnimatedIconButton>
     );
   }
 }
-
+Widget shimmerBox({
+  double height = 100,
+  double width = double.infinity,
+  double radius = 10,
+}) {
+  return Shimmer.fromColors(
+    baseColor: Colors.grey.shade300,
+    highlightColor: Colors.grey.shade100,
+    child: Container(
+      height: height,
+      width: width,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+    ),
+  );
+}
+Widget buildShimmerEmptyWidget(double size) {
+  return ListView.builder(
+    itemCount: 3,
+    shrinkWrap: true,
+    scrollDirection: Axis.vertical,
+    physics: const NeverScrollableScrollPhysics(),
+    itemBuilder: (_, __) => Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          height: size * 0.3,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ),
+  );
+}

@@ -143,12 +143,12 @@ import 'package:flutter_quill/flutter_quill.dart';
               children: [
                 //const SizedBox(height: 15,),
                 if(loginController.userData.isEmpty)
-                  Column(
-                    children: [
-                      const SizedBox(height: 15,),
-                      Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
-                    ],
-                  ),
+                  // Column(
+                  //   children: [
+                  //     const SizedBox(height: 15,),
+                  //     Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
+                  //   ],
+                  // ),
                 if(loginController.isLoading)
                   const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
                 if(loginController.userData.isNotEmpty)

@@ -8,6 +8,7 @@ import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import '../../../common_widgets/color_code.dart';
 import '../common/common_side_bar.dart';
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 
 
 class AddBranchesWeb extends StatefulWidget {
@@ -19,6 +20,7 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
   final loginController=Get.put(LoginController());
   final planController=Get.put(PlanController());
   final _formKeyBranchProfileWeb = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyBranch= GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
@@ -57,7 +59,7 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
               onRefresh: _refresh,
               child: Row(
                 children: [
-                  const AdminSideBar(),
+                  if (isDesktop) const AdminSideBar(),
 
                   Expanded(
                     child: Center(
@@ -78,6 +80,15 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                 child: Column(
                                   children: [
                                     SizedBox(height: size*0.01,),
+                                    if (!isDesktop)
+                                      Positioned(
+                                        top: 10,
+                                        left: 10,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.menu,color: AppColors.black),
+                                          onPressed: () => _scaffoldKeyBranch.currentState?.openDrawer(),
+                                        ),
+                                      ),
 
                                     Text(
                                       "Add Branches",
@@ -210,25 +221,34 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
               controller: exp.branchName,
             ),
             SizedBox(height: size * 0.01),
-            CustomTextField(
-              hint: "State",
-              controller: exp.state,
-            ),
+              _buildStateDropdown(),
             SizedBox(height: size * 0.01),
-            CustomTextField(
-              hint: "District",
-              controller: exp.district,
-            ),
+              _buildDistrictDropdown(),
             SizedBox(height: size * 0.01),
-            CustomTextField(
-              hint: "City",
-              controller: exp.city,
-            ),
+              _buildTalukaDropdown(),
             SizedBox(height: size * 0.01),
-            CustomTextField(
-              hint: "Area",
-              controller: exp.area,
-            ),
+              _buildAreaDropdown(),
+            SizedBox(height: size * 0.01),
+
+            // CustomTextField(
+            //   hint: "State",
+            //   controller: exp.state,
+            // ),
+            // SizedBox(height: size * 0.01),
+            // CustomTextField(
+            //   hint: "District",
+            //   controller: exp.district,
+            // ),
+            // SizedBox(height: size * 0.01),
+            // CustomTextField(
+            //   hint: "City",
+            //   controller: exp.city,
+            // ),
+            // SizedBox(height: size * 0.01),
+            // CustomTextField(
+            //   hint: "Area",
+            //   controller: exp.area,
+            // ),
             SizedBox(height: size * 0.01),
             CustomTextField(
               hint: "Pin Code",
@@ -244,6 +264,120 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
           ],
         ),
       ),
+    );
+  }
+  Widget _buildStateDropdown() {
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        final stateItems = c.states.map((e) => e.toString()).toList();
+
+        return CustomDropdown<String>.search(
+          hintText: "State",
+          items: stateItems,
+          initialItem: stateItems.contains(c.selectedState)
+              ? c.selectedState
+              : null,
+          onChanged: (v) {
+            if (v != null) {
+              c.selectedState = v;
+
+              c.selectedDistrict = null;
+              c.selectedTaluka = null;
+
+              c.districts.clear();
+              c.talukas.clear();
+
+              c.fetchDistricts(v);
+              c.update();
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildDistrictDropdown() {
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        final districtItems =
+        c.districts.map((e) => e.toString()).toList();
+
+        return CustomDropdown<String>.search(
+          hintText: "District",
+          items: districtItems,
+          initialItem: districtItems.contains(c.selectedDistrict)
+              ? c.selectedDistrict
+              : null,
+          onChanged: (v) {
+            if (v != null) {
+              c.selectedDistrict = v;
+
+              c.selectedTaluka = null;
+
+              c.talukas.clear();
+
+              c.fetchTalukas(v);
+              c.update();
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildTalukaDropdown() {
+    return GetBuilder<LoginController>(
+      builder: (c) {
+
+        final talukaItems =
+        c.talukas.map((e) => e.toString()).toList();
+
+        final selectedTaluka =
+        talukaItems.contains(c.selectedTaluka)
+            ? c.selectedTaluka
+            : null;
+
+        return CustomDropdown<String>.search(
+          hintText: "Taluka",
+
+          items: talukaItems,
+
+          initialItem: selectedTaluka,
+
+          onChanged: (v) {
+            if (v != null) {
+              c.selectedTaluka = v;
+
+              c.villages.clear();
+              c.selectedVillage = null;
+
+              c.fetchVillages(v);
+
+              c.update();
+            }
+          },
+        );
+      },
+    );
+  }
+  Widget _buildAreaDropdown() {
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        final villageItems = c.villages.map((e) => e.toString()).toList();
+        final selectedVillage = villageItems.contains(c.selectedVillage) ? c.selectedVillage : null;
+
+        return CustomDropdown<String>.search(
+          hintText: "Area",
+          items: villageItems,
+          initialItem: selectedVillage,
+          onChanged: (v) {
+            if (v != null) {
+              c.selectedVillage = v;
+              c.update();
+            }
+          },
+        );
+      },
     );
   }
 

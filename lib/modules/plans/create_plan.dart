@@ -205,6 +205,7 @@ class _CreatePlanState extends State<CreatePlan> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,backgroundColor: AppColors.white,

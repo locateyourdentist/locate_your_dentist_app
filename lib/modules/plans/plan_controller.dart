@@ -29,7 +29,11 @@ class AppImage2 {
   final File? file;
   bool? isActive;
   final bool isVideo;
-  AppImage2({this.bytes, this.url,this.name,this.id,this.planId,this.file, this.isActive = true,this.isVideo=false});
+  String? startDate;
+  String? endDate;
+  AppImage2({this.bytes, this.url,this.name,this.id,this.planId,this.file, this.isActive = true,this.isVideo=false,this.startDate,
+    this.endDate,
+  });
 }
 
 
@@ -1061,20 +1065,33 @@ class AppImage2 {
         // editUploadImage = (data["data"] as List).map((u) => AppImage(
         //   url: cleanUrl(AppConstants.baseUrl, u["path"]),
         // )).toList();
-        editUploadImage1 = (data["data"] as List).map((u) => AppImage2(
-          url:  u["path"],
-        )).toList();
+        // editUploadImage1 = (data["data"] as List).map((u) => AppImage2(
+        //   url:  u["path"],
+        // )).toList();
 
         _posterImage = (data["data"] as List).map((e) => PosterImageModel.fromJson(e)).toList();
         editUploadImage1 = (data["data"] as List).map((u) {
+
+          bool activeValue = false;
+
+          if (u["isActive"] is bool) {
+
+            activeValue = u["isActive"];
+          } else if (u["isActive"] is String) {
+            activeValue =
+                u["isActive"].toString().toLowerCase() == "true";
+          }
           return AppImage2(
-            id: u["_id"],
-            planId: u["imageId"],
-            url: u["path"],
-            isActive: u["isActive"] ?? false,
-            //startDate: u["startDate"] == "null" ? "" : u["startDate"],
-           // endDate: u["endDate"] == "null" ? "" : u["endDate"],
+            id: u["_id"]?.toString(),
+            planId: u["imageId"]?.toString(),
+            url: u["path"]?.toString(),
+            isActive: activeValue,
+            startDate:
+            u["startDate"]?.toString() ?? "",
+            endDate:
+            u["endDate"]?.toString() ?? "",
           );
+
         }).toList();
         //  _posterImage = (data["data"] as List).map((e) => PosterImageModel.fromJson(e)).toList();
         update();

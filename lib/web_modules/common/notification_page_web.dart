@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
@@ -20,6 +21,7 @@ class ViewNotificationWeb extends StatefulWidget {
 
 class _ViewNotificationWebState extends State<ViewNotificationWeb> {
   final notificationController = Get.put(NotificationController());
+  final GlobalKey<ScaffoldState> _scaffoldKeyViewNotification = GlobalKey<ScaffoldState>();
   String selectedTab = "All";
   final ImagePicker _picker = ImagePicker();
 
@@ -95,7 +97,14 @@ class _ViewNotificationWebState extends State<ViewNotificationWeb> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
+
+    final double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
+      key: _scaffoldKeyViewNotification,
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
         height: size * 0.03,
@@ -125,14 +134,22 @@ class _ViewNotificationWebState extends State<ViewNotificationWeb> {
             onRefresh: _refresh,
             child: Row(
               children: [
-                const AdminSideBar(),
+                if (isDesktop) const AdminSideBar(),
 
                   Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(30.0),
                     child: Column(
                       children: [
-
+                        if (!isDesktop)
+                          Positioned(
+                            top: 10,
+                            left: 10,
+                            child: IconButton(
+                              icon: const Icon(Icons.menu,color: AppColors.black),
+                              onPressed: () => _scaffoldKeyViewNotification.currentState?.openDrawer(),
+                            ),
+                          ),
                         AnimationLimiter(
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
@@ -221,15 +238,15 @@ class _ViewNotificationWebState extends State<ViewNotificationWeb> {
                                                             mainAxisAlignment:MainAxisAlignment.spaceBetween,
                                                             children: [
                                                               CircleAvatar(
-                                                                radius: size * 0.008,
+                                                                radius: 14,
                                                                 backgroundColor: AppColors.primary,
                                                                 child: Icon(
                                                                   changeIcon(item.title.toString()),
-                                                                  size: size * 0.012,
+                                                                  size: 12,
                                                                   color: AppColors.white,
                                                                 ),
                                                               ),
-                                                              // SizedBox(width: size*0.01,),
+                                                               SizedBox(width: size*0.01,),
                                                               Expanded(
                                                                 child: Center(
                                                                   child: Text(

@@ -14,6 +14,7 @@ import '../../common_widgets/common_bottom_navigation.dart';
 import '../../common_widgets/common_drawer.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:shimmer/shimmer.dart';
 
  class PatientDashboard extends StatefulWidget {
   const PatientDashboard({super.key});
@@ -280,7 +281,9 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                   ),
                   SizedBox(height: size * 0.01),
                   if(loginController.profileList.isEmpty)
-                    Center(child: Text('No data found',style: AppTextStyles.caption(context),),),
+                  //  Center(child: Text('No data found',style: AppTextStyles.caption(context),),),
+                  buildShimmerEmptyWidget(size),
+
                   if(loginController.isLoading)
                     const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
                   if(loginController.profileList.isNotEmpty)
@@ -523,4 +526,5 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
     );
   }
-}
+
+ }

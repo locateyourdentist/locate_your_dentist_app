@@ -359,11 +359,13 @@ class _AddBranchesState extends State<AddBranches> {
           CustomTextField(
             hint: "Pin Code",
             controller: exp.pincode,
-          ),            SizedBox(height: size * 0.03),
+          ),
+          SizedBox(height: size * 0.03),
           CustomTextField(
             hint: "Location",
             controller: exp.location,
-          ),            SizedBox(height: size * 0.03),
+          ),
+          SizedBox(height: size * 0.03),
 
         ],
       ),

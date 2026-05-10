@@ -124,9 +124,57 @@ class Media {
                   child: Column(
                   children: [
                     if(loginController.userData.isEmpty)
-                      Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
-                    if(loginController.isLoading)
-                      const CircularProgressIndicator(color: AppColors.primary,),
+                      //Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
+                   // if (loginController.isLoading)
+                      Column(
+                        children: [
+                          shimmerBox(height: size * 0.35, radius: 0),
+
+                          SizedBox(height: size * 0.02),
+
+                          shimmerBox(
+                            height: 20,
+                            width: size * 0.5,
+                          ),
+
+                          SizedBox(height: 10),
+
+                          shimmerBox(
+                            height: 16,
+                            width: size * 0.3,
+                          ),
+
+                          SizedBox(height: size * 0.03),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              shimmerBox(height: 50, width: 90),
+                              shimmerBox(height: 50, width: 90),
+                              shimmerBox(height: 50, width: 90),
+                            ],
+                          ),
+
+                          SizedBox(height: size * 0.03),
+
+                          ListView.builder(
+                            itemCount: 3,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (_, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: shimmerBox(
+                                  height: size * 0.25,
+                                  radius: 12,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    //if(loginController.isLoading)
+                      //const CircularProgressIndicator(color: AppColors.primary,),
                     if(loginController.userData.isNotEmpty)
                      Column(
                        crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,7 +348,7 @@ class Media {
                             }
                           }, icon: Icon(Icons.place,color: AppColors.primary,size: size*0.05,)),
 
-                            Center(
+                            Expanded(
                               child: Text(
                                 loginController.userData.isNotEmpty && user?.address != null
                                     ? "${user?.address['state'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['city'] ?? ''}"
