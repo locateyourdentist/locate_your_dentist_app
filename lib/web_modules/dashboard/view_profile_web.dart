@@ -19,6 +19,8 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _quillScrollController = ScrollController();
+  final FocusNode _focusNode = FocusNode();
   late QuillController _controller;
   void loadJobDescription(dynamic data) {
     try {
@@ -74,6 +76,15 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     loadJobDescription(data);
   }
   @override
+  void dispose() {
+    _scrollController.dispose();
+    _quillScrollController.dispose();
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     final bool isDesktop = width >= 1100;
@@ -85,7 +96,6 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     final ug = collegeDetails['ugDegree'] ?? {};
     final pg = collegeDetails['pgDegree'] ?? {};
     final experiences = (hasData) ? user!.details['experienceDetails'] ?? [] : [];
-    loadJobDescription(user?.details["description"]);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -133,8 +143,8 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                                     child:  IgnorePointer(
                                       child: QuillEditor(
                                         controller: _controller,
-                                        scrollController: _scrollController,
-                                        focusNode: FocusNode(),
+                                        scrollController: _quillScrollController,
+                                        focusNode: _focusNode,
                                         config: const QuillEditorConfig(
                                           showCursor: false,
                                           expands: false,

@@ -89,15 +89,14 @@ class _AppliedJobListsState extends State<AppliedJobLists> {
             n.status.toString().trim()==
                 selectedTab)
                 .toList();
-          return Column(
-            children: [
-              AnimationLimiter(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                AnimationLimiter(
                   child: Row(
                     children: titles.map((t) {
                       final isSelected = selectedTab == t;
-
+                  
                       return GestureDetector(
                         onTap: () {
                           setState(() {
@@ -127,145 +126,145 @@ class _AppliedJobListsState extends State<AppliedJobLists> {
                     }).toList(),
                   ),
                 ),
-              ),
-              AnimationLimiter(
-                child: ListView.builder(
-                    itemCount: filteredList.length,
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: ( BuildContext context,int index) {
-                      //final appliedJobs=jobController.jobSeekersAppliedLists[index];
-                      final appliedJobs=filteredList[index];
-                      final logoUrl = (appliedJobs.logoImage != null && appliedJobs.logoImage!.isNotEmpty)
-                          ? appliedJobs.logoImage!.first
-                          : null;
-                      print('logo url$logoUrl');
-                      return AnimationConfiguration.staggeredList(
-                        position: index,
-                        duration: const Duration(milliseconds: 1300),
-                        child: SlideAnimation(
-                          verticalOffset: 120.0,
-                          curve: Curves.easeOutBack,
-                          child: FadeInAnimation(
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: GestureDetector(
-                                onTap: (){
-                                  jobController.getJobsById(appliedJobs.jobId!, context);
-                                  Get.toNamed('/jobViewProfilePage');                            },
-                                child: Container(
-                                  height: size*0.54,
-                                  width: size,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                                width: size * 0.22,
-                                                height: size * 0.22,
-                                                clipBehavior: Clip.hardEdge,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  color: Colors.white,
-                                                ),
-                                                child: Image.network(
-                                                  logoUrl??"",
-                                                  //"${AppConstants.baseUrl}${appliedJobs.image ?? ""}",
-                                                  fit: BoxFit.cover,width: size * 0.26,
-                                                  height: size * 0.26,
-                                                  errorBuilder: (context, error, stackTrace) {
-                                                    return Container(
-                                                      decoration: BoxDecoration(color: getRandomColor(appliedJobs.orgName.toString()),
+                AnimationLimiter(
+                  child: ListView.builder(
+                      itemCount: filteredList.length,
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: ( BuildContext context,int index) {
+                        //final appliedJobs=jobController.jobSeekersAppliedLists[index];
+                        final appliedJobs=filteredList[index];
+                        final logoUrl = (appliedJobs.logoImage != null && appliedJobs.logoImage!.isNotEmpty)
+                            ? appliedJobs.logoImage!.first
+                            : null;
+                        print('logo url$logoUrl');
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 1300),
+                          child: SlideAnimation(
+                            verticalOffset: 120.0,
+                            curve: Curves.easeOutBack,
+                            child: FadeInAnimation(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    jobController.getJobsById(appliedJobs.jobId!, context);
+                                    Get.toNamed('/jobViewProfilePage');                            },
+                                  child: Container(
+                                    height: size*0.54,
+                                    width: size,
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white,),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+            
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                  width: size * 0.22,
+                                                  height: size * 0.22,
+                                                  clipBehavior: Clip.hardEdge,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: Colors.white,
+                                                  ),
+                                                  child: Image.network(
+                                                    logoUrl??"",
+                                                    //"${AppConstants.baseUrl}${appliedJobs.image ?? ""}",
+                                                    fit: BoxFit.cover,width: size * 0.26,
+                                                    height: size * 0.26,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return Container(
+                                                        decoration: BoxDecoration(color: getRandomColor(appliedJobs.orgName.toString()),
+                                                        ),
+                                                        //'assets/images/hospital.jpg',
+                                                        //fit: BoxFit.cover,
+                                                        width: size * 0.2,
+                                                        height: size * 0.2,
+                                                        child: Center(
+                                                          child: Text(getFirstLetter(appliedJobs.orgName.toString(),),style: AppTextStyles.headline(context,color: AppColors.white),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },)
+                                              ),
+            
+                                              //
+                                              const SizedBox(width: 10,),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(appliedJobs.orgName.toString()??"N/A",style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
+                                                    Text(appliedJobs.jobType.toString()??"N/A",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
+                                                    Container(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                      decoration: BoxDecoration(
+                                                        color: getStatusColor(appliedJobs.status ?? "").withOpacity(0.1),
+                                                        borderRadius: BorderRadius.circular(20),
+                                                        // border: Border.all(
+                                                        //   color: getStatusColor(Jobs.status ?? ""),
+                                                        //   width: 1,
+                                                        // ),
                                                       ),
-                                                      //'assets/images/hospital.jpg',
-                                                      //fit: BoxFit.cover,
-                                                      width: size * 0.2,
-                                                      height: size * 0.2,
-                                                      child: Center(
-                                                        child: Text(getFirstLetter(appliedJobs.orgName.toString(),),style: AppTextStyles.headline(context,color: AppColors.white),
+                                                      child: Text(
+                                                        appliedJobs.status ?? "Not Applied",
+                                                        style: TextStyle(
+                                                          fontSize: size * 0.03,
+                                                          fontWeight: FontWeight.w500,
+                                                          color: getStatusColor(appliedJobs.status ?? ""),
                                                         ),
                                                       ),
-                                                    );
-                                                  },)
-                                            ),
-
-                                            //
-                                            const SizedBox(width: 10,),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(appliedJobs.orgName.toString()??"N/A",style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
-                                                  Text(appliedJobs.jobType.toString()??"N/A",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
-                                                  Container(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                    decoration: BoxDecoration(
-                                                      color: getStatusColor(appliedJobs.status ?? "").withOpacity(0.1),
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      // border: Border.all(
-                                                      //   color: getStatusColor(Jobs.status ?? ""),
-                                                      //   width: 1,
-                                                      // ),
                                                     ),
-                                                    child: Text(
-                                                      appliedJobs.status ?? "Not Applied",
-                                                      style: TextStyle(
-                                                        fontSize: size * 0.03,
-                                                        fontWeight: FontWeight.w500,
-                                                        color: getStatusColor(appliedJobs.status ?? ""),
+                                                    const SizedBox(height: 15,),
+                                                    Text(appliedJobs.jobTitle.toString()??"N/A",softWrap:true,style: TextStyle(fontSize: size*0.032,fontWeight: FontWeight.bold,color: Colors.black),),
+                                                    const SizedBox(height: 5),
+            
+                                                    Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Icon(Icons.location_on_rounded, color: Colors.grey,size: size*0.04,),
+                                                        const SizedBox(width: 5,),
+                                                        Text("${appliedJobs.city.toString()??"N/A"},${appliedJobs.district.toString()??"N/A"}",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons.currency_rupee_rounded, color: Colors.grey,size: size*0.04,),
+                                                        Text(appliedJobs.salary.toString()??"N/A",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
+                                                      ],
+                                                    ),
+                                                    Align(
+                                                      alignment:Alignment.bottomRight,
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(5.0),
+                                                        child:    Text('Posted On ${  DateFormat('MMM dd, yyyy').format(DateTime.parse(appliedJobs.createdDate.toString()))}',style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.normal,color: Colors.black54),),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 15,),
-                                                  Text(appliedJobs.jobTitle.toString()??"N/A",softWrap:true,style: TextStyle(fontSize: size*0.032,fontWeight: FontWeight.bold,color: Colors.black),),
-                                                  const SizedBox(height: 5),
-
-                                                  Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Icon(Icons.location_on_rounded, color: Colors.grey,size: size*0.04,),
-                                                      const SizedBox(width: 5,),
-                                                      Text("${appliedJobs.city.toString()??"N/A"},${appliedJobs.district.toString()??"N/A"}",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.currency_rupee_rounded, color: Colors.grey,size: size*0.04,),
-                                                      Text(appliedJobs.salary.toString()??"N/A",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
-                                                    ],
-                                                  ),
-                                                  Align(
-                                                    alignment:Alignment.bottomRight,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(5.0),
-                                                      child:    Text('Posted On ${  DateFormat('MMM dd, yyyy').format(DateTime.parse(appliedJobs.createdDate.toString()))}',style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.normal,color: Colors.black54),),
-                                                    ),
-                                                  )
-                                                ],
+                                                    )
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-
-                    }),
-              ),
-            ],
+                        );
+            
+                      }),
+                ),
+              ],
+            ),
           );
         }
       ),

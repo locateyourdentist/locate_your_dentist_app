@@ -441,40 +441,54 @@ class _CommonContactContainerState extends State<CommonContactContainer> {
   @override
   Widget build(BuildContext context) {
     double s = MediaQuery.of(context).size.width;
+    bool isWeb = PlatformHelper.platform == "Web";
+    
     return Container(
-      height:PlatformHelper.platform != "Web"? s * 0.25:s*0.04,
-      width: PlatformHelper.platform != "Web"?s * 0.26:s*0.06,
+      height: !isWeb ? s * 0.25 : (s * 0.08).clamp(60.0, 100.0),
+      width: !isWeb ? s * 0.26 : (s * 0.1).clamp(80.0, 150.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.grey, width: 0.3),
         color: AppColors.white,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: ShaderMask(
-                shaderCallback: (Rect bounds) {
-                  return const LinearGradient(
-                    colors: [
-                     AppColors.primary,AppColors.secondary
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ).createShader(bounds);
-                },
-                child: IconButton(
-                 onPressed: widget.onTap,icon: Icon(widget.icons,color: AppColors.white,size:PlatformHelper.platform != "Web"? s * 0.08: s*0.012,),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: ShaderMask(
+              shaderCallback: (Rect bounds) {
+                return const LinearGradient(
+                  colors: [
+                   AppColors.primary,AppColors.secondary
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ).createShader(bounds);
+              },
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: widget.onTap,
+                icon: Icon(
+                  widget.icons,
+                  color: AppColors.white,
+                  size: !isWeb ? s * 0.08 : 24.0,
                 ),
               ),
             ),
-            PlatformHelper.platform != "Web"?   SizedBox(height: s*0.02,):SizedBox(height: s*0.001,),
-            Flexible(child: Text(widget.title.toString(),  overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,style: AppTextStyles.caption(context,color: AppColors.grey),))
-          ],
-        ),
+          ),
+          SizedBox(height: !isWeb ? s * 0.02 : 4.0),
+          Flexible(
+            child: Text(
+              widget.title.toString(),
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.caption(context, color: AppColors.grey),
+            ),
+          )
+        ],
       ),
     );
   }

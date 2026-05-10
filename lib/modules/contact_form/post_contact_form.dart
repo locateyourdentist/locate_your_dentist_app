@@ -121,8 +121,10 @@ class _ContactFormState extends State<ContactForm> {
                     children: [
                       Text('Contact Form',style: AppTextStyles.subtitle(context,),),
                       SizedBox(height: size*0.02,),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 10,
+                          runSpacing: 10,
                           children: [
                             CommonContactContainer(icons: Icons.call,onTap: (){
                               launchCall(mobileNumber);

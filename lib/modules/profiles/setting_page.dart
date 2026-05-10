@@ -180,14 +180,17 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
                   child: Row(
                     children: [
 
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 35,
                         backgroundColor: AppColors.white,
                         child: CircleAvatar(
                           radius: 32,
-                          backgroundImage: AssetImage(
-                            "assets/images/doctor5.jpg",
-                          ),
+                          backgroundImage:
+                          (Api.userInfo.read("profileImage") != null &&
+                              Api.userInfo.read("profileImage").toString().isNotEmpty)
+                              ? NetworkImage(Api.userInfo.read("profileImage"))
+                              : const AssetImage("assets/images/doctor5.jpg")
+                          as ImageProvider,
                         ),
                       ),
 

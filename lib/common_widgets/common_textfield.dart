@@ -188,7 +188,7 @@ class CustomDropdownField extends StatelessWidget {
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             isExpanded: true,
-            value: selectedValue,
+            value: (selectedValue != null && items.contains(selectedValue)) ? selectedValue : null,
             style: AppTextStyles.caption(context, color: Colors.black,),
             items: items
                 .map(

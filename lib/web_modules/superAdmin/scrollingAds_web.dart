@@ -238,11 +238,11 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: controller.editUploadImage1.length,
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 450,
         mainAxisSpacing: 20,
         crossAxisSpacing: 20,
-        mainAxisExtent: 420,
+        mainAxisExtent: isMobile ? 480 : 450,
       ),
       itemBuilder: (_, index) {
         final image = controller.editUploadImage1[index];
@@ -282,7 +282,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                 DropdownButtonFormField<String>(
                   isExpanded: true,
                   value: controller.postImagePlanList.any((plan) => plan.id == image.planId) ? image.planId : null,
-                  hint: Text("Select Plan", style: AppTextStyles.caption(context)),
+                  hint: Text("Select Plan", style: AppTextStyles.caption(context), overflow: TextOverflow.ellipsis),
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     border: OutlineInputBorder(),
@@ -290,9 +290,12 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                   items: controller.postImagePlanList.map((plan) {
                     return DropdownMenuItem<String>(
                       value: plan.id,
-                      child: Text("${plan.postPlanName} (${plan.duration} days)", 
-                        style: AppTextStyles.caption(context),
-                        overflow: TextOverflow.ellipsis,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 300),
+                        child: Text("${plan.postPlanName} (${plan.duration} days)", 
+                          style: AppTextStyles.caption(context),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     );
                   }).toList(),
@@ -308,18 +311,21 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                   alignment: WrapAlignment.spaceBetween,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 10,
-                  runSpacing: 5,
+                  runSpacing: 10,
                   children: [
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(
                           height: 35,
+                          width: 45,
                           child: Switch(
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             value: image.isActive ?? false,
                             onChanged: (val) => _handleStatusChange(controller, image, index, userType, val),
                           ),
                         ),
+                        const SizedBox(width: 4),
                         Text(image.isActive == true ? "Active" : "Inactive", 
                           style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
                       ],
@@ -386,7 +392,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     await controller.uploadImagesUserType(
       currentUserId,
       targetUserType,
-      image.id!,
+      image.id ?? "0",
       "1",
       startDate,
       endDate,

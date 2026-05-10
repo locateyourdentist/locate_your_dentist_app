@@ -504,7 +504,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                           headerStyle: AppTextStyles.caption(context, color: Colors.black),
                                           listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
                                         items: controller.states.map((s) => s.toString()).toList(),
-                                        //initialItem: controller.selectedState,
+                                        initialItem: controller.states.contains(controller.selectedState) ? controller.selectedState : null,
                                         onChanged: (val) {
                                           if (val != null) {
                                             controller.selectedState = val;
@@ -529,7 +529,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       return CustomDropdown<String>.search(
                                         hintText: "Select District",
                                         items: controller.districts.map((d) => d.toString()).toList(),
-                                        //initialItem: controller.selectedDistrict,
+                                        initialItem: controller.districts.contains(controller.selectedDistrict) ? controller.selectedDistrict : null,
                                         decoration: CustomDropdownDecoration(
                                           hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
                                           headerStyle: AppTextStyles.caption(context, color: Colors.black),
@@ -565,81 +565,50 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                   GetBuilder<LoginController>(
                                       builder: (controller) {
+                                        final items = loginController.talukas.map((t) => t.toString()).toList();
+                                        final initialItem = items.contains(loginController.selectedTaluka) ? loginController.selectedTaluka : null;
                                         return  DefaultTextStyle(
                                           style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
                                           child: CustomDropdown<String>.search(
-                                          hintText: "Select  taluka/town",
-                                          items: loginController.talukas.map((t) => t.toString()).toList(),
-                                            decoration: CustomDropdownDecoration(
-                                              hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                              headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                              listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                                              closedFillColor: Colors.grey[100],
-                                              expandedFillColor: Colors.white,
-                                              closedBorder: Border.all(
-                                                color: AppColors.white,
-                                                width: 1.5,
-                                              ),
-                                              expandedBorder: Border.all(
-                                                color: AppColors.primary,
-                                                width: 1.5,
-                                              ),
-                                            ),
-                                            //initialItem: loginController.selectedTaluka,
-                                            excludeSelected: false,
-                                          onChanged: (val) {
-                                          setState(() => loginController.selectedTaluka = val);
-                                          if (val != null) {
-                                            final taluka =
-                                            loginController. talukas.firstWhere((t) => t == val);
-                                            controller.villages.clear();
-                                            loginController.fetchVillages(taluka.toString());
-                                            loginController.update();
-                                            print('taluka${loginController.selectedTaluka}');
-                                          }
-                                          },),
+                                            hintText: "Select  taluka/town",
+                                            items: items,
+                                            initialItem: initialItem,
+                                            decoration: const CustomDropdownDecoration(),
+                                            onChanged: (val) {
+                                              setState(() => loginController.selectedTaluka = val);
+                                              if (val != null) {
+                                                final taluka = loginController.talukas.firstWhere((t) => t == val);
+                                                controller.villages.clear();
+                                                loginController.fetchVillages(taluka.toString());
+                                                loginController.update();
+                                                print('taluka${loginController.selectedTaluka}');
+                                              }
+                                            },
+                                          ),
                                         );
-                                    }
+                                      }
                                   ),
 
                                   SizedBox(height: size * 0.03),
                                   GetBuilder<LoginController>(
                                       builder: (controller) {
                                         final items = controller.villages.map((v) => v.toString()).toList();
+                                        final initialItem = items.contains(controller.selectedVillage) ? controller.selectedVillage : null;
                                         return DefaultTextStyle(
                                           style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
                                           child: CustomDropdown<String>.search(
                                             hintText: "Select Area",
-                                           // items: loginController.villages.map((v) => v['name'].toString()).toList(),
                                             items: items,
-                                            decoration: CustomDropdownDecoration(
-                                              hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                              headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                              listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                                              closedFillColor: Colors.grey[100],
-                                              expandedFillColor: Colors.white,
-                                              closedBorder: Border.all(
-                                                color: AppColors.white,
-                                                width: 1.5,
-                                              ),
-                                              expandedBorder: Border.all(
-                                                color: AppColors.primary,
-                                                width: 1.5,
-                                              ),
-
-                                            ),
-                                            // initialItem: items.contains(controller.selectedVillage)
-                                            //     ? controller.selectedVillage
-                                            //     : null,
-                                            excludeSelected: false,
+                                            initialItem: initialItem,
+                                            decoration: const CustomDropdownDecoration(),
                                             onChanged: (val) {
-                                          setState(() => loginController.selectedVillage = val);
-                                          loginController.update();
-                                          print('Area${loginController.selectedArea}');
-                                                                                        },
+                                              setState(() => loginController.selectedVillage = val);
+                                              loginController.update();
+                                              print('Area${loginController.selectedArea}');
+                                            },
                                           ),
                                         );
-                                    }
+                                      }
                                   ),
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
