@@ -31,7 +31,6 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
   File? selectedImageFile;
   final _formKeyCreateNotificationWeb = GlobalKey<FormState>();
   final ImagePicker picker = ImagePicker();
-  final GlobalKey<ScaffoldState> _scaffoldKeyNotification = GlobalKey<ScaffoldState>();
 
   File? notificationFileImage;
   Uint8List? notificationWebImage;
@@ -103,15 +102,8 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
   @override
   Widget build(BuildContext context) {
     double s=MediaQuery.of(context).size.width;
-    final double width = MediaQuery.of(context).size.width;
-    final bool isDesktop = width >= 1100;
-    final bool isTablet = width >= 700 && width < 1100;
-    final bool isMobile = width < 700;
-    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
-      key: _scaffoldKeyNotification,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
         height: s * 0.03,
         title: "LYD",
@@ -126,7 +118,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
               key: _formKeyCreateNotificationWeb,
               child: Row(
                 children: [
-                  if (isDesktop) const AdminSideBar(),
+                  const AdminSideBar(),
                   Expanded(
                     child: Center(
                       child: Padding(
@@ -147,19 +139,8 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                               child: Padding(
                                 padding: const EdgeInsets.all(25.0),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                   children: [
+                                    children: [
                                       SizedBox(height: s*0.01,),
-                                      if (!isDesktop)
-                                        Positioned(
-                                          top: 10,
-                                          left: 10,
-                                          child: IconButton(
-                                            icon: const Icon(Icons.menu,color: AppColors.black),
-                                            onPressed: () => _scaffoldKeyNotification.currentState?.openDrawer(),
-                                          ),
-                                        ),
                                       Text('Create Notification',style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
                                       SizedBox(height: s*0.01,),
 
@@ -253,7 +234,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                                       items: loginController.states
                                                           .map((s) => s.toString())
                                                           .toList(),
-                                                      initialItem: loginController.states.contains(loginController.selectedState) ? loginController.selectedState : null,
+                                                      //initialItem: loginController.selectedState,
                                                       onChanged: (val) {
                                                         loginController.districts.clear();
                                                         loginController.talukas.clear();
@@ -318,8 +299,6 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                                   builder: (controller) {
                                                     return CustomDropdown<String>.search(
                                                       hintText: "Select District",
-                                                      items: loginController.districts.map((d) => d.toString()).toList(),
-                                                      initialItem: loginController.districts.contains(loginController.selectedDistrict) ? loginController.selectedDistrict : null,
                                                       decoration: CustomDropdownDecoration(
                                                         closedFillColor: Colors.grey[100],
                                                         expandedFillColor: Colors.white,
@@ -336,6 +315,8 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                                         hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
                                                         headerStyle: AppTextStyles.caption(context, color: Colors.black),
                                                         listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
+                                                      items: loginController.districts.map((d) => d.toString()).toList(),
+                                                      //initialItem: loginController.selectedDistrict,
                                                       onChanged: (val) {
                                                         loginController.talukas.clear();
                                                         loginController.villages.clear();
@@ -367,40 +348,43 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                           Expanded(
                                             child: GetBuilder<LoginController>(
                                                 builder: (controller) {
-                                                  final items = loginController.talukas.map((t) => t.toString()).toList();
-                                                  final initialItem = items.contains(loginController.selectedTaluka) ? loginController.selectedTaluka : null;
                                                   return  DefaultTextStyle(
                                                     style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
-                                                    child: CustomDropdown<String>.search(
-                                                        hintText: "Select  taluka/town",
-                                                        items: items,
-                                                        initialItem: initialItem,
-                                                      decoration: CustomDropdownDecoration(
-                                                        closedFillColor: Colors.grey[100],
-                                                        expandedFillColor: Colors.white,
-                                                        closedBorder: Border.all(
-                                                          color: AppColors.white,
-                                                          width: 1.5,
-                                                        ),
-                                                        expandedBorder: Border.all(
-                                                          color: AppColors.primary,
-                                                          width: 1.5,
-                                                        ),
-                                                        closedBorderRadius: BorderRadius.circular(10),
-                                                        expandedBorderRadius: BorderRadius.circular(10),
-                                                        hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                                        headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                                        listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
-                                                      onChanged: (val) {
-                                                          loginController.selectedTaluka = val;
-                                                          if (val != null) {
-                                                            final taluka =
-                                                            loginController. talukas.firstWhere((t) => t == val);
-                                                            loginController.fetchVillages(taluka.toString());
-                                                            loginController.update();
-                                                            print('taluka${loginController.selectedTaluka}');
-                                                          }
-                                                        },),
+                                                    child: GetBuilder<LoginController>(
+                                                        builder: (controller) {
+                                                          return CustomDropdown<String>.search(
+                                                            hintText: "Select  taluka/town",
+                                                            decoration: CustomDropdownDecoration(
+                                                              closedFillColor: Colors.grey[100],
+                                                              expandedFillColor: Colors.white,
+                                                              closedBorder: Border.all(
+                                                                color: AppColors.white,
+                                                                width: 1.5,
+                                                              ),
+                                                              expandedBorder: Border.all(
+                                                                color: AppColors.primary,
+                                                                width: 1.5,
+                                                              ),
+                                                              closedBorderRadius: BorderRadius.circular(10),
+                                                              expandedBorderRadius: BorderRadius.circular(10),
+                                                              hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                                                              headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                              listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
+                                                            items: loginController.talukas.map((t) => t.toString()).toList(),
+                                                            // initialItem: loginController.selectedTaluka,
+                                                            excludeSelected: false,
+                                                            onChanged: (val) {
+                                                              loginController.selectedTaluka = val;
+                                                              if (val != null) {
+                                                                final taluka =
+                                                                loginController. talukas.firstWhere((t) => t == val);
+                                                                loginController.fetchVillages(taluka.toString());
+                                                                loginController.update();
+                                                                print('taluka${loginController.selectedTaluka}');
+                                                              }
+                                                            },);
+                                                        }
+                                                    ),
                                                   );
                                                 }
                                             ),
@@ -409,35 +393,38 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                           Expanded(
                                             child: GetBuilder<LoginController>(
                                                 builder: (controller) {
-                                                  final items = loginController.villages.map((v) => v.toString()).toList();
-                                                  final initialItem = items.contains(loginController.selectedVillage) ? loginController.selectedVillage : null;
                                                   return DefaultTextStyle(
                                                     style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
-                                                    child: CustomDropdown<String>.search(
-                                                        hintText: "Select Area",
-                                                        items: items,
-                                                        initialItem: initialItem,
-                                                      decoration: CustomDropdownDecoration(
-                                                        closedFillColor: Colors.grey[100],
-                                                        expandedFillColor: Colors.white,
-                                                        closedBorder: Border.all(
-                                                          color: AppColors.white,
-                                                          width: 1.5,
-                                                        ),
-                                                        expandedBorder: Border.all(
-                                                          color: AppColors.primary,
-                                                          width: 1.5,
-                                                        ),
-                                                        closedBorderRadius: BorderRadius.circular(10),
-                                                        expandedBorderRadius: BorderRadius.circular(10),
-                                                        hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                                        headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                                        listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
-                                                       onChanged: (val) {
-                                                          loginController.selectedVillage = val;
-                                                          loginController.update();
-                                                          print('Area${loginController.selectedArea}');
-                                                        },
+                                                    child: GetBuilder<LoginController>(
+                                                        builder: (controller) {
+                                                          return CustomDropdown<String>.search(
+                                                            hintText: "Select Area",
+                                                            decoration: CustomDropdownDecoration(
+                                                              closedFillColor: Colors.grey[100],
+                                                              expandedFillColor: Colors.white,
+                                                              closedBorder: Border.all(
+                                                                color: AppColors.white,
+                                                                width: 1.5,
+                                                              ),
+                                                              expandedBorder: Border.all(
+                                                                color: AppColors.primary,
+                                                                width: 1.5,
+                                                              ),
+                                                              closedBorderRadius: BorderRadius.circular(10),
+                                                              expandedBorderRadius: BorderRadius.circular(10),
+                                                              hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                                                              headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                              listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
+                                                            items: loginController.villages.map((v) => v.toString()).toList(),
+                                                            //initialItem: loginController.selectedVillage,
+                                                            excludeSelected: false,
+                                                            onChanged: (val) {
+                                                              loginController.selectedVillage = val;
+                                                              loginController.update();
+                                                              print('Area${loginController.selectedArea}');
+                                                            },
+                                                          );
+                                                        }
                                                     ),
                                                   );
                                                 }
