@@ -87,7 +87,6 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
       bool serviceEnabled;
       LocationPermission permission;
 
-      /// Check GPS
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
       if (!serviceEnabled) {
