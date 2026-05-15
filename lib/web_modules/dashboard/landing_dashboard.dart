@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -30,7 +32,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
  // final notificationController = Get.put(NotificationController());
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
-  VideoPlayerController? _controller;
+  //VideoPlayerController? _controller;
   @override
   void initState() {
     super.initState();
@@ -41,39 +43,146 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
 
     _fadeController.forward();
     _refresh();
-    _controller = VideoPlayerController.asset('assets/images/welcome1.mp4')
-      ..initialize().then((_) {
-        if (mounted) {
-          setState(() {});
-          _controller!.setLooping(true);
-          _controller!.setVolume(0);
-          _controller!.play();
-        }
-      });
+    // _controller = VideoPlayerController.asset('assets/images/welcome1.mp4')
+    //   ..initialize().then((_) {
+    //     if (mounted) {
+    //       setState(() {});
+    //       _controller!.setLooping(true);
+    //       _controller!.setVolume(0);
+    //       _controller!.play();
+    //     }
+    //   });
   }
   Future<void> _refresh() async {
-    await getLocation();
-    await loginController.getProfileDetails('Dental Clinic', '', '', '', "true", '', '', '', '', context);
+    if (!kIsWeb) {
+      await getLocation();
+    }    await loginController.getProfileDetails('Dental Clinic', '', '', '', "true", '', '', '', '', context);
     await loginController.fetchStates();
     await loginController.getAppLogoImage(context);
     await planController.getUploadImages(userType: "Dental Clinic", context: context);
   }
-  Future<void> getLocation() async {
-    final position = await LocationService.getCurrentLocation();
-    if (position != null) {
-      final address = await getAddressFromLatLng(position.latitude, position.longitude);
+  // Future<void> getLocation() async {
+  //   final position = await LocationService.getCurrentLocation();
+  //   if (position != null) {
+  //     final address = await getAddressFromLatLng(position.latitude, position.longitude);
+  //     planController.currentLocation = address;
+  //   } else {
+  //     Get.snackbar('Location', 'Unable to get location');
+  //   }
+  // }
+  //
+  // Future<String> getAddressFromLatLng(double lat, double lng) async {
+  //   try {
+  //     List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+  //     Placemark place = placemarks.first;
+  //     return '${place.subLocality}, ${place.locality} ${place.postalCode}';
+  //   } catch (e) {
+  //     return '';
+  //   }
+  // }
+    Future<void> getLocation() async {
+
+    try {
+
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      /// Check GPS
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+      if (!serviceEnabled) {
+
+        Get.snackbar(
+          'Location',
+          'Location services are disabled',
+        );
+
+        return;
+      }
+
+      /// Check permission
+      permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied) {
+
+        permission = await Geolocator.requestPermission();
+
+        if (permission == LocationPermission.denied) {
+
+          Get.snackbar(
+            'Location',
+            'Location permission denied',
+          );
+
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+
+        Get.snackbar(
+          'Location',
+          'Location permission permanently denied',
+        );
+
+        return;
+      }
+
+      /// Get current position
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      print("Latitude: ${position.latitude}");
+      print("Longitude: ${position.longitude}");
+
+      /// Get address
+      String address = await getAddressFromLatLng(
+        position.latitude,
+        position.longitude,
+      );
+
       planController.currentLocation = address;
-    } else {
-      Get.snackbar('Location', 'Unable to get location');
+
+      print("Address: $address");
+
+    } catch (e) {
+
+      print("Location Error: $e");
+
+      Get.snackbar(
+        'Error',
+        'Unable to get location',
+      );
     }
   }
 
-  Future<String> getAddressFromLatLng(double lat, double lng) async {
+  Future<String> getAddressFromLatLng(
+      double lat,
+      double lng,
+      ) async {
+
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
-      Placemark place = placemarks.first;
-      return '${place.subLocality}, ${place.locality} ${place.postalCode}';
+
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(lat, lng);
+
+      if (placemarks.isNotEmpty) {
+
+        Placemark place = placemarks.first;
+
+        return
+          "${place.subLocality ?? ''}, "
+              "${place.locality ?? ''}, "
+              "${place.postalCode ?? ''}";
+      }
+
+      return '';
+
     } catch (e) {
+
+      print("Address Error: $e");
+
       return '';
     }
   }
@@ -210,26 +319,6 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // ClipRRect(
-                            //   child: SizedBox(
-                            //     width: double.infinity,
-                            //     height: size * 0.32,
-                            //     child: (_controller != null && _controller!.value.isInitialized)
-                            //         ? FittedBox(
-                            //       fit: BoxFit.cover,
-                            //       child: SizedBox(
-                            //         width: _controller!.value.size.width,
-                            //         height: _controller!.value.size.height,
-                            //         child: VideoPlayer(_controller!),
-                            //       ),
-                            //     )
-                            //         : Image.asset(
-                            //       'images/welcome.png',
-                            //       fit: BoxFit.cover,
-                            //       width: double.infinity,
-                            //     ),
-                            //   ),
-                            // ),
 
                             AnimationLimiter(
                               child: Column(
@@ -246,27 +335,6 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                     ),
                                   ),
 
-                                  // AnimationConfiguration.staggeredList(
-                                  //   position: 1,
-                                  //   duration: const Duration(milliseconds: 800),
-                                  //   child: SlideAnimation(
-                                  //     verticalOffset: 50.0,
-                                  //     child: FadeInAnimation(
-                                  //       child: TweenAnimationBuilder<double>(
-                                  //         tween: Tween(begin: 1.2, end: 1.0),
-                                  //         duration: const Duration(milliseconds: 800),
-                                  //         curve: Curves.easeOut,
-                                  //         builder: (context, scale, child) {
-                                  //           return Transform.scale(
-                                  //             scale: scale,
-                                  //             child: child,
-                                  //           );
-                                  //         },
-                                  //         child: HeroBanner(),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ),
                                   HeroBanner(),
                                 ],
                               ),
