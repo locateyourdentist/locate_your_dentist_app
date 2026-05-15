@@ -3,11 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:locate_your_dentist/api/api.dart';
-import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
-import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
-import 'package:locate_your_dentist/modules/dashboard/dental_clinic_dashboard.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
@@ -25,7 +22,7 @@ class ViewJobWebinarWebPage extends StatefulWidget {
 }
 
 class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyJobs = GlobalKey<ScaffoldState>();
   final jobController=Get.put(JobController());
   final loginController=Get.put(LoginController());
   final ScrollController _scrollController = ScrollController();
@@ -98,7 +95,7 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
     }
 
     return Scaffold(
-      key: _scaffoldKey,
+      key: _scaffoldKeyJobs,
       backgroundColor: AppColors.backGroundColor,
       drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
@@ -125,8 +122,8 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
                               top: 10,
                               left: 10,
                               child: IconButton(
-                                icon: const Icon(Icons.menu),
-                                onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+                                icon: const Icon(Icons.menu,color: AppColors.black,),
+                                onPressed: () => _scaffoldKeyJobs.currentState?.openDrawer(),
                               ),
                             ),
                           NestedScrollView(

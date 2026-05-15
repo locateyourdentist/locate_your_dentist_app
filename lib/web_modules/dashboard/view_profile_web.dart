@@ -96,11 +96,12 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     final ug = collegeDetails['ugDegree'] ?? {};
     final pg = collegeDetails['pgDegree'] ?? {};
     final experiences = (hasData) ? user!.details['experienceDetails'] ?? [] : [];
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
 
     return Scaffold(
       key: _scaffoldKeyProfile,
-      backgroundColor: AppColors.scaffoldBg,
       drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
         height: isMobile ? 60 : 80,
         title: "LOCATE YOUR DENTIST",
@@ -109,7 +110,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
       ),
       body: Row(
         children: [
-          if (isDesktop) const AdminSideBar(),
+          if (isDesktop && isLoggedIn) const AdminSideBar(),
 
           Expanded(
             child: Container(

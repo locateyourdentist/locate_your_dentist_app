@@ -26,10 +26,32 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
     super.initState();
     _refresh();
   }
+  Future<void> setProfileData(user) async {
+
+    loginController.selectedState = user.address["state"] ?? "";
+    loginController.selectedDistrict = user.address["district"] ?? "";
+    loginController.selectedTaluka = user.address["city"] ?? "";
+    loginController.selectedVillage = user.address["area"] ?? "";
+    print('fgf${user.address["district"] ?? ""}');
+    await loginController.fetchStates();
+    if (loginController.selectedState != null && loginController.selectedState!.isNotEmpty) {
+      await loginController.fetchDistricts(loginController.selectedState!);
+    }
+    if (loginController.selectedDistrict != null && loginController.selectedDistrict!.isNotEmpty) {
+      await loginController.fetchTalukas(loginController.selectedDistrict!);
+    }
+    if (loginController.selectedTaluka != null && loginController.selectedTaluka!.isNotEmpty) {
+      await loginController.fetchVillages(loginController.selectedTaluka!);
+    }
+
+    loginController.update();
+  }
+
   Future<void> _refresh() async {
   await  loginController.getBranchDetails(context);
     //loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
     final position = await LocationService.getCurrentLocation();
+      setProfileData(loginController.userData);
     if (position != null) {
       loginController.latitude = position.latitude;
       loginController.longitude = position.longitude;
@@ -77,78 +99,83 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                   borderRadius: BorderRadius.circular(12),
                                   boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
                                 ),
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: size*0.01,),
-                                    if (!isDesktop)
-                                      Positioned(
-                                        top: 10,
-                                        left: 10,
-                                        child: IconButton(
-                                          icon: const Icon(Icons.menu,color: AppColors.black),
-                                          onPressed: () => _scaffoldKeyBranch.currentState?.openDrawer(),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: size*0.01,),
+                                      if (!isDesktop)
+                                        Positioned(
+                                          top: 10,
+                                          left: 10,
+                                          child: IconButton(
+                                            icon: const Icon(Icons.menu,color: AppColors.black),
+                                            onPressed: () => _scaffoldKeyBranch.currentState?.openDrawer(),
+                                          ),
                                         ),
+
+                                      Text(
+                                        "Add Branches",
+                                        style: AppTextStyles.subtitle(context, color: AppColors.black),
                                       ),
-
-                                    Text(
-                                      "Add Branches",
-                                      style: AppTextStyles.subtitle(context, color: AppColors.black),
-                                    ),
-                                    SizedBox(height: size*0.005,),
-                                    GetBuilder<LoginController>(
-                                        init: LoginController(),
-                                        builder: (controller) {
-                                          return Column(
-                                              children: [
-                                                for (int i = 0; i < loginController.branchList.length; i++)
-                                                  _branchListFields(i,size),
-                                                Container(
-                                                  //height:size * 0.018,
-                                                width:size*0.12,
-                                                  decoration: BoxDecoration(
-                                                    gradient: const LinearGradient(
-                                                      colors: [AppColors.primary, AppColors.secondary],
-                                                      begin: Alignment.topLeft,
-                                                      end: Alignment.bottomRight,
-                                                    ),
-                                                    borderRadius: BorderRadius.circular(12),
-                                                  ),
-                                                  child: ElevatedButton(
-                                                    onPressed: ()async {
-                                                      loginController.userData.clear();
-                                                      loginController.clearProfileData();
-                                                      // loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-                                                      Get.toNamed('/registerPageWeb',arguments: {'branchId':'0'});
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: Colors.transparent,
-                                                      shadowColor:Colors.transparent,
-                                                      elevation: 4,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(12),
+                                      SizedBox(height: size*0.005,),
+                                      GetBuilder<LoginController>(
+                                          init: LoginController(),
+                                          builder: (controller) {
+                                            return Column(
+                                                children: [
+                                                  for (int i = 0; i < loginController.branchList.length; i++)
+                                                    _branchListFields(i,size),
+                                                  Container(
+                                                    //height:size * 0.018,
+                                                  width:size*0.12,
+                                                    decoration: BoxDecoration(
+                                                      gradient: const LinearGradient(
+                                                        colors: [AppColors.primary, AppColors.secondary],
+                                                        begin: Alignment.topLeft,
+                                                        end: Alignment.bottomRight,
                                                       ),
-                                                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                                                      borderRadius: BorderRadius.circular(12),
                                                     ),
-                                                    child: Center(
-                                                      child: Row(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: [
-                                                          Icon(Icons.add, size: size * 0.012, color: AppColors.white),
-                                                          const SizedBox(width: 8),
-                                                          Text(
-                                                            "Add Branches",
-                                                            style: AppTextStyles.caption(context, color: AppColors.white),
-                                                          ),
-                                                        ],
+                                                    child: ElevatedButton(
+                                                      onPressed: ()async {
+                                                        loginController.userData.clear();
+                                                        loginController.clearProfileData();
+                                                        // loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
+                                                        Get.toNamed('/registerPageWeb',arguments: {'branchId':'0'});
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: Colors.transparent,
+                                                        shadowColor:Colors.transparent,
+                                                        elevation: 4,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                                                      ),
+                                                      child: Center(
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            Icon(Icons.add, size: size * 0.012, color: AppColors.white),
+                                                            const SizedBox(width: 8),
+                                                            Text(
+                                                              "Add Branches",
+                                                              style: AppTextStyles.caption(context, color: AppColors.white),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ), ]);
-                                        }
-                                    ),
-                                    SizedBox(height: size*0.02,),
+                                                  ), ]);
+                                          }
+                                      ),
+                                      SizedBox(height: size*0.02,),
 
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -221,34 +248,34 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
               controller: exp.branchName,
             ),
             SizedBox(height: size * 0.01),
-              _buildStateDropdown(),
-            SizedBox(height: size * 0.01),
-              _buildDistrictDropdown(),
-            SizedBox(height: size * 0.01),
-              _buildTalukaDropdown(),
-            SizedBox(height: size * 0.01),
-              _buildAreaDropdown(),
-            SizedBox(height: size * 0.01),
+            //   _buildStateDropdown(),
+            // SizedBox(height: size * 0.01),
+            //   _buildDistrictDropdown(),
+            // SizedBox(height: size * 0.01),
+            //   _buildTalukaDropdown(),
+            // SizedBox(height: size * 0.01),
+            //   _buildAreaDropdown(),
+            // SizedBox(height: size * 0.01),
 
-            // CustomTextField(
-            //   hint: "State",
-            //   controller: exp.state,
-            // ),
-            // SizedBox(height: size * 0.01),
-            // CustomTextField(
-            //   hint: "District",
-            //   controller: exp.district,
-            // ),
-            // SizedBox(height: size * 0.01),
-            // CustomTextField(
-            //   hint: "City",
-            //   controller: exp.city,
-            // ),
-            // SizedBox(height: size * 0.01),
-            // CustomTextField(
-            //   hint: "Area",
-            //   controller: exp.area,
-            // ),
+            CustomTextField(
+              hint: "State",
+              controller: exp.state,
+            ),
+            SizedBox(height: size * 0.01),
+            CustomTextField(
+              hint: "District",
+              controller: exp.district,
+            ),
+            SizedBox(height: size * 0.01),
+            CustomTextField(
+              hint: "City",
+              controller: exp.city,
+            ),
+            SizedBox(height: size * 0.01),
+            CustomTextField(
+              hint: "Area",
+              controller: exp.area,
+            ),
             SizedBox(height: size * 0.01),
             CustomTextField(
               hint: "Pin Code",

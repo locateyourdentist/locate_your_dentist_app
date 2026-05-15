@@ -311,7 +311,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                   jobCategory: loginController.selectedCategories,
                   context: context,
                 );
-                String userType=  Api.userInfo.read('sUserType');
+                String userType=  Api.userInfo.read('sUserType')??"";
 
                 if( Api.userInfo.read('userType')=="superAdmin") {
                   await   loginController.getProfileDetails('',  loginController.selectedState,
@@ -323,8 +323,8 @@ class _FilterSidebarState extends State<FilterSidebar> {
                       loginController.selectedTaluka, '',loginController.latitude.toString(),loginController.longitude.toString(),loginController.selectedDistance.toString(),searchController.text.toString(), context);
                 }
                 else{
-                  await  loginController.getProfileDetails(
-                    userType,
+                  await  loginController.getProfileDetails("",
+                   // userType,
                     loginController.selectedState,
                     loginController.selectedDistrict,
                     loginController.selectedTaluka,'true',loginController.latitude.toString(),loginController.longitude.toString(), loginController.selectedDistance.toString(), searchController.text.toString(),

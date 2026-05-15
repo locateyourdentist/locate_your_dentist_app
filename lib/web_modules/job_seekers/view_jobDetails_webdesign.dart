@@ -27,6 +27,7 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
   final loginController = Get.put(LoginController());
   final jobController = Get.put(JobController());
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey<ScaffoldState> _scaffoldKeyJobDetail = GlobalKey<ScaffoldState>();
   late QuillController _controller;
   void loadJobDescription(dynamic data) {
     try {
@@ -109,8 +110,15 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isTablet = width >= 700 && width < 1100;
+    final bool isMobile = width < 700;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
+      key: _scaffoldKeyJobDetail,
       appBar: buildAppBar(context),
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: GetBuilder<JobController>(
@@ -139,8 +147,7 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if( Api.userInfo.read('token')!=null)
-                      const AdminSideBar(),
+                    if (isLoggedIn && isDesktop) const AdminSideBar(),
                     Expanded(
                       child: Center(
                         child: DefaultTabController(
@@ -161,6 +168,16 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      if (isLoggedIn && !isDesktop)
+                                        Positioned(
+                                          top: 10,
+                                          left: 10,
+                                          child: IconButton(
+                                            icon: const Icon(Icons.menu,color: AppColors.black,),
+                                            onPressed: () => _scaffoldKeyJobDetail.currentState?.openDrawer(),
+                                          ),
+                                        ),
+
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
                                         child: SizedBox(

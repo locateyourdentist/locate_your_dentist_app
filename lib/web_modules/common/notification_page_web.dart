@@ -97,14 +97,12 @@ class _ViewNotificationWebState extends State<ViewNotificationWeb> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
-
     final double width = MediaQuery.of(context).size.width;
     final bool isDesktop = width >= 1100;
-    final bool isTablet = width >= 700 && width < 1100;
-    final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
       key: _scaffoldKeyViewNotification,
+      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
         height: size * 0.03,
@@ -134,12 +132,14 @@ class _ViewNotificationWebState extends State<ViewNotificationWeb> {
             onRefresh: _refresh,
             child: Row(
               children: [
-                if (isDesktop) const AdminSideBar(),
+                if (isDesktop && isLoggedIn) const AdminSideBar(),
 
                   Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(30.0),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (!isDesktop)
                           Positioned(

@@ -121,10 +121,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
           builder: (controller) {
             final filteredProfiles = (userType == null || userType!.isEmpty)
                 ? controller.profileList
-                : controller.profileList
-                    .where((p) => p.userType.toLowerCase() == userType!.toLowerCase())
-                    .toList();
-
+                : controller.profileList.where((p) => p.userType.toLowerCase() == userType!.toLowerCase()).toList();
             return Row(
               children: [
                 if (isDesktop) const AdminSideBar(),

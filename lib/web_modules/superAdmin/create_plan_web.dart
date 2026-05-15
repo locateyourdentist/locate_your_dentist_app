@@ -216,7 +216,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
     return Scaffold(
       key: _scaffoldKeyCreatePlan,
       backgroundColor: Colors.white,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
         height: isMobile ? 60 : 80,
         title: "LOCATE YOUR DENTIST",

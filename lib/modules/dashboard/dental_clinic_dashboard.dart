@@ -12,11 +12,35 @@ import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:shimmer/shimmer.dart';
 
 class DentalClinicDashboard extends StatefulWidget {
   const DentalClinicDashboard({super.key});
   @override
   State<DentalClinicDashboard> createState() => _DentalClinicDashboardState();
+  Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
   final TextEditingController searchController=TextEditingController();
@@ -30,14 +54,60 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
   void initState() {
     super.initState();
     _refresh();
+    Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
   Future<void> _refresh() async {
    await  jobController.getJobListAdmin(context);
    await  jobController.getWebinarListAdmin(context);
    await  notificationController.getNotificationListAdmin(context);
    await  planController.checkPlansStatus(Api.userInfo.read('userId')??"",context);
    await loginController.getBranchDetails(context);
+    Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
   @override
   Widget build(BuildContext context) {
     double size=MediaQuery.of(context).size.width;
@@ -295,7 +365,30 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                               context,
                                             );
                                             Get.toNamed('/userTypeListPage');
-                                          }
+                                            Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                                         },
                                         child: Container(
                                           width: size * 0.37,
@@ -393,7 +486,30 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                 ],
                               ),
                             );
-                          }
+                            Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                         ),
                         const SizedBox(height: 10,),
                        SizedBox(
@@ -401,17 +517,10 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
             child: TabBarView(
             children: [
 
-            jobController.jobList.isEmpty ?
-            buildShimmerEmptyWidget(size)
-            //   Center(
-            // child: Text(
-            // 'No data found',
-            // style: AppTextStyles.caption(
-            // context,
-            // color: AppColors.black,
-            // ),
-            // ),
-            // )
+            (jobController.isLoading && jobController.jobList.isEmpty) ?
+            _buildShimmerList(size)
+            : jobController.jobList.isEmpty ?
+            Center(child: Text('No data found', style: AppTextStyles.caption(context)))
                 :AnimationLimiter(
               child: ListView.builder(
               itemCount: jobController.jobList.length,
@@ -470,18 +579,10 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
               ),
             ),
 
-            jobController.webinarList.isEmpty ?
-            buildShimmerEmptyWidget(size)
-
-            // Center(
-            // child: Text(
-            // 'No data found',
-            // style: AppTextStyles.caption(
-            // context,
-            // color: AppColors.black,
-            // ),
-            // ),
-            // )
+            (jobController.isLoading && jobController.webinarList.isEmpty) ?
+            _buildShimmerList(size)
+            : jobController.webinarList.isEmpty ?
+            Center(child: Text('No data found', style: AppTextStyles.caption(context)))
                 : AnimationLimiter(
                   child: ListView.builder(
                               itemCount: jobController.webinarList.length,
@@ -557,9 +658,78 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
               ),
             ),
           );
-        }
+          Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
+    );
+    Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+  Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -689,7 +859,76 @@ class JobCard extends StatelessWidget {
             ),
           ),
         );
-      }
+        Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+    );
+    Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+  Widget _buildShimmerList(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      padding: const EdgeInsets.all(12),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.48,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

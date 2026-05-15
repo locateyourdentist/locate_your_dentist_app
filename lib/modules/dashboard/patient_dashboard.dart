@@ -20,7 +20,31 @@ import 'package:shimmer/shimmer.dart';
   const PatientDashboard({super.key});
   @override
   State<PatientDashboard> createState() => _PatientDashboardState();
- }
+   Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
  class _PatientDashboardState extends State<PatientDashboard> {
   int currentIndex=0;
   final loginController=Get.put(LoginController());
@@ -48,20 +72,116 @@ import 'package:shimmer/shimmer.dart';
       planController.currentLocation = address;
     } else {
       Get.snackbar('Location', 'Unable to get location');
-    }
+      Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
+    Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
   @override
   void initState(){
     super.initState();
     _refresh();
+    Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
   Future<void> _refresh() async {
     getLocation();
     await loginController.fetchStates();
     await loginController.getProfileDetails('Dental Clinic', '', '', '',"true",'', '','','', context);
    // await loginController.getProfileDetails('Dental Clinic', '', '', '',"true",loginController.latitude.toString(), loginController.longitude.toString(),'','', context);
    await planController.getUploadImages(userType: "Dental Clinic",context: context);
+    Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
   Future<String> getAddressFromLatLng(double lat, double lng) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
@@ -69,8 +189,56 @@ import 'package:shimmer/shimmer.dart';
       return '${place.subLocality}, ${place.locality} ${place.postalCode}';
     } catch (e) {
       return '';
-    }
+      Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
+    Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -118,7 +286,31 @@ import 'package:shimmer/shimmer.dart';
                     Text(planController.currentLocation??"",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.white),),
                   ],
                 );
-              }
+                Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
             ),
 
           ],
@@ -280,12 +472,13 @@ import 'package:shimmer/shimmer.dart';
                           context,color: AppColors.grey)
                   ),
                   SizedBox(height: size * 0.01),
-                  if(loginController.profileList.isEmpty)
-                  //  Center(child: Text('No data found',style: AppTextStyles.caption(context),),),
-                  buildShimmerEmptyWidget(size),
-
-                  if(loginController.isLoading)
+                  if(loginController.isLoading && loginController.profileList.isEmpty)
+                    _buildShimmerClinics(size)
+                  else if(loginController.profileList.isEmpty)
+                  Center(child: Text('No data found', style: AppTextStyles.caption(context)))
+                  else if(loginController.isLoading && loginController.profileList.isNotEmpty)
                     const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
+
                   if(loginController.profileList.isNotEmpty)
                   AnimationLimiter(
                     child: ListView.builder(
@@ -520,11 +713,83 @@ import 'package:shimmer/shimmer.dart';
         ),
       ),
     );
+    Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
 ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
 
     );
+    Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
 
- }
+   Widget _buildShimmerClinics(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

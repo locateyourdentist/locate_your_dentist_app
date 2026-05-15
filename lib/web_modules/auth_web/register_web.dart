@@ -42,12 +42,15 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   bool isPicking = false;
 
   @override
-  void initState(){
-    _controller = QuillController.basic();
-    _refresh();
+  void initState() {
     super.initState();
-  }
 
+    _controller = QuillController.basic();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refresh();
+    });
+  }
   @override
   void dispose() {
     _focusNode.dispose();
@@ -55,11 +58,50 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     _controller.dispose();
     super.dispose();
   }
+  Future<void> setProfileData(user) async {
 
+    // SET VALUES FIRST
+    loginController.selectedState =
+        user.address["state"]?.toString() ?? "";
+
+    loginController.selectedDistrict =
+        user.address["district"]?.toString() ?? "";
+
+    loginController.selectedTaluka =
+        user.address["city"]?.toString() ?? "";
+
+    loginController.selectedVillage =
+        user.address["area"]?.toString() ?? "";
+
+    print("STATEss ${loginController.selectedState}");
+    print("DISTRICTss ${loginController.selectedDistrict}");
+    print("TALUKAss ${loginController.selectedTaluka}");
+    print("AREAss ${loginController.selectedVillage}");
+    await loginController.fetchStates();
+    if (loginController.selectedState!.isNotEmpty) {
+      await loginController.fetchDistricts(
+        loginController.selectedState!,
+      );
+    }
+
+    // FETCH TALUKAS
+    if (loginController.selectedDistrict!.isNotEmpty) {
+      await loginController.fetchTalukas(
+        loginController.selectedDistrict!,
+      );
+    }
+    if (loginController.selectedTaluka!.isNotEmpty) {
+      await loginController.fetchVillages(
+        loginController.selectedTaluka!,
+      );
+    }
+    loginController.update();
+  }
   Future<void> _refresh() async {
     await getLocation();
     loadJobDescription(loginController.descriptionData);
     await loginController.fetchStates();
+    await setProfileData(loginController.userData);
     if (loginController.userData.isNotEmpty) getPlanLimits();
     await jobController.getJobCategoryLists("", context);
     branchId = Get.arguments?['branchId'] ??"";
@@ -192,7 +234,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
               child: Stack(
                 children: [
                   if (isLoggedIn && !isDesktop)
-                    Positioned(top: 10, left: 10, child: IconButton(icon: const Icon(Icons.menu), onPressed: () => _scaffoldKeyRegister.currentState?.openDrawer())),
+                    Positioned(top: 10, left: 10, child: IconButton(icon:  Icon(Icons.menu,color: AppColors.black,), onPressed: () => _scaffoldKeyRegister.currentState?.openDrawer())),
                   Center(
                     child: Padding(
                       padding: EdgeInsets.all(isMobile ? 10.0 : 35.0),
@@ -381,10 +423,25 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     return GetBuilder<LoginController>(
       builder: (c) {
         final stateItems = c.states.map((e) => e.toString()).toList();
-
         return CustomDropdown<String>.search(
           hintText: "State",
           items: stateItems,
+          decoration: CustomDropdownDecoration(
+            closedFillColor: Colors.grey[100],
+            expandedFillColor: Colors.white,
+            closedBorder: Border.all(
+              color: AppColors.white,
+              width: 1.5,
+            ),
+            expandedBorder: Border.all(
+              color: AppColors.primary,
+              width: 1.5,
+            ),
+            closedBorderRadius: BorderRadius.circular(10),
+            expandedBorderRadius: BorderRadius.circular(10),
+            hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+            headerStyle: AppTextStyles.caption(context, color: Colors.black),
+            listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
           initialItem: stateItems.contains(c.selectedState)
               ? c.selectedState
               : null,
@@ -416,6 +473,22 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         return CustomDropdown<String>.search(
           hintText: "District",
           items: districtItems,
+          decoration: CustomDropdownDecoration(
+            closedFillColor: Colors.grey[100],
+            expandedFillColor: Colors.white,
+            closedBorder: Border.all(
+              color: AppColors.white,
+              width: 1.5,
+            ),
+            expandedBorder: Border.all(
+              color: AppColors.primary,
+              width: 1.5,
+            ),
+            closedBorderRadius: BorderRadius.circular(10),
+            expandedBorderRadius: BorderRadius.circular(10),
+            hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+            headerStyle: AppTextStyles.caption(context, color: Colors.black),
+            listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
           initialItem: districtItems.contains(c.selectedDistrict)
               ? c.selectedDistrict
               : null,
@@ -450,11 +523,24 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
         return CustomDropdown<String>.search(
           hintText: "Taluka",
-
+          decoration: CustomDropdownDecoration(
+            closedFillColor: Colors.grey[100],
+            expandedFillColor: Colors.white,
+            closedBorder: Border.all(
+              color: AppColors.white,
+              width: 1.5,
+            ),
+            expandedBorder: Border.all(
+              color: AppColors.primary,
+              width: 1.5,
+            ),
+            closedBorderRadius: BorderRadius.circular(10),
+            expandedBorderRadius: BorderRadius.circular(10),
+            hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+            headerStyle: AppTextStyles.caption(context, color: Colors.black),
+            listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
           items: talukaItems,
-
           initialItem: selectedTaluka,
-
           onChanged: (v) {
             if (v != null) {
               c.selectedTaluka = v;
@@ -481,6 +567,22 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
           hintText: "Area",
           items: villageItems,
           initialItem: selectedVillage,
+          decoration: CustomDropdownDecoration(
+            closedFillColor: Colors.grey[100],
+            expandedFillColor: Colors.white,
+            closedBorder: Border.all(
+              color: AppColors.white,
+              width: 1.5,
+            ),
+            expandedBorder: Border.all(
+              color: AppColors.primary,
+              width: 1.5,
+            ),
+            closedBorderRadius: BorderRadius.circular(10),
+            expandedBorderRadius: BorderRadius.circular(10),
+            hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+            headerStyle: AppTextStyles.caption(context, color: Colors.black),
+            listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
           onChanged: (v) {
             if (v != null) {
               c.selectedVillage = v;
@@ -494,7 +596,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
   Widget _step3() {
     return Column(children: [
-      const Text("Upload Documents"),
+      const Text("Upload Certificate"),
       const SizedBox(height: 10),
       _buildCertificatePicker(),
       const SizedBox(height: 20),

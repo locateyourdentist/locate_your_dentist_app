@@ -27,6 +27,26 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
   final serviceController = Get.put(ServiceController());
   final ScrollController _scrollController = ScrollController();
   late QuillController _controller;
+  Future<void> setProfileData(user) async {
+
+    loginController.selectedState = user.address["state"] ?? "";
+    loginController.selectedDistrict = user.address["district"] ?? "";
+    loginController.selectedTaluka = user.address["city"] ?? "";
+    loginController.selectedVillage = user.address["area"] ?? "";
+    print('fgf${user.address["district"] ?? ""}');
+    await loginController.fetchStates();
+    if (loginController.selectedState != null && loginController.selectedState!.isNotEmpty) {
+      await loginController.fetchDistricts(loginController.selectedState!);
+    }
+    if (loginController.selectedDistrict != null && loginController.selectedDistrict!.isNotEmpty) {
+      await loginController.fetchTalukas(loginController.selectedDistrict!);
+    }
+    if (loginController.selectedTaluka != null && loginController.selectedTaluka!.isNotEmpty) {
+      await loginController.fetchVillages(loginController.selectedTaluka!);
+    }
+
+    loginController.update();
+  }
 
   void loadJobDescription(dynamic data) {
     try {
@@ -59,6 +79,9 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
   Future<void> _refresh() async {
     await serviceController.getServiceListAdmin(Api.userInfo.read('selectUId') ?? "", context);
     await loginController.getProfileByUserId(Api.userInfo.read('selectUId') ?? "", context);
+    if (loginController.userData.isNotEmpty) {
+      await setProfileData(loginController.userData.first);
+    }
     if (!mounted) return;
     final data = loginController.userData.isNotEmpty ? loginController.userData.first.details["description"] : null;
     loadJobDescription(data);

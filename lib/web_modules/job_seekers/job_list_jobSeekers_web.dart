@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
-import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
-import 'package:locate_your_dentist/common_widgets/common_drawer.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
-import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -72,7 +69,6 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-
     return Scaffold(
       key: _scaffoldKeyJobList,
       backgroundColor: AppColors.scaffoldBg,
@@ -429,8 +425,8 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
 
   Widget _buildOrgLogo(dynamic job, String? logoUrl) {
     return Container(
-      width: 120,
-      height: 100,
+      width:logoUrl.toString().isNotEmpty?120: 40,
+      height: logoUrl.toString().isNotEmpty?120: 40,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey.shade200),

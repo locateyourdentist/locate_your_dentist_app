@@ -211,7 +211,6 @@ import 'package:geocoding/geocoding.dart';
       ),
     );
     _refresh();
-
   }
     Future<void> _refresh() async {
       userId=Get.arguments?["userId"]??"";

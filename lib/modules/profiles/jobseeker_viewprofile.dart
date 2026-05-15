@@ -9,6 +9,7 @@ import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.d
 import 'package:locate_your_dentist/modules/profiles/jobseeker_edit_profile.dart';
 import 'package:locate_your_dentist/modules/profiles/pdf_path_view_page.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
@@ -16,6 +17,40 @@ class JobSeekerProfilePage extends StatefulWidget {
   const JobSeekerProfilePage({super.key});
   @override
   State<JobSeekerProfilePage> createState() => _JobSeekerProfilePageState();
+  Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
 }
 class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
   final loginController = Get.put(LoginController());
@@ -27,15 +62,117 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
 
       if (data == null) {
         delta = [{"insert": "\n"}];
-      }
+        Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
 
       else if (data is List) {
         delta = List<Map<String, dynamic>>.from(data);
-      }
+        Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
 
       else if (data is String) {
         delta = List<Map<String, dynamic>>.from(jsonDecode(data));
-      }
+        Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
 
       _controller = QuillController(
         document: Document.fromJson(delta),
@@ -44,8 +181,76 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
     } catch (e) {
       print("Quill load error: $e");
       _controller = QuillController.basic();
-    }
+      Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
   }
+}
+    Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
   @override
   void initState() {
     super.initState();
@@ -59,11 +264,79 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
       ),
     );
     _refresh();
+    Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
   }
+}
   Future<void> _refresh() async {
     await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
     loadJobDescription(loginController.descriptionData);
+    Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
   }
+}
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -83,293 +356,438 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
         return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(1.0),
+        child: GetBuilder<LoginController>(
+          builder: (controller) {
+            if (controller.isLoading && !hasData) {
+              return _buildShimmerProfile(size);
+              Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (!hasData)
-                  Column(
-                    children: [
-                      const SizedBox(height: 20,),
-                      Center(
-                        child: Text('No data found', style: AppTextStyles.caption(context)),
-                      ),
-                    ],
-                  ),
-                if (hasData)
-                Stack(
-                    children: [
-                      const SizedBox(height: 15,),
-                        Positioned(
-                        top: 10,
-                        left: 10,
-                        child: GestureDetector(
-                          onTap: () {
-                            Get.back();
-                          },
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [AppColors.primary, AppColors.secondary],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                            ),
-                            child: const Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Icon(
-                                  Icons.arrow_back,
-                                  color: AppColors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10,),
-                      Center(
-                        child: Container(
-                          padding: const EdgeInsets.all(3),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColors.primary,AppColors.secondary
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                          child: CircleAvatar(
-                            radius: size * 0.16,
-                            backgroundColor: Colors.white,
-                            child: CircleAvatar(
-                              radius: size * 0.155,
-                              backgroundImage: (user!.images.isNotEmpty &&
-                                  user.images[0].isNotEmpty)
-                                  ? NetworkImage(user.images[0])
-                                  : null,
-                              child: (user.images.isEmpty ||
-                                  user.images[0].isEmpty)
-                                  ? const Icon(Icons.person, size: 40)
-                                  : null,
-                            ),
-                          ),
-                        ),
-                      )
-
-                    ],
-                  ),
-                const SizedBox(height: 12),
-                Center(
-                  child: Text(user?.name ?? "",
-                    style: TextStyle(fontSize: size * 0.05, fontWeight: FontWeight.bold, color: Colors.black),
-                  ),
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
                 ),
-
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.all(13.0),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+            return RefreshIndicator(
+              onRefresh: _refresh,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(1.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('About',
-                              textAlign: TextAlign.start,
-                              style: AppTextStyles.body(context, fontWeight: FontWeight.bold)),
-
-                          if (userType=='admin'||userType=='superAdmin'||user?.userId==(Api.userInfo.read('userId') ?? ""))
-                            Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: TextButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => const EditProfilePage()));
-                                  },
-                                  child: Text(
-                                    "Edit Profile",
-                                    style: TextStyle(
-                                        fontSize: size * 0.035,
-                                        decoration: TextDecoration.underline,
-                                        color: Colors.blueAccent),
+                      if (!hasData)
+                        Column(
+                          children: [
+                            const SizedBox(height: 20,),
+                            Center(
+                              child: Text('No data found', style: AppTextStyles.caption(context)),
+                            ),
+                          ],
+                        ),
+                      if (hasData)
+                      Stack(
+                          children: [
+                            const SizedBox(height: 15,),
+                              Positioned(
+                              top: 10,
+                              left: 10,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.back();
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      colors: [AppColors.primary, AppColors.secondary],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        color: AppColors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
+                            const SizedBox(height: 10,),
+                            Center(
+                              child: Container(
+                                padding: const EdgeInsets.all(3),
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColors.primary,AppColors.secondary
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                  radius: size * 0.16,
+                                  backgroundColor: Colors.white,
+                                  child: CircleAvatar(
+                                    radius: size * 0.155,
+                                    backgroundImage: (user!.images.isNotEmpty &&
+                                        user.images[0].isNotEmpty)
+                                        ? NetworkImage(user.images[0])
+                                        : null,
+                                    child: (user.images.isEmpty ||
+                                        user.images[0].isEmpty)
+                                        ? const Icon(Icons.person, size: 40)
+                                        : null,
+                                  ),
+                                ),
+                              ),
+                            )
 
-                        ],
+                          ],
+                        ),
+                      const SizedBox(height: 12),
+                      Center(
+                        child: Text(user?.name ?? "",
+                          style: TextStyle(fontSize: size * 0.05, fontWeight: FontWeight.bold, color: Colors.black),
+                        ),
                       ),
+
                       const SizedBox(height: 10),
-                     // Text(description, style: AppTextStyles.caption(context, fontWeight: FontWeight.normal)),
                       Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child:  IgnorePointer(
-                            child: QuillEditor(
-                              controller: _controller,
-                              scrollController: _scrollController,
-                              focusNode: FocusNode(),
-                              config: const QuillEditorConfig(
-                                showCursor: false,
-                                expands: false,
-                              ),
-                            ),
-                          )
-                        //Text( getPlainText(job.jobDescription), style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
-                      ),
-                      const SizedBox(height: 10),
-                      _sectionTitle("Resume", size),
-                      GestureDetector(
-                        onTap: () {
-                          if (user!.certificates.isNotEmpty) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ViewPDFPage(pdfUrl: user.certificates[0]),
-                              ),
-                            );
-                          }
-                        },
-                        child: Row(
+                        padding: const EdgeInsets.all(13.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.file_open, color: AppColors.primary, size: size * 0.07),
-                            const SizedBox(width: 8),
-                            // Text(
-                            //   (user!.certificates.isNotEmpty && user.certificates[0].isNotEmpty)
-                            //       ? "Resume.pdf"
-                            //       : "Upload PDF",
-                            //   style: TextStyle(fontSize: size * 0.03, fontWeight: FontWeight.bold, color: Colors.black),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('About',
+                                    textAlign: TextAlign.start,
+                                    style: AppTextStyles.body(context, fontWeight: FontWeight.bold)),
+
+                                if (userType=='admin'||userType=='superAdmin'||user?.userId==(Api.userInfo.read('userId') ?? ""))
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => const EditProfilePage()));
+                                        },
+                                        child: Text(
+                                          "Edit Profile",
+                                          style: TextStyle(
+                                              fontSize: size * 0.035,
+                                              decoration: TextDecoration.underline,
+                                              color: Colors.blueAccent),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                           // Text(description, style: AppTextStyles.caption(context, fontWeight: FontWeight.normal)),
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child:  IgnorePointer(
+                                  child: QuillEditor(
+                                    controller: _controller,
+                                    scrollController: _scrollController,
+                                    focusNode: FocusNode(),
+                                    config: const QuillEditorConfig(
+                                      showCursor: false,
+                                      expands: false,
+                                    ),
+                                  ),
+                                )
+                              //Text( getPlainText(job.jobDescription), style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
+                            ),
+                            const SizedBox(height: 10),
+                            _sectionTitle("Resume", size),
+                            GestureDetector(
+                              onTap: () {
+                                if (user!.certificates.isNotEmpty) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ViewPDFPage(pdfUrl: user.certificates[0]),
+                                    ),
+                                  );
+                                  Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(Icons.file_open, color: AppColors.primary, size: size * 0.07),
+                                  const SizedBox(width: 8),
+                                  // Text(
+                                  //   (user!.certificates.isNotEmpty && user.certificates[0].isNotEmpty)
+                                  //       ? "Resume.pdf"
+                                  //       : "Upload PDF",
+                                  //   style: TextStyle(fontSize: size * 0.03, fontWeight: FontWeight.bold, color: Colors.black),
+                                  // ),
+                                  Text(
+                                    (user != null &&
+                                        user.certificates != null &&
+                                        user.certificates.isNotEmpty &&
+                                        (user.certificates[0] ?? "").isNotEmpty)
+                                        ? "Resume.pdf"
+                                        : "Upload PDF",
+                                    style: TextStyle(
+                                        fontSize: size * 0.03,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(Icons.edit, size: size * 0.036, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+              
+                             const SizedBox(height: 20),
+                            _sectionTitle("Contact Information", size),
+                            // _contactTile(Icons.email_rounded, "Email", user!.email ?? "", size),
+                            // _contactTile(Icons.call, "Mobile", user.mobileNumber ?? "", size),
+                            // _contactTile(Icons.favorite, "Marital Status", user.martialStatus ?? "", size),
+                            // _contactTile(Icons.cake, "Date of Birth", user.dob ?? "", size),
+                            // _contactTile(Icons.location_on, "Location", "${user.address['city'] ?? ''}, ${user.address['district'] ?? ''}, ${user.address['state'] ?? ''}", size),
+                            _contactTile(
+                              Icons.email_rounded,
+                              "Email",
+                              (user != null && user.email != null) ? user.email! : "",
+                              size,
+                            ),
+                            _contactTile(
+                              Icons.call,
+                              "Mobile",
+                              (user != null && user.mobileNumber != null) ? user.mobileNumber! : "",
+                              size,
+                            ),
+                            // _contactTile(
+                            //   Icons.favorite,
+                            //   "Marital Status",
+                            //   (user != null && user.martialStatus != null) ? user.martialStatus! : "",
+                            //   size,
                             // ),
-                            Text(
-                              (user != null &&
-                                  user.certificates != null &&
-                                  user.certificates.isNotEmpty &&
-                                  (user.certificates[0] ?? "").isNotEmpty)
-                                  ? "Resume.pdf"
-                                  : "Upload PDF",
-                              style: TextStyle(
-                                  fontSize: size * 0.03,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
+                            _contactTile(
+                              Icons.cake,
+                              "Date of Birth",
+                              (user != null && user.dob != null) ? user.dob! : "",
+                              size,
                             ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.edit, size: size * 0.036, color: Colors.grey),
+                            _contactTile(
+                              Icons.location_on,
+                              "Location",
+                              (user != null && user.address != null)
+                                  ? "${user.address['city'] ?? ''}, ${user.address['district'] ?? ''}, ${user.address['state'] ?? ''}"
+                                  : "",
+                              size,
                             ),
+              
+                            const SizedBox(height: 10),
+                            _sectionTitle("Job Category", size),
+                            _contactTile(
+                              Icons.category,
+                              "Preferences",categoryString,
+                              // (user != null &&
+                              //     user.details != null &&
+                              //     user.details['jobCategory'] != null &&
+                              //     user.details['jobCategory'] is List)
+                              //     ? (user.details['jobCategory'] as List).join(", ")
+                              //     : "",
+                              size,
+                            ),
+                            const SizedBox(height: 20),
+                            _sectionTitle("Academic Details", size),
+                            if (ug.isNotEmpty)
+                              _infoPanel(
+                                  icon: Icons.school,
+                                  title: "UG Details",
+                                  desc:
+                                  "College: ${ug['name'] ?? ""}\nDegree: ${ug['degree'] ?? ""}\nPercentage: ${ug['percentage'] ?? ""}",
+                                  size: size),
+                            if (pg.isNotEmpty)
+                              _infoPanel(
+                                  icon: Icons.school,
+                                  title: "PG Details",
+                                  desc:
+                                  "College: ${pg['name'] ?? ""}\nDegree: ${pg['degree'] ?? ""}\nPercentage: ${pg['percentage'] ?? ""}",
+                                  size: size),
+              
+                            const SizedBox(height: 20),
+                            _sectionTitle("Experience", size),
+                            if (experiences.isNotEmpty)
+                              Column(
+                                children: experiences.map<Widget>((exp) {
+                                  return _infoPanel(
+                                    icon: Icons.work_outline_rounded,
+                                    title: "${exp['companyName'] ?? ""}",
+                                    desc:
+                                    "Duration: ${exp['experience'] ?? ""} \nDescription: ${exp['jobDescription'] ?? ""}",
+                                    size: size,
+                                  );
+                                }).toList(),
+                              )
+                            else
+                              Text("No experience available",
+                                  style: TextStyle(fontSize: size * 0.038, color: Colors.grey[700])),
+              
+                            const SizedBox(height: 30),
                           ],
                         ),
                       ),
-        
-                       const SizedBox(height: 20),
-                      _sectionTitle("Contact Information", size),
-                      // _contactTile(Icons.email_rounded, "Email", user!.email ?? "", size),
-                      // _contactTile(Icons.call, "Mobile", user.mobileNumber ?? "", size),
-                      // _contactTile(Icons.favorite, "Marital Status", user.martialStatus ?? "", size),
-                      // _contactTile(Icons.cake, "Date of Birth", user.dob ?? "", size),
-                      // _contactTile(Icons.location_on, "Location", "${user.address['city'] ?? ''}, ${user.address['district'] ?? ''}, ${user.address['state'] ?? ''}", size),
-                      _contactTile(
-                        Icons.email_rounded,
-                        "Email",
-                        (user != null && user.email != null) ? user.email! : "",
-                        size,
-                      ),
-                      _contactTile(
-                        Icons.call,
-                        "Mobile",
-                        (user != null && user.mobileNumber != null) ? user.mobileNumber! : "",
-                        size,
-                      ),
-                      // _contactTile(
-                      //   Icons.favorite,
-                      //   "Marital Status",
-                      //   (user != null && user.martialStatus != null) ? user.martialStatus! : "",
-                      //   size,
-                      // ),
-                      _contactTile(
-                        Icons.cake,
-                        "Date of Birth",
-                        (user != null && user.dob != null) ? user.dob! : "",
-                        size,
-                      ),
-                      _contactTile(
-                        Icons.location_on,
-                        "Location",
-                        (user != null && user.address != null)
-                            ? "${user.address['city'] ?? ''}, ${user.address['district'] ?? ''}, ${user.address['state'] ?? ''}"
-                            : "",
-                        size,
-                      ),
-        
-                      const SizedBox(height: 10),
-                      _sectionTitle("Job Category", size),
-                      _contactTile(
-                        Icons.category,
-                        "Preferences",categoryString,
-                        // (user != null &&
-                        //     user.details != null &&
-                        //     user.details['jobCategory'] != null &&
-                        //     user.details['jobCategory'] is List)
-                        //     ? (user.details['jobCategory'] as List).join(", ")
-                        //     : "",
-                        size,
-                      ),
-                      const SizedBox(height: 20),
-                      _sectionTitle("Academic Details", size),
-                      if (ug.isNotEmpty)
-                        _infoPanel(
-                            icon: Icons.school,
-                            title: "UG Details",
-                            desc:
-                            "College: ${ug['name'] ?? ""}\nDegree: ${ug['degree'] ?? ""}\nPercentage: ${ug['percentage'] ?? ""}",
-                            size: size),
-                      if (pg.isNotEmpty)
-                        _infoPanel(
-                            icon: Icons.school,
-                            title: "PG Details",
-                            desc:
-                            "College: ${pg['name'] ?? ""}\nDegree: ${pg['degree'] ?? ""}\nPercentage: ${pg['percentage'] ?? ""}",
-                            size: size),
-        
-                      const SizedBox(height: 20),
-                      _sectionTitle("Experience", size),
-                      if (experiences.isNotEmpty)
-                        Column(
-                          children: experiences.map<Widget>((exp) {
-                            return _infoPanel(
-                              icon: Icons.work_outline_rounded,
-                              title: "${exp['companyName'] ?? ""}",
-                              desc:
-                              "Duration: ${exp['experience'] ?? ""} \nDescription: ${exp['jobDescription'] ?? ""}",
-                              size: size,
-                            );
-                          }).toList(),
-                        )
-                      else
-                        Text("No experience available",
-                            style: TextStyle(fontSize: size * 0.038, color: Colors.grey[700])),
-        
-                      const SizedBox(height: 30),
                     ],
                   ),
                 ),
-              ],
-            ),
+            );
+            Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
           ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
         ),
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
+    Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
   }
+}
 
   Widget _sectionTitle(String title, double size) {
     return Padding(
@@ -382,7 +800,41 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
         ),
       ),
     );
+    Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
   }
+}
 
   Widget _contactTile(IconData icon, String label, String value, double size) {
     return Padding(
@@ -406,7 +858,41 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
         ],
       ),
     );
+    Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
   }
+}
 
   Widget _infoPanel({
     required IconData icon,
@@ -435,6 +921,74 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                   Text(desc, style: TextStyle(fontSize: size * 0.038, height: 1.4, color: Colors.grey[800])),
                 ],
               )),
+        ],
+      ),
+    );
+    Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+  Widget _buildShimmerProfile(double size) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: CircleAvatar(radius: size * 0.16, backgroundColor: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(height: 20, width: 150, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: List.generate(5, (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(height: 50, width: double.infinity, color: Colors.white),
+                ),
+              )),
+            ),
+          )
         ],
       ),
     );

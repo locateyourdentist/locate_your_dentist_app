@@ -108,8 +108,6 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
     double width = MediaQuery.of(context).size.width;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     final bool isDesktop = width >= 1100;
-    final bool isTablet = width >= 700 && width < 1100;
-    final bool isMobile = width < 700;
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
@@ -129,7 +127,7 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
       drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       body: Row(
         children: [
-          if (isDesktop) const AdminSideBar(),
+        if (isDesktop && isLoggedIn) const AdminSideBar(),
           Expanded(
             child: Column(
               children: [

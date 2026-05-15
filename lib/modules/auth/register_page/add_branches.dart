@@ -9,7 +9,6 @@ import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import '../../../common_widgets/color_code.dart';
 
-
 class AddBranches extends StatefulWidget {
   const AddBranches({super.key});
   @override
@@ -23,8 +22,9 @@ class _AddBranchesState extends State<AddBranches> {
   void initState() {
     super.initState();
     _refresh();
-  } Future<void> _refresh() async {
-    loginController.getBranchDetails(context);
+  }
+  Future<void> _refresh() async {
+    await loginController.getBranchDetails(context);
     //loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
     final position = await LocationService.getCurrentLocation();
     if (position != null) {
