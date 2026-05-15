@@ -20,7 +20,7 @@ dependencies:
   connectivity_plus:
   http:
   get_storage:
-  google_fonts: 4.0.4
+  google_fonts: ^6.3.0
   path_provider:
   flutter_pdfview:
   dio:

@@ -117,7 +117,7 @@ class _AddBranchesState extends State<AddBranches> {
                                       onPressed: ()async {
                                         loginController.userData.clear();
                                         loginController.clearProfileData();
-                                        loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
+                                        await loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
                                         Get.toNamed('/clinicEditProfile',arguments: {'branchId':'0'});
                                       },
                                           //loginController.addBranchList(),
@@ -145,132 +145,6 @@ class _AddBranchesState extends State<AddBranches> {
                                   ), ]);
                           }
                       ),
-                      // const SizedBox(height: 20,),
-                      // Center(
-                      //   child: SizedBox(
-                      //     width: size*0.65,
-                      //     height: size*0.12,
-                      //     child: Container(
-                      //       decoration: BoxDecoration(
-                      //         gradient: const LinearGradient(
-                      //           colors: [AppColors.primary, AppColors.secondary],
-                      //           begin: Alignment.topLeft,
-                      //           end: Alignment.bottomRight,
-                      //         ),
-                      //         borderRadius: BorderRadius.circular(12),
-                      //       ),
-                      //       child: ElevatedButton(onPressed: ()async
-                      //       {
-                      //         if (_formKeyBranchProfile.currentState!.validate()) {
-                      //           print("FULL NAME = ${loginController.fullNameController.text}");
-                      //           print("type NAME = ${loginController.typeNameController.text}");
-                      //           print("MOBILE = ${loginController.mobileController.text}");
-                      //           print("EMAIL = ${loginController.emailController.text}");
-                      //           print("ADDRESS = ${loginController.addressController.text}");
-                      //           print("STATE = ${loginController.stateController.text}");
-                      //           print("DISTRICT = ${loginController.districtController.text}");
-                      //           print("CITY = ${loginController.cityController.text}");
-                      //           print("PINCODE = ${loginController.pinCodeController.text}");
-                      //           print("LAB NAME = ${loginController.typeNameController.text}");
-                      //           print("IMAGES = ${loginController.images}");
-                      //           print("CERTIFICATES = ${loginController.certificates}");
-                      //           print('userid${ loginController.selectUserId }');
-                      //           print('services name${loginController.servicesOfferedController.text}');
-                      //           print('website${loginController.websiteController.text}');
-                      //           print('google location${loginController.locationController.text}');
-                      //           List<File> fileImages = loginController.editImages
-                      //               .where((img) => img.file != null)
-                      //               .map((img) => img.file!)
-                      //               .toList();
-                      //           List<File> fileCertificate = loginController.editCertificates
-                      //               .where((img) => img.file != null)
-                      //               .map((img) => img.file!)
-                      //               .toList();
-                      //           final oldImageUrls = loginController.editImages
-                      //               .where((e) => e.url != null)
-                      //               .map((e) => e.url!)
-                      //               .toList();
-                      //
-                      //           final oldCertificateUrls = loginController.editCertificates
-                      //               .where((e) => e.url != null)
-                      //               .map((e) => e.url!)
-                      //               .toList();
-                      //
-                      //           List<Map<String, dynamic>> branchJson = loginController.branchList.map((e) {
-                      //             print("Experience Field: ${e.branchName.text}, ${e.state.text}, ${e.district.text}");
-                      //             return {
-                      //               "branchName": e.branchName.text??"",
-                      //               "state" : e.state.text??"",
-                      //               "district" :e.district.text??"",
-                      //               "city" : e.city.text??"",
-                      //               "area" :e.area.text??"",
-                      //               "pincode" :e.pincode.text??"",
-                      //               "location" : e.location.text??"",
-                      //             };
-                      //           }).toList();
-                      //
-                      //           print('fileCertificate count: ${fileCertificate.length}');
-                      //           for (final img in fileCertificate) {
-                      //             debugPrint('before upload Certificate path: ${img.path}');
-                      //           }
-                      //           final primaryBranch =
-                      //           branchJson.isNotEmpty ? branchJson.first : {};
-                      //
-                      //           await loginController.registerUser(
-                      //             //userId:loginController.selectUserId!,
-                      //             userId:"0",
-                      //             userType: loginController.selectedUserType!,
-                      //             fullName: loginController.fullNameController.text,
-                      //             martialStatus:loginController.selectedMartialStatus!,
-                      //             dob:loginController.dobController.text,
-                      //             mobile: loginController.mobileController.text,
-                      //             email: loginController.emailController.text,
-                      //             // address: loginController.addressController.text,
-                      //             confirmPassword: loginController.passwordController.text,
-                      //            // taluk:loginController.stateController.text,
-                      //             // district: loginController.districtController.text,
-                      //             // city: loginController.cityController.text,
-                      //             // area: loginController.areaController.text,
-                      //             // pinCode: loginController.pinCodeController.text,
-                      //             taluk: primaryBranch["state"] ?? "",
-                      //             district: primaryBranch["district"] ?? "",
-                      //             city: primaryBranch["city"] ?? "",
-                      //             area: primaryBranch["area"] ?? "",
-                      //             pinCode: primaryBranch["pincode"] ?? "",
-                      //             location: primaryBranch["location"] ?? "",
-                      //             typeName: loginController.typeNameController.text,
-                      //             image: fileImages,
-                      //             certificate: fileCertificate,
-                      //             logoImage: loginController.logoImages ?? [],
-                      //             oldImageUrl:oldImageUrls ,
-                      //             oldCertificatesUrl: oldCertificateUrls,
-                      //             description: loginController.descriptionController.text??"N/A",
-                      //             // services: loginController.servicesOfferedController.text,
-                      //             //location: loginController.locationController.text,
-                      //             website: loginController.websiteController.text,
-                      //             adminId:loginController.selectUserId! ,
-                      //             isAdmin: "true",
-                      //             latitude: loginController.latitude.toString()??"",
-                      //             longitude: loginController.longitude.toString()??"",
-                      //             context: context,
-                      //           );
-                      //         }
-                      //       },
-                      //           style: ElevatedButton.styleFrom(
-                      //             backgroundColor: Colors.transparent,
-                      //             shadowColor: AppColors.primary.withOpacity(0.5),
-                      //             elevation: 4,
-                      //             shape: RoundedRectangleBorder(
-                      //               borderRadius: BorderRadius.circular(12),
-                      //             ),
-                      //             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),),
-                      //           child: Text(
-                      //             'Update',style: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),)
-                      //
-                      //       ),
-                      //     ),
-                      //   ),
-                      // )
                     ],
                   ),
                 ),
