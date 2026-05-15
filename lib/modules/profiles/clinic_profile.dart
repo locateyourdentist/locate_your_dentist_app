@@ -109,6 +109,8 @@ class Media {
     Future<void> _refresh() async {
       _tabController1 = TabController(length: (userType=='superAdmin'||userType=='admin')? 2:1, vsync: this,);
       await serviceController.getServiceListAdmin(loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"", context);
+      await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
+
     }
     return Scaffold(
       backgroundColor: AppColors.white,

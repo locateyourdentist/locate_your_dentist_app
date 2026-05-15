@@ -807,6 +807,8 @@ class LoginController extends GetxController {
         print('dfghweb${websiteController.text}');
         typeNameController.text = user.details["name"] ?? "";
         selectedState = user.address["state"] ?? "";
+        print('state $selectedDistrict');
+
         selectedDistrict = user.address["district"] ?? "";
         print('district $selectedDistrict');
         selectedTaluka = user.address["city"] ?? "";

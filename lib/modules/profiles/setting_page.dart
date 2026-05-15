@@ -223,6 +223,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
                         ),
                         child:  IconButton(
                           onPressed: (){
+                            Api.userInfo.write('selectUId',Api.userInfo.read('userId')??"");
                             (Api.userInfo.read('userType')=='Job Seekers')?Get.toNamed('/jobSeekerEditProfilePage'): Get.toNamed('/clinicEditProfile');
                             },
                           icon:Icon(Icons.edit,

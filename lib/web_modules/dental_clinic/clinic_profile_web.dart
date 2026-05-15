@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
-import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
-import 'package:locate_your_dentist/common_widgets/platform_helper.dart';
 import 'package:locate_your_dentist/common_widgets/watsapp_utils.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/product_services/service_controller.dart';
@@ -14,7 +12,6 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import '../../api/api.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:url_launcher/url_launcher.dart';
 

@@ -16,9 +16,7 @@ import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.d
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
-import 'package:locate_your_dentist/modules/profiles/vedio_plays.dart';
 import 'package:path/path.dart' as path;
-// import 'package:country_state_city_pro/country_state_city_pro.dart';
 import 'package:video_compress/video_compress.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
@@ -219,12 +217,32 @@ import 'package:geocoding/geocoding.dart';
       userId=Get.arguments?["userId"]??"";
       branchId = Get.arguments?['branchId'] ??"";
       countryCont!='India';
-      print('sd$userId');
-      //loginController.getProfileByUserId(userId!, context);
+      print('sd${Api.userInfo.read('selectUId')??""}');
+      await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
+      setProfileData(loginController.userData);
       await loginController.fetchStates();
       loadJobDescription(loginController.descriptionData);
-
       await getPlanLimits();
+    }
+    Future<void> setProfileData(user) async {
+
+      loginController.selectedState = user.address["state"] ?? "";
+      loginController.selectedDistrict = user.address["district"] ?? "";
+      loginController.selectedTaluka = user.address["city"] ?? "";
+      loginController.selectedVillage = user.address["area"] ?? "";
+      print('fgf${user.address["district"] ?? ""}');
+      await loginController.fetchStates();
+      if (loginController.selectedState != null && loginController.selectedState!.isNotEmpty) {
+        await loginController.fetchDistricts(loginController.selectedState!);
+      }
+      if (loginController.selectedDistrict != null && loginController.selectedDistrict!.isNotEmpty) {
+        await loginController.fetchTalukas(loginController.selectedDistrict!);
+      }
+      if (loginController.selectedTaluka != null && loginController.selectedTaluka!.isNotEmpty) {
+        await loginController.fetchVillages(loginController.selectedTaluka!);
+      }
+
+      loginController.update();
     }
     bool getPlanActive() {
       final userData = loginController.userData;
@@ -968,7 +986,9 @@ import 'package:geocoding/geocoding.dart';
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),),
-                              child: Text(
+                              child:loginController.isLoading
+                                  ? const CircularProgressIndicator(color: Colors.white)
+                                  : Text(
                                 'Update',style: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),)
 
                         ),
