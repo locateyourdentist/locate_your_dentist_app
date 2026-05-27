@@ -53,7 +53,7 @@ dev_dependencies:
   connectivity_plus:
   http:
   get_storage:
-  google_fonts: 4.0.4
+  google_fonts: ^6.3.0
   path_provider:
   flutter_pdfview:
   dio:
@@ -83,7 +83,7 @@ dev_dependencies:
   video_player_android:
   shimmer:
   fl_chart:
-  flutter_quill: ^11.5.0
+  flutter_quill: ^11.6.1
   flutter_quill_extensions:
   permission_handler:
   excel:
