@@ -11,13 +11,38 @@ import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import '../../common_widgets/color_code.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
   class MechanicDashboard extends StatefulWidget {
   const MechanicDashboard({super.key});
   @override
   State<MechanicDashboard> createState() => _MechanicDashboardState();
+    Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
   class _MechanicDashboardState extends State<MechanicDashboard> {
   final notificationController=Get.put(NotificationController());
   TextEditingController searchController=TextEditingController();
@@ -31,13 +56,61 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
     super.initState();
     // Api.userInfo.erase();
     _refresh();
+    Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
   Future<void> _refresh() async {
    await contactController.postFilterResults(Api.userInfo.read('userId')??"", '', '', '', '', '', '', '' ,'' ,context);
    await notificationController.getNotificationListAdmin(context);
    await  contactController.getReceiverContactFormLists(Api.userInfo.read('userId')??"",'','','', context);
    await planController.checkPlansStatus(Api.userInfo.read('userId')??"",context);
+    Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
   @override
   Widget build(BuildContext context) {
     double size=MediaQuery.of(context).size.width;
@@ -106,7 +179,31 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                           ))
                   ],
                 );
-              }
+                Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
           )
         ],
       ),
@@ -219,10 +316,12 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                   child: Column(children: [
                     Text('Contacts Lists',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
                   SizedBox(height: size*0.02,),
-                              if(contactController.senderContactLists.isEmpty)
+                              if(contactController.isLoading && contactController.senderContactLists.isEmpty)
+                                _buildShimmerContacts(size)
+                              else if(contactController.senderContactLists.isEmpty)
                   Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
-                              if(contactController.isLoading)
-                  const CircularProgressIndicator(color: AppColors.primary,),
+                              if(contactController.isLoading && contactController.senderContactLists.isNotEmpty)
+                  const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
                       if(contactController.senderContactLists.isNotEmpty)
                       // String fromDate = DateFormat('yyyy-MM-dd').format(fromDatePicker);
                       // String toDate   = DateFormat('yyyy-MM-dd').format(toDatePicker);
@@ -245,24 +344,144 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                       //     //       dateTime = DateTime.fromMillisecondsSinceEpoch(createdAtRaw);
                       //     //     } else {
                       //     //       dateTime = createdAtRaw;
-                      //     //     }
+                      //     //       Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                       //     //     formattedDate = DateFormat('MMM dd, yyyy').format(dateTime.toLocal());
                       //     //   } catch (e) {
                       //     //     print('Error parsing date: $e');
                       //     //     formattedDate = 'Invalid date';
-                      //     //   }
+                      //     //     Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                       //     //     loginController.getProfileByUserId(contact.userId??"", context);
                       //     //   String  userType='';
                       //     //   if(loginController.userData.isNotEmpty) {
                       //     //     userType = loginController.userData
                       //     //         .first.userType.toString();
-                      //     //   }
+                      //     //     Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                       //     //   final page = profilePage(userType ?? '');
                       //     //   if (page != null && page.isNotEmpty) {
                       //     //     //Get.toNamed('/$page');
                       //     //     Get.offAllNamed('/${profilePage(userType ?? '')}');
-                      //     //   }
-                      //     // }
+                      //     //     Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+                      //     //   Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                       //     final createdAtRaw = contact.createdAt;
                       //     String formattedDate = '';
                       //     if (createdAtRaw != null) {
@@ -274,19 +493,115 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                       //           dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(createdAtRaw.toString()));
                       //         } else {
                       //           dateTime = createdAtRaw;
-                      //         }
+                      //           Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                       //         formattedDate = DateFormat('MMM dd, yyyy').format(dateTime.toLocal());
                       //       } catch (e) {
                       //         formattedDate = 'Invalid date';
-                      //       }
-                      //     }
+                      //         Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+                      //       Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                       //     void navigateToProfile(String userId) async {
                       //       await loginController.getProfileByUserId(userId, context);
                       //
                       //       String userType = '';
                       //       if (loginController.userData.isNotEmpty) {
                       //         userType = loginController.userData.first.userType.toString();
-                      //       }
+                      //         Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                       //
                       //       final page = profilePage(userType);
                       //       if (page.isNotEmpty) {
@@ -294,8 +609,56 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                       //         WidgetsBinding.instance.addPostFrameCallback((_) {
                       //           if (mounted) Get.offAllNamed('/$page');
                       //         });
-                      //       }
-                      //     }
+                      //         Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+                      //       Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                       //     print(formattedDate);
                       //     return  AnimationConfiguration.staggeredList(
                       //       position: index,
@@ -464,7 +827,31 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                                           onPressed: () {
                                                             launchCall(
                                                                 contact.mobileNumber.toString());
-                                                          }
+                                                            Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                                                       ),
                                                       Text(
                                                         contact.mobileNumber ?? '',
@@ -486,7 +873,31 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                                           onPressed: () async{
                                                            await sendEmail(
                                                                 contact.email.toString());
-                                                          }
+                                                            Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                                                       ),
                                                       Text(
                                                         "email: ${contact.email ?? ''}",
@@ -574,7 +985,31 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                                                         ),
                                                                       ),
                                                                     );
-                                                                  }
+                                                                    Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                                                                 },
                                                               ),
                                                             ),
@@ -600,7 +1035,31 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                                           ),
                                                         ],
                                                       );
-                                                    }
+                                                      Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
                                                 ),
                                               ],
                                             ),
@@ -686,10 +1145,82 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                             ),
                 )]),
           );
-        }
+          Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
+    Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+}
 
+  Widget _buildShimmerContacts(double size) {
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: size * 0.54,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
