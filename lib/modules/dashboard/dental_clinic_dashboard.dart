@@ -269,12 +269,93 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                       children: [
                         Text('What you Want?',style: AppTextStyles.subtitle(context,color: AppColors.black),),
                         SizedBox(height: size*0.02,),
+                        // SizedBox(
+                        //   height: size * 0.45,
+                        //   child: AnimationLimiter(
+                        //     child: ListView.builder(
+                        //       itemCount: title.length,
+                        //       scrollDirection: Axis.horizontal,
+                        //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                        //       itemBuilder: (context, index) {
+                        //         return AnimationConfiguration.staggeredList(
+                        //           position: index,
+                        //           duration: const Duration(milliseconds: 500),
+                        //           child: SlideAnimation(
+                        //             horizontalOffset: 50,
+                        //             child: FadeInAnimation(
+                        //               child: GestureDetector(
+                        //                 onTap: ()async {
+                        //                   if (title[index] == "Job Posts/Webinars") {
+                        //                     Get.toNamed('/viewJobWebinarPage');
+                        //                   } else {
+                        //                     Api.userInfo.write('sUserType', title[index] ?? "");
+                        //                     print('cvv${title[index]}');
+                        //                    await loginController.getProfileDetails(
+                        //                       title[index], '', '', '', 'true', '', '', '', '',
+                        //                       context,
+                        //                     );
+                        //                     Get.toNamed('/userTypeListPage');
+                        //                   }
+                        //                 },
+                        //                 child: Container(
+                        //                   width: size * 0.37,
+                        //                   //margin: const EdgeInsets.only(right: 15),
+                        //                   decoration: BoxDecoration(
+                        //                     color: Colors.white,
+                        //                     borderRadius: BorderRadius.circular(16),
+                        //                     boxShadow: [
+                        //                       BoxShadow(
+                        //                         color: Colors.black.withOpacity(0.08),
+                        //                         blurRadius: 8,
+                        //                         offset: const Offset(0, 3),
+                        //                       ),
+                        //                     ],
+                        //                   ),
+                        //                   child: Column(
+                        //                     crossAxisAlignment: CrossAxisAlignment.stretch,
+                        //                     children: [
+                        //                       ClipRRect(
+                        //                         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                        //                         child: Image.asset(
+                        //                           imgUserType(title[index]),
+                        //                           height: size * 0.28,
+                        //                           fit: BoxFit.cover,
+                        //                         ),
+                        //                       ),
+                        //                       Expanded(
+                        //                         child: Container(
+                        //                           alignment: Alignment.center,
+                        //                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                        //                           child: Text(
+                        //                             title[index],
+                        //                             textAlign: TextAlign.center,
+                        //                             style: AppTextStyles.caption(
+                        //                               context,
+                        //                               color: AppColors.black,
+                        //                               fontWeight: FontWeight.bold,
+                        //                             ),
+                        //                           ),
+                        //                         ),
+                        //                       ),
+                        //                     ],
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         );
+                        //       },
+                        //     ),
+                        //   ),
+                        // ),
                         SizedBox(
                           height: size * 0.45,
                           child: AnimationLimiter(
                             child: ListView.builder(
                               itemCount: title.length,
                               scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               itemBuilder: (context, index) {
                                 return AnimationConfiguration.staggeredList(
@@ -284,22 +365,44 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                     horizontalOffset: 50,
                                     child: FadeInAnimation(
                                       child: GestureDetector(
-                                        onTap: ()async {
-                                          if (title[index] == "Job Posts/Webinars") {
-                                            Get.toNamed('/viewJobWebinarPage');
-                                          } else {
-                                            Api.userInfo.write('sUserType', title[index] ?? "");
-                                            print('cvv${title[index]}');
-                                           await loginController.getProfileDetails(
-                                              title[index], '', '', '', 'true', '', '', '', '',
-                                              context,
-                                            );
-                                            Get.toNamed('/userTypeListPage');
-                                          }
+                                        onTap: () async {
+                                          WidgetsBinding.instance.addPostFrameCallback((_) async {
+
+                                            if (title[index] == "Job Posts/Webinars") {
+
+                                              Get.toNamed('/viewJobWebinarPage');
+
+                                            } else {
+
+                                              Api.userInfo.write(
+                                                'sUserType',
+                                                title[index].toString(),
+                                              );
+
+                                              print('cvv ${title[index]}');
+
+                                              await loginController.getProfileDetails(
+                                                title[index],
+                                                '',
+                                                '',
+                                                '',
+                                                'true',
+                                                '',
+                                                '',
+                                                '',
+                                                '',
+                                                context,
+                                              );
+
+                                              if (Get.currentRoute != '/userTypeListPage') {
+                                                Get.toNamed('/userTypeListPage');
+                                              }
+                                            }
+                                          });
                                         },
                                         child: Container(
-                                          width: size * 0.37,
-                                          margin: const EdgeInsets.only(right: 15),
+                                          width: 160,
+                                          margin: const EdgeInsets.only(right: 12),
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                             borderRadius: BorderRadius.circular(16),
@@ -314,21 +417,30 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.stretch,
                                             children: [
+
                                               ClipRRect(
-                                                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                                                borderRadius: const BorderRadius.vertical(
+                                                  top: Radius.circular(16),
+                                                ),
                                                 child: Image.asset(
                                                   imgUserType(title[index]),
                                                   height: size * 0.28,
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
+
                                               Expanded(
                                                 child: Container(
                                                   alignment: Alignment.center,
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                                                  padding: const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 5,
+                                                  ),
                                                   child: Text(
-                                                    title[index],
+                                                    title[index].toString(),
                                                     textAlign: TextAlign.center,
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow.ellipsis,
                                                     style: AppTextStyles.caption(
                                                       context,
                                                       color: AppColors.black,

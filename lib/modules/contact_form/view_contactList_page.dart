@@ -312,12 +312,14 @@ import 'package:locate_your_dentist/modules/dashboard/date_filter_drawer.dart';
                                                       icon: const Icon(Icons.arrow_forward_ios_rounded,
                                                           size: 18,
                                                           color: AppColors.primary),
-                                                      onPressed: () {
-                                                        loginController.getProfileByUserId(
-                                                            "${contact.userId ?? ""}",
-                                                            context);
-                                                        final userType =
-                                                        loginController.userData.first.userType.toString();
+                                                      onPressed: ()async {
+                                                        print('contact id${contact.userId}');
+                                                        Api.userInfo.write('selectUId',contact.userId);
+                                                       // await loginController.getProfileByUserId(
+                                                       //      "${contact.userId ?? ""}",
+                                                       //      context);
+                                                        final userType =contact.userType.toString();
+                                                       // loginController.userData.first.userType.toString();
                                                         Get.toNamed('/${profilePage(userType)}');
                                                       },
                                                     ),

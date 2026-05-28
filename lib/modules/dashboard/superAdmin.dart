@@ -198,7 +198,7 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                     drawerTitle('About Us', Icons.info_outline, '/aboutUsPage', context),
                     SizedBox(height: size * 0.005),
 
-                    drawerTitle('Settings', Icons.settings, '/settingPage', context),
+                    drawerTitle('Settings', Icons.settings, '/settingPageMobile', context),
                     SizedBox(height: size * 0.005),
                     drawerTitle('LogOut', Icons.logout, '', context),
 

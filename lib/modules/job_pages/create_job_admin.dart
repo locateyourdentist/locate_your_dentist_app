@@ -915,7 +915,7 @@ class _CreateJobPostState extends State<CreateJobPost> {
                                 ),
                               ),
                               Container(
-                                height: size*0.1,
+                                height: size*0.5,
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade100,

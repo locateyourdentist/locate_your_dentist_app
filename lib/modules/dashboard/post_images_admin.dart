@@ -92,66 +92,158 @@ class _UploadImagesState extends State<UploadImages> {
       controller.update();
     }
   }
+  // Future<void> saveAll() async {
+  //   String userType = Api.userInfo.read('userType') ?? "";
+  //   String targetUserType = controller.selectedUserType ?? userType;
+  //   String currentUserId = Api.userInfo.read('userId') ?? "";
+  //
+  //   // if (controller.editUploadImage1.isEmpty) {
+  //   //   Get.snackbar("No Changes", "Add or modify images before saving.");
+  //   //   return;
+  //   // }
+  //
+  //  // for (var img in controller.editUploadImage1) {
+  //    // if (img.planId == null || img.planId!.isEmpty) {
+  //      // Get.snackbar("Error", "Please select a plan for all images.");
+  //       //return;
+  //    // }
+  //   //}
+  //
+  //   Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
+  //
+  //   bool allSuccess = true;
+  //   String lastError = "";
+  //
+  //   try {
+  //     for (var img in controller.editUploadImage1) {
+  //       final String isActiveStr = (img.isActive == true).toString();
+  //       debugPrint("SAVING IMAGE: id=${img.id}, plan=${img.planId}, active=$isActiveStr");
+  //
+  //       final response = await controller.api.uploadImagesUserType(
+  //         currentUserId,
+  //         targetUserType,
+  //         img.id ?? "0",
+  //         img.planId!??"1",
+  //         img.startDate ?? "",
+  //         img.endDate ?? "",
+  //         isActiveStr,
+  //         img.bytes != null ? [img.bytes!] : [],
+  //       );
+  //
+  //       final data = jsonDecode(response.body);
+  //       if (data["status"].toString().toLowerCase() != "success") {
+  //         allSuccess = false;
+  //         lastError = data["message"] ?? "Unknown error";
+  //       }
+  //     }
+  //
+  //     if (Get.isDialogOpen ?? false) Get.back();
+  //
+  //     if (allSuccess) {
+  //       Get.snackbar("Success", "All changes saved successfully.");
+  //       await refreshData();
+  //     } else {
+  //       Get.snackbar("Partial Error", "Some updates failed: $lastError");
+  //       await refreshData();
+  //     }
+  //   } catch (e) {
+  //     if (Get.isDialogOpen ?? false) Get.back();
+  //     Get.snackbar("Error", "Failed to save: $e");
+  //   }
+  // }
   Future<void> saveAll() async {
     String userType = Api.userInfo.read('userType') ?? "";
     String targetUserType = controller.selectedUserType ?? userType;
     String currentUserId = Api.userInfo.read('userId') ?? "";
 
-    if (controller.editUploadImage1.isEmpty) {
-      Get.snackbar("No Changes", "Add or modify images before saving.");
-      return;
-    }
-
-   // for (var img in controller.editUploadImage1) {
-     // if (img.planId == null || img.planId!.isEmpty) {
-       // Get.snackbar("Error", "Please select a plan for all images.");
-        //return;
-     // }
-    //}
-
-    Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
+    Get.dialog(
+      const Center(child: CircularProgressIndicator()),
+      barrierDismissible: false,
+    );
 
     bool allSuccess = true;
     String lastError = "";
 
     try {
       for (var img in controller.editUploadImage1) {
-        final String isActiveStr = (img.isActive == true).toString();
-        debugPrint("SAVING IMAGE: id=${img.id}, plan=${img.planId}, active=$isActiveStr");
+
+        // CHECK PLAN ID
+        if (img.planId == null || img.planId!.isEmpty) {
+          allSuccess = false;
+          lastError = "Plan ID missing";
+          continue;
+        }
+
+        // SAFE VALUES
+        final String imageId = img.id ?? "0";
+        final String planId = img.planId ?? "0";
+        final String startDate = img.startDate ?? "";
+        final String endDate = img.endDate ?? "";
+        final String isActiveStr = (img.isActive ?? false).toString();
+
+        debugPrint("========== IMAGE SAVE ==========");
+        debugPrint("ID: $imageId");
+        debugPrint("PLAN ID: $planId");
+        debugPrint("START DATE: $startDate");
+        debugPrint("END DATE: $endDate");
+        debugPrint("ACTIVE: $isActiveStr");
+        debugPrint("BYTES NULL: ${img.bytes == null}");
 
         final response = await controller.api.uploadImagesUserType(
           currentUserId,
           targetUserType,
-          img.id ?? "0", 
-          img.planId!??"1",
-          img.startDate ?? "",
-          img.endDate ?? "",
+          imageId,
+          planId,
+          startDate,
+          endDate,
           isActiveStr,
           img.bytes != null ? [img.bytes!] : [],
         );
 
         final data = jsonDecode(response.body);
+
         if (data["status"].toString().toLowerCase() != "success") {
           allSuccess = false;
           lastError = data["message"] ?? "Unknown error";
         }
       }
 
-      if (Get.isDialogOpen ?? false) Get.back();
+      // CLOSE LOADING
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
 
+      // RESULT
       if (allSuccess) {
-        Get.snackbar("Success", "All changes saved successfully.");
+        Get.snackbar(
+          "Success",
+          "All changes saved successfully.",
+        );
+
         await refreshData();
       } else {
-        Get.snackbar("Partial Error", "Some updates failed: $lastError");
+        Get.snackbar(
+          "Partial Error",
+          "Some updates failed: $lastError",
+        );
+
         await refreshData();
       }
-    } catch (e) {
-      if (Get.isDialogOpen ?? false) Get.back();
-      Get.snackbar("Error", "Failed to save: $e");
+    } catch (e, stackTrace) {
+
+      debugPrint("SAVE ERROR: $e");
+      debugPrint("STACK: $stackTrace");
+
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+
+      Get.snackbar(
+        "Error",
+        "Failed to save: $e",
+      );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     String userType = Api.userInfo.read('userType') ?? "";
@@ -160,7 +252,7 @@ class _UploadImagesState extends State<UploadImages> {
         backgroundColor: AppColors.white,
         centerTitle: true,
         title: Text(
-          'Manage Scrolling Ads',
+          'Create Scrolling Ads',
           style: AppTextStyles.subtitle(context, color: AppColors.black),
         ),
         automaticallyImplyLeading: true,
