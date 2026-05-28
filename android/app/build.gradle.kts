@@ -32,7 +32,7 @@ android {
         versionName = flutter.versionName
     }
     dependencies {
-        coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+        coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
         implementation("androidx.appcompat:appcompat:1.6.1")
 

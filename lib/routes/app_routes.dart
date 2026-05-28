@@ -53,6 +53,7 @@ import 'package:locate_your_dentist/modules/profiles/setting_page.dart';
 import 'package:locate_your_dentist/modules/profiles/view_image.dart';
 import 'package:locate_your_dentist/modules/splash_screen/splash_screen.dart';
 import 'package:locate_your_dentist/routes/app_pages.dart';
+import 'package:locate_your_dentist/routes/middle_ware.dart';
 import 'package:locate_your_dentist/web_modules/auth_web/change_password_web.dart';
 import 'package:locate_your_dentist/web_modules/auth_web/forgot_changePassword_web.dart';
 import 'package:locate_your_dentist/web_modules/auth_web/forgot_password_web.dart';
@@ -124,6 +125,9 @@ class AppPages {
     GetPage(
       name: AppRoutes.changePasswordWeb,
       page: () => const ChangePasswordWebPage(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
       name: AppRoutes.notificationWebPage,
@@ -204,6 +208,9 @@ class AppPages {
     GetPage(
       name: AppRoutes.createPlanPageWeb,
       page: () => const CreatePlanWeb(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
       name: AppRoutes.viewPlanPageWeb,
@@ -338,7 +345,10 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.superAdminDashboard,
-        page: ()=> const SuperAdminDashboardPage()
+        page: ()=> const SuperAdminDashboardPage(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.userTypeListPage,
@@ -398,7 +408,10 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.addJobCategoryPage,
-        page: ()=>  const JobCategoryScreen()
+        page: ()=>  const JobCategoryScreen(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.createServicesPage,
@@ -418,11 +431,17 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.createPostImages,
-        page: ()=> const UploadImages()
+        page: ()=> const UploadImages(),
+        middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.createNotificationPage,
-        page: ()=> const CreateNotificationAdmin()
+        page: ()=> const CreateNotificationAdmin(),
+        middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.viewIncomePage,
@@ -458,7 +477,10 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.changePasswordPage,
-        page: ()=>  const ChangePassword()
+        page: ()=>  const ChangePassword(),
+        middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.forgotPasswordPage,
@@ -486,7 +508,10 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.changLogoImagePage,
-        page: ()=>  const ChangeAppLogoImage()
+        page: ()=>  const ChangeAppLogoImage(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.landingPage,
@@ -506,11 +531,17 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.addGSTPage,
-        page: ()=>  const AddGstDetails()
+        page: ()=>  const AddGstDetails(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.addCompanyPage,
-        page: ()=>  const CompanyForm()
+        page: ()=>  const CompanyForm(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.addBranchesPage,

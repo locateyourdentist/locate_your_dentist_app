@@ -113,12 +113,8 @@ void showDeleteDialog({
                 ),
 
                 const SizedBox(height: 25),
-
-                /// Buttons
                 Row(
                   children: [
-
-                    /// Cancel
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () => Navigator.pop(context),
@@ -132,8 +128,6 @@ void showDeleteDialog({
                     ),
 
                     const SizedBox(width: 12),
-
-                    /// Delete
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
