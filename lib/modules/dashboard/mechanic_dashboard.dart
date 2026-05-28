@@ -224,169 +224,6 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
                         if(contactController.isLoading)
                           const CircularProgressIndicator(color: AppColors.primary,),
                         if(contactController.senderContactLists.isNotEmpty)
-                        // String fromDate = DateFormat('yyyy-MM-dd').format(fromDatePicker);
-                        // String toDate   = DateFormat('yyyy-MM-dd').format(toDatePicker);
-                        // AnimationLimiter(
-                        //   child: ListView.builder(
-                        //   itemCount: contactController.senderContactLists.length,
-                        //   shrinkWrap: true,
-                        //   physics: const NeverScrollableScrollPhysics(),
-                        //   itemBuilder: ( context, index){
-                        //     final contact= contactController.senderContactLists[index];
-                        //     // String createdAt = contactController.senderContactLists[index].createdAt.toString();
-                        //     // final dynamic createdAtRaw = contact.createdAt;
-                        //     // String formattedDate = '';
-                        //     // if (createdAtRaw != null) {
-                        //     //   try {
-                        //     //     DateTime dateTime;
-                        //     //     if (createdAtRaw is String) {
-                        //     //       dateTime = DateTime.parse(createdAtRaw);
-                        //     //     } else if (createdAtRaw is int) {
-                        //     //       dateTime = DateTime.fromMillisecondsSinceEpoch(createdAtRaw);
-                        //     //     } else {
-                        //     //       dateTime = createdAtRaw;
-                        //     //     }
-                        //     //     formattedDate = DateFormat('MMM dd, yyyy').format(dateTime.toLocal());
-                        //     //   } catch (e) {
-                        //     //     print('Error parsing date: $e');
-                        //     //     formattedDate = 'Invalid date';
-                        //     //   }
-                        //     //     loginController.getProfileByUserId(contact.userId??"", context);
-                        //     //   String  userType='';
-                        //     //   if(loginController.userData.isNotEmpty) {
-                        //     //     userType = loginController.userData
-                        //     //         .first.userType.toString();
-                        //     //   }
-                        //     //   final page = profilePage(userType ?? '');
-                        //     //   if (page != null && page.isNotEmpty) {
-                        //     //     //Get.toNamed('/$page');
-                        //     //     Get.offAllNamed('/${profilePage(userType ?? '')}');
-                        //     //   }
-                        //     // }
-                        //     final createdAtRaw = contact.createdAt;
-                        //     String formattedDate = '';
-                        //     if (createdAtRaw != null) {
-                        //       try {
-                        //         DateTime dateTime;
-                        //         if (createdAtRaw is String) {
-                        //           dateTime = DateTime.parse(createdAtRaw.toString());
-                        //         } else if (createdAtRaw is int) {
-                        //           dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(createdAtRaw.toString()));
-                        //         } else {
-                        //           dateTime = createdAtRaw;
-                        //         }
-                        //         formattedDate = DateFormat('MMM dd, yyyy').format(dateTime.toLocal());
-                        //       } catch (e) {
-                        //         formattedDate = 'Invalid date';
-                        //       }
-                        //     }
-                        //     void navigateToProfile(String userId) async {
-                        //       await loginController.getProfileByUserId(userId, context);
-                        //
-                        //       String userType = '';
-                        //       if (loginController.userData.isNotEmpty) {
-                        //         userType = loginController.userData.first.userType.toString();
-                        //       }
-                        //
-                        //       final page = profilePage(userType);
-                        //       if (page.isNotEmpty) {
-                        //         // Navigate safely after current frame
-                        //         WidgetsBinding.instance.addPostFrameCallback((_) {
-                        //           if (mounted) Get.offAllNamed('/$page');
-                        //         });
-                        //       }
-                        //     }
-                        //     print(formattedDate);
-                        //     return  AnimationConfiguration.staggeredList(
-                        //       position: index,
-                        //       duration: const Duration(milliseconds: 1300),
-                        //       child: SlideAnimation(
-                        //         verticalOffset: 120.0,
-                        //         curve: Curves.easeOutBack,
-                        //         child: FadeInAnimation(
-                        //           child: Padding(
-                        //             padding: const EdgeInsets.all(10.0),
-                        //             child: Card(
-                        //               elevation: 2,color: AppColors.white,
-                        //               margin: const EdgeInsets.only(bottom: 12),
-                        //               child: Padding(
-                        //                 padding: const EdgeInsets.all(12),
-                        //                 child: Row(
-                        //                   mainAxisAlignment: MainAxisAlignment.start,
-                        //                   children: [
-                        //                     const SizedBox(
-                        //                       height: 200,
-                        //                       child: VerticalDivider(
-                        //                         width: 2,
-                        //                         thickness: 2,
-                        //                         color: AppColors.primary
-                        //                       ),
-                        //                     ),
-                        //                     const SizedBox(width: 10,),
-                        //                     Column(
-                        //                       crossAxisAlignment: CrossAxisAlignment.start,
-                        //                       children: [
-                        //                         Row(
-                        //                           children: [
-                        //                             Text(
-                        //                                 contact.orgName ?? '',
-                        //                                 style: AppTextStyles.body(context,fontWeight: FontWeight.bold,)
-                        //                             ),
-                        //                            // Spacer(),
-                        //                             Align(
-                        //                                 alignment: Alignment.centerRight,
-                        //                                 child: IconButton(onPressed: ()async{
-                        //                                   await  loginController.getProfileByUserId(contact.userId??"", context);
-                        //                                   navigateToProfile(contact.userId??"");
-                        //                                 },
-                        //                                   icon: Icon(Icons.arrow_forward,color: AppColors.grey,size: size*0.06,),
-                        //                                 )
-                        //                             ),
-                        //                           ],
-                        //                         ),
-                        //                         SizedBox(height: size*0.01),
-                        //
-                        //                         Text("Name: ${contact.Name ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)
-                        //                         ),
-                        //                         SizedBox(height: size*0.02),
-                        //                         Text("Mobile: ${contact.mobileNumber ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)),
-                        //                         SizedBox(height: size*0.02),
-                        //
-                        //                         // Text("Email: ${contact.email ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)),
-                        //                         //
-                        //                         // SizedBox(height: size*0.02),
-                        //
-                        //                         Text(
-                        //                             "Material Description:${contact.materialDescription ?? '' }",
-                        //                             maxLines: 2,
-                        //                             overflow: TextOverflow.ellipsis,style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)
-                        //                         ),
-                        //                         SizedBox(height: size*0.02),
-                        //                         Text(
-                        //                             "Address: ${contact.address ?? ''}, ",
-                        //                             style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: AppColors.grey)
-                        //                         ),
-                        //                         SizedBox(height: size*0.02),
-                        //                         Text(
-                        //                             'contacted on $formattedDate',
-                        //                             maxLines: 2,
-                        //                             overflow: TextOverflow.ellipsis,
-                        //                             style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: AppColors.black)
-                        //
-                        //                         ),
-                        //
-                        //                       ],
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     );
-                        //   }),
-                        // )
                           AnimationLimiter(
                             child: ListView.builder(
                                 itemCount: contactController.senderContactLists.length,
@@ -395,7 +232,6 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
                                 itemBuilder: ( context, index){
                                   final contact= contactController.senderContactLists[index];
                                   String createdAt = contact.createdAt.toString();
-                                  // Parse the ISO string to DateTime
                                   DateTime dateTime = DateTime.parse(createdAt);
                                   // Format DateTime to "Dec 15, 2025"
                                   String formattedDate = DateFormat('MMM dd, yyyy').format(dateTime);
@@ -527,12 +363,10 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
                                                                       print('conta img${img}');
                                                                       return GestureDetector(
                                                                         onTap: (){
-                                                                          Get.toNamed('/viewImagePage', arguments: {
-                                                                            'url':  img.url!,
-
+                                                                          Get.toNamed('/viewImagePage',
+                                                                              arguments: {'url':  img.url!,
                                                                           });
-
-                                                                        },
+                                                                          },
                                                                         child: Container(
                                                                           margin: const EdgeInsets.all(8),
                                                                           width: size * 0.25,
@@ -590,7 +424,7 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
                                                                     color: AppColors.primary),
                                                                 onPressed: () {
                                                                   loginController.getProfileByUserId(
-                                                                      "${contact.userId ?? ""}",
+                                                                      contact.userId ?? "",
                                                                       context);
                                                                   final userType = loginController.userData.first.userType.toString()??"";
                                                                   print('usertypez$userType');
@@ -605,77 +439,6 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
                                                 ],
                                               ),
                                             ),
-
-                                            // Card(
-                                            //   elevation: 2,color: AppColors.white,
-                                            //   margin: const EdgeInsets.only(bottom: 12),
-                                            //   child: Padding(
-                                            //     padding: const EdgeInsets.all(12),
-                                            //     child: Column(
-                                            //       crossAxisAlignment: CrossAxisAlignment.start,
-                                            //       children: [
-                                            //
-                                            //         Row(
-                                            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            //           children: [
-                                            //             Text(
-                                            //               contact.orgName ?? '',
-                                            //               style: AppTextStyles.body(context,fontWeight: FontWeight.bold,)
-                                            //             ),
-                                            //            // _statusChip(contact.status),
-                                            //           ],
-                                            //         ),
-                                            //
-                                            //          SizedBox(height: size*0.02),
-                                            //
-                                            //         Text("Doctor: ${contact.Name ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)
-                                            //         ),
-                                            //         SizedBox(height: size*0.02),
-                                            //         Text("Mobile: ${contact.mobileNumber ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)),
-                                            //         SizedBox(height: size*0.02),
-                                            //
-                                            //         Text("Email: ${contact.email ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)),
-                                            //
-                                            //         SizedBox(height: size*0.02),
-                                            //
-                                            //         Text(
-                                            //           contact.materialDescription ?? '',
-                                            //           maxLines: 2,
-                                            //           overflow: TextOverflow.ellipsis,style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)
-                                            //         ),
-                                            //
-                                            //         SizedBox(height: size*0.02),
-                                            //
-                                            //         /// Address
-                                            //         Text(
-                                            //           "Address: ${contact.address ?? ''}",
-                                            //             style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: AppColors.grey)
-                                            //         ),
-                                            //         SizedBox(height: size*0.02),
-                                            //         Text(
-                                            //           'contacted on $formattedDate',
-                                            //           maxLines: 2,
-                                            //           overflow: TextOverflow.ellipsis,
-                                            //             style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: AppColors.black)
-                                            //
-                                            //         ),
-                                            //         const SizedBox(height: 8),
-                                            //
-                                            //         // View Details Button
-                                            //         Align(
-                                            //           alignment: Alignment.centerRight,
-                                            //           child: IconButton(onPressed: (){
-                                            //             loginController.getProfileByUserId("${contact.userId??""}", context);
-                                            //             final userType=loginController.userData.first.userType.toString()??"";
-                                            //             Get.toNamed('/${profilePage(userType ?? '')}');
-                                            //             },
-                                            //           icon: Icon(Icons.arrow_forward,color: AppColors.grey,size: size*0.06,),
-                                            //           )
-                                            //         ),
-                                            //       ],
-                                            //     ),
-                                            //   ),
-                                            // ),
                                           ),
                                         ),
                                       ),
