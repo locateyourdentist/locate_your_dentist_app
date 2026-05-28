@@ -58,7 +58,7 @@ dev_dependencies:
   flutter_pdfview:
   dio:
   file_picker: ^10.3.2
-  intl:
+  intl: ^0.20.2
   carousel_slider:
   firebase_core:
   firebase_messaging:
@@ -83,7 +83,7 @@ dev_dependencies:
   video_player_android:
   shimmer:
   fl_chart:
-  flutter_quill:
+  flutter_quill: ^11.5.0
   flutter_quill_extensions:
   permission_handler:
   excel:

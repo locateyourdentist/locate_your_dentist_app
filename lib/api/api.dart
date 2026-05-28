@@ -1,13 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart'as http;
 import 'package:get_storage/get_storage.dart';
 import 'package:locate_your_dentist/model/company_invoice_model.dart';
-import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 
 class Api {
   static final userInfo = GetStorage();
