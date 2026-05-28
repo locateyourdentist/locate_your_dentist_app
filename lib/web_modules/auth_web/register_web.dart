@@ -173,7 +173,6 @@ print('stateee${loginController.selectedState}');
       return;
     }
     try {
-
       FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['pdf', 'jpg', 'png','jpeg'], allowMultiple: true, withData: true);
       if (result != null && result.files.isNotEmpty) {
         for (final file in result.files.take(remaining)) {

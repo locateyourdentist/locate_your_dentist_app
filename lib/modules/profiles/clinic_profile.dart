@@ -324,7 +324,7 @@ class Media {
                         SizedBox(height: size*0.01,),
                         Center(
                           child: Text(
-                              user?.details?["name"]?.toString() ?? "",
+                         (user?.details["name"]??"").toString()??"",
                             // "Catchy Dental Clinic",
                               textAlign: TextAlign.center,
                               style: AppTextStyles.subtitle(
@@ -352,22 +352,10 @@ class Media {
 
                             Expanded(
                               child: Text(
-                                [
-                                  user?.address?['state'],
-                                  user?.address?['district'],
-                                  user?.address?['city'],
-                                ]
-                                    .where((e) =>
-                                e != null && e.toString().trim().isNotEmpty)
-                                    .join(", "),
-
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                // loginController.userData.isNotEmpty && user?.address != null
-                                //     ? "${user?.address['state'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['city'] ?? ''}"
-                                //     : "", maxLines: 2,
-                                // overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(color: Colors.grey),
+                                loginController.userData.isNotEmpty && user?.address != null
+                                    ? "${user?.address['state'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['city'] ?? ''}"
+                                    : "", maxLines: 2,
+                                overflow: TextOverflow.ellipsis,  style: const TextStyle(color: Colors.grey),
                               ),
                             ),
                           ],

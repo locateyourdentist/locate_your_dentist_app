@@ -205,13 +205,10 @@ class _ServiceDetailPageState extends State<ServiceDetailPage>
                           //   services: serviceController.serviceList,
                           // ),
                           child: NetworkImageCarousel(
-                            services: (service.image ?? [])
-                                .map((e) => e.toString())
-                                .toList(),
-                            // services: loginController.serviceFileImages
-                            //     .map((e) => e.url ?? "")
-                            //     .toList(),
-                          ),
+                            services: loginController.serviceFileImages
+                                .map((e) => e.url ?? "")
+                                .toList(),                                    ),
+
                         ),
                       ),
                     ),

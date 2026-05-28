@@ -13,6 +13,7 @@ import 'firebase_options.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -49,6 +50,7 @@ Future<void> setupFCM() async {
     badge: true,
     sound: true,
   );
+
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     // String? token = await messaging.getToken(
     //  vapidKey: kIsWeb ? AppConstants.webFireBaseVAPID_KEY : null,
@@ -105,7 +107,7 @@ Future<void> main() async {
   const InitializationSettings initSettings =
   InitializationSettings(android: androidInit);
 
-  await flutterLocalNotificationsPlugin.initialize(initSettings);
+  //await flutterLocalNotificationsPlugin.initialize(initSettings);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isShowOnboard = prefs.getBool('isShowOnboard') ?? false;
@@ -156,6 +158,7 @@ class _MyAppState extends State<MyApp> {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
+        FlutterQuillLocalizations.delegate,
       ],
       supportedLocales: const [
         Locale('en'),

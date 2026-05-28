@@ -99,7 +99,7 @@ class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
               left: 0,
               child: IconButton(
                 onPressed: showPrevious,
-                icon: const Icon(Icons.arrow_left, size: 50, color: Colors.white),
+                icon: const Icon(Icons.arrow_left, size: 50, color: Colors.black54),
               ),
             ),
 
@@ -109,7 +109,7 @@ class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
               right: 0,
               child: IconButton(
                 onPressed: showNext,
-                icon: const Icon(Icons.arrow_right, size: 50, color: Colors.white),
+                icon: const Icon(Icons.arrow_right, size: 50, color: Colors.black54),
               ),
             ),
 
