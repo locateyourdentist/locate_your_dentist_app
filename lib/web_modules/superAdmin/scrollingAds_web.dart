@@ -273,6 +273,23 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                   : const Icon(Icons.image_not_supported),
             ),
           ),
+          if (image.startDate != null && image.startDate!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Row(
+                children: [
+                  const Icon(Icons.calendar_today, size: 14, color: Colors.blueGrey),
+                  const SizedBox(width: 5),
+                  Flexible(
+                    child: Text(
+                      "Validity: ${image.startDate} to ${image.endDate}",
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 12, color: Colors.blueGrey, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -366,10 +383,10 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     }
 
     final posterPlan = getSafePosterPlan(controller);
+    print('ghgd$posterPlan');
     final startDate = posterPlan?["startDate"]?.toString() ?? "";
     final endDate = posterPlan?["endDate"]?.toString() ?? "";
-
-    // Only upload the specific image being edited
+    print('ghgd$endDate');
     List<Uint8List> currentFile = image.bytes != null ? [image.bytes!] : [];
 
     String currentUserId = Api.userInfo.read('userId')?.toString() ?? "";
@@ -386,8 +403,8 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     await controller.uploadImagesUserType(
       currentUserId,
       targetUserType,
-      image.id!,
-      "1",
+      image.id ?? "0",
+      // "1",
       startDate,
       endDate,
       val.toString(),

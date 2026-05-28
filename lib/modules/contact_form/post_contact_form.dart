@@ -269,14 +269,6 @@ class _ContactFormState extends State<ContactForm> {
                                   onPressed: ()async {
                                 if (_formKeyContactProfile.currentState!
                                     .validate()) {
-                                  // List<Uint8List> fileImages = loginController.contactImages
-                                  //     .where((img) => img.file != null)
-                                  //     .map((img) => img.file!)
-                                  //     .toList();
-                                  final newImageFiles = loginController.contactImages
-                                      .where((img) => img.file != null)
-                                      .map((img) => img.file!)
-                                      .toList();
                                   final newImageBytes = await getImageBytes();
 
                                   contactController.postContactDetail(

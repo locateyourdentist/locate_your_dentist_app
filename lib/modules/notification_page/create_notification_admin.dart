@@ -49,22 +49,41 @@ class _CreateNotificationAdminState extends State<CreateNotificationAdmin> {
 
     if (pickedFile != null) {
       selectedImageFile = File(pickedFile.path);
+      notificationController.notificationImage.add(selectedImageFile!);
+
     }
   }
+  // Future<void> pickSingleImage() async {
+  //   final XFile? pickedImage = await _picker.pickImage(
+  //     source: ImageSource.gallery,
+  //     imageQuality: 80);
+  //   if (pickedImage != null) {
+  //     final selectedImageFile = File(pickedImage.path);
+  //     notificationController.notificationImage.clear();
+  //     notificationController.notificationFileImages.clear();
+  //     notificationController.notificationImage.add(selectedImageFile);
+  //     //notificationController.notificationImage.clear();
+  //     notificationController.update();
+  //   }
+  // }
   Future<void> pickSingleImage() async {
     final XFile? pickedImage = await _picker.pickImage(
       source: ImageSource.gallery,
-      imageQuality: 80);
+      imageQuality: 80,
+    );
+
     if (pickedImage != null) {
+
+      notificationImage = await pickedImage.readAsBytes();
+
       final selectedImageFile = File(pickedImage.path);
+
       notificationController.notificationImage.clear();
-      notificationController.notificationFileImages.clear();
       notificationController.notificationImage.add(selectedImageFile);
-      //notificationController.notificationImage.clear();
+
       notificationController.update();
     }
   }
-
   Widget _buildSingleImageWidget({File? file, String? url}) {
     return Stack(
       children: [
@@ -485,21 +504,47 @@ class _CreateNotificationAdminState extends State<CreateNotificationAdmin> {
                             showCustomToast(context,  "Please Give message",);
                             return;
                           }
+                          Uint8List? imageBytes;
+
+                          if (notificationController.notificationImage.isNotEmpty) {
+                            imageBytes = await notificationController.notificationImage.first.readAsBytes();
+                          }
+                          // notificationController.createNotification(
+                          //     Api.userInfo.read('userId'),
+                          //     notificationController.selectedUserType!,
+                          //   notificationController.selectedTitle=="Others"? notificationController.titleController.text:notificationController.selectedTitle.toString(),
+                          //     notificationController.messageController.text,
+                          //     loginController.selectedState.toString(),
+                          //     loginController.selectedDistrict.toString(),
+                          //     loginController.selectedTaluka.toString(),
+                          //     loginController.selectedVillage.toString(),
+                          //     context,
+                          //   // notificationImage1:
+                          //   // notificationController.notificationImage.isNotEmpty
+                          //   //     ? notificationController.notificationImage.first
+                          //   //     : null, // notificationImage1:
+                          //   // notificationController.notificationImage.isNotEmpty
+                          //   //     ? notificationController.notificationImage.first
+                          //   //     : null,
+                          //     // notificationImage1: notificationController
+                          //     //     .notificationImage.isNotEmpty
+                          //     //     ? notificationController.notificationImage
+                          //     //     : [],
+                          //     notificationImage1
+                          //     );
+                          print('noti img${notificationImage}');
                           notificationController.createNotification(
-                              Api.userInfo.read('userId'),
-                              notificationController.selectedUserType!,
-                            notificationController.selectedTitle=="Others"? notificationController.titleController.text:notificationController.selectedTitle.toString(),
-                              notificationController.messageController.text,
-                              loginController.selectedState.toString(),
-                              loginController.selectedDistrict.toString(),
-                              loginController.selectedTaluka.toString(),
-                              loginController.selectedVillage.toString(),
-                              context,
-                              // notificationImage1: notificationController
-                              //     .notificationImage.isNotEmpty
-                              //     ? notificationController.notificationImage
-                              //     : [],
-                            notificationImage1: notificationImage
+                            Api.userInfo.read('userId'),
+                            notificationController.selectedUserType!,
+                            notificationController.selectedTitle == "Others"
+                                ? notificationController.titleController.text
+                                : notificationController.selectedTitle.toString(),
+                            notificationController.messageController.text,
+                            loginController.selectedState.toString(),
+                            loginController.selectedDistrict.toString(),
+                            loginController.selectedTaluka.toString(),
+                            loginController.selectedVillage.toString(),context,
+                            notificationImage1:notificationImage, // Uint8List
                           );
                           },
                        child: Text("Post",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white),),

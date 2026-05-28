@@ -48,7 +48,7 @@ class SplashController extends GetxController with GetSingleTickerProviderStateM
     animationController.repeat(reverse: true);
     //simulateLoading();
     checkToken();
-    checkForUpdate();
+    //checkForUpdate();
   }
   void simulateLoading() async {
     await Future.delayed(const Duration(seconds: 3));

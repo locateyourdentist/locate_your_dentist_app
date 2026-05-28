@@ -2,6 +2,7 @@ import 'package:get/get.dart';
   import 'package:geolocator/geolocator.dart';
   import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
+
   class LocationService {
   static Future<Position?> getCurrentLocation() async {
 

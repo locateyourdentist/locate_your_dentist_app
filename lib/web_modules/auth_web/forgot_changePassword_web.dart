@@ -214,7 +214,7 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
                           style: AppTextStyles.caption(context,color: AppColors.white),),
                         SizedBox(height: size*0.005),
                         confirmPasswordField(),
-                        SizedBox(height: size*0.02),
+                        SizedBox(height: size*0.08),
                         submitButton(),
                         SizedBox(height: size*0.01),
 

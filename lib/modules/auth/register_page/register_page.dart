@@ -210,18 +210,6 @@ class _RegisterPageState extends State<RegisterPage> {
       loginController.update();
     }
   }
-  // void getLocation()async{
-  //   final position = await LocationService.getCurrentLocation();
-  //
-  //   if (position != null) {
-  //     loginController.latitude = position.latitude;
-  //     loginController.longitude = position.longitude;
-  //     print('latt${loginController.latitude}long${loginController.longitude}');
-  //     //  Get.snackbar('Location', 'Your location: $address');
-  //   } else {
-  //     // Get.snackbar('Location', 'Unable to get location');
-  //   }
-  // }
   Widget _buildSingleImageWidget1({File? file, String? url}) {
     return Stack(
       children: [
@@ -276,7 +264,6 @@ class _RegisterPageState extends State<RegisterPage> {
     if (position != null) {
       loginController.latitude = position.latitude;
       loginController.longitude = position.longitude;
-      //  final address = await getAddressFromLatLng(loginController.latitude!, loginController.longitude!);
       print('latitude ${loginController.latitude}');
       print('longitude ${loginController.longitude}');
 
@@ -295,9 +282,20 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
-    final userType=Api.userInfo.read('userType');
-    final adminItems = allItems;
-    final otherItems = allItems.where((e) => e != "admin" && e != "superAdmin").toList();
+    final userType=Api.userInfo.read('userType')??"";
+    print('dgsw$userType');
+    //final adminItems = allItems;
+   // final otherItems = allItems.where((e) => e != "admin" && e != "superAdmin").toList();
+    List<String> dropdownItems;
+    if (userType == "superAdmin") {
+      dropdownItems = allItems;
+    } else if (userType == "admin") {
+      dropdownItems =
+          allItems.where((e) => e != "superAdmin").toList();
+    } else {
+      dropdownItems =
+          allItems.where((e) => e != "admin" && e != "superAdmin").toList();
+    }
     return Scaffold(
       backgroundColor: const Color(0xFFFDFDFD),
       body:  Form(
@@ -350,23 +348,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                     icon: Icons.person,
                                     controller: loginController.fullNameController,
                                   ),
-                                  SizedBox(height: size * 0.01),
-                                  // CustomDropdownField(
-                                  //   hint: "Select Martial Status",
-                                  //  // icon: Icons.place,
-                                  //   fillColor: Colors.grey[100],borderColor: AppColors.white,
-                                  //   items: const ["Single","Married","Widow"],
-                                  //   selectedValue: (loginController.selectedMartialStatus != null &&
-                                  //       ["Single", "Married", "Widow"]
-                                  //           .contains(loginController.selectedMartialStatus))
-                                  //       ? loginController.selectedMartialStatus
-                                  //       : null,
-                                  //   onChanged: (value) {
-                                  //     setState(() {
-                                  //       loginController.selectedMartialStatus = value;
-                                  //     });
-                                  //   },
-                                  // ),
                                   SizedBox(height: size * 0.01),
                                   CustomTextField(
                                     hint: "Date of Birth",
@@ -461,7 +442,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   hint: "Select UserType",
                                   fillColor: Colors.grey[100],
                                   borderColor: AppColors.white,
-                                  items: userType=='superAdmin'||userType=='admin'?adminItems:otherItems,
+                                  items: dropdownItems,
                                   selectedValue: loginController.selectedUserType,
                                   onChanged: (value) {
                                     setState(() {
@@ -720,8 +701,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                         children: [
                                           Icon(Icons.upload, color: AppColors.primary, size: size * 0.05),
                                           const SizedBox(width: 5),
-                                          Text(userTypes(loginController.selectedUserType.toString()),
-                                            style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.bold,color: AppColors.primary),
+                                          Flexible(
+                                            child: Text(userTypes(loginController.selectedUserType.toString()),
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.bold,color: AppColors.primary),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -826,10 +810,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                           children: [
                                             Icon(Icons.upload, color: AppColors.primary, size: size * 0.05),
                                             const SizedBox(width: 5),
-                                            Text(
-                                              uploadImages(loginController.selectedUserType.toString()),
-                                              // "Upload Proof / Certificate / Resume",
-                                              style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.bold,color: AppColors.primary),
+                                            Flexible(
+                                              child: Text(
+                                                uploadImages(loginController.selectedUserType.toString()),
+                                                // "Upload Proof / Certificate / Resume",
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.bold,color: AppColors.primary),
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -938,7 +925,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       child: GetBuilder<LoginController>(
                                           builder: (controller) {
                                             return ElevatedButton(
-                                            onPressed: () async {
+                                            onPressed:controller.isLoading?null: () async {
                                               if (_formKeyRegister.currentState!.validate()) {
                                               final position = await LocationService.getCurrentLocation();
                                               if (position == null) {
@@ -1024,9 +1011,22 @@ class _RegisterPageState extends State<RegisterPage> {
                                               ),
                                               backgroundColor: AppColors.transparent,
                                             ),
-                                            child: Text(
-                                              "Create Account",
-                                              style: AppTextStyles.body(context, color: AppColors.white,fontWeight: FontWeight.bold),
+                                            child:  controller.isLoading
+                                            ? const SizedBox(
+                                            height: 22,
+                                              width: 22,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                                : Text(
+                                            "Create Account",
+                                            style: AppTextStyles.body(
+                                            context,
+                                            color: AppColors.white,
+                                            fontWeight: FontWeight.bold,
+                                            ),
                                             ),
                                           );
                                         }
@@ -1054,7 +1054,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 60),
                                 ],
                               ),
                             ),

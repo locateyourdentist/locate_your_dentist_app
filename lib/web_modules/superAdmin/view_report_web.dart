@@ -12,7 +12,6 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:get/get.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:intl/intl.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/expense_income_bar_chart.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/income_chart.dart';
 import 'package:excel/excel.dart';

@@ -20,8 +20,9 @@
 
     <application
         android:name="${applicationName}"
-        android:label="locate_your_dentist"
+        android:label="Locate Your Dentist"
         android:icon="@mipmap/ic_launcher"
+        android:extractNativeLibs="true"
         android:enableOnBackInvokedCallback="true">
 
         <!-- Main Activity -->
@@ -81,21 +82,20 @@
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
             tools:replace="android:exported" />
-
+<!--        android:theme="@android:style/Theme.Light.NoTitleBar" />-->
         <!-- UCrop -->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+            android:theme="@android:style/Theme.Light.NoTitleBar" />
 
         <!-- Flutter Embedding -->
-<!--        <meta-data-->
-<!--            android:name="flutterEmbedding"-->
-<!--            android:value="2" />-->
         <meta-data
-            android:name="io.flutter.embedding.android.EnableImpeller"
-            android:value="false" />
-
+            android:name="flutterEmbedding"
+            android:value="2" />
+<!--        <meta-data-->
+<!--            android:name="io.flutter.embedding.android.EnableImpeller"-->
+<!--            android:value="false" />-->
     </application>
 
     <!-- Text Processing -->

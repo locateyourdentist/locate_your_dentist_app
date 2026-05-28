@@ -5,7 +5,6 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/modules/product_services/service_controller.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
-
 import '../../common_widgets/color_code.dart';
 import '../../common_widgets/common_textstyles.dart';
 import '../common/common_side_bar.dart';

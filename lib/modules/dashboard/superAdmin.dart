@@ -23,6 +23,8 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
   final LoginController loginController = Get.put(LoginController());
   final notificationController=Get.put(NotificationController());
   final planController=Get.put(PlanController());
+  final GlobalKey<ScaffoldState> _scaffoldKeySuperAdmin = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +46,7 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
     return RefreshIndicator(
       onRefresh: _refresh,
       child: Scaffold(
+        key: _scaffoldKeySuperAdmin,
         appBar: AppBar(
           //backgroundColor: AppColors.primary,
           leading: IconButton(
@@ -53,7 +56,7 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
               size: size * 0.06,
             ),
             onPressed: () {
-              print("Menu pressed");
+              _scaffoldKeySuperAdmin.currentState!.openDrawer();
             },
           ), flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -114,99 +117,101 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
             )
           ],
         ),
-        drawer: SizedBox(
-          width: size * 0.7,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Drawer(
-              shape:  const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(25),
-                  bottomRight: Radius.circular(25),
-                ),
-              ),
-              child: Container(
-                height: size*0.01,
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.primary, AppColors.secondary],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+        drawer: SafeArea(
+          child: SizedBox(
+            width: size * 0.7,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Drawer(
+                shape:  const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(25),
+                    bottomRight: Radius.circular(25),
                   ),
                 ),
-                child: ListView(
-                  padding:  const EdgeInsets.all(5.0),
-                  children: [
-                    Center(child: Text('LYC',style: AppTextStyles.subtitle(context,color: AppColors.white,),)),
-                    CircleAvatar(
-                      radius: size * 0.07,
-                      backgroundColor: AppColors.white,
-                      child: CircleAvatar(
-                        radius: size * 0.065,
-                        backgroundColor: Colors.grey.shade200,
-                        child: ClipOval(
-                          child: Image.network(
-                            loginController.appLogoUrl ?? "",
-                            fit: BoxFit.cover,
-                            width: size * 0.13,
-                            height: size * 0.13,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(
-                                Icons.local_hospital,
-                                color: AppColors.primary,
-                                size: size * 0.06,
-                              );
-                            },
+                child: Container(
+                  height: size*0.01,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppColors.primary, AppColors.secondary],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  child: ListView(
+                    padding:  const EdgeInsets.all(5.0),
+                    children: [
+                      Center(child: Text('LYC',style: AppTextStyles.subtitle(context,color: AppColors.white,),)),
+                      CircleAvatar(
+                        radius: size * 0.07,
+                        backgroundColor: AppColors.white,
+                        child: CircleAvatar(
+                          radius: size * 0.065,
+                          backgroundColor: Colors.grey.shade200,
+                          child: ClipOval(
+                            child: Image.network(
+                              loginController.appLogoUrl ?? "",
+                              fit: BoxFit.cover,
+                              width: size * 0.13,
+                              height: size * 0.13,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.local_hospital,
+                                  color: AppColors.primary,
+                                  size: size * 0.06,
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: size*0.03,),
-                    const Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: Divider(color: AppColors.white,thickness: 0.5,),
-                    ),
-                    // drawerTitle('Profile','assets/images/lp3.jpg','',context),
-                    // SizedBox(height: size*0.005,),
-                    drawerTitle('Dashboard', Icons.dashboard, '/superAdminDashboard', context),
-                    SizedBox(height: size * 0.005),
-
-                    drawerTitle('Plans', Icons.workspace_premium, '/viewPlanPage', context),
-                    SizedBox(height: size * 0.005),
-                   if(Api.userInfo.read('userType')=='superAdmin')
-                   Column(children: [
-                    drawerTitle('Reports', Icons.bar_chart, '/viewReportPage', context),
-                    SizedBox(height: size * 0.005),
-
-                    drawerTitle('Create Post', Icons.post_add, '/createPostImages', context),
-                    SizedBox(height: size * 0.005),
-
-                    drawerTitle('Create Notification', Icons.notifications_active, '/createNotificationPage', context),
-                    SizedBox(height: size * 0.005),
-
-
-
-                    drawerTitle('Add GST', Icons.receipt_long, '/addGSTPage', context),
-                    SizedBox(height: size * 0.005),
-
-                    drawerTitle('Add Company', Icons.business, '/addCompanyPage', context),
-                    SizedBox(height: size * 0.005),
-                    ]),
-                    drawerTitle('Change Password', Icons.lock_reset, '/changePasswordPage', context),
-                    SizedBox(height: size * 0.005),
-                    drawerTitle('About Us', Icons.info_outline, '/aboutUsPage', context),
-                    SizedBox(height: size * 0.005),
-
-                    drawerTitle('Settings', Icons.settings, '/settingPageMobile', context),
-                    SizedBox(height: size * 0.005),
-                    drawerTitle('LogOut', Icons.logout, '', context),
-
-                  ]
+                      SizedBox(height: size*0.03,),
+                      const Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: Divider(color: AppColors.white,thickness: 0.5,),
+                      ),
+                      // drawerTitle('Profile','assets/images/lp3.jpg','',context),
+                      // SizedBox(height: size*0.005,),
+                      drawerTitle('Dashboard', Icons.dashboard, '/superAdminDashboard', context),
+                      SizedBox(height: size * 0.005),
+          
+                      drawerTitle('Plans', Icons.workspace_premium, '/viewPlanPage', context),
+                      SizedBox(height: size * 0.005),
+                     if(Api.userInfo.read('userType')=='superAdmin')
+                     Column(children: [
+                      drawerTitle('Reports', Icons.bar_chart, '/viewReportPage', context),
+                      SizedBox(height: size * 0.005),
+          
+                      drawerTitle('Create Post', Icons.post_add, '/createPostImages', context),
+                      SizedBox(height: size * 0.005),
+          
+                      drawerTitle('Create Notification', Icons.notifications_active, '/createNotificationPage', context),
+                      SizedBox(height: size * 0.005),
+          
+          
+          
+                      drawerTitle('Add GST', Icons.receipt_long, '/addGSTPage', context),
+                      SizedBox(height: size * 0.005),
+          
+                      drawerTitle('Add Company', Icons.business, '/addCompanyPage', context),
+                      SizedBox(height: size * 0.005),
+                      ]),
+                      drawerTitle('Change Password', Icons.lock_reset, '/changePasswordPage', context),
+                      SizedBox(height: size * 0.005),
+                      drawerTitle('About Us', Icons.info_outline, '/aboutUsPage', context),
+                      SizedBox(height: size * 0.005),
+          
+                      drawerTitle('Settings', Icons.settings, '/settingPageMobile', context),
+                      SizedBox(height: size * 0.005),
+                      drawerTitle('LogOut', Icons.logout, '', context),
+          
+                    ]
+                  )
                 )
               )
             )
-          )
+          ),
         ),
         body: GetBuilder<LoginController>(
           builder: (controller) {
@@ -336,7 +341,7 @@ class SuperAdminProfileCard extends StatelessWidget {
     final planActive = isBasePlanActive(profile);
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
     final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
-    print('planStatus$planActive isAdminn$isAdminUser');
+    //print('planStatus$planActive isAdminn$isAdminUser');
     String firstImage = profile.images.firstWhere(
           (img) =>
       img.toLowerCase().endsWith('.jpg') ||
@@ -443,8 +448,9 @@ class SuperAdminProfileCard extends StatelessWidget {
                         icon: Icon(Icons.call,
                             size: size * 0.05, color: AppColors.primary),
                         onPressed: onCall),
-                    Text(profile.mobileNumber,
-                        style: AppTextStyles.caption(context)),
+                    Flexible(child: Text(profile.mobileNumber,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.caption(context))),
                   ])
                 ],
               ),

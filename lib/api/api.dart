@@ -385,7 +385,7 @@ class Api {
     request.fields['userId'] = userId;
     request.fields['name'] = fullName;
     request.fields['dob'] = dob.toString().trim();
-    request.fields['description'] = description ?? "";
+    //request.fields['description'] = description ?? "";
     request.fields['password'] = confirmPassword ?? "";
     request.fields['userType'] = userType;
     request.fields['email'] = email;
@@ -404,12 +404,16 @@ class Api {
       "longitude": longitude ?? "",
     });
 
-    request.fields['details'] = jsonEncode({
+    final detailsData = {
       "name": typeName ?? "",
       "description": description ?? "",
       "website": website ?? "",
       "jobCategory": jobCategory ?? [],
-    });
+      "collegeDetails": details?["collegeDetails"] ?? {},
+      "experienceDetails": details?["experienceDetails"] ?? [],
+    };
+
+    request.fields['details'] = jsonEncode(detailsData);
 
 
     request.fields['oldImageUrl'] = jsonEncode(oldImageUrl ?? []);
@@ -1146,7 +1150,7 @@ class Api {
     }
   }
   Future<http.Response> uploadImagesUserType(
-      String userId, String userType,String imageId,String preference,String startDate,String endDate,String isActive, List<Uint8List> images) async {
+      String userId, String userType,String imageId,String startDate,String endDate,String isActive, List<Uint8List> images) async {
     String url = "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants.uploadImagesUrl}";
     print('API uploadImagesUrl $url');
     print('FIELDS: userId=$userId, userType=$userType, imageId=$imageId, isActive=$isActive');
@@ -1160,7 +1164,7 @@ class Api {
     request.fields['userId'] = userId;
     request.fields['userType'] = userType;
     request.fields['imageId'] = imageId;
-    request.fields['preference'] = preference;
+    //request.fields['preference'] = preference;
     request.fields['startDate'] = startDate;
     request.fields['endDate'] = endDate;
     request.fields['isActive'] = isActive;
@@ -1635,13 +1639,20 @@ class Api {
       request.fields['district'] = district;
       request.fields['city'] = city;
       request.fields['area'] = area;
+      final now = DateTime.now();
 
+      String formattedDate =
+          "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+      String formattedTime =
+          "${now.hour.toString().padLeft(2, '0')}-${now.minute.toString().padLeft(2, '0')}-${now.second.toString().padLeft(2, '0')}";
+      final fileName = "${userId}_${formattedDate}_${formattedTime}";
+print('otifi img$notificationImage1');
       if (notificationImage1 != null) {
         request.files.add(
           http.MultipartFile.fromBytes(
             'notificationImage',
             notificationImage1,
-             //filename: notificationImage1!,
+             filename: fileName,
           ),
         );
       }
@@ -2592,7 +2603,7 @@ class Api {
           request.files.add(http.MultipartFile.fromBytes(
             'jobImage',
             jobImage1[i],
-         //   filename: 'job_${userId}_$i.jpg',
+           filename: 'job_${userId}_$i.jpg',
           ));
         }
       }
@@ -2781,7 +2792,7 @@ class Api {
     if (serviceImages != null && serviceImages.isNotEmpty) {
       for (int i = 0; i < serviceImages.length; i++) {
 
-        final fileName = "${userId}_${formattedDate}_${formattedTime}_$i.jpg";
+        final fileName = "${userId}_${formattedDate}_${formattedTime}_$i";
 
         request.files.add(
           http.MultipartFile.fromBytes(

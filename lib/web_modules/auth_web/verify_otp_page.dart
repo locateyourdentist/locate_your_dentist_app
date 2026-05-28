@@ -159,8 +159,8 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
                             borderColor: AppColors.primary,
                             showFieldAsBox: true,
                             textStyle: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),
-                            fieldWidth: size * 0.045,
-                            fieldHeight: size * 0.07,
+                            fieldWidth: size * 0.07,
+                            fieldHeight: size * 0.09,
                             borderWidth: 3.0,
                             borderRadius: BorderRadius.circular(20),
                             onCodeChanged: (String code) {

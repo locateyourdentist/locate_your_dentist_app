@@ -18,23 +18,7 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
   final LoginController loginController = Get.find();
   final ImagePicker picker = ImagePicker();
   Uint8List? webImage;
-  // Future<void> pickImage() async {
-  //   final XFile? pickedImage =
-  //   await picker.pickImage(source: ImageSource.gallery);
-  //
-  //   if (pickedImage != null) {
-  //     if (kIsWeb) {
-  //       webImage = await pickedImage.readAsBytes();
-  //       loginController.appLogoFile = File(pickedImage.path);
-  //       print('dfdgfgfdg${loginController.appLogoFile}');
-  //     } else {
-  //       loginController.appLogoFile = File(pickedImage.path);
-  //       print('dfdgfgfdg${loginController.appLogoFile}');
-  //     }
-  //
-  //     loginController.update();
-  //   }
-  // }
+
   Future<void> pickImage() async {
     final XFile? pickedImage =
     await picker.pickImage(source: ImageSource.gallery);

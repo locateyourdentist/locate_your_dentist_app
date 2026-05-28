@@ -64,27 +64,6 @@ class _AddGstDetailsState extends State<AddGstDetails> {
             child: Column(
               children: [
                 SizedBox(height: size * 0.06),
-                // CustomDropdownField(
-                //   hint: "Select State",
-                //   //icon: Icons.person_outline,
-                //   borderColor: AppColors.grey,
-                //   fillColor: AppColors.white,
-                //   items: const [
-                //     "Tamilnadu",
-                //     "Karnataka",
-                //     "Andhra Pradesh",
-                //     "Kerala",
-                //   ],
-                //   selectedValue: planController.selectedState?.isEmpty == true
-                //       ? null
-                //       : planController.selectedState,
-                //   onChanged: (value) {
-                //     setState(() {
-                //       planController.selectedState = value;
-                //       // _updateFields();
-                //     });
-                //   },
-                // ),
                 buildSwitchRow(
                   label: "Show GST",
                   value: planController.isShowGst,

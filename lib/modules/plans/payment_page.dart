@@ -43,6 +43,7 @@ String formatDate(String date) {
   late final String mobileNumber;
   late final String email;
   final PlanController planController=Get.put(PlanController());
+  bool isProcessingPayment = false;
   @override
   void initState() {
     super.initState();
@@ -92,6 +93,10 @@ String formatDate(String date) {
   }
 
   Future<void> _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    setState(() {
+      isProcessingPayment = true;
+    });
+
     if(name=='basePlan'){
       await planController.createUserPlans(userId,planId.toString(), planName.toString(),amount.toString(), startDate, endDate, context);
 
@@ -277,6 +282,26 @@ String formatDate(String date) {
         body: SafeArea(
           child: Column(
             children: [
+              if (isProcessingPayment)
+                Container(
+                  color: Colors.black45,
+                  child: const Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 20),
+                        Text(
+                          "Processing payment...",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(20),

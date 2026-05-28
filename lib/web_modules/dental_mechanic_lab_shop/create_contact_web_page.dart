@@ -3,10 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
-import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
-import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:locate_your_dentist/modules/contact_form/contact_controller.dart';
@@ -265,33 +263,6 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                               height: size * 0.08,
                                               child: Stack(
                                                 children: [
-                                                  // ClipRRect(
-                                                  //   borderRadius: BorderRadius.circular(10),
-                                                  //   child: kIsWeb
-                                                  //       ? (img.bytes != null
-                                                  //       ? Image.memory(
-                                                  //     img.bytes!,
-                                                  //     fit: BoxFit.cover,
-                                                  //     width: size * 0.46,
-                                                  //     height: size * 0.13,
-                                                  //   )
-                                                  //       : const Icon(Icons.broken_image))
-                                                  //       : (img.file != null
-                                                  //       ? Image.file(
-                                                  //     img.file!,
-                                                  //     fit: BoxFit.cover,
-                                                  //     width: size * 0.4,
-                                                  //     height: size * 0.13,
-                                                  //   )
-                                                  //       : (img.url != null
-                                                  //       ? Image.network(
-                                                  //     img.url!,
-                                                  //     fit: BoxFit.cover,
-                                                  //     width: size * 0.4,
-                                                  //     height: size * 0.13,
-                                                  //   )
-                                                  //       :  Icon(Icons.broken_image,size: size*0.05,))),
-                                                  // ),
                                                   ClipRRect(
                                                     borderRadius: BorderRadius.circular(10),
                                                     child: kIsWeb

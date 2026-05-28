@@ -78,7 +78,7 @@ import 'package:flutter_quill/flutter_quill.dart';
   }
   void _loadPlanStatus() async {
      planActive = await getPlanActive();
-    print('planStatus $planActive');
+    //print('planStatus $planActive');
   }
   Future<void> _refresh() async {
     _loadPlanStatus();
@@ -112,57 +112,18 @@ import 'package:flutter_quill/flutter_quill.dart';
     String userId=Api.userInfo.read('userId')??"";
     String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
     return Scaffold(
-      // appBar: AppBar(
-      //     centerTitle: true,backgroundColor: AppColors.white,
-      //     // title: Text(loginController.userData.isNotEmpty ? "${loginController.userData.first.userType.split(" ").last} Profile" : "Profile",
-      //     //   style: AppTextStyles.subtitle(context,color: AppColors.black),),automaticallyImplyLeading: true,
-      //     iconTheme: IconThemeData(color: AppColors.black,size: size*0.05),
-      //     actions: [
-      //       if(userType=='admin'||userType=='superAdmin'||userId==editUserId)
-      //         GestureDetector(
-      //           onTap: ()async{
-      //            //await loginController.getProfileByUserId(loginController.userData.first.userId??"", context);
-      //             Get.toNamed('/clinicEditProfile');
-      //             //Get.toNamed('/clinicEditProfile',arguments: {"userId":loginController.userData.first.userId??""});
-      //           },
-      //           child: Row(
-      //             mainAxisAlignment: MainAxisAlignment.center,
-      //             crossAxisAlignment: CrossAxisAlignment.center,
-      //             children: [
-      //               Icon(Icons.edit,color: AppColors.primary,size: size*0.05,),
-      //               SizedBox(height: size * 0.03),
-      //               Text('Edit',style: TextStyle(color: AppColors.primary,fontSize: size*0.04,fontWeight: FontWeight.bold),)
-      //             ],
-      //           ),
-      //         ),]
-      // ),
       body: GetBuilder<LoginController>(
         builder: (controller) {
           return SafeArea(
             child: ListView(
               children: [
-                //const SizedBox(height: 15,),
                 if(loginController.userData.isEmpty)
-                  // Column(
-                  //   children: [
-                  //     const SizedBox(height: 15,),
-                  //     Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
-                  //   ],
-                  // ),
+
                 if(loginController.isLoading)
                   const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
                 if(loginController.userData.isNotEmpty)
                 Column(
                   children: [
-                    // MediaCarousel(
-                    //   images: loginController.editImages.isNotEmpty
-                    //       ? loginController.editImages
-                    //       .where((img) =>
-                    //   img.url != null &&
-                    //       img.url!.startsWith('http') &&
-                    //       !img.url!.contains('undefined'))
-                    //       .toList() : [],
-                    // ),
                     Stack(
                       children: [
 

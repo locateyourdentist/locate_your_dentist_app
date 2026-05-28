@@ -19,8 +19,6 @@ import 'package:intl/intl.dart';
   String?  monthNumber;
   String? selectState;
   String selectedYear = DateTime.now().year.toString();
-  //String selectedYear = DateTime.now().year.toString();
-  //= DateFormat.MMMM().format(DateTime.now());
   @override
   void initState() {
     super.initState();
@@ -106,31 +104,6 @@ import 'package:intl/intl.dart';
                       onTap: _showMonthPickerDialog,
                     ),
               ),
-                          // CustomDropdownField(
-                          //   hint: "Select Month",
-                          //   // fillColor: AppColors.white,
-                          //   // borderColor: AppColors.grey,
-                          //   items: List.generate(
-                          //       12,
-                          //           (i) => DateFormat.MMMM().format(DateTime(0, i + 1)),
-                          //     ),
-                          //   selectedValue: selectedMonthName,
-                          //   onChanged: (val) {
-                          //     setState(() {
-                          //       selectedMonthName = val!;
-                          //     });
-                          //
-                          //     String? monthNumber;
-                          //
-                          //     if (selectedMonthName == "All") {
-                          //       monthNumber = "";
-                          //
-                          //     } else {
-                          //       monthNumber = DateFormat.MMMM().parse(selectedMonthName!).month.toString();
-                          //     }
-                          //     print('dff$monthNumber');
-                          //   },
-                          // ),
                         ),
 
                         SizedBox(
@@ -142,26 +115,6 @@ import 'package:intl/intl.dart';
                               onTap: _showYearPickerRadioDialog,
                             ),
                           ),
-
-                          // CustomDropdownField(
-                          //   hint: "Select Year",
-                          //   // fillColor: AppColors.grey,
-                          //   // borderColor: AppColors.grey,
-                          //   items: List.generate(
-                          //     5,
-                          //         (i) => "${DateTime.now().year - i}",
-                          //   ),
-                          //   selectedValue: planController.selectedYear != null &&
-                          //       List.generate(5, (i) => "${DateTime.now().year - i}")
-                          //           .contains(planController.selectedYear)
-                          //       ? planController.selectedYear
-                          //       : null,
-                          //   onChanged: (val) {
-                          //     setState(() {
-                          //       planController.selectedYear = val;
-                          //     });
-                          //   },
-                          // ),
                         ),
                       ],
                     ),
@@ -171,24 +124,17 @@ import 'package:intl/intl.dart';
                       hint: "Title",
                       icon: Icons.location_city,
                       controller: planController.titleController,
-                      // fillColor: AppColors.white,
-                      // borderColor: AppColors.grey,
                     ),
                     SizedBox(height: size * 0.03),
                     CustomTextField(
                       hint: "Amount",
                       icon: Icons.location_city,keyboardType: TextInputType.number,
                       controller: planController.amountController,
-                      //fillColor: AppColors.white,
                       maxLength: 5,
-                      //borderColor: AppColors.grey,
                     ),
                     SizedBox(height: size * 0.03),
                     CustomDropdownField(
                       hint: "Select Category",
-                      //icon: Icons.person_outline,
-                      //borderColor: AppColors.grey,
-                      //fillColor: AppColors.white,
                       items: const [
                         "Salary",
                         "Transport",

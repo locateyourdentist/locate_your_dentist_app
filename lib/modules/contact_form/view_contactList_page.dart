@@ -207,10 +207,13 @@ import 'package:locate_your_dentist/modules/dashboard/date_filter_drawer.dart';
                                                         contact.mobileNumber.toString());
                                                   }
                                               ),
-                                              Text(
-                                                contact.mobileNumber ?? '',
-                                                style: AppTextStyles.caption(context,
-                                                    color: Colors.black),
+                                              Expanded(
+                                                child: Text(
+                                                  contact.mobileNumber ?? '',
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: AppTextStyles.caption(context,
+                                                      color: Colors.black),
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -315,11 +318,7 @@ import 'package:locate_your_dentist/modules/dashboard/date_filter_drawer.dart';
                                                       onPressed: ()async {
                                                         print('contact id${contact.userId}');
                                                         Api.userInfo.write('selectUId',contact.userId);
-                                                       // await loginController.getProfileByUserId(
-                                                       //      "${contact.userId ?? ""}",
-                                                       //      context);
                                                         final userType =contact.userType.toString();
-                                                       // loginController.userData.first.userType.toString();
                                                         Get.toNamed('/${profilePage(userType)}');
                                                       },
                                                     ),

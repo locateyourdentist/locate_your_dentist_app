@@ -422,11 +422,15 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
       ),
     );
   }
-
   Widget _buildOrgLogo(dynamic job, String? logoUrl) {
+    final hasLogo =
+        logoUrl != null &&
+            logoUrl.trim().isNotEmpty &&
+            logoUrl.trim().toLowerCase() != "null";
+
     return Container(
-      width:logoUrl.toString().isNotEmpty?120: 40,
-      height: logoUrl.toString().isNotEmpty?120: 40,
+      width: hasLogo ? 80 : 40,
+      height: hasLogo ? 80 : 40,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey.shade200),
@@ -434,8 +438,9 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: Image.network(
-          logoUrl ?? "",
+        child: hasLogo
+            ? Image.network(
+          logoUrl,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             return Center(
@@ -449,10 +454,50 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
               ),
             );
           },
+        )
+            : Center(
+          child: Text(
+            getFirstLetter(job.orgName.toString()),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: getRandomColor(job.orgName.toString()),
+            ),
+          ),
         ),
       ),
     );
   }
+  // Widget _buildOrgLogo(dynamic job, String? logoUrl) {
+  //   return Container(
+  //     width:logoUrl.toString().isNotEmpty?120: 40,
+  //     height: logoUrl.toString().isNotEmpty?120: 40,
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(10),
+  //       border: Border.all(color: Colors.grey.shade200),
+  //       color: Colors.grey.shade50,
+  //     ),
+  //     child: ClipRRect(
+  //       borderRadius: BorderRadius.circular(10),
+  //       child: Image.network(
+  //         logoUrl ?? "",
+  //         fit: BoxFit.cover,
+  //         errorBuilder: (context, error, stackTrace) {
+  //           return Center(
+  //             child: Text(
+  //               getFirstLetter(job.orgName.toString()),
+  //               style: TextStyle(
+  //                 fontSize: 20,
+  //                 fontWeight: FontWeight.bold,
+  //                 color: getRandomColor(job.orgName.toString()),
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildJobShimmerList(bool isMobile) {
     return Shimmer.fromColors(

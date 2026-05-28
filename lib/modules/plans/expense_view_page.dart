@@ -183,20 +183,23 @@ class _ExpensePageState extends State<ExpensePage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
+                          Text(
                             "Total Expense",
                             style: TextStyle(
                               color: Colors.white70,
-                              fontSize: 16,
+                              fontSize: size * 0.04,
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            "₹${controller.total.toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "₹${controller.total.toStringAsFixed(2)}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: size * 0.08,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
@@ -220,12 +223,6 @@ class _ExpensePageState extends State<ExpensePage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min, 
                         children: [
-
-                          // _modernFilterBox(
-                          //   icon: Icons.location_on,
-                          //   label: selectedState ?? "Select State",
-                          //   onTap: _showStatePickerDialog,
-                          // ),
                           GetBuilder<LoginController>(
                             builder: (controller) {
                               final items=controller.states.map((d) => d.toString()).toList();
@@ -340,28 +337,34 @@ class _ExpensePageState extends State<ExpensePage> {
                                   children: [
                                     Text(
                                       expense.title,
-                                      style: const TextStyle(
-                                        fontWeight:
-                                        FontWeight.bold,
-                                        fontSize: 16,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: size * 0.04,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       "${expense.category} • ${DateFormat('dd MMM yyyy').format(expense.createdDate)}",
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         color: Colors.grey.shade600,
+                                        fontSize: size * 0.03,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Text(
-                                "₹${expense.amount.toStringAsFixed(2)}",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.green,
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  "₹${expense.amount.toStringAsFixed(2)}",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: size * 0.04,
+                                    color: Colors.green,
+                                  ),
                                 ),
                               ),
                             ],

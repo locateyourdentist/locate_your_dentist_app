@@ -285,7 +285,8 @@ class _CreatePlanState extends State<CreatePlan> {
                                 "Dental Lab",
                                 "Dental Shop",
                                 "Dental Mechanic",
-                                "Dental Consultant"
+                                "Dental Consultant",
+                                "Job Seekers"
                               ],
                               selectedValue: planController.selectedUserType?.isEmpty == true
                                   ? null

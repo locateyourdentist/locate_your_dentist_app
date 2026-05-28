@@ -271,6 +271,8 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
   @override
   Widget build(BuildContext context) {
     double size=MediaQuery.of(context).size.width;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+    final bool isDesktop = size >= 1100;
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
@@ -285,7 +287,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
           builder: (controller) {
             return Row(
               children: [
-                const AdminSideBar(),
+                if (isDesktop && isLoggedIn) const AdminSideBar(),
 
                 Expanded(
                   child: Center(
@@ -378,7 +380,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                 ),
                                               ),
                                               Container(
-                                                height: size*0.1,
+                                                height: size*0.3,
                                                 width: double.infinity,
                                                 decoration: BoxDecoration(
                                                     color: Colors.grey.shade100,
@@ -427,52 +429,6 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                           SizedBox(height: size * 0.005),
                                           Text('Select Job Categories',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
                                           SizedBox(height: size * 0.005),
-                                          // GetBuilder<JobController>(
-                                          //   builder: (jobController) {
-                                          //     if (jobController.jobCategoryAdmin.isEmpty) {
-                                          //       return const CircularProgressIndicator();
-                                          //     }
-                                          //
-                                          //     final categoryItems = jobController.jobCategoryAdmin
-                                          //         .map((e) => MultiSelectItem<String>(
-                                          //       e.name.trim(),
-                                          //       e.name,
-                                          //     ))
-                                          //         .toList();
-                                          //
-                                          //     return MultiSelectDialogField<String>(
-                                          //       items: categoryItems,
-                                          //       dialogWidth: size * 0.7,
-                                          //       dialogHeight: size * 0.5,
-                                          //
-                                          //       selectedColor: AppColors.primary,
-                                          //
-                                          //       initialValue: loginController.selectedCategories
-                                          //           .map((e) => e.trim())
-                                          //           .toList(),
-                                          //
-                                          //       decoration: BoxDecoration(
-                                          //         color: Colors.grey[100],
-                                          //         borderRadius: BorderRadius.circular(10),
-                                          //         border: Border.all(color: AppColors.grey, width: 1),
-                                          //       ),
-                                          //
-                                          //       buttonText: Text(
-                                          //         "Select Job Categories",
-                                          //         style: AppTextStyles.caption(
-                                          //           context,
-                                          //           color: AppColors.grey,
-                                          //           fontWeight: FontWeight.normal,
-                                          //         ),
-                                          //       ),
-                                          //
-                                          //       onConfirm: (results) {
-                                          //         loginController.selectedCategories = results.cast<String>();
-                                          //         loginController.update();
-                                          //       },
-                                          //     );
-                                          //   },
-                                          // ),
                                           GetBuilder<JobController>(
                                             builder: (jobController) {
                                               if (jobController.jobCategoryAdmin.isEmpty) {
@@ -488,8 +444,8 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
 
                                               return MultiSelectDialogField<String>(
                                                 items: categoryItems,
-                                                dialogWidth: size * 0.7,
-                                                dialogHeight: size * 0.5,
+                                                dialogWidth: size * 0.15,
+                                                dialogHeight: size * 0.25,
 
                                                 selectedColor: AppColors.primary,
 
@@ -719,7 +675,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     print("selectedExperience = ${loginController.selectedExperience.toString()}");
                                                     print("name = ${loginController.typeNameController.text.toString()}");
                                                     print("CERTIFICATES = ${loginController.certificates}");
-                                                    print('jobcategory${loginController.selectedCategories}');
+                                                    print('job category${loginController.selectedCategories}');
                                                     if ((jobController.startHour != null && jobController.startHour!.isNotEmpty) &&
                                                         (jobController.startMinutes != null && jobController.startMinutes!.isNotEmpty) &&
                                                         (jobController.startPeriod != null && jobController.startPeriod!.isNotEmpty)) {
@@ -794,16 +750,16 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                           context
                                                       );
                                                       await jobController.getJobListAdmin(context);
-                                                 //   }
-                                                 //   else{
-                                                 //      showCustomToast(context,  "Please buy new plan");
-                                                 //      showSuccessDialog(context, title:"Alert",message :"Oops! Your plan has expired. Please purchase a new plan to continue posting jobs.",
-                                                 //          onOkPressed: () {
-                                                 //            kIsWeb?Get.toNamed('/viewPlanPageWeb'): Get.toNamed('/viewPlanPage');
-                                                 //          });
-                                                 //    //  planController.checkPlanList.isNotEmpty? showPlanAlerts(planController.checkPlanList??[],context):"";
-                                                 //
-                                                 //    }
+                                                   // }
+                                                   // else{
+                                                   //    showCustomToast(context,  "Please buy new plan");
+                                                   //    showSuccessDialog(context, title:"Alert",message :"Oops! Your plan has expired. Please purchase a new plan to continue posting jobs.",
+                                                   //        onOkPressed: () {
+                                                   //          kIsWeb?Get.toNamed('/viewPlanPageWeb'): Get.toNamed('/viewPlanPage');
+                                                   //        });
+                                                   //  //  planController.checkPlanList.isNotEmpty? showPlanAlerts(planController.checkPlanList??[],context):"";
+                                                   //
+                                                   //  }
                                                   }
                                                 },
                                                 style: ElevatedButton.styleFrom(
@@ -1082,34 +1038,6 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
-                                                // GetBuilder<LoginController>(
-                                                // builder: (controller) {
-                                                // return Center(
-                                                //   child: SizedBox(
-                                                //     height: size * 0.13,
-                                                //     width: size*0.13,
-                                                //   child: controller.webinarImages.isNotEmpty
-                                                //   ? _buildSingleImageWidget(image: controller.webinarImages.first)
-                                                //       : GestureDetector(
-                                                //   onTap: pickSingleWebinarImage1,
-                                                //   child: Container(
-                                                //     height: size * 0.1,
-                                                //     width: size*0.13,
-                                                //   //s * 0.13,
-                                                //   alignment: Alignment.center,
-                                                //   decoration: BoxDecoration(
-                                                //   border: Border.all(color: Colors.grey),
-                                                //   borderRadius: BorderRadius.circular(10),
-                                                //   ),
-                                                //   child: Center(
-                                                //   child: Icon(Icons.add, color: AppColors.grey, size: size * 0.012),
-                                                //   ),
-                                                //   ),
-                                                //   ),
-                                                //   ),
-                                                // );
-                                                // },
-                                                // ),
                                                   GetBuilder<LoginController>(
                                                     builder: (controller) {
                                                       return SizedBox(
@@ -1125,7 +1053,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                               border: Border.all(color: Colors.grey),
                                                               borderRadius: BorderRadius.circular(10),
                                                             ),
-                                                            child: Icon(Icons.add),
+                                                            child: Icon(Icons.add,color: AppColors.grey,size: 22,),
                                                           ),
                                                         ),
                                                       );
@@ -1185,24 +1113,18 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                       if(isSameDay||jobController.selectedWebinarId=="0") {
                                                         await jobController.postWebinarAdmin(
                                                           //jobController.selectedWebinarId.toString().isNotEmpty? jobController.selectedWebinarId.toString():"0",
-                                                            jobController.selectedWebinarId
-                                                                .toString(),
+                                                            jobController.selectedWebinarId.toString(),
                                                             loginController.selectUserId!,
                                                             loginController.selectedUserType!,
-                                                            loginController.typeNameController.text
-                                                                .toString(),
-                                                            loginController
-                                                                .webinarTitleJobController.text
-                                                                .toString(),
+                                                            loginController.typeNameController.text.toString(),
+                                                            loginController.webinarTitleJobController.text.toString(),
                                                             webinarDescription,
                                                             //jobDescriptionPlain,
                                                             // loginController
                                                             //     .webinarDescriptionJobController
                                                             //     .text.toString(),
-                                                            loginController.webinarLinkController
-                                                                .text.toString(),
-                                                            loginController.webinarDateController
-                                                                .text.toString(),
+                                                            loginController.webinarLinkController.text.toString(),
+                                                            loginController.webinarDateController.text.toString(),
                                                             startTime.toString(),
                                                             endTime.toString(),webinarBytes,
                                                             // loginController.webinarImages.isNotEmpty

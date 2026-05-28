@@ -5,7 +5,6 @@ import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/contact_form/contact_controller.dart';
-import 'package:locate_your_dentist/modules/dashboard/date_filter_drawer.dart';
 import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
@@ -224,169 +223,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                               if(contactController.isLoading)
                   const CircularProgressIndicator(color: AppColors.primary,),
                       if(contactController.senderContactLists.isNotEmpty)
-                      // String fromDate = DateFormat('yyyy-MM-dd').format(fromDatePicker);
-                      // String toDate   = DateFormat('yyyy-MM-dd').format(toDatePicker);
-                      // AnimationLimiter(
-                      //   child: ListView.builder(
-                      //   itemCount: contactController.senderContactLists.length,
-                      //   shrinkWrap: true,
-                      //   physics: const NeverScrollableScrollPhysics(),
-                      //   itemBuilder: ( context, index){
-                      //     final contact= contactController.senderContactLists[index];
-                      //     // String createdAt = contactController.senderContactLists[index].createdAt.toString();
-                      //     // final dynamic createdAtRaw = contact.createdAt;
-                      //     // String formattedDate = '';
-                      //     // if (createdAtRaw != null) {
-                      //     //   try {
-                      //     //     DateTime dateTime;
-                      //     //     if (createdAtRaw is String) {
-                      //     //       dateTime = DateTime.parse(createdAtRaw);
-                      //     //     } else if (createdAtRaw is int) {
-                      //     //       dateTime = DateTime.fromMillisecondsSinceEpoch(createdAtRaw);
-                      //     //     } else {
-                      //     //       dateTime = createdAtRaw;
-                      //     //     }
-                      //     //     formattedDate = DateFormat('MMM dd, yyyy').format(dateTime.toLocal());
-                      //     //   } catch (e) {
-                      //     //     print('Error parsing date: $e');
-                      //     //     formattedDate = 'Invalid date';
-                      //     //   }
-                      //     //     loginController.getProfileByUserId(contact.userId??"", context);
-                      //     //   String  userType='';
-                      //     //   if(loginController.userData.isNotEmpty) {
-                      //     //     userType = loginController.userData
-                      //     //         .first.userType.toString();
-                      //     //   }
-                      //     //   final page = profilePage(userType ?? '');
-                      //     //   if (page != null && page.isNotEmpty) {
-                      //     //     //Get.toNamed('/$page');
-                      //     //     Get.offAllNamed('/${profilePage(userType ?? '')}');
-                      //     //   }
-                      //     // }
-                      //     final createdAtRaw = contact.createdAt;
-                      //     String formattedDate = '';
-                      //     if (createdAtRaw != null) {
-                      //       try {
-                      //         DateTime dateTime;
-                      //         if (createdAtRaw is String) {
-                      //           dateTime = DateTime.parse(createdAtRaw.toString());
-                      //         } else if (createdAtRaw is int) {
-                      //           dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(createdAtRaw.toString()));
-                      //         } else {
-                      //           dateTime = createdAtRaw;
-                      //         }
-                      //         formattedDate = DateFormat('MMM dd, yyyy').format(dateTime.toLocal());
-                      //       } catch (e) {
-                      //         formattedDate = 'Invalid date';
-                      //       }
-                      //     }
-                      //     void navigateToProfile(String userId) async {
-                      //       await loginController.getProfileByUserId(userId, context);
-                      //
-                      //       String userType = '';
-                      //       if (loginController.userData.isNotEmpty) {
-                      //         userType = loginController.userData.first.userType.toString();
-                      //       }
-                      //
-                      //       final page = profilePage(userType);
-                      //       if (page.isNotEmpty) {
-                      //         // Navigate safely after current frame
-                      //         WidgetsBinding.instance.addPostFrameCallback((_) {
-                      //           if (mounted) Get.offAllNamed('/$page');
-                      //         });
-                      //       }
-                      //     }
-                      //     print(formattedDate);
-                      //     return  AnimationConfiguration.staggeredList(
-                      //       position: index,
-                      //       duration: const Duration(milliseconds: 1300),
-                      //       child: SlideAnimation(
-                      //         verticalOffset: 120.0,
-                      //         curve: Curves.easeOutBack,
-                      //         child: FadeInAnimation(
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.all(10.0),
-                      //             child: Card(
-                      //               elevation: 2,color: AppColors.white,
-                      //               margin: const EdgeInsets.only(bottom: 12),
-                      //               child: Padding(
-                      //                 padding: const EdgeInsets.all(12),
-                      //                 child: Row(
-                      //                   mainAxisAlignment: MainAxisAlignment.start,
-                      //                   children: [
-                      //                     const SizedBox(
-                      //                       height: 200,
-                      //                       child: VerticalDivider(
-                      //                         width: 2,
-                      //                         thickness: 2,
-                      //                         color: AppColors.primary
-                      //                       ),
-                      //                     ),
-                      //                     const SizedBox(width: 10,),
-                      //                     Column(
-                      //                       crossAxisAlignment: CrossAxisAlignment.start,
-                      //                       children: [
-                      //                         Row(
-                      //                           children: [
-                      //                             Text(
-                      //                                 contact.orgName ?? '',
-                      //                                 style: AppTextStyles.body(context,fontWeight: FontWeight.bold,)
-                      //                             ),
-                      //                            // Spacer(),
-                      //                             Align(
-                      //                                 alignment: Alignment.centerRight,
-                      //                                 child: IconButton(onPressed: ()async{
-                      //                                   await  loginController.getProfileByUserId(contact.userId??"", context);
-                      //                                   navigateToProfile(contact.userId??"");
-                      //                                 },
-                      //                                   icon: Icon(Icons.arrow_forward,color: AppColors.grey,size: size*0.06,),
-                      //                                 )
-                      //                             ),
-                      //                           ],
-                      //                         ),
-                      //                         SizedBox(height: size*0.01),
-                      //
-                      //                         Text("Name: ${contact.Name ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)
-                      //                         ),
-                      //                         SizedBox(height: size*0.02),
-                      //                         Text("Mobile: ${contact.mobileNumber ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)),
-                      //                         SizedBox(height: size*0.02),
-                      //
-                      //                         // Text("Email: ${contact.email ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)),
-                      //                         //
-                      //                         // SizedBox(height: size*0.02),
-                      //
-                      //                         Text(
-                      //                             "Material Description:${contact.materialDescription ?? '' }",
-                      //                             maxLines: 2,
-                      //                             overflow: TextOverflow.ellipsis,style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)
-                      //                         ),
-                      //                         SizedBox(height: size*0.02),
-                      //                         Text(
-                      //                             "Address: ${contact.address ?? ''}, ",
-                      //                             style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: AppColors.grey)
-                      //                         ),
-                      //                         SizedBox(height: size*0.02),
-                      //                         Text(
-                      //                             'contacted on $formattedDate',
-                      //                             maxLines: 2,
-                      //                             overflow: TextOverflow.ellipsis,
-                      //                             style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: AppColors.black)
-                      //
-                      //                         ),
-                      //
-                      //                       ],
-                      //                     ),
-                      //                   ],
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     );
-                      //   }),
-                      // )
                         AnimationLimiter(
                           child: ListView.builder(
                               itemCount: contactController.senderContactLists.length,
@@ -466,10 +302,13 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                                                 contact.mobileNumber.toString());
                                                           }
                                                       ),
-                                                      Text(
-                                                        contact.mobileNumber ?? '',
-                                                        style: AppTextStyles.caption(context,
-                                                            color: Colors.grey.shade600),
+                                                      Expanded(
+                                                        child: Text(
+                                                          contact.mobileNumber ?? '',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: AppTextStyles.caption(context,
+                                                              color: Colors.grey.shade600),
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
@@ -488,10 +327,13 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                                                 contact.email.toString());
                                                           }
                                                       ),
-                                                      Text(
-                                                        "email: ${contact.email ?? ''}",
-                                                        style: AppTextStyles.caption(context,
-                                                            color: Colors.grey.shade600),
+                                                      Expanded(
+                                                        child: Text(
+                                                          "email: ${contact.email ?? ''}",
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: AppTextStyles.caption(context,
+                                                              color: Colors.grey.shade600),
+                                                        ),
                                                       ),
 
                                                     ],
@@ -605,77 +447,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                               ],
                                             ),
                                           ),
-
-                                          // Card(
-                                          //   elevation: 2,color: AppColors.white,
-                                          //   margin: const EdgeInsets.only(bottom: 12),
-                                          //   child: Padding(
-                                          //     padding: const EdgeInsets.all(12),
-                                          //     child: Column(
-                                          //       crossAxisAlignment: CrossAxisAlignment.start,
-                                          //       children: [
-                                          //
-                                          //         Row(
-                                          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          //           children: [
-                                          //             Text(
-                                          //               contact.orgName ?? '',
-                                          //               style: AppTextStyles.body(context,fontWeight: FontWeight.bold,)
-                                          //             ),
-                                          //            // _statusChip(contact.status),
-                                          //           ],
-                                          //         ),
-                                          //
-                                          //          SizedBox(height: size*0.02),
-                                          //
-                                          //         Text("Doctor: ${contact.Name ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)
-                                          //         ),
-                                          //         SizedBox(height: size*0.02),
-                                          //         Text("Mobile: ${contact.mobileNumber ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)),
-                                          //         SizedBox(height: size*0.02),
-                                          //
-                                          //         Text("Email: ${contact.email ?? ''}",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)),
-                                          //
-                                          //         SizedBox(height: size*0.02),
-                                          //
-                                          //         Text(
-                                          //           contact.materialDescription ?? '',
-                                          //           maxLines: 2,
-                                          //           overflow: TextOverflow.ellipsis,style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,)
-                                          //         ),
-                                          //
-                                          //         SizedBox(height: size*0.02),
-                                          //
-                                          //         /// Address
-                                          //         Text(
-                                          //           "Address: ${contact.address ?? ''}",
-                                          //             style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: AppColors.grey)
-                                          //         ),
-                                          //         SizedBox(height: size*0.02),
-                                          //         Text(
-                                          //           'contacted on $formattedDate',
-                                          //           maxLines: 2,
-                                          //           overflow: TextOverflow.ellipsis,
-                                          //             style: AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: AppColors.black)
-                                          //
-                                          //         ),
-                                          //         const SizedBox(height: 8),
-                                          //
-                                          //         // View Details Button
-                                          //         Align(
-                                          //           alignment: Alignment.centerRight,
-                                          //           child: IconButton(onPressed: (){
-                                          //             loginController.getProfileByUserId("${contact.userId??""}", context);
-                                          //             final userType=loginController.userData.first.userType.toString()??"";
-                                          //             Get.toNamed('/${profilePage(userType ?? '')}');
-                                          //             },
-                                          //           icon: Icon(Icons.arrow_forward,color: AppColors.grey,size: size*0.06,),
-                                          //           )
-                                          //         ),
-                                          //       ],
-                                          //     ),
-                                          //   ),
-                                          // ),
                                         ),
                                       ),
                                     ),

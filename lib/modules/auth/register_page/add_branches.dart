@@ -25,7 +25,6 @@ class _AddBranchesState extends State<AddBranches> {
   }
   Future<void> _refresh() async {
     await loginController.getBranchDetails(context);
-    //loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
     final position = await LocationService.getCurrentLocation();
     if (position != null) {
       loginController.latitude = position.latitude;
@@ -85,23 +84,6 @@ class _AddBranchesState extends State<AddBranches> {
                           builder: (controller) {
                             return Column(
                                 children: [
-                                  // CustomTextField(
-                                  //   hint: "Email",
-                                  //   icon: Icons.location_on,
-                                  //   controller: loginController.emailController,
-                                  //   // fillColor: AppColors.white,
-                                  //   // borderColor: AppColors.grey,
-                                  // ),
-                                  // SizedBox(height: size*0.03,),
-                                  // CustomTextField(
-                                  //   hint: "Mobile Number",
-                                  //   icon: Icons.location_on,
-                                  //   controller: loginController.mobileController,
-                                  //   // fillColor: AppColors.white,
-                                  //   // borderColor: AppColors.grey,
-                                  //   maxLength: 10,
-                                  // ),
-                                //  SizedBox(height: size*0.03,),
                                   for (int i = 0; i < loginController.branchList.length; i++)
                                     _branchListFields(i,size),
                                   Container(
@@ -174,18 +156,6 @@ class _AddBranchesState extends State<AddBranches> {
             children: [
               Text("Branch ${index + 1}", style: const TextStyle(fontWeight: FontWeight.bold)),
 
-              // if (index > 0)
-              //   GetBuilder<LoginController>(
-              //       builder: (controller) {
-              //         return IconButton(
-              //           icon:  Icon(Icons.delete, color: Colors.red,size: MediaQuery.of(context).size.width*0.06,),
-              //           onPressed: () {
-              //             loginController.removeBranchField(index);
-              //            // loginController.deactivateUserAdmin(userId, isActive, context)
-              //             },
-              //         );
-              //       }
-              //   ),
               GetBuilder<LoginController>(
                   builder: (controller) {
                     return IconButton(

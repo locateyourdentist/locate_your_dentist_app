@@ -24,9 +24,6 @@ class _AddExpenseWebState extends State<AddExpenseWeb> {
   String? selectState;
   String selectedYear = DateTime.now().year.toString();
   final loginController = Get.put(LoginController());
-
-  //String selectedYear = DateTime.now().year.toString();
-  //= DateFormat.MMMM().format(DateTime.now());
   @override
   void initState() {
     super.initState();

@@ -24,17 +24,12 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
       source: ImageSource.gallery,
       imageQuality: 80,
     );
-    //loginController.appLogoFile = null;
-    //loginController.appLogoUrl = null;
+
    await loginController.deleteAwsFile(loginController.appLogoUrl.toString(),'appLogo',context);
     if (pickedImage != null) {
-      // File file = File(pickedImage.path);
-      // loginController.setAppLogo(file);
-
       File? pickedImageFile = File(pickedImage.path);
       Uint8List bytes = await pickedImageFile.readAsBytes();
       webImage = bytes;
-     // await loginController.addAppLogo(bytes, pickedImageFile.path.split('/').last);
     }
   }
 
@@ -56,7 +51,6 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
           ),
         ),
 
-        /// Remove Button
         Positioned(
           right: 5,
           top: 5,
@@ -72,7 +66,6 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
           ),
         ),
 
-        /// Edit Button
         Positioned(
           right: 10,
           bottom: 10,
@@ -92,8 +85,6 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
     );
   }
   void removeAppLogo() {
-    //loginController.appLogoFile = null;
-   // loginController.appLogoUrl = null;
     print('sdelete${loginController.appLogoUrl.toString()}');
     loginController.deleteAwsFile(loginController.appLogoUrl.toString(),'appLogo',context);
     loginController.update();
@@ -231,7 +222,6 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
                   height: 55,
                   child: ElevatedButton(
                     onPressed: () async{
-                   //   await  loginController.addAppLogoImage(controller.appLogoFile,context) ;
                       await  loginController.addAppLogoImage(webImage!,context) ;
 
                       await loginController.getAppLogoImage(context);

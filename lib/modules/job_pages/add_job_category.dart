@@ -1,105 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
-// import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
-// import 'package:get/get.dart';
-// import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
-// import '../../common_widgets/color_code.dart';
-//
-//
-// class AddJobCategory extends StatefulWidget {
-//   const AddJobCategory({super.key});
-//
-//   @override
-//   State<AddJobCategory> createState() => _AddJobCategoryState();
-// }
-//
-// class _AddJobCategoryState extends State<AddJobCategory> {
-//   final jobController=Get.put(JobController());
-//   final List<String> userTypes = const [
-//     "Dental Clinic",
-//     "Dental Lab",
-//     "Dental Shop",
-//     "Dental Mechanic",
-//     "Dental Consultant"
-//   ];
-//   @override
-//   Widget build(BuildContext context) {
-//     double size = MediaQuery.of(context).size.width;
-//     return Scaffold(
-//       appBar: AppBar(
-//         centerTitle: true,backgroundColor: AppColors.white,
-//         title: Text('Add Job Category',
-//           style: AppTextStyles.subtitle(context,color: AppColors.black),),automaticallyImplyLeading: true,iconTheme: IconThemeData(color: AppColors.black,size: size*0.05),
-//         leading: Padding(
-//           padding: const EdgeInsets.all(8.0),
-//           child: GestureDetector(
-//             onTap: () {
-//               Navigator.pop(context);
-//             },
-//             child: Container(
-//               decoration:  const BoxDecoration(
-//                 shape: BoxShape.circle,
-//                 gradient: LinearGradient(
-//                   colors: [AppColors.primary, AppColors.secondary],
-//                   begin: Alignment.topLeft,
-//                   end: Alignment.bottomRight,
-//                 ),
-//               ),
-//               child: const Center(
-//                 child: Icon(
-//                   Icons.arrow_back,
-//                   color: AppColors.white,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: const EdgeInsets.all(15.0),
-//           child: Column(
-//             children: [
-//
-//               Row(
-//                 children: [
-//                   Text(
-//                     "Select User Type",
-//                     style: AppTextStyles.caption(
-//                       context,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                   ),
-//
-//                   const SizedBox(width: 10),
-//                   SizedBox(
-//                     width: size * 0.55,
-//                     child: GetBuilder<JobController>(
-//                         builder: (controller) {
-//                           return CustomDropdownField(
-//                             hint: "Select User Type",
-//                             borderColor: AppColors.grey,
-//                             fillColor: AppColors.white,
-//                             items: userTypes,
-//                             selectedValue: controller.selectedUserType,
-//                             onChanged: (value)async {
-//                               controller.selectedUserType = value;
-//                               await jobController.createJobCategoryAdmin(controller.selectedUserType!,'',context);
-//                               jobController.update();
-//                             },
-//                           );
-//                         }
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
@@ -306,29 +204,11 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
                     ),
                     const SizedBox(height: 10,),
 
-                    // GetBuilder<JobController>(
-                    //     builder: (controller) {
-                    //       return CustomDropdownField(
-                    //         hint: "Select User Type",
-                    //         borderColor: AppColors.grey,
-                    //         fillColor: AppColors.white,
-                    //         items: userTypes,
-                    //         selectedValue: controller.selectedUserType,
-                    //         onChanged: (value) async {
-                    //           controller.selectedUserType = value;
-                    //           //await jobController.createJobCategoryAdmin(controller.selectedUserType=="All"?"":controller.selectedUserType!,nameController.text.toString(),context);
-                    //           fetchCategories();
-                    //           jobController.update();
-                    //         },
-                    //       );
-                    //     }
-                    // ),
                     GestureDetector(
                       child: _modernFilterBox(
                           icon: Icons.person_outline,
                           label: jobController.selectedUserType ?? "Select User Type",
                           onTap: _showUserTypeDialog
-                        // optional styling for your modern box
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -536,15 +416,19 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
   border: Border.all(color: AppColors.grey),
   borderRadius: BorderRadius.circular(12),
   ),
+  child: Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
   child: Row(
   mainAxisAlignment: MainAxisAlignment.spaceBetween,
   children: [
-  Obx(() => Text(
+  Expanded(child: Obx(() => Text(
   jobController.selectedUserType ?? "Select User Type",
-  style: const TextStyle(fontSize: 16),
-  )),
+  overflow: TextOverflow.ellipsis,
+  style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
+  ))),
   const Icon(Icons.arrow_drop_down),
   ],
+  ),
   ),
   ),
   );

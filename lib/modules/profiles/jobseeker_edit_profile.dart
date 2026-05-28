@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
+import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
@@ -366,33 +367,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               SizedBox(height: size * 0.03),
 
-              // const SizedBox(height: 20),
-          
+
               sectionTitle("Location Details", size),
-              // CustomTextField(
-              //   hint: "State",
-              //   icon: Icons.map,
-              //   controller: loginController.stateController,
-              // ),
-              // SizedBox(height: size * 0.03),
-              //
-              // CustomTextField(
-              //   hint: "District",
-              //   icon: Icons.location_city,
-              //   controller: loginController.districtController,
-              // ),
-              // SizedBox(height: size * 0.03),
-              // CustomTextField(
-              //   hint: "City",
-              //   icon: Icons.location_city,
-              //   controller: loginController.cityController,
-              // ),
-              // SizedBox(height: size * 0.03),
-              // CustomTextField(
-              //   hint: "Area",
-              //   icon: Icons.location_city,
-              //   controller: loginController.areaController,
-              // ),
+
               SizedBox(height: size * 0.03),
               CustomTextField(
                 hint: "Pincode",
@@ -400,11 +377,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 controller: loginController.pinCodeController,
               ),
               const SizedBox(height: 20),
-              // CustomTextField(
-              //   hint: "About Me",
-              //   icon: Icons.location_on,maxLines: 5,
-              //   controller: loginController.descriptionController,
-              // ),
+
               Column(
                 children: [
                   Container(
@@ -504,23 +477,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               SizedBox(height: size * 0.03),
 
-
-              // CustomTextField(
-              //   hint: "College Name",
-              //   controller: loginController.pgCollege,
-              // ),
-              // SizedBox(height: size * 0.03),
-              //
-              // CustomTextField(
-              //   hint: "Degree",
-              //   controller: loginController.pgDegree,
-              // ),
-              // SizedBox(height: size * 0.03),
-              //
-              // CustomTextField(
-              //   hint: "Percentage",
-              //   controller: loginController.pgPercentage,
-              // ),
               GetBuilder<LoginController>(
                 builder: (controller) {
                   final items = controller.states.map((v) => v.toString()).toList();
@@ -915,7 +871,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ? await convertFilesToBytes(loginController.logoImages)
                           : [];
                       final certBytes = await convertFilesToBytes(loginController.certificates);
-
+                      final descriptionAbout =
+                      jsonEncode(_controller.document.toDelta().toJson());
+                      print('dgdesc$descriptionAbout');
                       await loginController.registerUser(
                         userId: Api.userInfo.read('userId') ?? "",
                         userType: userType,
@@ -940,7 +898,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         image: loginController.selectedUserType=="Job Seekers"?logoBytes ?? []:imageBytes ?? [],
                         certificate: certBytes,
                         logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
-                        description: loginController.descriptionController.text,
+                        description: descriptionAbout,
+                        //loginController.descriptionController.text,
                         jobCategory:loginController.selectedCategories,
                         details: finalJson,
                         context: context,
@@ -970,6 +929,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ),
       ),
+      bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
   }
 

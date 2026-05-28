@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
+import 'package:locate_your_dentist/common_widgets/common_drawer.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
@@ -13,7 +14,6 @@ import 'package:locate_your_dentist/modules/profiles/jobseeker_viewprofile.dart'
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 
@@ -38,6 +38,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
   final notificationController=Get.put(NotificationController());
   int currentIndex=0;
   bool?isSelected;
+  final GlobalKey<ScaffoldState> _scaffoldKeyJobs = GlobalKey<ScaffoldState>();
 
  @override
   void initState() {
@@ -50,7 +51,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
     await jobController.getJobSeekersAppliedLists(Api.userInfo.read('userId')??"",context);
     await jobController.getWebinarListJobSeekers('','','',context);
     await notificationController.getNotificationListAdmin(context);
-    await planController.getUploadImages(userId:Api.userInfo.read('userId')??"",userType:  "Job Seekers",context: context);
+    await planController.getUploadImages(userType:  "Job Seekers",context: context);
  }
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,8 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
       return text[0].toUpperCase();
     }
     return Scaffold(
-        backgroundColor: Colors.grey.shade100,
+      key: _scaffoldKeyJobs,
+      backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
           centerTitle: false,elevation: 0,
           automaticallyImplyLeading: false,
@@ -128,8 +130,34 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                 }
             )
           ],
-
         ),
+      drawer: FilterDrawer(
+        onApply: () async{
+          print("Selected State: ${loginController.selectedState}");
+          print("Selected District: ${loginController.selectedDistrict}");
+          print("Selected Area: ${loginController.selectedArea}");
+
+          //String userType=  Api.userInfo.read('sUserType');
+          print("ssuser${loginController.selectedState.toString()},");
+
+          await jobController.getWebinarListJobSeekers(
+            loginController.selectedState.toString(),
+            loginController.selectedDistrict.toString(),
+            loginController.selectedTaluka.toString(),
+            context,
+          );
+        },
+        onReset: () {
+          setState(() {
+            // loginController.selectedPlace = null;
+            // loginController.selectedDistrict = null;
+            loginController.selectedArea = null;
+            loginController.selectedUserType=null;
+            loginController.selectedState=null;
+            loginController.selectedDistrict=null;
+          });
+        },
+      ),
         body: GetBuilder<JobController>(
           builder: (controller) {
             return RefreshIndicator(
@@ -209,7 +237,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                 child: Center(
                                   child: IconButton(
                                     onPressed: () {
-                                      // _scaffoldKeyUser.currentState!.openDrawer();
+                                      _scaffoldKeyJobs.currentState!.openDrawer();
                                     },
                                     icon:  Icon(Icons.filter_list, color: Colors.black, size: size*0.06),
                                     splashRadius: 22,
@@ -236,7 +264,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Popular Jobs/Webinars Posts' ,style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.normal,color: Colors.grey),),
+                            Flexible(child: Text('Popular Jobs/Webinars Posts' ,overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.normal,color: Colors.grey),)),
                             Align(
                               alignment: Alignment.topRight,
                               child: TextButton(
@@ -264,7 +292,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Find your Top Jobs',style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.normal,color: Colors.grey),),
+                            Flexible(child: Text('Find your Top Jobs',overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.normal,color: Colors.grey),)),
                             Align(
                               alignment: Alignment.topRight,
                               child: TextButton(
@@ -370,9 +398,9 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                                 Row(
                                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                   children: [
-                                                                    Text(Jobs.jobType.toString(), style: TextStyle(fontSize: size * 0.03, fontWeight: FontWeight.normal, color: Colors.grey)),
+                                                                    Flexible(child: Text(Jobs.jobType.toString(), overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: size * 0.03, fontWeight: FontWeight.normal, color: Colors.grey))),
                                                                     const SizedBox(width: 10),
-                                                                    Text(postedAgo, style: TextStyle(fontSize: size * 0.03, fontWeight: FontWeight.normal, color: Colors.grey)),
+                                                                    Flexible(child: Text(postedAgo, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: size * 0.03, fontWeight: FontWeight.normal, color: Colors.grey))),
                                                                   ],
                                                                 ),
                                                               ],
@@ -398,7 +426,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                       Row(
                                                         children: [
                                                           Icon(Icons.currency_rupee_rounded, color: Colors.grey, size: size * 0.04),
-                                                          Text(Jobs.salary.toString(), style: TextStyle(fontSize: size * 0.03, fontWeight: FontWeight.normal, color: Colors.grey)),
+                                                          Flexible(child: Text(Jobs.salary.toString(), overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: size * 0.03, fontWeight: FontWeight.normal, color: Colors.grey))),
                                                         ],
                                                       ),
                                                       Jobs.totalApplicants != 0
@@ -442,7 +470,8 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                         if (jobController.isLoading)
                           _buildShimmerAppliedJobs(size)
                         else if (jobController.jobSeekersAppliedLists.isEmpty)
-                          Center(child: Text("No applied jobs found", style: AppTextStyles.caption(context)))
+                          _buildShimmerAppliedJobs(size)
+                         // Center(child: Text("No applied jobs found", style: AppTextStyles.caption(context)))
                         else
                           AnimationLimiter(
                             child: ListView.builder(
@@ -509,8 +538,8 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                                   decoration: BoxDecoration(
                                                                     color: getRandomColor(appliedJobs.orgName.toString()),
                                                                   ),
-                                                                  width: size * 0.2,
-                                                                  height: size * 0.2,
+                                                                  width: size * 0.12,
+                                                                  height: size * 0.12,
                                                                   child: Center(
                                                                     child: Text(
                                                                       getFirstLetter(appliedJobs.orgName.toString()),
@@ -541,7 +570,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                               Row(
                                                                 children: [
                                                                   Icon(Icons.currency_rupee_rounded, color: Colors.grey, size: size * 0.04),
-                                                                  Text(appliedJobs.salary.toString() ?? "N/A", style: TextStyle(fontSize: size * 0.03, fontWeight: FontWeight.normal, color: Colors.grey)),
+                                                                  Flexible(child: Text(appliedJobs.salary.toString() ?? "N/A", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: size * 0.03, fontWeight: FontWeight.normal, color: Colors.grey))),
                                                                 ],
                                                               ),
                                                               Align(

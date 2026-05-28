@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -26,7 +25,6 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
   late Timer timer;
   @override
   void dispose() {
-    //otpController.dispose();
     timer?.cancel();
     super.dispose();
   }
@@ -71,8 +69,6 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
     DateTime now = DateTime.now();
     if (currentBackPressTime == null || now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
-      //CommonDialog.showExitDialog(context);
-     //  Get.toNamed('/patientDashboard');
       return true;
     }
     exit(0);
@@ -86,7 +82,6 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
         appBar: AppBar(
           centerTitle: true,backgroundColor: AppColors.white,
           iconTheme: const IconThemeData(color: AppColors.white),
-         //title: Text('Verify OTP Password',style: AppTextStyles.subtitle(context,color: AppColors.black),),
           automaticallyImplyLeading: true,
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -166,7 +161,6 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
             ),
           ),
         ),
-        //bottomNavigationBar: CommonBottomNavigation(currentIndex: 0),
       ),
     );
   }

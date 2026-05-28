@@ -57,7 +57,10 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 if (isLoggedIn && !isDesktop)
-                                  Positioned(top: 10, left: 10, child: IconButton(icon: const Icon(Icons.menu), onPressed: () => _scaffoldKeyInvoice.currentState?.openDrawer())),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10, left: 10),
+                                    child: IconButton(icon: const Icon(Icons.menu), onPressed: () => _scaffoldKeyInvoice.currentState?.openDrawer()),
+                                  ),
 
                                 if( planController.invoiceList.isEmpty)
 

@@ -84,15 +84,6 @@ class _CompanyFormState extends State<CompanyForm> {
                   ),
                   SizedBox(height: size * 2),
 
-                  // CustomTextField(
-                  //   hint: "Address",
-                  //   icon: Icons.location_on,
-                  //   controller: addressController,
-                  //   fillColor: Colors.white,
-                  //   borderColor: Colors.grey,
-                  //   //maxLines: 3,
-                  // ),
-
                   CustomTextField(
                     hint: "Street",
                     icon: Icons.receipt_long,

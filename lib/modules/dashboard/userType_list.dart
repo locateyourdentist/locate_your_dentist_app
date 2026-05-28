@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -18,8 +17,6 @@ import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter/foundation.dart';
-// import 'package:universal_html/html.dart' as html;
 import 'package:open_filex/open_filex.dart';
 
 class userTypeList extends StatefulWidget {
@@ -152,7 +149,7 @@ class _userTypeListState extends State<userTypeList> {
     double size = MediaQuery.of(context).size.width;
     print("Filtered profiles length: ${filteredProfiles.length}");
     final planActive = isAnyBasePlanActive(loginController.profileList);
-    print('planStatus$planActive');
+    //print('planStatus$planActive');
     return WillPopScope(
       onWillPop: () async {
         Get.toNamed('/${pageUserType(Api.userInfo.read('userType') ?? "")}');
@@ -380,33 +377,6 @@ class _userTypeListState extends State<userTypeList> {
                           ),
                         ),
                       ),
-                      // Align(
-                      //   alignment: Alignment.topRight,
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.all(3.0),
-                      //     child: SizedBox(
-                      //       height: size * 0.1,
-                      //       child: ElevatedButton.icon(
-                      //         onPressed: () async{
-                      //          await exportExcelMobile(loginController.profileList);
-                      //         },
-                      //         icon: const Icon(Icons.download, size: 18, color: Colors.white),
-                      //         label: const Text(
-                      //           "Export Excel",
-                      //           style: TextStyle(color: Colors.white),
-                      //         ),
-                      //         style: ElevatedButton.styleFrom(
-                      //           backgroundColor: AppColors.primary,
-                      //           elevation: 4,
-                      //           padding: const EdgeInsets.symmetric(horizontal: 14),
-                      //           shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(10),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                       if (loginController.selectedDistance != null ||loginController.selectedState != null||
                           loginController.selectedDistrict != null ||
                           loginController.selectedTaluka != null ||
@@ -566,8 +536,6 @@ class _userTypeListState extends State<userTypeList> {
                       if (loginController.profileList.isNotEmpty)
                         AnimationLimiter(
                           child: Column(
-                            // children: List.generate(filteredProfiles.length, (index) {
-                            //        final profile = filteredProfiles[index];
                                    children: List.generate(loginController.profileList.length, (index) {
                                    final profile = loginController.profileList[index];
                                    return AnimationConfiguration.staggeredList(

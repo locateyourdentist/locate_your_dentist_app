@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,12 @@ import 'package:get_storage/get_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' as http;
+import 'package:locate_your_dentist/api/firebase_options.dart';
 import 'package:locate_your_dentist/common_widgets/platform_helper.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api/api.dart';
-import 'firebase_options.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -33,13 +36,35 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 //   print("Background message received: ${message.messageId}");
 // }
 @pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+Future<void> firebaseMessagingBackgroundHandler(
+    RemoteMessage message) async {
 
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } on FirebaseException catch (e) {
+    if (e.code != 'duplicate-app') rethrow;
+  }
 
   print("Background message received: ${message.messageId}");
+}
+Future<String> downloadAndSaveFile(
+    String url,
+    String fileName,
+    ) async {
+
+  final directory = await getApplicationDocumentsDirectory();
+
+  final filePath = '${directory.path}/$fileName';
+
+  final response = await http.get(Uri.parse(url));
+
+  final file = File(filePath);
+
+  await file.writeAsBytes(response.bodyBytes);
+
+  return filePath;
 }
 Future<void> setupFCM() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -82,19 +107,120 @@ Future<void> setupFCM() async {
   });
 }
 Future<void> main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-if(!kIsWeb) {
-  FirebaseMessaging.onBackgroundMessage(
-    firebaseMessagingBackgroundHandler,
-  );
+  try {
+    await GetStorage.init();
+  } catch (e) {
+    debugPrint("GetStorage init failed: $e");
+  }
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } on FirebaseException catch (e) {
+    if (e.code != 'duplicate-app') rethrow;
+  }
+// if(!kIsWeb) {
+//   FirebaseMessaging.onBackgroundMessage(
+//     firebaseMessagingBackgroundHandler,
+//   );
+//
+//   await setupFCM();
+// }
+  if (!kIsWeb) {
+    FirebaseMessaging.onBackgroundMessage(
+      firebaseMessagingBackgroundHandler,
+    );
 
-  await setupFCM();
-}
+    await setupFCM();
+    FirebaseMessaging.onMessage.listen(
+          (RemoteMessage message) async {
+
+        print("MESSAGE RECEIVED");
+        print(message.data);
+
+        String imageUrl = message.data['image'] ?? '';
+
+        BigPictureStyleInformation? bigPictureStyle;
+
+        AndroidBitmap<Object>? largeIcon;
+
+        if (imageUrl.isNotEmpty) {
+          try {
+            final imagePath =
+            await downloadAndSaveFile(
+              imageUrl,
+              'lyd-big_picture',
+            );
+
+            print("IMAGE SAVED = $imagePath");
+
+            final file = File(imagePath);
+
+            print(
+              "FILE EXISTS = ${await file.exists()}",
+            );
+
+            print(
+              "FILE SIZE = ${await file.length()}",
+            );
+
+            largeIcon =
+                FilePathAndroidBitmap(imagePath);
+
+            bigPictureStyle =
+                BigPictureStyleInformation(
+                  FilePathAndroidBitmap(imagePath),
+                  largeIcon: largeIcon,
+                  contentTitle:
+                  message.data['title'] ?? '',
+                  summaryText:
+                  message.data['body'] ?? '',
+                  hideExpandedLargeIcon: false,
+                );
+          } catch (e) {
+            print(
+              "IMAGE DOWNLOAD ERROR = $e",
+            );
+          }
+        }
+
+        await flutterLocalNotificationsPlugin.show(
+          id: DateTime.now()
+              .millisecondsSinceEpoch ~/
+              1000,
+          title:
+          message.data['title'] ??
+              message.notification?.title ??
+              '',
+          body:
+          message.data['body'] ??
+              message.notification?.body ??
+              '',
+          notificationDetails:
+          NotificationDetails(
+            android:
+            AndroidNotificationDetails(
+              'high_importance_channel',
+              'High Importance Notifications',
+              importance: Importance.max,
+              priority: Priority.high,
+              largeIcon: largeIcon,
+              styleInformation:
+              bigPictureStyle,
+            ),
+          ),
+        );
+      },
+    );
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("NOTIFICATION CLICKED");
+    });
+  }
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
       AndroidFlutterLocalNotificationsPlugin>()
@@ -105,8 +231,10 @@ if(!kIsWeb) {
 
   const InitializationSettings initSettings =
   InitializationSettings(android: androidInit);
-
-  //await flutterLocalNotificationsPlugin.initialize(initSettings);
+  await flutterLocalNotificationsPlugin.initialize(
+    settings: initSettings,
+  );
+ // await flutterLocalNotificationsPlugin.initialize(initSettings);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isShowOnboard = prefs.getBool('isShowOnboard') ?? false;
@@ -124,8 +252,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-
   @override
   void initState() {
     super.initState();
@@ -146,7 +272,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      navigatorKey: _navigatorKey,
       title: 'Locate Your Dentist',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

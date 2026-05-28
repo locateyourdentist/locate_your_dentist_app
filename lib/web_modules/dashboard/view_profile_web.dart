@@ -293,7 +293,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                         ),
 
                         const SizedBox(height: 20),
-                      if(Api.userInfo.read('userType')=='Job Seekers')
+                      //if(Api.userInfo.read('userType')=='Job Seekers')
                         _card(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,8 +303,8 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                               if (experiences.isNotEmpty)
                                 ...experiences.map((exp) => _infoPanel(
                                   icon: Icons.work_outline,
-                                  title: exp['companyName'] ?? "",
-                                  desc: "${exp['experience']}\n${exp['jobDescription']}",
+                                  title: "Company Name: ${exp['companyName'] ?? ""}",
+                                  desc: "Experience(year): ${exp['experience']}\n\nJob Role:${exp['jobDescription']}",
                                   size: width, context: context
                                 ))
                               else
@@ -386,7 +386,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: AppTextStyles.caption(context,fontWeight: FontWeight.bold, color: Colors.black)),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 12),
                   Text(desc, style: AppTextStyles.caption(context,fontWeight: FontWeight.normal, color: Colors.black,)),
                 ],
               )),

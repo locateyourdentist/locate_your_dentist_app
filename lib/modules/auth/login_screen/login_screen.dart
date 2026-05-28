@@ -217,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                                 SizedBox(height: size*0.005,),
                                 TextButton(
                                   onPressed: () async{
-                                    Get.toNamed('/forgotPasswordWebScreen');
+                                    Get.toNamed('/forgotPasswordPage');
                                   },
                                   child:  RichText(
                                     text:

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
-import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
-import 'package:locate_your_dentist/utills/constants.dart';
-import 'package:intl/intl.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 

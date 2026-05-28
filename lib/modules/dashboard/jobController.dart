@@ -256,9 +256,9 @@ class JobController extends GetxController{
       if ( data["status"].toString().toLowerCase() == "success") {
         showCustomToast(context,  "Status Updated successfully");
         await sentMailJob( jobSeekerId,'update',[], jobId ?? "", "your Job application status was updated", status,context);
-        await notificationController.createNotification(jobSeekerId,Api.userInfo.read('userType') ?? '', 'job', 'your status of job application was changed', '','','','',context);
+        await notificationController.createNotification(jobSeekerId,'Job Seekers', 'job', "The status of your job application at $orgName has changed.", '','','','',context);
       } else {
-        showCustomToast(context, "status not  updated: ${data["message"]}");
+        showCustomToast(context, "job status not  updated: ${data["message"]}");
       }
     } catch (e) {
       print('jobId List Admin error $e');
@@ -561,11 +561,13 @@ class JobController extends GetxController{
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
        // if (!context.mounted) return;
-        await sentMailJob( userId,'new',jobCategory, jobId ?? '', "New Job Opening from ${orgName}", "", context);
-        await notificationController.createNotification(userId,Api.userInfo.read('userType') ?? '', 'job', 'New Job Opening from ${orgName}', '','','','',context);
+        final jobId = data["data"]["jobId"].toString();
+        await sentMailJob( userId,'new',jobCategory, jobId ?? '', "New Job Opening from $orgName", "", context);
 
-        showSuccessDialog(context, title:"Success",message :"Posted Job Successfully", onOkPressed: () {
-        });
+        await notificationController.createNotification(userId,'Job Seekers', 'job', '$jobTitle Job Opening from $orgName', '','','','',context,notificationImage1:jobImage1.isNotEmpty
+            ? jobImage1.first
+            : null,);
+        showSuccessDialog(context, title:"Success",message :"Posted Job Successfully", onOkPressed: () {});
         loginController.selectedJobType="";
     loginController.typeNameController.clear();
     loginController.jobTitleController.clear();
@@ -607,6 +609,8 @@ class JobController extends GetxController{
 
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
+        notificationController.createNotification( userId,"Job Seekers",'Webinar',webinarTitle,'','','','',context);
+
         showSuccessDialog(context, title:"Success",message :"Posted Webinar Successfully", onOkPressed: () {
         });
         loginController.webinarTitleJobController.clear();
@@ -798,7 +802,7 @@ class JobController extends GetxController{
       if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> list = data["data"];
         if (list.isEmpty) {
-          print(" No webinar found  list is empty");
+          print(" No webinar found.list is empty");
           _webinar = [];
           update();
           return;
@@ -883,10 +887,10 @@ class JobController extends GetxController{
       if ( data["status"].toString().toLowerCase() == "success") {
         showCustomToast(context,"mail sent successfully",);
       } else {
-        showCustomToast(context,"mail not get error, ${data["message"] ?? "error"}",);
+        showCustomToast(context,"mail not sent error, ${data["message"] ?? "error"}",);
       }
     } catch (error) {
-      print('get mail error ${error}');
+      print('sent mail error ${error}');
     } finally {
       isLoading = false;
       update();

@@ -9,7 +9,6 @@ import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
-import '../../common_widgets/common_bottom_navigation.dart';
 import 'package:get/get.dart';
 
 class CreatePlanWeb extends StatefulWidget {
@@ -177,10 +176,6 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
       planController.selectedString = args['selectedString'] ?? "";
       planController.selectedUserType = args['userType'] ?? "";
       final details = Map<String, dynamic>.from(args['details'] ?? {});
-      // planController.isStateWise = details['state'] ?? false;
-      // planController.isDistrictWise = details['district'] ?? false;
-      // planController.isCityWise = details['city'] ?? false;
-      // planController.isAreaWise = details['area'] ?? false;
       postImagePlanId = (planController.selectPostImageId ?? "").isNotEmpty
           ? planController.selectPostImageId!
           : "0";
@@ -212,7 +207,6 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-
     return Scaffold(
       key: _scaffoldKeyCreatePlan,
       backgroundColor: Colors.white,
@@ -273,7 +267,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                           radioItem("AddOnsPlan", "AddOns Plan"),
                                           radioItem("JobPlan", "Job Plan"),
                                           radioItem("WebinarPlan", "Webinar Plan"),
-                                          radioItem("PostImagePlan", "Post Image Plan"),
+                                          radioItem("PostImagePlan", "Scrolling Ads Plan"),
                 
                                         ],
                                       ),
@@ -299,7 +293,8 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                 "Dental Lab",
                                                 "Dental Shop",
                                                 "Dental Mechanic",
-                                                "Dental Consultant"
+                                                "Dental Consultant",
+
                                               ],
                                               selectedValue: planController.selectedUserType?.isEmpty == true
                                                   ? null

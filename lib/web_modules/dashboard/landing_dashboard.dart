@@ -7,14 +7,12 @@ import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/model/profile_model.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
-import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/clinic_image_caurosel.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:video_player/video_player.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -61,25 +59,6 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
     await loginController.getAppLogoImage(context);
     await planController.getUploadImages(userType: "Dental Clinic", context: context);
   }
-  // Future<void> getLocation() async {
-  //   final position = await LocationService.getCurrentLocation();
-  //   if (position != null) {
-  //     final address = await getAddressFromLatLng(position.latitude, position.longitude);
-  //     planController.currentLocation = address;
-  //   } else {
-  //     Get.snackbar('Location', 'Unable to get location');
-  //   }
-  // }
-  //
-  // Future<String> getAddressFromLatLng(double lat, double lng) async {
-  //   try {
-  //     List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
-  //     Placemark place = placemarks.first;
-  //     return '${place.subLocality}, ${place.locality} ${place.postalCode}';
-  //   } catch (e) {
-  //     return '';
-  //   }
-  // }
     Future<void> getLocation() async {
 
     try {
@@ -258,7 +237,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                           const SizedBox(height: 10),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.teal,
+                              backgroundColor: AppColors.primary,
                             ),
                             onPressed: () {},
                             child: Text(
@@ -453,7 +432,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                       ),
                                       ElevatedButton.icon(
                                         style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.teal, padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18)),
+                                            backgroundColor: AppColors.primary, padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18)),
                                         onPressed: () async {
                                           await loginController.getProfileDetails(
                                             "Dental Clinic",

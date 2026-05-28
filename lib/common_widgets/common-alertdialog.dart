@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
 
 void showLogoutDialog(BuildContext context) {
@@ -503,16 +504,136 @@ String? getAlertMessage(String planName, String endDate) {
 //   );
 //   box.write("lastPlanAlertDate1_$userId", todayString);
 // }
+// void showPlanAlerts(
+//     String userId,
+//     List<Map<String, dynamic>> dataList,
+//     BuildContext context,
+//     ) async {
+//   final box = GetStorage();
+//   final today = DateTime.now();
+//   final todayString = today.toIso8601String().substring(0, 10);
+//
+//   final lastAlertDate = box.read("lastPlanAlertDate1_$userId");
+//   if (lastAlertDate == todayString) return;
+//
+//   final loginController = Get.put(LoginController());
+//
+//   final Map<int, List<String>> expiringPlans = {};
+//
+//   final planList = {
+//     "basePlan": "Base Plan",
+//     "addonsPlan": "Add-ons Plan",
+//     "jobPlan": "Job Plan",
+//     "webinarPlan": "Webinar Plan",
+//     "posterPlan": "Post Image Plan"
+//   };
+//
+//   // Normalize today (remove time)
+//   final normalizedToday = DateTime(today.year, today.month, today.day);
+//
+//   for (var item in dataList) {
+//     final plans = item["details"]?["plan"];
+//     if (plans == null) continue;
+//
+//     for (var key in planList.keys) {
+//       final plan = plans[key];
+//       if (plan == null) continue;
+//
+//       final endDateRaw = plan["endDate"];
+//       if (endDateRaw == null) continue;
+//
+//       try {
+//         //  FIX: correct parsing (YYYY-MM-DD)
+//         DateTime endDate = DateTime.parse(endDateRaw.toString());
+//
+//         final normalizedEndDate =
+//         DateTime(endDate.year, endDate.month, endDate.day);
+//
+//         final daysLeft =
+//             normalizedEndDate.difference(normalizedToday).inDays;
+//
+//         if (daysLeft <= 7) {
+//           expiringPlans.putIfAbsent(daysLeft, () => []);
+//           expiringPlans[daysLeft]!.add(planList[key]!);
+//         }
+//       } catch (e) {
+//         print("Date parse error: $e");
+//       }
+//     }
+//   }
+//
+//   if (expiringPlans.isEmpty) return;
+//
+//   List<String> messages = [];
+//
+//   // FIX: proper async loop
+//   for (var entry in expiringPlans.entries) {
+//     final daysLeft = entry.key;
+//     final plans = entry.value;
+//
+//     if (daysLeft < 0) {
+//       messages.add("Your ${plans.join(", ")} have expired!");
+//     } else if (daysLeft == 0) {
+//       messages.add("Your ${plans.join(", ")} expire today!");
+//       await loginController.sentMailPlan(
+//           userId, "plan", "Plan Expires Alert", "basePlan", context);
+//     } else if (daysLeft <= 3) {
+//       messages.add(
+//           "Your ${plans.join(", ")} will expire within $daysLeft day(s).");
+//       await loginController.sentMailPlan(
+//           userId, "plan", "Plan Expires Alert", "basePlan", context);
+//     } else {
+//       messages.add(
+//           "Your ${plans.join(", ")} will expire in $daysLeft days.");
+//     }
+//   }
+//
+//   if (messages.isEmpty) return;
+//
+//   // Show dialog
+//   showDialog(
+//     context: context,
+//     builder: (context) => AlertDialog(
+//       title: Center(
+//         child: Text(
+//           "Plan Expiry Alert",
+//           style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+//         ),
+//       ),
+//       content: Text(
+//         messages.join("\n"),
+//         style: AppTextStyles.caption(context),
+//       ),
+//       actions: [
+//         Center(
+//           child: TextButton(
+//             onPressed: () => Navigator.of(context).pop(),
+//             child: Text(
+//               "OK",
+//               style: AppTextStyles.caption(context),
+//             ),
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+//
+//   box.write("lastPlanAlertDate1_$userId", todayString);
+// }
+
 void showPlanAlerts(
     String userId,
     List<Map<String, dynamic>> dataList,
     BuildContext context,
     ) async {
   final box = GetStorage();
+
   final today = DateTime.now();
   final todayString = today.toIso8601String().substring(0, 10);
 
   final lastAlertDate = box.read("lastPlanAlertDate1_$userId");
+
+  // Prevent showing multiple times in same day
   if (lastAlertDate == todayString) return;
 
   final loginController = Get.put(LoginController());
@@ -524,39 +645,53 @@ void showPlanAlerts(
     "addonsPlan": "Add-ons Plan",
     "jobPlan": "Job Plan",
     "webinarPlan": "Webinar Plan",
-    "posterPlan": "Post Image Plan"
+    "posterPlan": "Post Image Plan",
   };
+  final normalizedToday = DateTime(
+    today.year,
+    today.month,
+    today.day,
+  );
 
-  // Normalize today (remove time)
-  final normalizedToday = DateTime(today.year, today.month, today.day);
+  // API format => 27-6-2026
+  final formatter = DateFormat("d-M-yyyy");
 
   for (var item in dataList) {
     final plans = item["details"]?["plan"];
+
     if (plans == null) continue;
 
     for (var key in planList.keys) {
       final plan = plans[key];
+
       if (plan == null) continue;
 
       final endDateRaw = plan["endDate"];
+
       if (endDateRaw == null) continue;
 
       try {
-        // ✅ FIX: correct parsing (YYYY-MM-DD)
-        DateTime endDate = DateTime.parse(endDateRaw.toString());
+        // Parse date
+        DateTime endDate =
+        formatter.parse(endDateRaw.toString());
 
-        final normalizedEndDate =
-        DateTime(endDate.year, endDate.month, endDate.day);
+        final normalizedEndDate = DateTime(
+          endDate.year,
+          endDate.month,
+          endDate.day,
+        );
 
         final daysLeft =
             normalizedEndDate.difference(normalizedToday).inDays;
 
+        // Add only plans within 7 days
         if (daysLeft <= 7) {
           expiringPlans.putIfAbsent(daysLeft, () => []);
           expiringPlans[daysLeft]!.add(planList[key]!);
         }
       } catch (e) {
         print("Date parse error: $e");
+        print(endDateRaw);
       }
     }
   }
@@ -565,38 +700,57 @@ void showPlanAlerts(
 
   List<String> messages = [];
 
-  // ✅ FIX: proper async loop
   for (var entry in expiringPlans.entries) {
     final daysLeft = entry.key;
     final plans = entry.value;
 
     if (daysLeft < 0) {
-      messages.add("Your ${plans.join(", ")} have expired!");
+      messages.add(
+        "Your ${plans.join(", ")} have expired!",
+      );
     } else if (daysLeft == 0) {
-      messages.add("Your ${plans.join(", ")} expire today!");
+      messages.add(
+        "Your ${plans.join(", ")} expire today!",
+      );
+
       await loginController.sentMailPlan(
-          userId, "plan", "Plan Expires Alert", "basePlan", context);
+        userId,
+        "plan",
+        "Plan Expires Alert",
+        "basePlan",
+        context,
+      );
     } else if (daysLeft <= 3) {
       messages.add(
-          "Your ${plans.join(", ")} will expire within $daysLeft day(s).");
+        "Your ${plans.join(", ")} will expire within $daysLeft day(s).",
+      );
+
       await loginController.sentMailPlan(
-          userId, "plan", "Plan Expires Alert", "basePlan", context);
+        userId,
+        "plan",
+        "Plan Expires Alert",
+        "basePlan",
+        context,
+      );
     } else {
       messages.add(
-          "Your ${plans.join(", ")} will expire in $daysLeft days.");
+        "Your ${plans.join(", ")} will expire in $daysLeft days.",
+      );
     }
   }
 
   if (messages.isEmpty) return;
 
-  // ✅ Show dialog
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: Center(
         child: Text(
           "Plan Expiry Alert",
-          style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+          style: AppTextStyles.body(
+            context,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       content: Text(
@@ -606,7 +760,9 @@ void showPlanAlerts(
       actions: [
         Center(
           child: TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
             child: Text(
               "OK",
               style: AppTextStyles.caption(context),
@@ -617,7 +773,11 @@ void showPlanAlerts(
     ),
   );
 
-  box.write("lastPlanAlertDate1_$userId", todayString);
+  // Save alert shown date
+  box.write(
+    "lastPlanAlertDate1_$userId",
+    todayString,
+  );
 }
 void showDeactivateConfirmDialog({
   required BuildContext context,

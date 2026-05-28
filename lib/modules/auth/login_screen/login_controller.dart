@@ -14,7 +14,6 @@ import '../../../common_widgets/color_code.dart';
 import '../../../common_widgets/common_widget_all.dart';
 import '../../../common_widgets/custom_toast.dart';
 import 'package:http/http.dart' as http;
-import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../../model/contact_model_web.dart';
 
 class AppImage1 {
@@ -310,15 +309,7 @@ class LoginController extends GetxController {
     ));
   }
 
-  // Getter to convert contactList to JSON whenever needed
-  // List<Map<String, dynamic>> get contactsJson => contactList.map((contact) => {
-  //   "userId": contact.userId,
-  //   "name": contact.name.text,
-  //   "state": contact.state.text,
-  //   "mobile": contact.mobile.text,
-  //   "whatsapp": contact.whatsapp.text,
-  //   "email": contact.email.text,
-  // }).toList();
+
 
   String?searchText;
   var isLoading = false;
@@ -520,11 +511,11 @@ class LoginController extends GetxController {
         print("STATE: $state");
         print("NAME: $name");
         print(Api.userInfo.read("profileImage"));
-        // String fcmToken=Api.userInfo.read('fcmToken')??"";
+         String fcmToken=Api.userInfo.read('fcmToken')??"";
         // print("read fcm token${Api.userInfo.read('fcmToken')}");
         // final token = await FirebaseMessaging.instance.getToken();
         // print('userid$userId1 usertype$userType1 token$fcmToken');
-        //await saveFcmToken(userId1,userType1,fcmToken,context);
+        await saveFcmToken(userId1,userType1,fcmToken,context);
         showCustomToast(context, "Login successful", backgroundColor: AppColors.secondary);
 
         platform != "Web"
@@ -533,8 +524,6 @@ class LoginController extends GetxController {
       }
       else {
         showCustomToast(context,  "Login Failed, ${data["message"] ?? "error"}",);
-        //I/flutter (12546): api job response {"status":"error","message":"jwt expired"}
-        //Get.snackbar("Login Failed", data["message"] ?? "error");
       }
     } catch (error) {
       showCustomToast(context,  "error $error",backgroundColor: AppColors.secondary);
@@ -611,8 +600,6 @@ class LoginController extends GetxController {
       }
       else {
         showCustomToast(context,  "Account not switched error, ${data["message"] ?? "error"}",);
-        //I/flutter (12546): api job response {"status":"error","message":"jwt expired"}
-        //Get.snackbar("Login Failed", data["message"] ?? "error");
       }
     } catch (error) {
       showCustomToast(context,  "error $error",backgroundColor: AppColors.secondary);
@@ -830,8 +817,6 @@ class LoginController extends GetxController {
         if (selectedTaluka != null && selectedTaluka!.isNotEmpty) {
           await fetchVillages(selectedTaluka!);
         }
-
-
         // if (user.details["jobCategory"] != null) {
         //   final jc = user.details["jobCategory"];
         //   if (jc is List) {
@@ -889,13 +874,22 @@ class LoginController extends GetxController {
         for (var e in user.experienceDetails) {
           experienceList.add(
             ExperienceFieldModel(
-              companyName: TextEditingController(text: e.companyName.text),
-              experience: TextEditingController(text: e.experience.text),
-              jobDescription:
-              TextEditingController(text: e.jobDescription.text),
+              companyName: TextEditingController(text: e.companyName.text ?? ""),
+              experience: TextEditingController(text: e.experience.text ?? ""),
+              jobDescription: TextEditingController(text: e.jobDescription.text ?? ""),
             ),
           );
         }
+        // for (var e in user.experienceDetails) {
+        //   experienceList.add(
+        //     ExperienceFieldModel(
+        //       companyName: TextEditingController(text: e.companyName.text),
+        //       experience: TextEditingController(text: e.experience.text),
+        //       jobDescription:
+        //       TextEditingController(text: e.jobDescription.text),
+        //     ),
+        //   );
+        // }
         List<String> parseStringList(dynamic value) {
           if (value == null) return [];
           if (value is List) return value.map((e) => e.toString()).toList();
@@ -920,40 +914,6 @@ class LoginController extends GetxController {
         editCertificates = parseStringList(user.certificates)
             .map((e) => AppImage(url: e.replaceAll("\\", "/")))
             .toList();
-        // editImages = user.images.map((e) {
-        //   final url = e.replaceAll("\\", "/");
-        //   final isVideo = url.toLowerCase().endsWith(".mp4");
-        //   return AppImage(
-        //     url: url,
-        //     isVideo: isVideo,
-        //   );
-        // }).toList();
-        // logoImage = parseStringList(user.logoImages)
-        //     .map((e) => AppImage(url: e.replaceAll("\\", "/")))
-        //     .toList();
-        //
-        // editCertificates = parseStringList(user.certificates)
-        //     .map((e) => AppImage(url: e.replaceAll("\\", "/")))
-        //     .toList();
-
-
-
-
-        // editImages = user.images.map((e) {
-        //   final url = e.replaceAll("\\", "/");
-        //   final isVideo = url.toLowerCase().endsWith(".mp4");
-        //   return AppImage(
-        //     url: url,
-        //     isVideo: isVideo,
-        //   );
-        // }).toList();
-        // logoImage = parseStringList(user.logoImages)
-        //     .map((e) => AppImage(url: e.replaceAll("\\", "/")))
-        //     .toList();
-        //
-        // editCertificates = parseStringList(user.certificates)
-        //     .map((e) => AppImage(url: e.replaceAll("\\", "/")))
-        //     .toList();
         print("Profile Loaded: ${user.name}");
 
       } else {
@@ -1098,7 +1058,6 @@ class LoginController extends GetxController {
          certificates = [];
          selectedUserType=null;
          image==null;
-        // selectedPlace=='';
        // (userId=="0")?   await sentMailUser(userId1, "register", "New User Register From LYD", "your Registered successfully", context):"";
       (userId=="0")?   await notificationController.createNotification(userId1,userType, 'new', '$userId1 Registered successfully ',Api.userInfo.read('state')??"",Api.userInfo.read('district')??"",Api.userInfo.read('city')??"",Api.userInfo.read('area')??"", context):"";
         //kIsWeb? Get.offAllNamed('/webLoginPage'):Get.offAllNamed('/loginPage') ;
@@ -1184,15 +1143,12 @@ class LoginController extends GetxController {
       if ( data["status"].toString().toLowerCase() == "success") {
         if (!context.mounted) return;
         showSuccessDialog(context, title:"Success",message :"Otp Sent to mail successfully to ${Api.userInfo.read('otpMail')??""} ${data["message"] ??""} ",
-            onOkPressed: (){
-          kIsWeb? Get.offAllNamed('/verifyPasswordWeb'):Get.offAllNamed('/verifyPasswordPage') ;
-
-            });
+            onOkPressed: (){kIsWeb? Get.offAllNamed('/verifyPasswordWeb'):Get.offAllNamed('/verifyPasswordPage') ;
+        });
         emailController.clear();
       } else {
         showSuccessDialog(context, title:"Error",message :"${data["message"] ?? "error"} ",
-            onOkPressed: (){  Get.back();
-        });
+            onOkPressed: (){  Get.back();});
       }
     } catch (error) {
       print('get mail error $error');

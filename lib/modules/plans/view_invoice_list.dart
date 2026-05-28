@@ -8,12 +8,8 @@ import 'package:locate_your_dentist/modules/job_pages/view_webinar_page.dart';
 import 'package:locate_your_dentist/modules/plans/payment_pdf.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:get/get.dart';
-import 'package:open_filex/open_filex.dart';
 
 class InvoiceListPage extends StatefulWidget {
-  // final List<Invoice> invoices;
-  //
-  // const InvoiceListPage({super.key, required this.invoices});
   @override
   State<InvoiceListPage> createState() => _InvoiceListPageState();
 }
@@ -65,13 +61,6 @@ class _InvoiceListPageState extends State<InvoiceListPage> {
           builder: (controller) {
             return planController.invoiceList.isEmpty
               ?                  buildShimmerEmptyWidget(size)
-
-            //   const Center(
-          //   child: Text(
-          //     "No invoices available",
-          //     style: TextStyle(fontSize: 16),
-          //   ),
-          // )
               : ListView.builder(
             padding:  const EdgeInsets.all(16),
             itemCount: planController.invoiceList.length,
@@ -114,10 +103,13 @@ class _InvoiceListPageState extends State<InvoiceListPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Amount: ₹${invoice.amount.toStringAsFixed(2)}",
+                          Flexible(
+                            child: Text(
+                              "Amount: ₹${invoice.amount.toStringAsFixed(2)}",
+                              overflow: TextOverflow.ellipsis,
                               style:AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white)
 
+                            ),
                           ),
                           Text("${formatDate(invoice.createdAt.toString())}",
                             //"${invoice.createdAt.day}-${invoice.createdAt.month}-${invoice.createdAt.year}",

@@ -1105,7 +1105,7 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> uploadImagesUserType(String userId, String userType,String imageId,String preference,String startDate,String endDate,String isActive,
+  Future<void> uploadImagesUserType(String userId, String userType,String imageId,String startDate,String endDate,String isActive,
       List<Uint8List>posterImage,
       dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
@@ -1116,7 +1116,7 @@ class AppImage2 {
     isLoading=true;
     try {
       _checkPlanList=[];
-      final response = await api.uploadImagesUserType( userId,userType, imageId, preference, startDate, endDate,isActive,posterImage);
+      final response = await api.uploadImagesUserType( userId,userType, imageId, startDate, endDate,isActive,posterImage);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
         showCustomToast(context, "Image updated successfully");

@@ -102,8 +102,9 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                           );
                         },
                         child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children:[
-                              Text('Switch Account',style: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold),),
+                              Flexible(child: Text('Switch Account',overflow: TextOverflow.ellipsis,style: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold),)),
                               Image.asset('assets/images/switch_account.png',height: size * 0.05,width:size * 0.05,)])),
                   Stack(
                     children: [
@@ -768,16 +769,22 @@ class JobCard extends StatelessWidget {
                 SizedBox(height: size * 0.01),
                 Row(
                   children: [
-                    Text(
-                      "$appliedCount Applied",
-                      style: AppTextStyles.caption(context, color: AppColors.primary),
+                    Flexible(
+                      child: Text(
+                        "$appliedCount Applied",
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.caption(context, color: AppColors.primary),
+                      ),
                     ),
                    // SizedBox(width: size * 0.03),
                    const VerticalDivider(color: AppColors.black,
                     thickness: 2,),
-                    Text(
-                      postedAgo??"",
-                      style: AppTextStyles.caption(context, color: AppColors.grey),
+                    Flexible(
+                      child: Text(
+                        postedAgo??"",
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.caption(context, color: AppColors.grey),
+                      ),
                     ),
                     const Spacer(),
                     Container(

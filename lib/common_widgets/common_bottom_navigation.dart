@@ -67,6 +67,7 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
     if (item.label == 'Profile') {
       Api.userInfo.write('selectUId',userId);
       if (token != null) {
+        Api.userInfo.write('selectUId',userId);
         Get.offAllNamed('/${profilePage(userType)}');
       } else {
         Get.offAllNamed('/registerPage');
@@ -76,6 +77,7 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
     if (item.label == 'Register') {
       Api.userInfo.write('selectUId',userId);
       if (token != null) {
+        Api.userInfo.write('selectUId',userId);
         Get.offAllNamed('/${profilePage(userType)}');
       } else {
         Get.offAllNamed('/registerPage');
@@ -111,10 +113,9 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Container(
-          height: 70,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.06),
@@ -125,27 +126,31 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              currentIndex:
-              selectedIndex < items.length ? selectedIndex : 0,
-              selectedItemColor: AppColors.primary,
-              unselectedItemColor: Colors.grey.shade400,
-              selectedFontSize: 12,
-              unselectedFontSize: 11,
-              onTap: (index) => _handleTap(context, index, items),
-              items: items.map((item) {
-                return BottomNavigationBarItem(
-                  icon: Icon(
-                    item.icon,
-                    size: selectedIndex == items.indexOf(item) ? 26 : 22,
-                  ),
-                  label: item.label,
-                );
-              }).toList(),
+            borderRadius: BorderRadius.circular(10),
+            child: MediaQuery.removePadding(
+              context: context,
+              removeBottom: true,
+              child: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                currentIndex:
+                selectedIndex < items.length ? selectedIndex : 0,
+                selectedItemColor: AppColors.primary,
+                unselectedItemColor: Colors.grey.shade400,
+                selectedFontSize: 11,
+                unselectedFontSize: 11,
+                onTap: (index) => _handleTap(context, index, items),
+                items: items.map((item) {
+                  return BottomNavigationBarItem(
+                    icon: Icon(
+                      item.icon,
+                      size: 24,
+                    ),
+                    label: item.label,
+                  );
+                }).toList(),
+              ),
             ),
           ),
         ),

@@ -61,14 +61,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Image.asset(
-                  //   'assets/images/logo.jpg',
-                  //   width: double.infinity,
-                  //   height: size * 0.25,
-                  //   fit: BoxFit.cover,
-                  // ),
-                  // SizedBox(height: size * 0.18),
-                  // Center(child: Text('Forgot Password',style: AppTextStyles.subtitle(context,color: AppColors.primary),)),
                   SizedBox(height: size * 0.1),
                   Text('Enter your Email Address',textAlign:TextAlign.left,style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
                   SizedBox(height: size * 0.09),
@@ -100,13 +92,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: () async {
+                        onPressed: loginController.isLoading?null:() async {
                           if (_formKeyForgotPassword.currentState!.validate()) {
                             Api.userInfo.write('otpMail', loginController.emailController.text);
                             await loginController.forgotPassword(loginController.emailController.text,context);
                           }
                         },
-                        child: Text('Send OTP',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white),),
+                        child: loginController.isLoading
+                            ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                            : Text('Send OTP',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white),),
 
                       ),
                     ),
@@ -175,7 +176,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ),
         ),
       ),
-      //bottomNavigationBar: CommonBottomNavigation(currentIndex: 0),
     );
   }
 }

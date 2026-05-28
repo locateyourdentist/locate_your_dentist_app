@@ -553,18 +553,22 @@ class Media {
                                                         crossAxisAlignment: CrossAxisAlignment
                                                             .center,
                                                         children: [
-                                                          Column(
+                                                          Expanded(
+                                                            child: Column(
                                                               crossAxisAlignment: CrossAxisAlignment
                                                                   .start,
                                                               mainAxisAlignment: MainAxisAlignment
                                                                   .center,
                                                               children: [
                                                                 Text(service.serviceTitle.toString()??"",
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                  maxLines: 2,
                                                                   style: AppTextStyles.body(
                                                                       context,fontWeight: FontWeight.bold,
                                                                       color: AppColors.black),),
                                                                 Text(
                                                                   "Price Starts from ₹ ${service.serviceCost.toString()??""}",
+                                                                  overflow: TextOverflow.ellipsis,
                                                                   style: AppTextStyles.caption(
                                                                       context,
                                                                       color: AppColors.grey),),
@@ -576,6 +580,7 @@ class Media {
                                                                 )
 
                                                               ]),
+                                                          ),
                                                           const SizedBox(width: 10),
 
                                                         ClipRRect(borderRadius: BorderRadius.circular(8),

@@ -376,7 +376,7 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                                                       await jobController.updateJobStatusAdmin(seekers.jobSeekerId.toString(), seekers.jobId.toString(), "Viewed", job.orgName ?? "", context);
                                                                     }
                                                                     await loginController.getProfileByUserId(seekers.jobSeekerId ?? "", context);
-                                                                    Get.toNamed('/jobSeekerViewProfilePage');
+                                                                    Get.toNamed('/viewProfilePageWeb');
                                                                   },
                                                                   child: SizedBox(
                                                                     width: screenWidth*0.25,
@@ -453,7 +453,7 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
   }
 }
 
-/// Applicant card widget
+
 class JobSeekerAppliedCard extends StatelessWidget {
   final dynamic seeker;
   final String? orgName;
@@ -490,6 +490,7 @@ class JobSeekerAppliedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final jobController = Get.put(JobController());
     final imageUrl = (seeker.image != null) ? "${AppConstants.baseUrl}${seeker.image}" : "";
     return Container(
       width: width*0.15,
@@ -504,7 +505,52 @@ class JobSeekerAppliedCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(seeker.name ?? '', softWrap: true, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          seeker.name,softWrap: true,
+                          style: TextStyle(
+                            fontSize: width * 0.035,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      PopupMenuButton<String>(
+                        onSelected: (String status)async {
+                          print("Selected Status: $status");
+                          print('jobid${seeker.jobSeekerId.toString()}');
+
+                          await  jobController.updateJobStatusAdmin(
+                            seeker.jobSeekerId.toString(), seeker.jobId.toString(),
+                            status,orgName??"",
+                            context,
+                          );
+                          //await  jobController.getJobsById(Api.userInfo.read('selectJobId')??"",  context);
+                          //await   jobController.getAppliedJobsAdmin(Api.userInfo.read('selectJobId')??"",context);
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem(
+                              value: "Shortlisted",
+                              child: Text("Shortlisted",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
+                            ),
+                            PopupMenuItem(
+                              value: "Rejected",
+                              child: Text("Rejected",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal)),
+                            ),
+                          ];
+                        },
+
+                        child: Icon(
+                          Icons.more_vert,
+                          color: Colors.grey[700],
+                        ),
+                      )
+
+                    ],
+                  ),
                   const SizedBox(height: 6),
                   Text(seeker.email ?? '', style: AppTextStyles.caption(context, color: AppColors.black)),
                   const SizedBox(height: 6),

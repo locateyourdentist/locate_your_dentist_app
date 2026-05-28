@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import'package:get/get.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -171,10 +169,6 @@ class ContactController extends GetxController{
       final response = await api.getReceiverContactFormLists( receiverId, fromDate, toDate, search,);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
-        // List<dynamic> jobs = data["data"];
-        // _senderContactLists = jobs.map((e) => ContactModel.fromJson(e)).toList();
-        //  editImages = jobs.contactImage.map((u) => AppImage(url: u.replaceAll("\\", "/"))).toList();
-        // print('dff$editImages');
         List<dynamic> jobs = data["data"];
         _receiverContactLists =
             jobs.map((e) => ContactModel.fromJson(e)).toList();

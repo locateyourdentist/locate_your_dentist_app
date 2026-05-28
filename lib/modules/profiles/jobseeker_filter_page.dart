@@ -7,7 +7,6 @@ import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
-import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
@@ -39,34 +38,7 @@ import 'package:intl/intl.dart';
     return Scaffold(
       key:_scaffoldKeyJobSeekers,
       backgroundColor: Colors.grey.shade100,
-    //   drawer: FilterDrawer(
-    //     onApply: () async{
-    //   print("Selected State: ${loginController.selectedState}");
-    //   print("Selected District: ${loginController.selectedDistrict}");
-    //   print("Selected Area: ${loginController.selectedArea}");
-    //   //String userType=  Api.userInfo.read('sUserType');
-    //   //print("ssuser$userType");
-    //   //filteredProfiles.map((e) => searchController.text.toString());
-    //   jobController.getJobListJobSeekers(search:searchController.text.toString(),state:loginController.selectedState,district:loginController.selectedDistrict,
-    //       city: loginController.selectedTaluka,salary: loginController.selectedSalary,jobType: loginController.selectedJobType,jobCategory: loginController.selectedCategories,
-    //       context: context);
-    //   },
-    // onReset: () {
-    // setState(() {
-    // // loginController.selectedPlace = null;
-    // // loginController.selectedDistrict = null;
-    // loginController.selectedArea = null;
-    // loginController.selectedUserType=null;
-    // loginController.selectedState=null;
-    // loginController.selectedDistrict=null;
-    // loginController.selectedDistance=null;
-    // loginController.selectedTaluka=null;
-    // loginController.selectedJobType=null;
-    // loginController.selectedSalary=null;
-    // loginController.selectedCategories.clear();
-    // });
-    // },
-    // ),
+
       appBar: AppBar(
         //backgroundColor: AppColors.background,
         elevation: 0,
@@ -129,35 +101,6 @@ import 'package:intl/intl.dart';
                   size: size * 0.06,
                 ),
                 onPressed: () {
-                  // FilterDrawer(
-                  //   onApply: () async{
-                  //     print("Selected State: ${loginController.selectedState}");
-                  //     print("Selected District: ${loginController.selectedDistrict}");
-                  //     print("Selected Area: ${loginController.selectedArea}");
-                  //     //String userType=  Api.userInfo.read('sUserType');
-                  //     //print("ssuser$userType");
-                  //     //filteredProfiles.map((e) => searchController.text.toString());
-                  //     jobController.getJobListJobSeekers(search:searchController.text.toString(),state:loginController.selectedState,district:loginController.selectedDistrict,
-                  //         city: loginController.selectedTaluka,salary: loginController.selectedSalary,jobType: loginController.selectedJobType,jobCategory: loginController.selectedCategories,
-                  //         context: context);
-                  //   },
-                  //   onReset: () {
-                  //     setState(() {
-                  //       // loginController.selectedPlace = null;
-                  //       // loginController.selectedDistrict = null;
-                  //       loginController.selectedArea = null;
-                  //       loginController.selectedUserType=null;
-                  //       loginController.selectedState=null;
-                  //       loginController.selectedDistrict=null;
-                  //       loginController.selectedDistance=null;
-                  //       loginController.selectedTaluka=null;
-                  //       loginController.selectedJobType=null;
-                  //       loginController.selectedSalary=null;
-                  //       loginController.selectedCategories.clear();
-                  //     });
-                  //   },
-                  // );
-                 // _scaffoldKeyJobSeekers.currentState!.openDrawer();
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
@@ -209,47 +152,6 @@ import 'package:intl/intl.dart';
          padding: const EdgeInsets.all(10.0),
          child: Column(
           children: [
-            // Row(
-            //   children: [
-            //     Expanded(
-            //       child: TextField(
-            //         controller: searchController,
-            //         decoration: InputDecoration(
-            //           hintText: "Search your jobs by name,area...",
-            //           hintStyle: AppTextStyles.caption(context,color: AppColors.grey,fontWeight: FontWeight.normal),
-            //           prefixIcon:  Icon(Icons.search,color: AppColors.grey,size: size*0.05,),
-            //           filled: true,
-            //           fillColor: Colors.white,
-            //           contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-            //           border: OutlineInputBorder(
-            //             borderRadius: BorderRadius.circular(12),
-            //             borderSide: BorderSide.none,
-            //           ),
-            //         ),
-            //         onChanged: (value) {
-            //           print("Search text: $value");
-            //           jobController.getJobListJobSeekers(searchController.text.toString(),context);
-            //           Get.toNamed('/filterPageJobSeekersPage');
-            //         },
-            //       ),
-            //     ),
-            //
-            //     const SizedBox(width: 10),
-            //
-            //     Container(
-            //       height: size*0.12,
-            //       width: size*0.15,
-            //       decoration: BoxDecoration(
-            //         color: Colors.white,
-            //         borderRadius: BorderRadius.circular(12),
-            //       ),
-            //       child: IconButton(
-            //         icon: const Icon(Icons.filter_list, color: Colors.black),
-            //         onPressed: () {},
-            //       ),
-            //     )
-            //   ],
-            // ),
 
             if(jobController.jobListJobSeekers.isEmpty)
               Center(child: Text('No Job found',style: AppTextStyles.caption(context),),),
@@ -338,11 +240,12 @@ import 'package:intl/intl.dart';
                                           ),
 
                                           const SizedBox(width: 10,),
-                                          Column(
+                                          Expanded(
+                                            child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(Jobs.orgName.toString(),softWrap:true,maxLines:2,style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
-                                              Text(Jobs.jobType.toString(),style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
+                                              Text(Jobs.orgName.toString(),softWrap:true,maxLines:2,overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
+                                              Text(Jobs.jobType.toString(),overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
                                               Container(
                                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                                 decoration: BoxDecoration(
@@ -355,6 +258,7 @@ import 'package:intl/intl.dart';
                                                 ),
                                                 child: Text(
                                                   Jobs.status ?? "Not Applied",
+                                                  overflow: TextOverflow.ellipsis,
                                                   style: TextStyle(
                                                     fontSize: size * 0.03,
                                                     fontWeight: FontWeight.w500,
@@ -364,6 +268,7 @@ import 'package:intl/intl.dart';
                                               )
 
                                             ],
+                                          ),
                                           ),
                                         ],
                                       ),
@@ -376,19 +281,19 @@ import 'package:intl/intl.dart';
                                         children: [
                                           Icon(Icons.location_on_rounded, color: Colors.grey,size: size*0.04,),
                                           const SizedBox(width: 5,),
-                                          Text("${Jobs.city.toString()}, ${Jobs.district.toString()} ,${Jobs.state.toString()}",softWrap:true,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
+                                          Flexible(child: Text("${Jobs.city.toString()}, ${Jobs.district.toString()} ,${Jobs.state.toString()}",softWrap:true,overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),)),
                                         ],
                                       ),
                                       Row(
                                         children: [
                                           Icon(Icons.currency_rupee_rounded, color: Colors.grey,size: size*0.04,),
-                                          Text(Jobs.salary.toString(),style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
+                                          Flexible(child: Text(Jobs.salary.toString(),overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),)),
                                         ],
                                       ),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text('Posted On ${  DateFormat('MMM dd, yyyy').format(DateTime.parse(Jobs.createdDate.toString()))}',style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
+                                          Flexible(child: Text('Posted On ${  DateFormat('MMM dd, yyyy').format(DateTime.parse(Jobs.createdDate.toString()))}',overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),)),
                                           Align(
                                             alignment:Alignment.bottomRight,
                                             child: Padding(

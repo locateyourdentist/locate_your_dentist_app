@@ -531,6 +531,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                                     showCustomToast(context,  "Please Give message",);
                                                     return;
                                                   }
+
                                                     notificationController.createNotification(
                                                     Api.userInfo.read('userId'),
                                                     notificationController.selectedUserType!,

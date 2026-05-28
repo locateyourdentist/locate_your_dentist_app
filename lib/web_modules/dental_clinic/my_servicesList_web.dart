@@ -3,7 +3,6 @@ import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:get/get.dart';
-import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/product_services/service_controller.dart';
 import 'package:shimmer/shimmer.dart';

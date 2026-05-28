@@ -20,34 +20,6 @@ class ReportsDashboardPage extends StatefulWidget {
 class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
   final PlanController controller = Get.put(PlanController());
   String selectedYear = DateTime.now().year.toString();
-  // Future<void> exportExcel({
-  //   required IncomeDashboardModel incomeModel,
-  //   required List<ExpenseModel> expenses,
-  //   required List<Map<String, dynamic>> stateWiseExpense,
-  //   required double totalExpense,
-  //   required String state,
-  //   String? fromDate,
-  //   String? toDate,
-  // }) async {
-  //
-  //   final excel = ExcelService.buildExcel(
-  //     incomeModel: incomeModel,
-  //     expenses: expenses,
-  //     stateWiseExpense: stateWiseExpense,
-  //     totalExpense: totalExpense,
-  //   );
-  //
-  //   final bytes = excel.encode();
-  //   if (bytes == null) return;
-  //
-  //   final fileName = buildFileName(
-  //     state: state,
-  //     fromDate: fromDate,
-  //     toDate: toDate,
-  //   );
-  //
-  //   downloadExcel(bytes, fileName);
-  // }
   Future<void> exportExcelWeb({
     required IncomeDashboardModel incomeModel,
     required List<ExpenseModel> expenses,

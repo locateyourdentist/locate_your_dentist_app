@@ -9,7 +9,6 @@ import 'package:locate_your_dentist/model/serviceModel.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
-import 'package:locate_your_dentist/utills/constants.dart';
 
 class ServiceController extends GetxController{
   var isLoading = false;
@@ -47,7 +46,6 @@ class ServiceController extends GetxController{
 
         _serviceList = services.map((e) => ServiceModel.fromJson(e)).toList();
 
-        // showCustomToast(context,  "Profile details fetched",);
       } else {
         //showCustomToast(context,  "can not get service error,${data["message"] ?? "error"}",);
         //Get.snackbar("Login Failed", data["message"] ?? "error");
@@ -90,89 +88,6 @@ class ServiceController extends GetxController{
       return [];
     }
   }
-  // Future<void> getPrivacyPolicyDetails(String category,dynamic context) async {
-  //   var connection = await Connectivity().checkConnectivity();
-  //
-  //   if (connection == ConnectivityResult.none) {
-  //     Get.snackbar("No Internet", "Please check your connection");
-  //     return;
-  //   }
-  //
-  //   isLoading = true;
-  //   update();
-  //
-  //   try {
-  //     _privacyDetails = [];
-  //
-  //     final response = await api.getPrivacyPolicyDetails( category,);
-  //     var data = jsonDecode(response.body);
-  //
-  //     if (data["status"]?.toString().toLowerCase() == "success") {
-  //       List<dynamic> services = data["data"] ?? [];
-  //
-  //       if (services.isNotEmpty) {
-  //         var rawData = services[0]["data"];
-  //         if (rawData is List) {
-  //           privacyData = List<Map<String, dynamic>>.from(rawData);
-  //         } else if (rawData is String) {
-  //           privacyData = List<Map<String, dynamic>>.from(
-  //             jsonDecode(rawData),
-  //           );
-  //         } else {
-  //           privacyData = [];
-  //         }
-  //       } else {
-  //         privacyData = [];
-  //       }
-  //     } else {
-  //       privacyData = [];
-  //     }
-  //   } catch (error) {
-  //     print('privacy content error: $error');
-  //   } finally {
-  //     isLoading = false;
-  //     update();
-  //   }
-  // }
-  // Future<void> getServiceDetailAdmin( String serviceId,dynamic context) async {
-  //   var connection = await Connectivity().checkConnectivity();
-  //   if (connection == ConnectivityResult.none) {
-  //     Get.snackbar("No Internet", "Please check your connection");
-  //     return;
-  //   }
-  //   isLoading=true;
-  //   try {
-  //     print('hii');
-  //     _serviceDetails=[];
-  //     final response = await api.getServiceDetailAdmin( serviceId);
-  //     var data = jsonDecode(response.body);
-  //     if ( data["status"].toString().toLowerCase() == "success") {
-  //       List<dynamic> services = data["data"];
-  //       //_serviceDetails = services.map((e) => ServiceModel.fromJson(e)).toList();
-  //       _serviceDetails = services.map((e) {
-  //         return ServiceModel.fromJson(e as Map<String, dynamic>);
-  //       }).toList();
-  //       titleController.text = _serviceDetails.first.serviceTitle?.toString() ?? "";
-  //       selectedServiceId=_serviceDetails.first.serviceId.toString()??"";
-  //       descriptionController.text=_serviceDetails.first.serviceDescription?.toString()??"";
-  //       costController.text=_serviceDetails.first.serviceCost?.toString()??"";
-  //       final service = ServiceModel.fromJson(data["data"]);
-  //       _serviceDetails=[service];
-  //       final images = service.image ?? [];
-  //       loginController.serviceFileImages = images
-  //           .map((u) => AppImage(url: AppConstants.baseUrl + u.replaceAll("\\", "/")))
-  //           .toList();
-  //     } else {
-  //       showCustomToast(context,  "can not get service error,${data["message"] ?? "error"}",);
-  //       //Get.snackbar("Login Failed", data["message"] ?? "error");
-  //     }
-  //   } catch (error) {
-  //     print('service list admin error $error');
-  //   } finally {
-  //     isLoading = false;
-  //     update();
-  //   }
-  // }
   Future<void> getServiceDetailAdmin(String serviceId, dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {

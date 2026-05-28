@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-
 import '../../api/api.dart';
 import '../../common_widgets/color_code.dart';
 import '../../common_widgets/common-alertdialog.dart';
 import '../../common_widgets/common_bottom_navigation.dart';
-import '../../common_widgets/common_textfield.dart';
 import '../../common_widgets/common_textstyles.dart';
 import '../auth/login_screen/login_controller.dart';
 import '../plans/plan_controller.dart';
@@ -134,7 +132,7 @@ class _UploadImagesState extends State<UploadImages> {
           currentUserId,
           targetUserType,
           imageId,
-          planId,
+          //planId,
           startDate,
           endDate,
           isActiveStr,
@@ -148,8 +146,6 @@ class _UploadImagesState extends State<UploadImages> {
           lastError = data["message"] ?? "Unknown error";
         }
       }
-
-      // CLOSE LOADING
       if (Get.isDialogOpen ?? false) {
         Get.back();
       }
@@ -399,9 +395,12 @@ class _UploadImagesState extends State<UploadImages> {
                 children: [
                   const Icon(Icons.calendar_today, size: 14, color: Colors.blueGrey),
                   const SizedBox(width: 5),
-                  Text(
-                    "Validity: ${img.startDate} to ${img.endDate}",
-                    style: const TextStyle(fontSize: 12, color: Colors.blueGrey, fontWeight: FontWeight.w500),
+                  Flexible(
+                    child: Text(
+                      "Validity: ${img.startDate} to ${img.endDate}",
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 12, color: Colors.blueGrey, fontWeight: FontWeight.w500),
+                    ),
                   ),
                 ],
               ),

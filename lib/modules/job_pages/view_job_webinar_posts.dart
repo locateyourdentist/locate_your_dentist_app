@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -120,10 +119,6 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
           ),
         ),
       ),
-      // backgroundColor: AppColors.backGroundColor,
-      // appBar: AppBar(title: Text('Job Posts / Webinars',style: AppTextStyles.subtitle(context,color: AppColors.white),),
-      //   backgroundColor: AppColors.primary,iconTheme: const IconThemeData(color: AppColors.white),
-      // ),
       body: GetBuilder<JobController>(
         builder: (controller) {
           return RefreshIndicator(
@@ -133,7 +128,6 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Column(
-                 // physics: const AlwaysScrollableScrollPhysics(),
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("My Posts",style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),

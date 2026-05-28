@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
-import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:get/get.dart';
-import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
-import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 
 class AddGstDetailsWeb extends StatefulWidget {
   const AddGstDetailsWeb({super.key});

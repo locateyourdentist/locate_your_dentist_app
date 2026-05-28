@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/product_services/service_controller.dart';
-import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 

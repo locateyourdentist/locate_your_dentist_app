@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
-import 'package:locate_your_dentist/model/serviceModel.dart';
 
 class NetworkImageCarousel extends StatefulWidget {
-  //final List<ServiceModel> services;
   final List<String> services;
 
   const NetworkImageCarousel({super.key, required this.services});
@@ -42,14 +40,6 @@ class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
         child: Center(child: Text("No Images",style: AppTextStyles.caption(context),)),
       );
     }
-
-    // String? imageUrl;
-    // final currentService = widget.services[currentIndex];
-    // if (currentService.image != null && currentService.image!.isNotEmpty) {
-    //   //imageUrl = "${AppConstants.baseUrl}${currentService.image![0].replaceAll("\\", "/")}";
-    //   imageUrl = "${currentService.image![0].replaceAll("\\", "/")}";
-    // }
-   // String imageUrl = widget.services[currentIndex].replaceAll("\\", "/");
     final img = widget.services[currentIndex];
 
     String imageUrl = (img ?? "").replaceAll("\\", "/");

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import '../auth/login_screen/login_controller.dart';
@@ -20,13 +19,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   void initState() {
     super.initState();
 
-    // Use file if available, else network URL
     if (widget.media.file != null) {
       _controller = VideoPlayerController.file(widget.media.file!);
     } else if (widget.media.url != null && widget.media.url!.isNotEmpty) {
       String url = widget.media.url!;
       if (url.startsWith("http://")) {
-        // Convert HTTP to HTTPS if possible to avoid Android 9+ issues
         url = url.replaceFirst("http://", "https://");
       }
       _controller = VideoPlayerController.network(url);

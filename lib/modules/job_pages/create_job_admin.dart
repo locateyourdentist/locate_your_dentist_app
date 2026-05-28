@@ -814,27 +814,19 @@ class _CreateJobPostState extends State<CreateJobPost> {
                                     showCustomToast(context,  "Please Choose experience",);
                                     return;
                                   }
-                                 // final raw = jobController.planActive;
-                                 // print('rawf$raw');
-                                  // raw == true || raw == "true";
-                                  if ((jobController.jobCount ?? 0) > 0) {
+                                  //if ((jobController.jobCount ?? 0) > 0) {
                                     await jobController.postJobsAdmin(
                                        jobController.selectedJobId.toString()??"0",
                                        //  jobController.selectedJobId.toString().isNotEmpty? jobController.selectedJobId.toString():"0",
                                         loginController.selectUserId!,
                                         loginController.selectedUserType!,
-                                        loginController.selectedJobType
-                                            .toString(),
+                                        loginController.selectedJobType.toString(),
                                         loginController.selectedCategories,
-                                        loginController.typeNameController.text
-                                            .toString(),
-                                        loginController.jobTitleController.text
-                                            .toString(),
-                                        loginController.jobDescController.text
-                                            .toString(),
+                                        loginController.typeNameController.text.toString(),
+                                        loginController.jobTitleController.text.toString(),
+                                        loginController.jobDescController.text.toString(),
                                         loginController.selectedSalary.toString(),
-                                        loginController.qualificationJobController
-                                            .text.toString(),
+                                        loginController.qualificationJobController.text.toString(),
                                         loginController.selectedExperience
                                             .toString(),
                                         loginController.stateController.text
@@ -848,16 +840,16 @@ class _CreateJobPostState extends State<CreateJobPost> {
                                     );
                                     await jobController.getJobListAdmin(context);
                                  }
-                                  else{
-                                  // showCustomToast(context,  "Please buy new plan");
-                                   showSuccessDialog(context, title:"Alert",message :"Oops! Your plan has expired. Please purchase a new plan to continue posting jobs.",
-                                       onOkPressed: () {
-                                     Get.toNamed('/viewPlanPage');
-                                   });
-                                   //planController.checkPlanList.isNotEmpty? showPlanAlerts(planController.checkPlanList??[],context):"";
-
-                                  }
-                                }
+                                  // else{
+                                  // // showCustomToast(context,  "Please buy new plan");
+                                  //  showSuccessDialog(context, title:"Alert",message :"Oops! Your plan has expired. Please purchase a new plan to continue posting jobs.",
+                                  //      onOkPressed: () {
+                                  //    Get.toNamed('/viewPlanPage');
+                                  //  });
+                                  //  //planController.checkPlanList.isNotEmpty? showPlanAlerts(planController.checkPlanList??[],context):"";
+                                  //
+                                  // }
+                              //  }
                               },
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(

@@ -5,15 +5,11 @@ import 'package:locate_your_dentist/common_widgets/common_drawer.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
-
 import '../../common_widgets/color_code.dart';
 import '../auth/login_screen/login_controller.dart';
 
 
 class WebinarCard extends StatefulWidget {
-  //final WebinarJobSeekers webinar;
-  //const WebinarCard({super.key, required this.webinar});
-
   @override
   State<WebinarCard> createState() => _WebinarCardState();
 }
@@ -28,6 +24,7 @@ class _WebinarCardState extends State<WebinarCard> {
     super.initState();
     jobController.getWebinarListJobSeekers('','','',context);
   }
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -82,8 +79,6 @@ class _WebinarCardState extends State<WebinarCard> {
                   },
                 ),
               ),
-
-              /// 🎯 Divider
               Container(
                 height: size * 0.06,
                 width: 1,
@@ -104,33 +99,6 @@ class _WebinarCardState extends State<WebinarCard> {
           ),
         ),
       ),
-      drawer: FilterDrawer(
-        onApply: () async{
-          print("Selected State: ${loginController.selectedState}");
-          print("Selected District: ${loginController.selectedDistrict}");
-          print("Selected Area: ${loginController.selectedArea}");
-
-          //String userType=  Api.userInfo.read('sUserType');
-          print("ssuser${loginController.selectedState.toString()},");
-
-          await jobController.getWebinarListJobSeekers(
-            loginController.selectedState.toString(),
-            loginController.selectedDistrict.toString(),
-            loginController.selectedTaluka.toString(),
-            context,
-          );
-        },
-        onReset: () {
-          setState(() {
-            // loginController.selectedPlace = null;
-            // loginController.selectedDistrict = null;
-            loginController.selectedArea = null;
-            loginController.selectedUserType=null;
-            loginController.selectedState=null;
-            loginController.selectedDistrict=null;
-          });
-        },
-      ),
       body: Column(
         children: [
           if(jobController.webinarListJobSeekers.isEmpty)
@@ -147,7 +115,6 @@ class _WebinarCardState extends State<WebinarCard> {
         separatorBuilder: (_, __) => const SizedBox(height: 20),
         itemBuilder: (context, index) {
           final webinar = jobController.webinarListJobSeekers[index];
-        
           return Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
@@ -165,8 +132,6 @@ class _WebinarCardState extends State<WebinarCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-        
-                  /// 🌄 Image Section
                   Stack(
                     children: [
                       SizedBox(
@@ -183,7 +148,7 @@ class _WebinarCardState extends State<WebinarCard> {
                         ),
                       ),
         
-                      /// 📍 Location Chip
+                      /// Location Chip
                       Positioned(
                         bottom: 12,
                         left: 12,
@@ -195,14 +160,18 @@ class _WebinarCardState extends State<WebinarCard> {
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               const Icon(Icons.location_on,
                                   size: 14, color: Colors.white),
                               const SizedBox(width: 4),
-                              Text(
-                                webinar.place ?? "",
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                              Flexible(
+                                child: Text(
+                                  webinar.place ?? "",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: size * 0.03),
+                                ),
                               ),
                             ],
                           ),
@@ -211,29 +180,27 @@ class _WebinarCardState extends State<WebinarCard> {
                     ],
                   ),
         
-                  /// 📄 Content Section
                   Padding(
                     padding: const EdgeInsets.all(18),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-        
-                        /// Title
                         Text(
                           webinar.webinarTitle ?? "",
-                          style: const TextStyle(
-                            fontSize: 18,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: size * 0.045,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-        
+
                         const SizedBox(height: 6),
-        
-                        /// Organization
                         Text(
                           webinar.orgName ?? "",
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: size * 0.035,
                             color: Colors.grey.shade600,
                           ),
                         ),

@@ -32,7 +32,8 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
     double width = MediaQuery.of(context).size.width;
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
-
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+print('dflog$isLoggedIn');
     return Scaffold(
       key: _scaffoldKeyWebinarList,
       backgroundColor: AppColors.scaffoldBg,
@@ -42,7 +43,7 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
           builder: (controller) {
             return Row(
               children: [
-                if (isDesktop) const AdminSideBar(),
+                if (isDesktop && isLoggedIn) const AdminSideBar(),
                 Expanded(
                   child: Center(
                     child: SingleChildScrollView(
@@ -85,7 +86,7 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
                                           builder: (context, constraints) {
                                             final w = constraints.maxWidth;
                                             int crossAxisCount = w > 1200 ? 3 : (w > 800 ? 2 : 1);
-                                            double childAspectRatio = w < 600 ? 1.3 : 1.0;
+                                            double childAspectRatio = w < 600 ? 1.3 : 1.4;
 
                                             return GridView.builder(
                                               itemCount: jobController.webinarListJobSeekers.length,
@@ -134,7 +135,7 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
                                                                 child: Image.network(
                                                                   "${appliersList.webinarImage}",
                                                                   width: double.infinity,
-                                                                  height: isMobile ? 180 : 150,
+                                                                  height: isMobile ? 180 : 250,
                                                                   fit: BoxFit.cover,
                                                                   errorBuilder: (context, error, stackTrace) {
                                                                     return Container(

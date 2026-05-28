@@ -20,7 +20,6 @@ class _ForgotChangePasswordState extends State<ForgotChangePassword> {
   String? confirmPasswordValidator(String? value, TextEditingController passwordController) {
     if (value == null || value.isEmpty) return "Confirm Password cannot be empty";
     if (value != passwordController.text) return "Passwords do not match";
-    //if(passwordController.text.length>6) return "Password length must be 6 characters";
     return null;
   }
 
@@ -151,7 +150,6 @@ class _ForgotChangePasswordState extends State<ForgotChangePassword> {
           ),
         ),
       ),
-      //bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
   }
 }

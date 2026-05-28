@@ -14,7 +14,7 @@ import '../../common_widgets/common_bottom_navigation.dart';
 import '../../common_widgets/common_drawer.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:shimmer/shimmer.dart';
+
 
  class PatientDashboard extends StatefulWidget {
   const PatientDashboard({super.key});
@@ -115,7 +115,7 @@ import 'package:shimmer/shimmer.dart';
                   children: [
                     Icon(Icons.place_outlined,color: AppColors.white,size: size*0.06,),
                     SizedBox(width: size*0.01,),
-                    Text(planController.currentLocation??"",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.white),),
+                    Expanded(child: Text(planController.currentLocation??"",overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.white),)),
                   ],
                 );
               }
@@ -258,7 +258,7 @@ import 'package:shimmer/shimmer.dart';
                   Text(
                       "Top Dentist in your State",
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.caption(
+                      style: AppTextStyles.body(
                         context,color: AppColors.grey)
                   ),
                   SizedBox(height: size * 0.02),
@@ -276,7 +276,7 @@ import 'package:shimmer/shimmer.dart';
                   Text(
                       "Popular Dental Clinics",
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.caption(context,color: AppColors.grey)
+                      style: AppTextStyles.body(context,color: AppColors.black)
                   ),
                   SizedBox(height: size * 0.01),
                   if(loginController.profileList.isEmpty)
@@ -362,7 +362,7 @@ import 'package:shimmer/shimmer.dart';
                                                       borderRadius: BorderRadius.circular(10),
                                                       child: doctor.logoImages.isNotEmpty
                                                           ? Image.network(
-                                                        doctor.logoImages.first, // ✅ FIXED
+                                                        doctor.logoImages.first,
                                                         fit: BoxFit.cover,
                                                         width: double.infinity,
                                                         height: double.infinity,

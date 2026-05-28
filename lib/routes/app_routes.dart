@@ -98,6 +98,7 @@ import 'package:locate_your_dentist/web_modules/superAdmin/view_legal_pages.dart
 import 'package:locate_your_dentist/web_modules/superAdmin/view_plan_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/view_report_web.dart';
 import '../modules/auth/login_screen/login_screen.dart';
+import '../modules/auth/password_page/forgot_change_password.dart';
 import '../modules/plans/create_plan.dart';
 import '../modules/profiles/clinic_web_view.dart';
 import '../web_modules/common/aboutus_web.dart';
@@ -125,9 +126,6 @@ class AppPages {
     GetPage(
       name: AppRoutes.changePasswordWeb,
       page: () => const ChangePasswordWebPage(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
     ),
     GetPage(
       name: AppRoutes.notificationWebPage,
@@ -445,19 +443,31 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.viewIncomePage,
-        page: ()=> const IncomeDashboardPage()
+        page: ()=> const IncomeDashboardPage(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.viewReportPage,
-        page: ()=>  const ReportsDashboardPage()
+        page: ()=>  const ReportsDashboardPage(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.viewExpensePage,
-        page: ()=> const ExpensePage()
+        page: ()=> const ExpensePage(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.addExpensesPage,
-        page: ()=> const AddExpense()
+        page: ()=> const AddExpense(),
+      middlewares: [
+        SuperAdminMiddleware(),
+      ],
     ),
     GetPage(
         name: AppRoutes.paymentWebviewPage,
@@ -478,9 +488,6 @@ class AppPages {
     GetPage(
         name: AppRoutes.changePasswordPage,
         page: ()=>  const ChangePassword(),
-        middlewares: [
-        SuperAdminMiddleware(),
-      ],
     ),
     GetPage(
         name: AppRoutes.forgotPasswordPage,
@@ -492,7 +499,7 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.forgotChangePasswordPage,
-        page: ()=>   const ForgotChangePasswordPage()
+        page: ()=>   const ForgotChangePassword()
     ),
     GetPage(
         name: AppRoutes.webLoginPage,

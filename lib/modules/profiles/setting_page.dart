@@ -6,7 +6,6 @@ import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.d
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import '../../common_widgets/common_bottom_navigation.dart';
 import '../../common_widgets/common_textstyles.dart';
-import '../../common_widgets/common_widget_all.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 
@@ -28,7 +27,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
     final String selectedUserType = Api.userInfo.read('userType') ?? "";
     print('type: $selectedUserType');
     settingList = _getSettingsForUser(selectedUserType);
-    loginController.getProfileByUserId(Api.userInfo.read('userId') ?? "", context);
+    //loginController.getProfileByUserId(Api.userInfo.read('userId') ?? "", context);
     loginController.getBranchDetails(context);
   }
   List<Map<String, String>> _getSettingsForUser(String userType) {
@@ -122,6 +121,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "My Jobs", "page": "/appliedJobListPage"},
           {"title": "Edit Profile", "page": "/jobSeekerEditProfilePage"},
           {"title": "Jobs", "page": "/filterPageJobSeekersPage"},
+          {"title": "Webinars", "page": "/viewWebinarListJobseekersPage"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "About Us", "page": "/aboutUsPage"},
           {"title": "Contact Us", "page": "/contactUsMobilePage"},
@@ -273,6 +273,10 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
                                       showLogoutDialog(context);
                                     } else if (title == "Jobs") {
                                       await jobController.getJobListJobSeekers(search: '',context: context);
+                                      Get.toNamed(setting['page']);
+                                    }
+                                    else if (title == "Webinars") {
+                                      await jobController.getWebinarListJobSeekers('','','',context);
                                       Get.toNamed(setting['page']);
                                     }
                                     else if (title == "User List") {

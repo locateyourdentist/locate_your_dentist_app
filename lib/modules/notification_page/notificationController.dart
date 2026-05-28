@@ -9,12 +9,9 @@ import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
 import 'package:locate_your_dentist/model/notification_model.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../main.dart';
 
   class  NotificationController extends GetxController{
   List<NotificationModel>_notificationList=[];

@@ -336,8 +336,9 @@ class _ViewPlanState extends State<ViewPlan> {
                                       color: Colors.red, fontSize: s*0.04, fontWeight: FontWeight.bold,),),
                                    ),
                                                   SizedBox(height: s*0.03,),
-                                                  if(isPosterActive&&planController.editUploadImage.isNotEmpty)
-                                                  TextButton(
+                                                 // if(isPosterActive&&planController.editUploadImage.isNotEmpty)
+                                    if(isPosterActive)
+                                      TextButton(
                                                   onPressed: (){
                                                     Get.toNamed('/createPostImages');
                                                   },
@@ -625,8 +626,7 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                            'selectedString': "BasePlan",
                                                                                            'userType': plan.userType
                                                                                          });
-                                                                                                   }
-                                                                                                              if(userType!="admin"&&userType!="superAdmin") {
+                                                                                                   }if(userType!="admin"&&userType!="superAdmin") {
                                     var dates = calculatePlanDates(
                                     plan.duration.toString());
                                     print(dates["startDate"]);

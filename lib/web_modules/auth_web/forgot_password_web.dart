@@ -27,7 +27,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   Widget passwordField() {
     return   CustomTextField(
-      hint: "Email",
+      hint: "",
       icon: Icons.email,
       //isPassword: true,
       controller: loginController.emailController,

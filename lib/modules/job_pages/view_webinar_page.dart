@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
@@ -137,11 +136,6 @@ void initState(){
            final webinar = controller.webinar.first;
           final created = DateTime.parse(webinar.createdDate.toString());
           final postedAgo = timeAgo(created);
-          // final img = loginController.webinarFileImages.isNotEmpty
-          //     ? loginController.webinarFileImages.first
-          //     : null;
-            //final img = loginController.webinarFileImages.first;
-            //print('web img url${img.url}');
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,17 +208,17 @@ void initState(){
                     children: [
                       Icon(Icons.business, color: Colors.grey,size:size*0.06 ,),
                       const SizedBox(width: 6),
-                      Text(webinar.orgName.toString()??"N/A",
-                        //webinarData["orgName"],
+                      Expanded(
+                        child: Text(webinar.orgName.toString()??"N/A",
+                          overflow: TextOverflow.ellipsis,
+                          //webinarData["orgName"],
                           style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.normal)
+                        ),
                       ),
                       const SizedBox(width: 10,),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Text("Posted $postedAgo",
-                            //webinarData["orgName"],
-                            style: AppTextStyles.caption(context,color: AppColors.grey,fontWeight: FontWeight.normal)),
-                      ),
+                      Text("Posted $postedAgo",
+                          //webinarData["orgName"],
+                          style: AppTextStyles.caption(context,color: AppColors.grey,fontWeight: FontWeight.normal)),
                     ],
                                    ),
 

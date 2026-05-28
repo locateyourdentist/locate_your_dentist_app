@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
@@ -7,8 +6,6 @@ import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/contact_form/contact_controller.dart';
-import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
-import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:get/get.dart';
 
 import '../../model/contact_model_web.dart';
@@ -298,9 +295,12 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
               children: [
                  Icon(Icons.phone, size: size*0.04, color: Colors.black),
                 const SizedBox(width: 8),
-                Text(
-                  contact.mobileNumber,
-                  style: AppTextStyles.caption(context,                    color: AppColors.black,
+                Expanded(
+                  child: Text(
+                    contact.mobileNumber,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.caption(context,                    color: AppColors.black,
+                    ),
                   ),
                 ),
               ],

@@ -165,10 +165,11 @@ final loginController=Get.put(LoginController());
                         onPressed: selectedUserId == null
                             ? null
                             : () async{
-                          pageRoute=='dashboard'?
-                          Get.toNamed('/dentalClinicDashboard'): Get.toNamed('/viewPlanPage',arguments: {'selectedUserId':selectedUserId});
+                          // pageRoute=='dashboard'?
+                          // Get.toNamed('/dentalClinicDashboard'): Get.toNamed('/viewPlanPage',arguments: {'selectedUserId':selectedUserId});
                           Api.userInfo.write("userId", selectedUserId ?? "");
                           Api.userInfo.write("name", name1);
+                          Get.toNamed('/viewPlanPage',arguments: {'selectedUserId':selectedUserId});
                           //Get.back(result: selectedUserId);
                           String platform = kIsWeb
                               ? "Web"
@@ -177,9 +178,9 @@ final loginController=Get.put(LoginController());
                               : Platform.isIOS
                               ? "iOS"
                               : "Unknown";
-                          await loginController.switchAccountLogin(
-                            selectedUserId.toString(),platform,context);
-                          Navigator.pop(context);
+                          // await loginController.switchAccountLogin(
+                          //   selectedUserId.toString(),platform,context);
+                          // Navigator.pop(context);
                         //  await loginController.getProfileByUserId(selectedUserId.toString(), context);
                         },
                         style: ElevatedButton.styleFrom( backgroundColor:selectedUserId==null?  AppColors.transparent:AppColors.transparent,

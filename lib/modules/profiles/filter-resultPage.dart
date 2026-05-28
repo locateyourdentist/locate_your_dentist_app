@@ -340,78 +340,7 @@ class _FilterResultPageState extends State<FilterResultPage> {
                                                       ),
                                                     ],
                                                   )
-                                               // const SizedBox(height: 2,),
-                                               // Center(child: IconButton(onPressed: (){},icon: Icon(Icons.arrow_forward,color: AppColors.grey,size: size*0.06,),),)
-                                                // SizedBox(
-                                                //   height: size*0.09,
-                                                //   child: Row(
-                                                //     children: [
-                                                //       Text("Mobile : ",style: AppTextStyles.caption(context,color: AppColors.black),),
-                                                //
-                                                //       SizedBox(
-                                                //         width:size*0.09,
-                                                //         child: IconButton(onPressed: (){
-                                                //           launchCall(profile.mobileNumber.toString()??"");
-                                                //
-                                                //         }, icon: Icon(Icons.call,color: Colors.green,size: size*0.06,)),
-                                                //       ),
-                                                //       Text(profile.mobileNumber??"",style: AppTextStyles.caption(context,color: AppColors.black),),
-                                                //     ],
-                                                //   ),
-                                                // ),
-                                                // Row(
-                                                //   children: [
-                                                //     Text("email : ",style: AppTextStyles.caption(context,color: AppColors.black),),
-                                                //     const SizedBox(width: 5,),
-                                                //
-                                                //     Text(profile.email??"",style: AppTextStyles.caption(context,color: AppColors.black),),
-                                                //   ],
-                                                // ),
-                                                // SizedBox(
-                                                //   height: size*0.09,
-                                                //   child: Row(
-                                                //     children: [
-                                                //       Text("Website : ",style: AppTextStyles.caption(context,color: AppColors.black),),
-                                                //
-                                                //       SizedBox(
-                                                //         width:size*0.09,
-                                                //         child: IconButton(onPressed: (){
-                                                //           if(PlatformHelper.platform=='Android'||PlatformHelper.platform=='iOS'){
-                                                //             Get.toNamed('/webViewProfilePage',arguments: {"url":profile.details["website"]??"".toString()??"","clinicName":profile.details['name']??"".toString()});
-                                                //             debugPrint(profile.details['website']);
-                                                //             if(loginController.userData.first.details["website"]??"".toString().isEmpty||loginController.userData.first.details["website"]??"".toString()==null){
-                                                //               showCustomToast(context,  "Website error",backgroundColor: AppColors.secondary);
-                                                //
-                                                //             }
-                                                //           }
-                                                //         }, icon: Icon(Icons.public,color: Colors.blueAccent,size: size*0.06,)),
-                                                //       ),
-                                                //       Text(profile.details['website']??"",style: AppTextStyles.caption(context,color: AppColors.black),),
-                                                //     ],
-                                                //   ),
-                                                // ),
-                                                // SizedBox(
-                                                //   height: size*0.09,
-                                                //   child: Row(
-                                                //     children: [
-                                                //       Text("Googlemap Link : ",style: AppTextStyles.caption(context,color: AppColors.black),),
-                                                //
-                                                //       SizedBox(
-                                                //         width:size*0.07,
-                                                //         child: IconButton(onPressed: (){
-                                                //           if(PlatformHelper.platform=='Android'||PlatformHelper.platform=='iOS'){
-                                                //             Get.toNamed('/webViewProfilePage',arguments: {"url":profile.location??"","clinicName":profile.details['name'].toString()??""});
-                                                //             debugPrint('ghh${profile.details['website']??""}');
-                                                //           }
-                                                //         }, icon: Icon(Icons.location_on,color: AppColors.primary,size: size*0.06,)),
-                                                //       ),
-                                                //       Text(profile.location??"",style: AppTextStyles.caption(context,color: AppColors.black),),
-                                                //     ],
-                                                //   ),
-                                                // ),
-
-                                               // Text("Zion offers the best in health care to patients who have come to trust the hospital as one of India’s best.  A 1000-bed facility offering superlative treatment in 63 specialities, MIOT proudly lays claim to a team of world-class professionals",maxLines: 3,style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.normal),),
-                                          ]),
+                                              ]),
                                         )
                                             ])
                                       ),

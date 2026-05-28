@@ -403,7 +403,7 @@ class _ViewJobPageState extends State<ViewJobPage> {
                             ),
 
                             SizedBox(
-                              height:Api.userInfo.read('userType').toString()=='Job Seekers'? size * 0.25 :800,
+                              height:Api.userInfo.read('userType').toString()=='Job Seekers'? size * 300 :800,
                               child: TabBarView(
                                 children: [
                                   Padding(
@@ -621,10 +621,7 @@ class JobSeekerAppliedCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             seeker.name,softWrap: true,
-                            style: TextStyle(
-                              fontSize: width * 0.035,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
                           ),
                         ),
                         PopupMenuButton<String>(
