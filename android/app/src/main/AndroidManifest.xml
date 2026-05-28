@@ -89,9 +89,12 @@
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <!-- Flutter Embedding -->
+<!--        <meta-data-->
+<!--            android:name="flutterEmbedding"-->
+<!--            android:value="2" />-->
         <meta-data
-            android:name="flutterEmbedding"
-            android:value="2" />
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
 
     </application>
 
