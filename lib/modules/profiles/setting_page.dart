@@ -21,11 +21,23 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
   final jobController = Get.put(JobController());
   String selectedUserType = Api.userInfo.read('userType') ?? "";
   final loginController = Get.put(LoginController());
+  void _showDeleteDialog() {
+    showDeleteDialog(
+      context: context, title: "Delete Account", message: "Do you want to Delete this Account?",
+      onConfirm: () async {
+        await loginController.deactivateUserAdmin(Api.userInfo.read('userId')??"", false, context);
+        Get.toNamed('/loginPage');
+        loginController.update();
+      },
+    );
+  }
   @override
   void initState() {
     super.initState();
     final String selectedUserType = Api.userInfo.read('userType') ?? "";
     print('type: $selectedUserType');
+    final String userId = Api.userInfo.read('userId') ?? "";
+    Api.userInfo.write('selectUId',userId);
     settingList = _getSettingsForUser(selectedUserType);
     //loginController.getProfileByUserId(Api.userInfo.read('userId') ?? "", context);
     loginController.getBranchDetails(context);
@@ -40,6 +52,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
           {"title": "Services", "page": "/viewServiceList"},
           {"title": "Change Password", "page": "/changePasswordPage"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsPage"},
           {"title": "Logout", "page": "/logout"},
         ];
@@ -58,6 +71,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "Add JobCategory", "page": "/addJobCategoryPage"},
           {"title": "AddCompany", "page": "/addCompanyPage"},
           {"title": "Add Legal Pages", "page": "/addLegalPageMobile"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsPage"},
           {"title": "Contact Us", "page": "/contactUsMobilePage"},
           {"title": "Logout", "page": "/logout"},
@@ -68,6 +82,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "My Subscription", "page": "/viewPlanPage"},
           {"title": "User List", "page": "/userTypeListPage"},
           {"title": "Change Password", "page": "/changePasswordPage"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsPage"},
           {"title": "Contact Us", "page": "/contactUsMobilePage"},
           {"title": "Logout", "page": "/logout"},
@@ -84,6 +99,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "Contact Form", "page": "/viewSenderContactList"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "Add Branches", "page": "/addBranchesPage"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsPage"},
           {"title": "Contact Us", "page": "/contactUsMobilePage"},
           {"title": "Logout", "page": "/logout"},
@@ -96,6 +112,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
           {"title": "Products", "page": "/viewServiceList"},
           {"title": "Add Profile", "page": "/clinicEditProfile"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "About Us", "page": "/aboutUsPage"},
           {"title": "Contact Us", "page": "/contactUsMobilePage"},
@@ -110,6 +127,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "My Purchases", "page": "/viewInvoiceListPage"},
           {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
           {"title": "Services", "page": "/viewServiceList"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "About Us", "page": "/aboutUsPage"},
           {"title": "Contact Us", "page": "/contactUsMobilePage"},
@@ -123,6 +141,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "Jobs", "page": "/filterPageJobSeekersPage"},
           {"title": "Webinars", "page": "/viewWebinarListJobseekersPage"},
           {"title": "Change Password", "page": "/changePasswordPage"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsPage"},
           {"title": "Contact Us", "page": "/contactUsMobilePage"},
           {"title": "Logout", "page": "/logout"},
@@ -292,6 +311,9 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
                                       Api.userInfo.write('selectUId',userId);
                                 Get.toNamed(setting['page']);
                                      }
+                                    if (title == "Delete Account") {
+                                      _showDeleteDialog();
+                                    }
                                     else {
                                       Get.toNamed(setting['page']);
                                     }

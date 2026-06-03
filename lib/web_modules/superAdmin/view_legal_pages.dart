@@ -132,7 +132,7 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
               children: [
                 Container(
                   width: double.infinity,
-                  padding:  EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+                  padding:  EdgeInsets.symmetric(vertical: 40, horizontal: 60),
                   decoration:  BoxDecoration(
                     gradient: LinearGradient(
                       colors: [AppColors.primary,AppColors.secondary],
@@ -153,9 +153,11 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
                             onPressed: () => _scaffoldKeyLegal.currentState?.openDrawer(),
                           ),
                         ),
-                      Text(
-                          selectedTitle,
-                          style: AppTextStyles.subtitle(context,color: AppColors.white)
+                      Center(
+                        child: Text(
+                            selectedTitle,
+                            style: AppTextStyles.subtitle(context,color: AppColors.white)
+                        ),
                       ),
                       const SizedBox(height: 15),
                       // Text(
@@ -167,31 +169,41 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.all(20),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                      BorderRadius.circular(12),
-                      boxShadow: const [
-                        BoxShadow(
-                          blurRadius: 10,
-                          color: Colors.black12,
-                        )
-                      ],
-                    ),
-                    child: KeyedSubtree(
-                      key: ValueKey(selectedTitle),
-                      child: IgnorePointer(
-                        child: QuillEditor(
-                          controller: controller,
-                          scrollController:
-                          _scrollController,
-                          focusNode: focusNode,
-                          config:
-                          const QuillEditorConfig(
-                            showCursor: false,
+                  child: SingleChildScrollView(
+                    child: Center(
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 1100),
+                        margin: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(30),
+                        // decoration: BoxDecoration(
+                        //   color: Colors.white,
+                        //   borderRadius:
+                        //   BorderRadius.circular(12),
+                        //   boxShadow: const [
+                        //     BoxShadow(
+                        //       blurRadius: 10,
+                        //       color: Colors.black12,
+                        //     )
+                        //   ],
+                        // ),
+                        child: SingleChildScrollView(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: KeyedSubtree(
+                              key: ValueKey(selectedTitle),
+                              child: IgnorePointer(
+                                child: QuillEditor(
+                                  controller: controller,
+                                  scrollController:
+                                  _scrollController,
+                                  focusNode: focusNode,
+                                  config:
+                                  const QuillEditorConfig(
+                                    showCursor: false,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -201,6 +213,7 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
               ],
             ),
           ),
+          SizedBox(height: 60,)
         ],
       ),
     );

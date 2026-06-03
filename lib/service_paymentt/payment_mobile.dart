@@ -20,6 +20,7 @@ class PaymentServiceMobile extends PaymentService {
   void startPayment(
       double amount, {
         String? name,
+        String? planType,
         String? planName,
         String? email,
         String? mobileNumber,
@@ -28,7 +29,7 @@ class PaymentServiceMobile extends PaymentService {
       'key': 'YOUR_RAZORPAY_KEY',
       'amount': amount * 100,
       'name': name,
-      'description': planName,
+      'description': '$planType - $planName',
       'prefill': {'contact': mobileNumber, 'email': email},
     };
 

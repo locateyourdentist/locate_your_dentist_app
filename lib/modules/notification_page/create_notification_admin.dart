@@ -535,7 +535,7 @@ class _CreateNotificationAdminState extends State<CreateNotificationAdmin> {
                           print('noti img${notificationImage}');
                           notificationController.createNotification(
                             Api.userInfo.read('userId'),
-                            notificationController.selectedUserType!,
+                            notificationController.selectedUserType!,true,
                             notificationController.selectedTitle == "Others"
                                 ? notificationController.titleController.text
                                 : notificationController.selectedTitle.toString(),
@@ -544,8 +544,9 @@ class _CreateNotificationAdminState extends State<CreateNotificationAdmin> {
                             loginController.selectedDistrict.toString(),
                             loginController.selectedTaluka.toString(),
                             loginController.selectedVillage.toString(),context,
-                            notificationImage1:notificationImage, // Uint8List
+                            notificationImage1:notificationImage,
                           );
+                          notificationImage = null;
                           },
                        child: Text("Post",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white),),
                       ),

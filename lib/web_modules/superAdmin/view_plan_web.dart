@@ -651,21 +651,22 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
 
     if (isActive) {
       showSuccessDialog(context, title: "Alert", message: warningMsg, onOkPressed: () {
-        _navigateToPayment(userId, planId, startDate, endDate, amount, currentPlanKey, planName);
+        _navigateToPayment(userId, planId, startDate, endDate, amount, currentPlanKey,planType, planName);
       });
     } else {
-      _navigateToPayment(userId, planId, startDate, endDate, amount, currentPlanKey, planName);
+      _navigateToPayment(userId, planId, startDate, endDate, amount, currentPlanKey, planType,planName);
     }
   }
 
-  void _navigateToPayment(String userId, String planId, String startDate, String endDate, double amount, String planKey, String planName) {
-    Get.toNamed('/paymentPage', arguments: {
+  void _navigateToPayment(String userId, String planId, String startDate, String endDate, double amount, String planKey,String planType, String planName) {
+    Get.toNamed('/paymentPageWeb', arguments: {
       'userId': userId,
       'planId': planId,
       'startDate': startDate,
       'endDate': endDate,
       'amount': amount,
       'name': planKey,
+      'planType':planType,
       'planName': planName,
       'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
       'email': Api.userInfo.read('email') ?? "",

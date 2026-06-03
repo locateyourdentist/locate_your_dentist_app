@@ -1,14 +1,8 @@
 
 class AppConstants{
-  // Platform  Firebase App Id
-  // web       1:540179202432:web:659f672b6dbab5793b8165
-  // android   1:540179202432:android:b009329da500f2c73b8165
-  // ios       1:540179202432:ios:b587e52f416ba1ae3b8165
-  // macos     1:540179202432:ios:b587e52f416ba1ae3b8165
-
   static const baseUrl=
-  'http://192.168.31.117:3000/';
-      //'https://locateyourdentist.onrender.com/';
+ 'http://192.168.31.117:3000/';
+ // 'https://locateyourdentist.onrender.com/';
   static const razorPayKey='rzp_test_RzNhGYRP9d54Ca';
   static const webFireBaseVAPID_KEY='BPIa_iU8vOaJk3MquVBrNP0ONtl1Kcf7eMhhArQTXn33d_yPxnsVxcpDulrLu5ijuifyCXZH2MFAWHy7olnTM5o';
       //'BIQ7RfHOZhssH1uXBZpuun3r6D7UhoHuAuqE4QjvpLolyo-E7_LDrYUnUOPYkMCh7VASKy2UWfyDg4DBNl7Khw8';

@@ -309,8 +309,11 @@ class _ModernUserTableState extends State<ModernUserTable> {
                     _headerCell("User Type", 2),
                     _headerCell("Mobile", 2),
                     _headerCell("View", 1),
-                    _headerCell("Status", 1),
-                    _headerCell("Actions", 1),
+                    if (Api.userInfo.read('userType') == "superAdmin")
+                      _headerCell("Status", 1),
+                    if (Api.userInfo.read('userType') == "superAdmin")
+                      _headerCell("Actions", 1),
+
                   ],
                 ),
               ),
@@ -355,13 +358,14 @@ class _ModernUserTableState extends State<ModernUserTable> {
             await loginController.getProfileByUserId(user.userId.toString(), context);
             Get.toNamed('/clinicProfileWebPage');
           }))),
-          Expanded(flex: 1, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: user.isActive ? Colors.green : Colors.red, borderRadius: BorderRadius.circular(12)), child: Text(user.isActive ? "Active" : "Inactive", textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 10)))),
-          Expanded(flex: 1, child: Center(child: IconButton(icon: const Icon(Icons.delete, color: Colors.red, size: 18), onPressed: () => _showDeleteDialog(user)))),
+          if (Api.userInfo.read('userType') == "superAdmin")
+            Expanded(flex: 1, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: user.isActive ? Colors.green : Colors.red, borderRadius: BorderRadius.circular(12)), child: Text(user.isActive ? "Active" : "Inactive", textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 10)))),
+          if (Api.userInfo.read('userType') == "superAdmin")
+            Expanded(flex: 1, child: Center(child: IconButton(icon: const Icon(Icons.delete, color: Colors.red, size: 18), onPressed: () => _showDeleteDialog(user)))),
         ],
       ),
     );
   }
-
   void _showDeleteDialog(ProfileModel user) {
     showDeleteDialog(
       context: context, title: "Toggle User Status?", message: "Do you want to change this user's active status?",

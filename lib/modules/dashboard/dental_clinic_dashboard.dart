@@ -37,6 +37,11 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
    await  notificationController.getNotificationListAdmin(context);
    await  planController.checkPlansStatus(Api.userInfo.read('userId')??"",context);
    await loginController.getBranchDetails(context);
+   final userId = Api.userInfo.read('userId') ?? '';
+   if (userId.isNotEmpty) {
+     Api.userInfo.write('selectUId', userId);
+     await loginController.getProfileByUserId(userId, context);
+   }
   }
   @override
   Widget build(BuildContext context) {
@@ -55,35 +60,47 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
             ),
           ),
         ),
-        leading: Padding(
-          padding:  const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: (){
-//Navigator.push(context, MaterialPageRoute(builder: (context)=>const LocationScreen()));
-              final userId = Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId');
-              },
-            child: CircleAvatar(
-              radius: size * 0.13,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: ProfileImageWidget(size: size),
-              ),
-            ),
-          ),
-        ),
+
+//         leading: Padding(
+//           padding:  const EdgeInsets.all(8.0),
+//           child: GestureDetector(
+//             onTap: (){
+// //Navigator.push(context, MaterialPageRoute(builder: (context)=>const LocationScreen()));
+//               final userId = Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId');
+//               },
+//             child: CircleAvatar(
+//               radius: size * 0.13,
+//               child: ClipRRect(
+//                 borderRadius: BorderRadius.circular(50),
+//                 child: ProfileImageWidget(size: size),
+//               ),
+//             ),
+//           ),
+//         ),
         centerTitle: false,
-        // title: Column(
-        //   mainAxisAlignment:MainAxisAlignment.start,
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     Text(
-        //       'Welcome Back',
-        //       style: AppTextStyles.body(context,
-        //           color: AppColors.white,fontWeight: FontWeight.bold,),
-        //     ),
-        //
-        //   ],
-        // ),
+        title: Column(
+          mainAxisAlignment:MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Locate Your Dentist',
+              style: AppTextStyles.body(context,
+                color: AppColors.white,fontWeight: FontWeight.bold,),
+            ),
+            GetBuilder<PlanController>(
+                builder: (controller) {
+                  return Row(
+                    children: [
+                      Icon(Icons.place_outlined,color: AppColors.white,size: size*0.06,),
+                      SizedBox(width: size*0.01,),
+                      Expanded(child: Text(planController.currentLocation??"",overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.white),)),
+                    ],
+                  );
+                }
+            ),
+
+          ],
+        ),
         actions: [
           GetBuilder<NotificationController>(
             builder: (controller) {

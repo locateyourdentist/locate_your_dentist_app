@@ -499,14 +499,14 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
         onTap: onTap,
         borderRadius: BorderRadius.circular(10),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
           decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(10)),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             children: [
               Icon(icon, size: 18, color: Colors.grey),
-              const SizedBox(width: 4),
-              Text(label, style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: AppColors.primary)),
+              const SizedBox(width: 2),
+              Flexible(child: Text(label, style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: AppColors.primary))),
             ],
           ),
         ),

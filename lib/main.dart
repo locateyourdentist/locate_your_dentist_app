@@ -28,13 +28,6 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   importance: Importance.high,
 );
 
-// @pragma('vm:entry-point')
-// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-//   print("Background message received: ${message.messageId}");
-// }
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(
     RemoteMessage message) async {
@@ -321,7 +314,7 @@ class _MyAppState extends State<MyApp> {
       ],
       getPages: AppPages.page,
       initialRoute: PlatformHelper.platform == "Web" ? AppRoutes.splashScreen
-          : (widget.isShowOnboard ? AppRoutes.splashScreen : AppRoutes.onBoardScreen),
+          : (widget.isShowOnboard ? AppRoutes.splashScreen : AppRoutes.splashScreen),
     );
   }
 }

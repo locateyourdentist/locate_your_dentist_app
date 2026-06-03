@@ -1059,7 +1059,7 @@ class LoginController extends GetxController {
          selectedUserType=null;
          image==null;
        // (userId=="0")?   await sentMailUser(userId1, "register", "New User Register From LYD", "your Registered successfully", context):"";
-      (userId=="0")?   await notificationController.createNotification(userId1,userType, 'new', '$userId1 Registered successfully ',Api.userInfo.read('state')??"",Api.userInfo.read('district')??"",Api.userInfo.read('city')??"",Api.userInfo.read('area')??"", context):"";
+      (userId=="0")?   await notificationController.createNotification(userId1,userType,true, 'new', '$userId1 Registered successfully ',Api.userInfo.read('state')??"",Api.userInfo.read('district')??"",Api.userInfo.read('city')??"",Api.userInfo.read('area')??"", context):"";
         //kIsWeb? Get.offAllNamed('/webLoginPage'):Get.offAllNamed('/loginPage') ;
       } else {
         await showSuccessDialog(context, title:"Error",message :"${data["message"] ?? "error"}",

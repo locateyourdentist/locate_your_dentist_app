@@ -734,7 +734,7 @@ class AppImage2 {
       update();
     }
   }
-  Future<bool> createUserPlans( String userId,String planId,String planName,String price,String startDate,String endDate,dynamic context) async {
+  Future<bool> createUserPlans( String userId,String planId,String planName,String price,String startDate,String endDate,imageCount,imageSize,videoCount,videoSize,dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
@@ -742,7 +742,7 @@ class AppImage2 {
     }
     isLoading=true;
     try {
-      final response = await api.createUserBasePlan( userId, planId, planName,price, startDate, endDate);
+      final response = await api.createUserBasePlan( userId, planId, planName,price, startDate, endDate,imageCount,imageSize,videoCount,videoSize,);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
        await loginController.sentMailPlan(userId, "Plan", "Base Plan Purchased ", "basePlan", context);
@@ -758,7 +758,11 @@ class AppImage2 {
         isMobileNumber=false;
         isServices=false;
         selectedFeatures.clear();
-        return true;
+       imageCount="";
+       imageSize="";
+       videoCount="";
+       videoSize="";
+    return true;
         //showCustomToast(context,  "Plan added successfully",);
       } else {
         showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
@@ -849,7 +853,7 @@ class AppImage2 {
       if ( data["status"].toString().toLowerCase() == "success") {
         showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
         loginController.sentMailPlan(userId, "Plan", "AddOns Plan Purchased ", "addonsPlan", context);
-        notificationController.createNotification( userId,Api.userInfo.read('userType')??"",'Plan',"AddOns Plan Purchased ",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
+        notificationController.createNotification( userId,"",true,'Plan',"AddOns Plan Purchased ",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
         //showCustomToast(context,  "Plan added successfully",);
       } else {
         showCustomToast(context,  "plan not added,${data["message"] ?? "error"}",);
@@ -985,7 +989,7 @@ class AppImage2 {
       if ( data["status"].toString().toLowerCase() == "success") {
         showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
         loginController.sentMailPlan(userId, "Plan", "Job Plan Purchased", "jobPlan", context);
-        notificationController.createNotification( userId,Api.userInfo.read('userType')??"",'Plan',"Job Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
+        notificationController.createNotification( userId,"",true,'Plan',"Job Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
       } else {
         showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
       }
@@ -1010,7 +1014,7 @@ class AppImage2 {
       if ( data["status"].toString().toLowerCase() == "success") {
         showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
         loginController.sentMailPlan(userId, "Plan", "Webinar Plan Purchased", "jobPlan", context);
-        notificationController.createNotification( userId,Api.userInfo.read('userType')??"",'Plan',"Webinar Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
+        notificationController.createNotification( userId,Api.userInfo.read('userType')??"",true,'Plan',"Webinar Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
       } else {
         showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
       }
@@ -1034,7 +1038,7 @@ class AppImage2 {
       if ( data["status"].toString().toLowerCase() == "success") {
         showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
         loginController.sentMailPlan(userId, "Plan", "Scrolling Ads Purchased", "jobPlan", context);
-        notificationController.createNotification( userId,Api.userInfo.read('userType')??"",'Plan',"Scrolling Ads Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
+        notificationController.createNotification( userId,"",true,'Plan',"Scrolling Ads Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
       } else {
         showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
       }

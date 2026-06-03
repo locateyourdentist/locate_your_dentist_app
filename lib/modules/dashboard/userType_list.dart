@@ -463,9 +463,7 @@ class _userTypeListState extends State<userTypeList> {
                                           "",
                                           context,
                                         );
-
-
-                                      },
+                                        },
                                       child: const Text(
                                         "Clear All",
                                         style: TextStyle(

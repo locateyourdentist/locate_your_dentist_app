@@ -45,7 +45,7 @@ import 'package:locate_your_dentist/modules/profiles/vedio_plays.dart';
 
     if (s > 800) {
       // Web / Tablet
-      containerHeight = 250;
+      containerHeight = 200;
     } else {
       // Mobile
       containerHeight = s * 5;
@@ -58,7 +58,7 @@ import 'package:locate_your_dentist/modules/profiles/vedio_plays.dart';
         decoration: BoxDecoration(color: Colors.grey[200],border: Border.all(color: AppColors.grey)),
         //s*0.3,
         child:  Center(
-          child: Icon(Icons.image,color: AppColors.grey, size: s*0.012),
+          child: Icon(Icons.image,color: AppColors.grey, size: s*0.025),
         ),
       );
     }

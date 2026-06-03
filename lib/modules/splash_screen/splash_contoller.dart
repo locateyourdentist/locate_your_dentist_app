@@ -38,7 +38,7 @@ class SplashController extends GetxController with GetSingleTickerProviderStateM
     super.onInit();
     animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 15),
     );
     animation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(

@@ -29,6 +29,7 @@ import 'package:path_provider/path_provider.dart';
   //final loginController=Get.put(LoginController());
   Future<void> createNotification(String userId,
       String userType,
+      bool isAdmin,
       String title,
       String message,
       String state,
@@ -47,7 +48,7 @@ import 'package:path_provider/path_provider.dart';
     isLoading=true;
     try {
       _notificationList=[];
-      final response = await api.createNotification( userId, userType, title, message, state, district, city, area,notificationImage1);
+      final response = await api.createNotification( userId, userType,isAdmin, title, message, state, district, city, area,notificationImage1);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
         showSuccessDialog(context, title:"Success",message :"Notification Created Successfully", onOkPressed: () {});

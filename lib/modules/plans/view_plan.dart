@@ -660,10 +660,14 @@ class _ViewPlanState extends State<ViewPlan> {
                                     'startDate': startDate,
                                     'endDate': endDate,
                                     'amount': amount,
-                                    'name': 'basePlan',
+                                    'name': 'BasePlan',
                                     'planName': "${plan.planName}",
                                     'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
                                     'email': Api.userInfo.read('email') ?? "",
+                                      'imageCount':plan.details?.imageCount,
+                                      'imageSize':plan.details?.imageSize,
+                                      'videoCount':plan.details?.videoCount,
+                                      'videoSize':plan.details?.videoSize
                                     });
                                     });
                                   //  });
@@ -1920,7 +1924,8 @@ class _ViewPlanState extends State<ViewPlan> {
                 color: e.value == true ? Colors.green : Colors.red,
               ),
               const SizedBox(width: 8),
-              Text(e.key),
+              Text('${e.key} - ${e.value}'),
+
             ],
           ),
         );

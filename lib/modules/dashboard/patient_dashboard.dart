@@ -42,9 +42,11 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
       final address = await getAddressFromLatLng(loginController.latitude!, loginController.longitude!);
 
-      print('latitude ${loginController.latitude}');
-      print('longitude ${loginController.longitude}');
-
+      print('latitude ${loginController.latitude.toString()}');
+      print('longitude ${loginController.longitude.toString()}');
+      Api.userInfo.write('latitude', loginController.latitude.toString());
+      Api.userInfo.write('longitude', loginController.longitude.toString());
+      loginController.update();
       planController.currentLocation = address;
     } else {
       Get.snackbar('Location', 'Unable to get location');
@@ -78,34 +80,35 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
       key: _scaffoldKeyUser1,
       backgroundColor: const Color(0xFFEEEEEE),
       appBar: AppBar(
+        elevation: 0,
         //backgroundColor: AppColors.primary,
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.primary,AppColors.secondary],
+              colors: [AppColors.primary,AppColors.primary],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
         ),
-        leading: Padding(
-          padding:  const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            radius: size * 0.13,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(50),
-              child: ProfileImageWidget(size: size),
-            ),
-          ),
-        ),
+        // leading: Padding(
+        //   padding:  const EdgeInsets.all(8.0),
+        //   child: CircleAvatar(
+        //     radius: size * 0.13,
+        //     child: ClipRRect(
+        //       borderRadius: BorderRadius.circular(50),
+        //       child: ProfileImageWidget(size: size),
+        //     ),
+        //   ),
+        // ),
         centerTitle: false,
         title: Column(
           mainAxisAlignment:MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Welcome Back',
+              'Locate Your Dentist',
               style: AppTextStyles.body(context,
                 color: AppColors.white,fontWeight: FontWeight.bold,),
             ),
@@ -135,7 +138,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
             Container(
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                    colors: [AppColors.primary,AppColors.secondary],
+                    colors: [AppColors.primary,AppColors.primary],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -170,7 +173,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                   height: size*0.012,
                   child: Row(
                     children: [
-                       Icon(Icons.search, color: Colors.grey, size: size*0.015),
+                       Icon(Icons.search, color: Colors.grey, size: size*0.025),
                       const SizedBox(width: 8),
                       Expanded(
                         child: CommonSearchTextField(
@@ -208,6 +211,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                           print("Selected State: ${loginController.selectedState}");
                                           print("Selected District: ${loginController.selectedDistrict}");
                                           print("Selected Area: ${loginController.selectedArea}");
+                                          print("Selected distance: ${loginController.selectedDistance}");
+                                          print('latit${Api.userInfo.read('latitude')??""} long ${Api.userInfo.read('longitude')??""}');
                                           //String userType=  Api.userInfo.read('sUserType');
                                           //print("ssuser$userType");
                                           filteredProfiles.map((e) => searchController.text.toString());
@@ -215,7 +220,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                             "Dental Clinic",
                                             loginController.selectedState,
                                             loginController.selectedDistrict,
-                                            loginController.selectedTaluka,"true",'','',loginController.selectedDistance.toString(),'',
+                                            loginController.selectedTaluka,"true",Api.userInfo.read('latitude')??"",Api.userInfo.read('longitude')??"",loginController.selectedDistance.toString(),'',
                                             context,
                                           );
                                           Navigator.pop(context);
@@ -259,7 +264,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                       "Top Dentist in your State",
                       textAlign: TextAlign.center,
                       style: AppTextStyles.body(
-                        context,color: AppColors.grey)
+                        context,color: AppColors.black)
                   ),
                   SizedBox(height: size * 0.02),
                 GetBuilder<PlanController>(

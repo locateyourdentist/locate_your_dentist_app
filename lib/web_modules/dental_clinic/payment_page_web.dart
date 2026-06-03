@@ -21,7 +21,7 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
   final paymentService = PaymentService();
 
   late final double amount;
-  late final String name, planName, mobileNumber, email, startDate, endDate, userId, planId;
+  late final String name, planName,planType, mobileNumber, email, startDate, endDate, userId, planId;
 
   @override
   void initState() {
@@ -31,6 +31,7 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
     amount = (args['amount'] ?? 0).toDouble();
     name = args['name'] ?? '';
     planName = args['planName'] ?? '';
+    planType = args['planType'] ?? '';
     mobileNumber = args['mobileNumber'] ?? '';
     email = args['email'] ?? '';
     startDate = args['startDate'] ?? '';
@@ -68,6 +69,7 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
       amount,
       name: name,
       planName: planName,
+      planType:planType,
       email: email,
       mobileNumber: mobileNumber,
     );
@@ -141,7 +143,7 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
                             ),
 
                             const SizedBox(height: 20),
-
+                            _infoTile("PlanType", planType),
                             _infoTile("Plan", planName),
                             _infoTile("Start Date", formatDate(startDate)),
                             _infoTile("End Date", formatDate(endDate)),

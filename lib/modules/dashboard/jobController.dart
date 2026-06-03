@@ -256,7 +256,7 @@ class JobController extends GetxController{
       if ( data["status"].toString().toLowerCase() == "success") {
         showCustomToast(context,  "Status Updated successfully");
         await sentMailJob( jobSeekerId,'update',[], jobId ?? "", "your Job application status was updated", status,context);
-        await notificationController.createNotification(jobSeekerId,'Job Seekers', 'job', "The status of your job application at $orgName has changed.", '','','','',context);
+        await notificationController.createNotification(jobSeekerId,'Job Seekers',true, 'job', "The status of your job application at $orgName has changed.", '','','','',context);
       } else {
         showCustomToast(context, "job status not  updated: ${data["message"]}");
       }
@@ -487,7 +487,7 @@ class JobController extends GetxController{
        alert ? showSuccessDialog(context, title:"Success",message :"Applied Job Successfully", onOkPressed: () {}):
         showCustomToast(context,  "Already applied for this Job",backgroundColor: AppColors.primary);
         await sentMailJob(Api.userInfo.read('userId') ?? '', 'update',[],jobId ?? '', "your Job application is submitted successfully", "Applied", context);
-         notificationController.createNotification(Api.userInfo.read('userId') ?? '',Api.userInfo.read('userType') ?? '', 'job', 'Your application to ${orgName ?? ""} was submitted successfully','','','','', context);
+         notificationController.createNotification(Api.userInfo.read('userId') ?? '', '',false, 'job', 'Your application to ${orgName ?? ""} was submitted successfully','','','','', context);
       } else {
         showCustomToast(context,  "job application Failed, ${data["message"] ?? "error"}",);
       }
@@ -564,9 +564,8 @@ class JobController extends GetxController{
         final jobId = data["data"]["jobId"].toString();
         await sentMailJob( userId,'new',jobCategory, jobId ?? '', "New Job Opening from $orgName", "", context);
 
-        await notificationController.createNotification(userId,'Job Seekers', 'job', '$jobTitle Job Opening from $orgName', '','','','',context,notificationImage1:jobImage1.isNotEmpty
-            ? jobImage1.first
-            : null,);
+        await notificationController.createNotification(userId,'Job Seekers',true, 'job', '$jobTitle Job Opening from $orgName', '','','','',context,notificationImage1:jobImage1.isNotEmpty
+            ? jobImage1.first : null,);
         showSuccessDialog(context, title:"Success",message :"Posted Job Successfully", onOkPressed: () {});
         loginController.selectedJobType="";
     loginController.typeNameController.clear();
@@ -578,13 +577,8 @@ class JobController extends GetxController{
     loginController.selectedJobType="";
     loginController.selectedExperience="";
     loginController.selectedSalary="";
-         startHour='';
-         startMinutes="";
-         startPeriod="";
-         endHour="";
-         endMinutes="";
-         endPeriod="";
-         jobImage="";
+         startHour=''; startMinutes=""; startPeriod="";
+         endHour=""; endMinutes=""; endPeriod=""; jobImage=""; jobImage1='';
          //Get.toNamed('/viewJobWebinarPage');
       } else {
         showCustomToast(context,  "Job post Failed, ${data["message"] ?? "error"}",);
@@ -609,10 +603,11 @@ class JobController extends GetxController{
 
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
-        notificationController.createNotification( userId,"Job Seekers",'Webinar',webinarTitle,'','','','',context);
+        notificationController.createNotification( userId,"Job Seekers",true,'Webinar',webinarTitle,'','','','',context,notificationImage1:webinarImage1.isNotEmpty
+            ? webinarImage1.first
+            : null);
 
-        showSuccessDialog(context, title:"Success",message :"Posted Webinar Successfully", onOkPressed: () {
-        });
+        showSuccessDialog(context, title:"Success",message :"Posted Webinar Successfully", onOkPressed: () {});
         loginController.webinarTitleJobController.clear();
         loginController.webinarDescriptionJobController.clear();
         loginController.webinarLinkController.clear();

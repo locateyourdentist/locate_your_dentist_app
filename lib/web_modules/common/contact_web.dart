@@ -75,7 +75,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
                         width: double.infinity,
                         decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('images/cc.jpg'),
+                            image: AssetImage('assets/images/cc.jpg'),
                             fit: BoxFit.cover,
                           ),
                         ),

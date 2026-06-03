@@ -56,7 +56,7 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
                     height: 180,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        image: const AssetImage('images/contactss.jpg'),       fit: BoxFit.cover,
+                        image: const AssetImage('assets/images/contactss.jpg'),       fit: BoxFit.cover,
                       ),
                     ),
                     child: Container(

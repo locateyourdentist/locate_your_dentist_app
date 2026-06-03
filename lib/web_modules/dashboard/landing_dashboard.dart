@@ -653,76 +653,6 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
       ),
     );
   }
-  // Widget userTypesSection() {
-  //   return Container(
-  //     width: double.infinity,
-  //     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-  //     decoration: BoxDecoration(
-  //       color: AppColors.white
-  //       // gradient: LinearGradient(
-  //       //   colors: [
-  //       //     AppColors.primary,
-  //       //     AppColors.secondary,
-  //       //   ],
-  //       //   begin: Alignment.topLeft,
-  //       //   end: Alignment.bottomRight,
-  //       // ),
-  //     ),
-  //     child: Center(
-  //       child: Container(
-  //         constraints: const BoxConstraints(maxWidth: 1500),
-  //         padding: const EdgeInsets.all(20),
-  //         child: Column(
-  //           children: [
-  //             Text(
-  //               "Who Can Use This Platform?",
-  //               style: AppTextStyles.subtitle(
-  //                 context,
-  //                 color: Colors.black,
-  //               ),
-  //             ),
-  //             const SizedBox(height: 12),
-  //             Text(
-  //               "Connecting patients, clinics, dental shops, labs & professionals in one place",
-  //               style: AppTextStyles.caption(
-  //                 context,
-  //                 color: Colors.black,
-  //               ),
-  //               textAlign: TextAlign.center,
-  //             ),
-  //             const SizedBox(height: 50),
-  //
-  //             Wrap(
-  //               spacing: 150,
-  //               runSpacing: 50,
-  //               alignment: WrapAlignment.center,
-  //               children: [
-  //                 buildUserCard(
-  //                   title: "Patients",
-  //                   subtitle: "find your trusted & nearby dentists easily",
-  //                   image: "assets/images/lp2.jpg",
-  //                   icon: Icons.person,
-  //                 ),
-  //                 buildUserCard(
-  //                   title: "Dental Clinics",
-  //                   subtitle: "Manage clinic, hire staff & grow your practice",
-  //                   image: "assets/images/aboutt.jpg",
-  //                   icon: Icons.local_hospital,
-  //                 ),
-  //                 buildUserCard(
-  //                   title: "Job Seekers",
-  //                   subtitle: "Explore dental jobs & career opportunities",
-  //                   image: "assets/images/doctor5.jpg",
-  //                   icon: Icons.work,
-  //                 ),
-  //               ],
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget userTypesSection() {
     final size = MediaQuery.of(context).size.width;
     final isMobile = size < 800;
@@ -918,56 +848,6 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
       ),
     );
   }
-  // Widget userTypesSection() {
-  //   return Container(
-  //     width: double.infinity,
-  //     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-  //     decoration: BoxDecoration(
-  //       gradient: LinearGradient(
-  //         colors: [
-  //           AppColors.primary,
-  //           AppColors.secondary,
-  //         ],
-  //       ),
-  //     ),
-  //     child: Center(
-  //       child: Container(
-  //         constraints: const BoxConstraints(maxWidth: 1500),
-  //         padding: const EdgeInsets.all(20),
-  //         child: Column(
-  //           children: [
-  //             Text(
-  //               "Who Can Use This Platform?",
-  //               style: AppTextStyles.subtitle(
-  //                 context,color: AppColors.white
-  //               ),
-  //             ),
-  //             const SizedBox(height: 10),
-  //
-  //             Text(
-  //               "Connecting patients, clinics,Dental Shops,Dental Labs,Dental Consultant and professionals in one place",
-  //               style: AppTextStyles.caption(
-  //                 context,color:Colors.white
-  //               ),
-  //               textAlign: TextAlign.center,
-  //             ),
-  //
-  //             const SizedBox(height: 40),
-  //
-  //             Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //               children: [
-  //                 userCard("Patients", "Find nearby dentists instantly"),
-  //                 userCard("Dental Clinics", "Connect with all & hire staff"),
-  //                 userCard("Job Seekers", "Find dental jobs easily"),
-  //               ],
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget userCard(String title, String desc) {
     final size = MediaQuery.of(context).size.width;
     return Container(
@@ -1176,7 +1056,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
         ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Image.asset(
-            "images/job.jpg",
+            "assets/images/job.jpg",
             height: size*0.15,
             fit: BoxFit.cover,
           ),
@@ -1272,13 +1152,13 @@ class _HeroBannerState extends State<HeroBanner>
 
   final List<Map<String, String>> banners = [
     {
-      "image": "images/1.png",
+      "image": "assets/images/front.png",
       "title": "Find Your Dental Clinic near you",
       "button": "Enquire Now",
       "route": "/userTypeListWeb",
     },
     {
-      "image": "images/welcomePage.png",
+      "image": "assets/images/welcomePage.png",
       "title": "Find your ideal dental job",
       "button": "Get Started",
       "route": "/jobListJobSeekersWebPage",
@@ -1386,6 +1266,13 @@ class _HeroBannerState extends State<HeroBanner>
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
+                  cacheWidth: 1920,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: AppColors.primary.withOpacity(0.15),
+                    child: const Center(
+                      child: Icon(Icons.image_not_supported_outlined, color: Colors.white54, size: 60),
+                    ),
+                  ),
                 ),
               );
             },
@@ -1592,7 +1479,7 @@ class AboutUsSection extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Image.asset(
-          "images/lp1.jpg",
+          "assets/images/lp1.jpg",
           fit: BoxFit.cover,
           height: size * 0.18,
         ),

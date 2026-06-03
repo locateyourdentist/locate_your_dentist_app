@@ -98,16 +98,31 @@ class _ViewJobPageState extends State<ViewJobPage> {
           length: 2,
           child: GetBuilder<JobController>(
             builder: (controller) {
-              final job1 = jobController.job.isNotEmpty ? jobController.job[0] : null;
-              String targetJobId = job1?.jobId ?? "";
-              print('targetid$targetJobId');
-              bool isJobApplied = jobController.jobSeekersAppliedLists
-                  .any((j) => j.jobId.toString() == targetJobId);
-              print("Is job applied? $isJobApplied");
+              // final job1 = jobController.job.isNotEmpty ? jobController.job[0] : null;
+              // String targetJobId = job1?.jobId ?? "";
+              // print('targetid$targetJobId');
+              // bool isJobApplied = jobController.jobSeekersAppliedLists
+              //     .any((j) => j.jobId.toString() == targetJobId);
+              // print("Is job applied? $isJobApplied");
+              // if (controller.job.isEmpty) {
+              //   return const Center(child: CircularProgressIndicator());
+              // }
+              // final job = controller.job.isNotEmpty ? controller.job[0] : null;
+             // if (job == null) {
               if (controller.job.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               }
-              final job = controller.job.isNotEmpty ? controller.job[0] : null;
+              final job = controller.job.first;
+              final String targetJobId = job.jobId ?? "";
+
+              print("targetid: $targetJobId");
+
+              final bool isJobApplied = controller.jobSeekersAppliedLists
+                  .any((j) => j.jobId.toString() == targetJobId);
+
+              print("Is job applied? $isJobApplied");
               if (job == null) {
                 return                       Column(
                   children: [

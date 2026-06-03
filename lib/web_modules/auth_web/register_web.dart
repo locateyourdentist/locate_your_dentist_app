@@ -131,7 +131,8 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     final userData = loginController.userData.first;
     final planDetails = userData.details?["plan"]?["basePlan"]?["details"];
     if (planDetails != null) {
-      loginController.maxFilesImage = int.tryParse(planDetails["imageCount"]?.toString() ?? "0") ?? 2;
+      loginController.maxFilesImage = int.tryParse(planDetails["imageCount"]?.toString() ?? "") ?? 2;
+     // loginController.maxFilesImage = int.tryParse(planDetails["imageCount"]?.toString() ?? "0") ?? 2;
       loginController.maxFilesVideo = int.tryParse(planDetails["videoCount"]?.toString() ?? "0") ?? 1;
     }
   }
@@ -469,10 +470,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         ),
         if (loginController.selectedUserType != 'Job Seekers' && loginController.selectedUserType != null)
           Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: CustomTextField(hint: "Name", controller: loginController.typeNameController),
+            padding: const EdgeInsets.only(top: 15,bottom: 15),
+            child:   CustomTextField(
+              hint: loginController.selectedUserType == 'Dental Shop'? "College Name":"${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
+              icon: Icons.store,
+              controller: loginController.typeNameController,
+            ),
           ),
-        const SizedBox(height: 15),
+       // const SizedBox(height: 15),
         _responsiveRow(isMobile, _buildStateDropdown(), _buildDistrictDropdown()),
         const SizedBox(height: 15),
         _responsiveRow(isMobile, _buildTalukaDropdown(), _buildAreaDropdown()),
@@ -658,6 +663,11 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         const SizedBox(height: 10),
         _buildCertificatePicker(),
         const SizedBox(height: 20),
+        const Text("Upload Image"),
+        const SizedBox(height: 10),
+
+        _buildImagePicker(),
+        const SizedBox(height: 20),
         const Text("Logo / Profile Image"),
         const SizedBox(height: 10),
         _buildLogoPicker(),
@@ -680,7 +690,21 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       );
     });
   }
-
+  Widget _buildImagePicker() {
+    return GetBuilder<LoginController>(builder: (c) {
+      return Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: [
+          ...c.images1.map((img) => _buildThumb(img, () {
+            c.images1.remove(img);
+            c.update();
+          })),
+          if (c.images1.length < maxFiles) _buildAddThumb(pickCertificates),
+        ],
+      );
+    });
+  }
   Widget _buildLogoPicker() {
     return GetBuilder<LoginController>(builder: (c) {
       return Center(

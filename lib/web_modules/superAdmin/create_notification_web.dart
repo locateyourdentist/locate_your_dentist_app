@@ -534,7 +534,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
 
                                                     notificationController.createNotification(
                                                     Api.userInfo.read('userId'),
-                                                    notificationController.selectedUserType!,
+                                                    notificationController.selectedUserType!,true,
                                                     notificationController.selectedTitle=="Others"? notificationController.titleController.text:notificationController.selectedTitle.toString(),
                                                     notificationController.messageController.text,
                                                     loginController.selectedState.toString(),

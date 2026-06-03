@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
+import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 
@@ -27,7 +28,16 @@ class _AdminSideBarState extends State<AdminSideBar> {
     String userType = Api.userInfo.read('userType') ?? "";
     settingList = _getSettingsForUser(userType);
   }
-
+  void _showDeleteDialog() {
+    showDeleteDialog(
+      context: context, title: "Delete Account", message: "Do you want to Delete this Account?",
+      onConfirm: () async {
+        await loginController.deactivateUserAdmin(Api.userInfo.read('userId')??"", false, context);
+        Get.toNamed('/loginPage');
+        loginController.update();
+      },
+    );
+  }
   bool isMobile(BuildContext context) =>
       MediaQuery.of(context).size.width < 600;
 
@@ -67,6 +77,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Job/Webinars", "page": "/viewJobWebinarWebPage"},
           {"title": "Products", "page": "/myServicesListWebPage"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
           {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
@@ -85,6 +96,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Add JobCategory", "page": "/jobCategoryWeb"},
           {"title": "Settings", "page": "/settingsWebPage"},
           {"title": "Add Legal Pages", "page": "/addPrivacyPolicyPage"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
           {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
@@ -97,6 +109,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Add User", "page": "/registerPageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "Reports", "page": "/reportPageWeb"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
           {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
@@ -114,6 +127,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Contact Form", "page": "/contactFormListWebPage"},
           {"title": "Add Branches", "page": "/addBranchesWeb"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
           {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
@@ -129,6 +143,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Add Profile", "page": "/clinicEditProfile"},
           {"title": "Add Branches", "page": "/addBranchesWeb"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
           {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
@@ -144,6 +159,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Products", "page": "/myServicesListWebPage"},
           {"title": "Add Branches", "page": "/addBranchesWeb"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
           {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
@@ -159,6 +175,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Contact Form", "page": "/contactFormListWebPage"},
           {"title": "Add Branches", "page": "/addBranchesWeb"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
           {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
@@ -171,6 +188,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Jobs", "page": "/jobListJobSeekersWebPage"},
           {"title": "Webinars", "page": "/webinarListWebPage"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
+          {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsWebPage"},
           {"title": "Contact Us", "page": "/contactWebPage"},
           {"title": "Logout", "page": "/logout"},
@@ -278,6 +296,9 @@ class _AdminSideBarState extends State<AdminSideBar> {
                           String userId=Api.userInfo.read('userId')??"";
                           Api.userInfo.write('selectUId',userId);
                           Get.offAllNamed("/registerPageWeb",arguments: {"userId":0});
+                        }
+                        if (setting['title'] == "Delete Account") {
+                          _showDeleteDialog();
                         }
                         else {
                           Get.toNamed(setting['page'] ?? "");

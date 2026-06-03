@@ -1271,7 +1271,7 @@ class Api {
       throw "Failed to fetch get jobsPlanUrl: $e";
     }
   }
-  Future<http.Response> createUserBasePlan(String userId,String planId,String planName,String price,String startDate,String endDate) async {
+  Future<http.Response> createUserBasePlan(String userId,String planId,String planName,String price,String startDate,String endDate,String imageCount,String imageSize,String videoCount,String videoSize) async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.planUrl}${AppConstants.createUserBasePlanUrl}";
     print('API getJobsPlanUrl $url');
@@ -1292,7 +1292,11 @@ class Api {
             'planName':planName,
             'price': price,
             'startDate':startDate,
-            'endDate':endDate
+            'endDate':endDate,
+            'imageCount':imageCount,
+            'imageSize':imageSize,
+            'videoCount':videoCount,
+            'videoSize':videoSize,
           })
       );
       print('api plan response ${response.body}');
@@ -1619,7 +1623,8 @@ class Api {
     }
   }
 
-  Future<http.Response> createNotification(String userId,String userType,String title,String message,String state,String district,String city,String area,
+  Future<http.Response> createNotification(String userId,String userType,      bool isAdmin,
+      String title,String message,String state,String district,String city,String area,
       // List<File> ?notificationImage1,
       Uint8List? notificationImage1
       ) async {
@@ -2343,24 +2348,37 @@ print('otifi img$notificationImage1');
     }
   }
   Future<http.Response> deactivateUserAdmin(String userId,bool isActive) async {
-    String url =
-        "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants.deactivateUserUrl}";
+    // String url =
+    //     "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants.deactivateUserUrl}";
+    final url = Uri.parse(
+        "${AppConstants.baseUrl}"
+            "${AppConstants.userUrl}"
+            "${AppConstants.deactivateUserUrl}"
+    ).replace(
+      queryParameters: {
+        "userId": userId,
+        "isActive": isActive.toString(),
+      },
+    );
+
+    print("API URL => $url");
+
     print('API updateJobApplicationStatusUrl  $url');
     String? token = Api.userInfo.read('token');
     try {
       final String token = Api.userInfo.read('token') ?? "";
 
-      final response = await http.post(
-        Uri.parse(url),
+      final response = await http.get(url,
+        //Uri.parse(url),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
           "Authorization": "Bearer $token",
         },
-        body: jsonEncode({
-          'userId': userId,
-          'isActive':isActive
-        }),
+        // body: jsonEncode({
+        //   'userId': userId,
+        //   'isActive':isActive
+        // }),
       );
       print('api deactivateUserAdmin ${response.body}');
       return response;

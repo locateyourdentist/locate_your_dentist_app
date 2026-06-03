@@ -573,8 +573,7 @@ import 'package:geocoding/geocoding.dart';
                         );
                       }
                   ),
-
-                  SizedBox(height: size * 0.03),
+                      SizedBox(height: size * 0.03),
                   GetBuilder<LoginController>(
                       builder: (controller) {
                         final items = controller.villages.map((v) => v.toString()).toList();
@@ -590,15 +589,9 @@ import 'package:geocoding/geocoding.dart';
                               listItemStyle: AppTextStyles.caption(context, color: Colors.black),
                               closedFillColor: Colors.grey[100],
                               expandedFillColor: Colors.white,
-                              closedBorder: Border.all(
-                                color: AppColors.white,
-                                width: 1.5,
+                              closedBorder: Border.all(color: AppColors.white, width: 1.5,),
+                              expandedBorder: Border.all(color: AppColors.primary, width: 1.5,
                               ),
-                              expandedBorder: Border.all(
-                                color: AppColors.primary,
-                                width: 1.5,
-                              ),
-
                             ),
                             initialItem:controller.selectedVillage,
                             // initialItem: items.contains(controller.selectedVillage)
@@ -929,13 +922,13 @@ import 'package:geocoding/geocoding.dart';
                             }
                             final imageBytes = loginController.selectedUserType == "Job Seekers"
                                 ? await convertFilesToBytes(controller.logoImages)
-                                : await convertFilesToBytes(loginController.images);
+                                : await convertFilesToBytes(fileImages);
 
                             final logoBytes = loginController.selectedUserType != "Job Seekers"
                                 ? await convertFilesToBytes(controller.logoImages)
                                 : [];
 
-                            final certBytes = await convertFilesToBytes(loginController.certificates);
+                            final certBytes = await convertFilesToBytes(fileCertificate);
                              print('branch id${branchId?.isNotEmpty == true
                                  ? branchId!
                                  : loginController.selectUserId!}');
@@ -1201,8 +1194,8 @@ Widget buildMediaItem(AppImage media, double size, VoidCallback onDelete, BuildC
   else if (media.bytes != null) {
     content = Image.memory(
       media.bytes!,
-      height: size * 0.15,
-      width: size * 0.15,
+      width: size * 0.3,
+      height: size * 0.3,
       fit: BoxFit.cover,
     );
   }
@@ -1210,16 +1203,16 @@ Widget buildMediaItem(AppImage media, double size, VoidCallback onDelete, BuildC
   else if (media.file != null) {
     content = Image.file(
       media.file!,
-      height: size * 0.15,
-      width: size * 0.15,
+      width: size * 0.3,
+      height: size * 0.3,
       fit: BoxFit.cover,
     );
   }
 
   else if (media.url != null && media.url!.isNotEmpty) {
     content = Image.network(media.url!,
-      height: size * 0.15,
-      width: size * 0.15,
+      width: size * 0.3,
+      height: size * 0.3,
       fit: BoxFit.cover,);
   }
 
@@ -1240,35 +1233,6 @@ Widget buildMediaItem(AppImage media, double size, VoidCallback onDelete, BuildC
     ],
   );
 }
-// Widget buildMediaItem(AppImage media, double size, VoidCallback onDelete,BuildContext context) {
-//   double s=MediaQuery.of(context).size.width;
-//   return Container(
-//     margin: const EdgeInsets.all(8),
-//     height: size * 0.15,
-//     width: size * 0.15,
-//     child: Stack(
-//       children: [
-//         ClipRRect(
-//           borderRadius: BorderRadius.circular(10),
-//           child: MediaPreviewWidget(
-//             media: media,
-//             size: s * 0.15,
-//           ),
-//         ),
-//         Positioned(
-//           right: 0,
-//           top: 0,
-//           child: GestureDetector(
-//             onTap: onDelete,
-//             child:  Icon(Icons.cancel,size: size*0.0016, color: Colors.black),
-//           ),
-//         ),
-//       ],
-//     ),
-//   );
-// }
-
-
 Widget buildAddButton(VoidCallback onTap, double size) {
   return GestureDetector(
     onTap: onTap,

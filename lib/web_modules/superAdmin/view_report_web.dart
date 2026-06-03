@@ -263,7 +263,7 @@ class _FinanceDashboardPageState extends State<FinanceDashboardPage> {
                 return CustomDropdown<String>.search(
                   hintText: "Select State",
                   decoration: CustomDropdownDecoration(
-                    closedFillColor: Colors.white, expandedFillColor: Colors.white,
+                    closedFillColor: Colors.white, expandedFillColor:  Colors.grey[100],
                    // closedBorder: Border.all(color: Colors.grey.shade300),
                     closedBorderRadius: BorderRadius.circular(10),
                     hintStyle: AppTextStyles.caption(context, color: AppColors.grey),

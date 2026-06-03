@@ -126,7 +126,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                       IconButton(
                                                         icon: const Icon(Icons.notifications_none,
                                                             color: AppColors.white, size: 24),
-                                                        onPressed: () {
+                                                        onPressed: ()async {
+                                                          await notificationController.getNotificationListAdmin(context);
                                                           Get.toNamed('/viewNotificationWebPage');
                                                         },
                                                       ),
@@ -360,7 +361,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         const SizedBox(height: 10),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
+                            backgroundColor: AppColors.primary,
                           ),
                           onPressed: () {},
                           child: Text(

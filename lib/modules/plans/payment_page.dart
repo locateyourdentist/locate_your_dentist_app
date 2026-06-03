@@ -42,6 +42,11 @@ String formatDate(String date) {
   late final String planName;
   late final String mobileNumber;
   late final String email;
+  late final String imageCount;
+  late final String imageSize;
+  late final String videoCount;
+  late final String videoSize;
+
   final PlanController planController=Get.put(PlanController());
   bool isProcessingPayment = false;
   @override
@@ -57,6 +62,10 @@ String formatDate(String date) {
      endDate = args['endDate'] ?? '';
      userId = args['userId'] ?? '';
      planId = args['planId'] ?? '';
+    imageCount = args['imageCount'] ?? '';
+    imageSize = args['imageSize'] ?? '';
+    videoCount = args['videoCount'] ?? '';
+    videoSize = args['videoSize'] ?? '';
      print('name$name');
     loadData();
     _razorpay = Razorpay();
@@ -98,7 +107,7 @@ String formatDate(String date) {
     });
 
     if(name=='basePlan'){
-      await planController.createUserPlans(userId,planId.toString(), planName.toString(),amount.toString(), startDate, endDate, context);
+      await planController.createUserPlans(userId,planId.toString(), planName.toString(),amount.toString(), startDate, endDate,imageCount,imageSize,videoCount,videoSize, context);
 
       await generateInvoice(
         amount: double.parse(amount.toString()),
