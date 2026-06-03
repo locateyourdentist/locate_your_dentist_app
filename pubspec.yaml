@@ -69,7 +69,7 @@ dependencies:
   video_player_android:
   shimmer:
   fl_chart:
-  flutter_quill:
+  flutter_quill: ^11.5.1
   flutter_quill_extensions:
   permission_handler:
   excel:
