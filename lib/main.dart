@@ -49,22 +49,52 @@ Future<void> firebaseMessagingBackgroundHandler(
 
   print("Background message received: ${message.messageId}");
 }
-Future<String> downloadAndSaveFile(
+// Future<String> downloadAndSaveFile(
+//     String url,
+//     String fileName,
+//     ) async {
+//
+//   final directory = await getApplicationDocumentsDirectory();
+//
+//   final filePath = '${directory.path}/$fileName';
+//
+//   final response = await http.get(Uri.parse(url));
+//
+//   final file = File(filePath);
+//
+//   await file.writeAsBytes(response.bodyBytes);
+//
+//   return filePath;
+// }
+Future<String?> downloadAndSaveFile(
     String url,
     String fileName,
     ) async {
+  if (kIsWeb) return null;
 
-  final directory = await getApplicationDocumentsDirectory();
+  try {
+    final directory =
+    await getApplicationDocumentsDirectory();
 
-  final filePath = '${directory.path}/$fileName';
+    final filePath =
+        '${directory.path}/$fileName';
 
-  final response = await http.get(Uri.parse(url));
+    final response =
+    await http.get(Uri.parse(url));
 
-  final file = File(filePath);
+    final file = File(filePath);
 
-  await file.writeAsBytes(response.bodyBytes);
+    await file.writeAsBytes(
+      response.bodyBytes,
+    );
 
-  return filePath;
+    return file.path;
+  } catch (e) {
+    debugPrint(
+      'downloadAndSaveFile error: $e',
+    );
+    return null;
+  }
 }
 Future<void> setupFCM() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -148,7 +178,9 @@ Future<void> main() async {
 
         AndroidBitmap<Object>? largeIcon;
 
-        if (imageUrl.isNotEmpty) {
+
+        if (!kIsWeb &&
+            imageUrl.isNotEmpty) {
           try {
             final imagePath =
             await downloadAndSaveFile(
@@ -158,7 +190,7 @@ Future<void> main() async {
 
             print("IMAGE SAVED = $imagePath");
 
-            final file = File(imagePath);
+            final file = File(imagePath!);
 
             print(
               "FILE EXISTS = ${await file.exists()}",
