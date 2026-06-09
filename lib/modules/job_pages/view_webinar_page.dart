@@ -59,7 +59,7 @@ bool isAlreadyApplied = false;
 void initState(){
   super.initState();
   final webinar = jobController.webinar.isNotEmpty ? jobController.webinar[0] : null;
-  jobController.getWebinarListJobSeekers('','','',context);
+  jobController.getWebinarListJobSeekers('','',context);
   _controller = QuillController.basic(
     config: QuillControllerConfig(
       clipboardConfig: QuillClipboardConfig(
@@ -80,6 +80,14 @@ void initState(){
   Future<void> _refresh() async {
     await jobController.getWebinarById(Api.userInfo.read('webinarId')??"", Api.userInfo.read('statusWebinar')??"", context);
     await   jobController.getAppliedWebinarsAdmin(Api.userInfo.read('webinarId')??"",context);
+    _controller = QuillController.basic(
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+        ),
+
+      ),
+    );
     loadJobDescription(
         jobController.webDescriptionData);
 
@@ -89,10 +97,12 @@ void initState(){
   double size=MediaQuery.of(context).size.width;
   return Scaffold(
       appBar: AppBar(
-          // title: Text('Webinars',style: AppTextStyles.subtitle(context,color: AppColors.primary),
-          // ),
-        backgroundColor: AppColors.white,iconTheme: const IconThemeData(color: AppColors.black),
-        actions:[PopupMenuButton<String>(
+        centerTitle: true,
+          title: Text('Webinars',style: AppTextStyles.subtitle(context,color: AppColors.white),
+          ),
+        backgroundColor: AppColors.primary,iconTheme: const IconThemeData(color: AppColors.white),
+
+        actions:[ if(Api.userInfo.read('userType').toString()!='Job Seekers')PopupMenuButton<String>(
           onSelected: (String isActive)async {
             String webinarId1=jobController.webinar.isNotEmpty?jobController.webinar.first.webinarId.toString():"";
             String isActive1=jobController.webinar.isNotEmpty?  jobController.webinar.first.isActive.toString():"";
@@ -254,10 +264,27 @@ void initState(){
                       style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold)
                                    ),
                                    const SizedBox(height: 10),
-                   Text(webinar.webinarDescription.toString()??"N/A",
-                    //webinarData["webinarDescription"],
-                       style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.normal)
-                                   ),
+                   // Text(webinar.webinarDescription.toString()??"N/A",
+                   //  //webinarData["webinarDescription"],
+                   //     style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.normal)
+                   //                 ),
+                       Padding(
+                           padding: const EdgeInsets.all(8.0),
+                           child:  SingleChildScrollView(
+                             child: IgnorePointer(
+                               child: QuillEditor(
+                                 controller: _controller,
+                                 scrollController: _scrollController,
+                                 focusNode: FocusNode(),
+                                 config: const QuillEditorConfig(
+                                   showCursor: false,
+                                   expands: false,
+                                 ),
+                               ),
+                             ),
+                           )
+                         //Text( getPlainText(job.jobDescription), style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
+                       ),
                                    const SizedBox(height: 10),
                                    Text("Webinar Link",
                       //webinarData["webinarDescription"],

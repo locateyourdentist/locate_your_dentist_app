@@ -86,6 +86,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
     final bool isDesktop = size >= 1100;
     final bool isTablet = size >= 700 && size < 1100;
     final bool isMobile = size < 700;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
 
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
@@ -124,7 +125,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
                 : controller.profileList.where((p) => p.userType.toLowerCase() == userType!.toLowerCase()).toList();
             return Row(
               children: [
-                if (isDesktop) const AdminSideBar(),
+                if (isDesktop && isLoggedIn) const AdminSideBar(),
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.all(isMobile ? 15.0 : 40.0),

@@ -37,7 +37,7 @@ class _JobSeekerDashboardWebState extends State<JobSeekerDashboardWeb> {
   Future<void> _refresh() async {
     await jobController.getJobListJobSeekers(search: " ", context: context);
     await jobController.getJobSeekersAppliedLists(Api.userInfo.read('userId') ?? "", context);
-    await jobController.getWebinarListJobSeekers('', '', '', context);
+    await jobController.getWebinarListJobSeekers('', '',  context);
     await planController.getUploadImages(userType: "Dental Clinic", context: context);
     _calculateStats();
   }

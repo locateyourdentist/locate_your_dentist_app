@@ -49,7 +49,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
    // await loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
     await jobController.getJobListJobSeekers(search: " ",jobCategory:loginController.selectedCategories,context: context);
     await jobController.getJobSeekersAppliedLists(Api.userInfo.read('userId')??"",context);
-    await jobController.getWebinarListJobSeekers('','','',context);
+    await jobController.getWebinarListJobSeekers('','',context);
     await notificationController.getNotificationListAdmin(context);
     await planController.getUploadImages(userType:  "Job Seekers",context: context);
  }
@@ -143,7 +143,6 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
           await jobController.getWebinarListJobSeekers(
             loginController.selectedState.toString(),
             loginController.selectedDistrict.toString(),
-            loginController.selectedTaluka.toString(),
             context,
           );
         },
@@ -269,7 +268,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                               alignment: Alignment.topRight,
                               child: TextButton(
                                 onPressed: ()async{
-                                  await jobController.getWebinarListJobSeekers('','','',context);
+                                  await jobController.getWebinarListJobSeekers('','',context);
                                   Get.toNamed('/viewWebinarListJobseekersPage');
                                   },
                                 child:Text(
@@ -520,35 +519,50 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                     Row(
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
+                                                        // Container(
+                                                        //     width: size * 0.22,
+                                                        //     height: size * 0.22,
+                                                        //     clipBehavior: Clip.hardEdge,
+                                                        //     decoration: BoxDecoration(
+                                                        //       borderRadius: BorderRadius.circular(10),
+                                                        //       color: Colors.white,
+                                                        //     ),
+                                                        //     child: Image.network(
+                                                        //       logoUrl ?? "",
+                                                        //       fit: BoxFit.cover,
+                                                        //       width: size * 0.26,
+                                                        //       height: size * 0.26,
+                                                        //       errorBuilder: (context, error, stackTrace) {
+                                                        //         return Container(
+                                                        //           decoration: BoxDecoration(
+                                                        //             color: getRandomColor(appliedJobs.orgName.toString()),
+                                                        //           ),
+                                                        //           width: size * 0.12,
+                                                        //           height: size * 0.12,
+                                                        //           child: Center(
+                                                        //             child: Text(
+                                                        //               getFirstLetter(appliedJobs.orgName.toString()),
+                                                        //               style: AppTextStyles.headline(context, color: AppColors.white),
+                                                        //             ),
+                                                        //           ),
+                                                        //         );
+                                                        //       },
+                                                        //     )),
                                                         Container(
-                                                            width: size * 0.22,
-                                                            height: size * 0.22,
-                                                            clipBehavior: Clip.hardEdge,
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              color: Colors.white,
+                                                          width: 60,
+                                                          height: 60,
+                                                          decoration: BoxDecoration(
+                                                            shape: BoxShape.circle,
+                                                            color: Colors.grey.shade100,
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(12),
+                                                            child: Image.asset(
+                                                              'assets/images/tooth.png',
+                                                              fit: BoxFit.contain,
                                                             ),
-                                                            child: Image.network(
-                                                              logoUrl ?? "",
-                                                              fit: BoxFit.cover,
-                                                              width: size * 0.26,
-                                                              height: size * 0.26,
-                                                              errorBuilder: (context, error, stackTrace) {
-                                                                return Container(
-                                                                  decoration: BoxDecoration(
-                                                                    color: getRandomColor(appliedJobs.orgName.toString()),
-                                                                  ),
-                                                                  width: size * 0.12,
-                                                                  height: size * 0.12,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      getFirstLetter(appliedJobs.orgName.toString()),
-                                                                      style: AppTextStyles.headline(context, color: AppColors.white),
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              },
-                                                            )),
+                                                          ),
+                                                        ),
                                                         const SizedBox(width: 10),
                                                         Expanded(
                                                           child: Column(

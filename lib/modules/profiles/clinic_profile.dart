@@ -104,6 +104,7 @@ class Media {
     String userType=Api.userInfo.read('userType')??"";
     String userId=Api.userInfo.read('userId')??"";
     String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
+    print('userIdfds$editUserId');
     final user = loginController.userData.isNotEmpty ? loginController.userData.first : null;
     final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
     Future<void> _refresh() async {
@@ -114,7 +115,59 @@ class Media {
     }
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: GetBuilder<LoginController>(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('Profile',style: AppTextStyles.subtitle(context,color: AppColors.white),
+          ),
+          actions: [
+            // CircleAvatar(
+            //   backgroundColor: Colors.black.withOpacity(0.4),
+            //   child: IconButton(
+            //     icon: const Icon(Icons.arrow_back,
+            //         color: Colors.white),
+            //     onPressed: () {
+            //       Get.back();
+            //     },
+            //   ),
+            // ),
+
+            if (userType == 'admin' ||
+                userType == 'superAdmin' ||
+                userId == editUserId)
+              Positioned(
+                top: 10,
+                right: 10,
+                child: GestureDetector(
+                  onTap: () {
+                    Get.toNamed('/clinicEditProfile');
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.edit,
+                            color: Colors.white, size: 18),
+                        SizedBox(width: 5),
+                        Text(
+                          "Edit",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+          backgroundColor: AppColors.primary,iconTheme: const IconThemeData(color: AppColors.white),),
+          body: GetBuilder<LoginController>(
           init: LoginController(),
           builder: (controller) {
             print("Final images list: ${loginController.editImages}");
@@ -193,55 +246,55 @@ class Media {
                                     .toList(),
                               ),
                 
-                              Positioned(
-                                top: 10,
-                                left: 10,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.black.withOpacity(0.4),
-                                  child: IconButton(
-                                    icon: const Icon(Icons.arrow_back,
-                                        color: Colors.white),
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                  ),
-                                ),
-                              ),
+                              // Positioned(
+                              //   top: 10,
+                              //   left: 10,
+                              //   child: CircleAvatar(
+                              //     backgroundColor: Colors.black.withOpacity(0.4),
+                              //     child: IconButton(
+                              //       icon: const Icon(Icons.arrow_back,
+                              //           color: Colors.white),
+                              //       onPressed: () {
+                              //         Get.back();
+                              //       },
+                              //     ),
+                              //   ),
+                              // ),
                 
-                              if (userType == 'admin' ||
-                                  userType == 'superAdmin' ||
-                                  userId == editUserId)
-                                Positioned(
-                                  top: 10,
-                                  right: 10,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Get.toNamed('/clinicEditProfile');
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.4),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Row(
-                                        children: const [
-                                          Icon(Icons.edit,
-                                              color: Colors.white, size: 18),
-                                          SizedBox(width: 5),
-                                          Text(
-                                            "Edit",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                              // if (userType == 'admin' ||
+                              //     userType == 'superAdmin' ||
+                              //     userId == editUserId)
+                              //   Positioned(
+                              //     top: 10,
+                              //     right: 10,
+                              //     child: GestureDetector(
+                              //       onTap: () {
+                              //         Get.toNamed('/clinicEditProfile');
+                              //       },
+                              //       child: Container(
+                              //         padding: const EdgeInsets.symmetric(
+                              //             horizontal: 12, vertical: 6),
+                              //         decoration: BoxDecoration(
+                              //           color: Colors.black.withOpacity(0.4),
+                              //           borderRadius: BorderRadius.circular(20),
+                              //         ),
+                              //         child: Row(
+                              //           children: const [
+                              //             Icon(Icons.edit,
+                              //                 color: Colors.black, size: 18),
+                              //             SizedBox(width: 5),
+                              //             Text(
+                              //               "Edit",
+                              //               style: TextStyle(
+                              //                 color: Colors.white,
+                              //                 fontWeight: FontWeight.bold,
+                              //               ),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
                             ],
                           ),
                           // ImageCarousel(

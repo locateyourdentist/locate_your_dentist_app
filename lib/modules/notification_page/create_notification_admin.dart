@@ -534,7 +534,7 @@ class _CreateNotificationAdminState extends State<CreateNotificationAdmin> {
                           //     );
                           print('noti img${notificationImage}');
                           notificationController.createNotification(
-                            Api.userInfo.read('userId'),
+                           '',
                             notificationController.selectedUserType!,true,
                             notificationController.selectedTitle == "Others"
                                 ? notificationController.titleController.text

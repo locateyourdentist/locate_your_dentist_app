@@ -102,10 +102,49 @@ String formatDate(String date) {
   }
 
   Future<void> _handlePaymentSuccess(PaymentSuccessResponse response) async {
-    setState(() {
-      isProcessingPayment = true;
-    });
-
+    // setState(() {
+    //   isProcessingPayment = true;
+    // });
+    void showLoadingDialog() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 20),
+                Text(
+                  "Processing Payment...",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "Please wait",
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    showLoadingDialog();
+    void hideLoadingDialog() {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    }
+    try {
     if(name=='basePlan'){
       await planController.createUserPlans(userId,planId.toString(), planName.toString(),amount.toString(), startDate, endDate,imageCount,imageSize,videoCount,videoSize, context);
 
@@ -150,6 +189,22 @@ String formatDate(String date) {
         planName: planName.toString(),planType: name.toString(),startDate: startDate,endDate: endDate
       );
     }
+    hideLoadingDialog();
+
+    showPaymentPopupMessage(
+      context,
+      true,
+      'Payment Successful!',
+    );
+  } catch (e) {
+  hideLoadingDialog();
+
+  showPaymentPopupMessage(
+  context,
+  false,
+  'Something went wrong',
+  );
+  }
     showPaymentPopupMessage(context, true, 'Payment Successful!');
   }
 
@@ -280,6 +335,7 @@ String formatDate(String date) {
       },
     );
   }
+
  @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -291,26 +347,27 @@ String formatDate(String date) {
         body: SafeArea(
           child: Column(
             children: [
-              if (isProcessingPayment)
-                Container(
-                  color: Colors.black45,
-                  child: const Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 20),
-                        Text(
-                          "Processing payment...",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              // if (isProcessingPayment)
+              //
+              //   Container(
+              //     color: Colors.black45,
+              //     child: const Center(
+              //       child: Column(
+              //         mainAxisSize: MainAxisSize.min,
+              //         children: [
+              //           CircularProgressIndicator(),
+              //           SizedBox(height: 20),
+              //           Text(
+              //             "Processing payment...",
+              //             style: TextStyle(
+              //               color: Colors.white,
+              //               fontSize: 16,
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(20),
@@ -550,7 +607,7 @@ String formatDate(String date) {
         context: context,
       );
       final invoiceId = (planController.invoiceId ?? "").isNotEmpty ? planController.invoiceId! : "";
-      print('inv$invoiceId');
+      print('invf$invoiceId$planName');
       String name = Api.userInfo.read('orgName') ?? "";
       print('org name$name');
       final pdfFile = await PdfGenerator.generateInvoicePdf(

@@ -203,7 +203,7 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
               ],
             ),
           ),

@@ -295,7 +295,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
                                       Get.toNamed(setting['page']);
                                     }
                                     else if (title == "Webinars") {
-                                      await jobController.getWebinarListJobSeekers('','','',context);
+                                      await jobController.getWebinarListJobSeekers('','',context);
                                       Get.toNamed(setting['page']);
                                     }
                                     else if (title == "User List") {

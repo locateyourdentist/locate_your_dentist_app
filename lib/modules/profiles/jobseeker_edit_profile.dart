@@ -10,6 +10,7 @@ import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.d
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:locate_your_dentist/modules/profiles/clinic_edit_profile.dart';
 import 'package:locate_your_dentist/modules/profiles/pdf_path_view_page.dart';
@@ -287,9 +288,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _refresh();
   }
   Future<void> _refresh() async {
-    //loginController.getProfileByUserId(userId!, context);
     await loginController.fetchStates();
-    loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
+    await loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
     jobController.getJobCategoryLists("",context);
     loadJobDescription(loginController.descriptionData);
   }
@@ -481,6 +481,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 builder: (controller) {
                   final items = controller.states.map((v) => v.toString()).toList();
                   return CustomDropdown<String>.search(
+                    key: ValueKey('state_${controller.selectedState ?? ""}'),
                     hintText: "Select State",
                     decoration: CustomDropdownDecoration(
                       closedFillColor: Colors.grey[100],
@@ -524,6 +525,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 builder: (controller) {
                   final items = controller.districts.map((v) => v.toString()).toList();
                   return CustomDropdown<String>.search(
+                    key: ValueKey('district_${controller.selectedDistrict ?? ""}'),
                     hintText: "Select District",
                     items: controller.districts.map((d) => d.toString()).toList(),
                     //initialItem: controller.selectedDistrict,
@@ -863,17 +865,47 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
                         return await Future.wait(files.map((file) => file.readAsBytes()));
                       }
-                      final imageBytes = loginController.selectedUserType == "Job Seekers"
-                          ? await convertFilesToBytes(loginController.logoImages)
-                          : await convertFilesToBytes(loginController.images);
+                      // final imageBytes = loginController.selectedUserType == "Job Seekers"
+                      //     ? await convertFilesToBytes(loginController.logoImages)
+                      //     : await convertFilesToBytes(loginController.images);
+                      //
+                      // final logoBytes = loginController.selectedUserType != "Job Seekers"
+                      //     ? await convertFilesToBytes(loginController.logoImages)
+                      //     : [];
+                      final imageBytes =
+                      await convertFilesToBytes(loginController.images);
 
-                      final logoBytes = loginController.selectedUserType != "Job Seekers"
-                          ? await convertFilesToBytes(loginController.logoImages)
-                          : [];
+                      final logoBytes =
+                      await convertFilesToBytes(loginController.logoImages);
+
                       final certBytes = await convertFilesToBytes(loginController.certificates);
+
+                      // Preserve existing server URLs when no new file was picked
+                      final oldImageUrls = loginController.images.isEmpty
+                          ? loginController.editImages.where((e) => e.url != null).map((e) => e.url!).toList()
+                          : <String>[];
+                      final oldCertificateUrls = loginController.certificates.isEmpty
+                          ? loginController.editCertificates.where((e) => e.url != null).map((e) => e.url!).toList()
+                          : <String>[];
+                      print("IMAGE BYTES LENGTH = ${imageBytes.length}");
+                      print("LOGO BYTES LENGTH = ${logoBytes.length}");
+                      print("CERT BYTES LENGTH = ${certBytes.length}");;
                       final descriptionAbout =
                       jsonEncode(_controller.document.toDelta().toJson());
                       print('dgdesc$descriptionAbout');
+                      final position = await LocationService.getCurrentLocation();
+                      if (position == null) {
+                        print("POSITION IS NULL");
+                        return;
+                      }
+
+                      print("LATITUDE = ${position.latitude}");
+                      print("LONGITUDE = ${position.longitude}");
+
+                      loginController.latitude = position.latitude;
+                      loginController.longitude = position.longitude;
+                      print("Controller LAT = ${loginController.latitude}");
+                      print("Controller LNG = ${loginController.longitude}");
                       await loginController.registerUser(
                         userId: Api.userInfo.read('userId') ?? "",
                         userType: userType,
@@ -895,10 +927,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         typeName: loginController.typeNameController.text ?? "",
                         //: loginController.images.isNotEmpty ? loginController.images : [],
                         //certificate: loginController.certificates.isNotEmpty ? loginController.certificates : [],
-                        image: loginController.selectedUserType=="Job Seekers"?logoBytes ?? []:imageBytes ?? [],
+                        image: imageBytes ?? [],
                         certificate: certBytes,
                         logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
+                        oldImageUrl: oldImageUrls,
+                        oldCertificatesUrl: oldCertificateUrls,
                         description: descriptionAbout,
+                        latitude: loginController.latitude.toString()??"",
+                        longitude: loginController.longitude.toString()??"",
                         //loginController.descriptionController.text,
                         jobCategory:loginController.selectedCategories,
                         details: finalJson,

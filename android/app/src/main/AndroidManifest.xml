@@ -71,8 +71,7 @@
 
                 <data
                     android:scheme="https"
-                    android:host="lyd-backend-mjvx.onrender.com"
-                    android:pathPrefix="/lyd/user/verify_password" />
+                    android:host="locateyourdentist.onrender.com" />
 
             </intent-filter>
 

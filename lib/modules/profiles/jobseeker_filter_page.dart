@@ -119,6 +119,8 @@ import 'package:intl/intl.dart';
                              await jobController.getJobListJobSeekers(search:searchController.text.toString(),state:loginController.selectedState,district:loginController.selectedDistrict,
                                   city: loginController.selectedTaluka,salary: loginController.selectedSalary,jobType: loginController.selectedJobType,jobCategory: loginController.selectedCategories,
                                   context: context);
+                              Navigator.pop(context);
+
                             },
                             onReset: () {
                               setState(() {
@@ -134,6 +136,7 @@ import 'package:intl/intl.dart';
                                 loginController.selectedSalary=null;
                                 loginController.selectedCategories.clear();
                               });
+                              Navigator.pop(context);
                             },
                         ),
                       );
@@ -157,6 +160,7 @@ import 'package:intl/intl.dart';
               Center(child: Text('No Job found',style: AppTextStyles.caption(context),),),
             if(jobController.isLoading==true)
               const CircularProgressIndicator(color: AppColors.primary,),
+            Text("Total Profiles : ${jobController.jobListJobSeekers.isNotEmpty?jobController.jobListJobSeekers.length.toString():"0"}",overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
 
             if(jobController.jobListJobSeekers.isNotEmpty)
             AnimationLimiter(

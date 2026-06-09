@@ -1014,7 +1014,7 @@ class AppImage2 {
       if ( data["status"].toString().toLowerCase() == "success") {
         showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
         loginController.sentMailPlan(userId, "Plan", "Webinar Plan Purchased", "jobPlan", context);
-        notificationController.createNotification( userId,Api.userInfo.read('userType')??"",true,'Plan',"Webinar Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
+        notificationController.createNotification( userId,"",true,'Plan',"Webinar Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
       } else {
         showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
       }

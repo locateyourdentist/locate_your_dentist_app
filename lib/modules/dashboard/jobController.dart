@@ -133,7 +133,7 @@ class JobController extends GetxController{
       update();
     }
   }
-  Future<void> getWebinarListJobSeekers(String state,String district,String city, dynamic context) async {
+  Future<void> getWebinarListJobSeekers(String startDate,String endDate, dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
@@ -143,7 +143,7 @@ class JobController extends GetxController{
     try {
       print('hii');
       _webinarListJobSeekers=[];
-      final response = await api.getWebinarListJobSeekers(  state, district, city, );
+      final response = await api.getWebinarListJobSeekers(  startDate, endDate, );
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
         List<dynamic> webinars = data["data"];

@@ -55,7 +55,10 @@ import 'package:locate_your_dentist/modules/profiles/vedio_plays.dart';
       return Container(
         height: kIsWeb== "Web"? s * 0.1:s*0.75,
         width: double.infinity,
-        decoration: BoxDecoration(color: Colors.grey[200],border: Border.all(color: AppColors.grey)),
+        decoration: BoxDecoration(color: Colors.grey[200],
+           // border: Border.all(color: AppColors.grey)
+          borderRadius: BorderRadius.circular(10)
+        ),
         //s*0.3,
         child:  Center(
           child: Icon(Icons.image,color: AppColors.grey, size: s*0.025),

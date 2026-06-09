@@ -25,7 +25,7 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
   @override
   void initState() {
     super.initState();
-     jobController.getWebinarListJobSeekers('','','',context);
+     jobController.getWebinarListJobSeekers('','',context);
   }
   @override
   Widget build(BuildContext context) {

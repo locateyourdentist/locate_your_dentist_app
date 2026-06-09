@@ -136,7 +136,7 @@ class _InvoiceListPageState extends State<InvoiceListPage> {
                               }
 
                               //final invoice = planController.invoiceList[0];
-                              final invoice = planController.invoiceList.first;
+                             // final invoice = planController.invoiceList.first;
                              await planController.getInvoiceById("${invoice.invoiceId.toString()}",context);
                               await planController.getInvoiceDetails(context);
 

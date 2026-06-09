@@ -423,9 +423,22 @@ class Api {
 
     if (image != null) {
       for (int i = 0; i < image.length; i++) {
+        final bytes = image[i];
+        String ext = 'mp4'; // default: treat unknown as video
+        if (bytes.length >= 4) {
+          if (bytes[0] == 0xFF && bytes[1] == 0xD8) {
+            ext = 'jpg'; // JPEG
+          } else if (bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47) {
+            ext = 'png'; // PNG
+          } else if (bytes.length >= 12 && bytes[0] == 0x52 && bytes[1] == 0x49 && bytes[2] == 0x46 && bytes[3] == 0x46 && bytes[8] == 0x57 && bytes[9] == 0x45 && bytes[10] == 0x42 && bytes[11] == 0x50) {
+            ext = 'webp'; // WebP
+          }
+          // all other formats (MP4, MOV, AVI, 3GP…) keep ext = 'mp4'
+        }
         request.files.add(http.MultipartFile.fromBytes(
           'image',
-          image[i],
+          bytes,
+          filename: 'image_${userId}_$i.$ext',
         ));
       }
     }
@@ -435,7 +448,7 @@ class Api {
         request.files.add(http.MultipartFile.fromBytes(
           'logoImage',
           logoImage[i],
-          filename: 'logo_$userId$i.jpg',
+          filename: 'logo_$userId$i',
         ));
       }
     }
@@ -445,7 +458,7 @@ class Api {
         request.files.add(http.MultipartFile.fromBytes(
           'certificates',
           certificate[i],
-          filename: 'cert_$userId$i.jpg',
+          filename: 'cert_$userId$i',
         ));
       }
     }
@@ -940,9 +953,13 @@ class Api {
     try {
       final String token = Api.userInfo.read('token') ?? "";
       print('invoice userId$userId');
-      final Uri uri = Uri.parse(url).replace(queryParameters: {"invoiceId": invoiceId});
-      print('API getInvoiceUrl $uri');
+      final Uri uri = Uri.parse(url).replace(
+        queryParameters: {
+          "invoiceId": invoiceId,
+        },
+      );
 
+      print("Invoice URL => $uri");
       final response = await http.get(
         uri,
         headers: {
@@ -953,7 +970,7 @@ class Api {
         // body:jsonEncode({"userId":userId})
       );
       print("dffg$userId");
-      print('api getInvoiceUrl ${response.body}');
+      print('invoice Response  ${response.body}');
       return response;
     } catch (e) {
       throw "Failed to fetch base plan details: $e";
@@ -1299,7 +1316,7 @@ class Api {
             'videoSize':videoSize,
           })
       );
-      print('api plan response ${response.body}');
+      print('api create_userPlan response ${response.body}');
       return response;
     } catch (e) {
       throw "Failed to fetch get jobsPlanUrl: $e";
@@ -2080,7 +2097,7 @@ print('otifi img$notificationImage1');
       throw "Failed to fetch job details: $e";
     }
   }
-  Future<http.Response> getWebinarListJobSeekers(String state,String district,String city, ) async {
+  Future<http.Response> getWebinarListJobSeekers(String startDate,String endDate, ) async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.jobUrl}${AppConstants.getWebinarListJobSeekers}";
     print('API getWebinarListJobSeekers $url');
@@ -2096,11 +2113,12 @@ print('otifi img$notificationImage1');
           "Authorization": "Bearer $token",
         },
         body: jsonEncode({
-          'state': state,
-          'district':district,
-          'city':city
+          'startDate': startDate,
+          'endDate':endDate,
         }),
       );
+      print("START DATE = $startDate");
+      print("END DATE = $endDate");
       print('api getWebinarListJobSeekers ${response.body}');
       return response;
     } catch (e) {

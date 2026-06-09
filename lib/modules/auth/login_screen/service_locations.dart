@@ -67,7 +67,7 @@ import 'package:geocoding/geocoding.dart';
       List<Placemark> placemarks =
       await placemarkFromCoordinates(latitude, longitude);
       Placemark place = placemarks.first;
-
+      print('longitude${longitude}latitude${latitude}');
       return '${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}';
     } catch (e) {
       return 'Unknown location';

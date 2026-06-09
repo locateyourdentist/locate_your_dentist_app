@@ -109,7 +109,7 @@ import 'package:geocoding/geocoding.dart';
           child: GestureDetector(
             onTap: () => pickSingleImage1(),
             child: Container(
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.black54,
                 borderRadius: BorderRadius.circular(8),
@@ -169,8 +169,6 @@ import 'package:geocoding/geocoding.dart';
         _controller.document = Document.fromJson([
           {"insert": "\n"}
         ]);
-
-        setState(() {});
       }
     }
     Future<String> getAddressFromLatLng(double lat, double lng) async {
@@ -215,11 +213,9 @@ import 'package:geocoding/geocoding.dart';
     Future<void> _refresh() async {
       userId=Get.arguments?["userId"]??"";
       branchId = Get.arguments?['branchId'] ??"";
-      countryCont!='India';
       print('sd${Api.userInfo.read('selectUId')??""}');
-      await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
-      setProfileData(loginController.userData);
       await loginController.fetchStates();
+      await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
       loadJobDescription(loginController.descriptionData);
       await getPlanLimits();
     }
@@ -448,6 +444,7 @@ import 'package:geocoding/geocoding.dart';
                     builder: (controller) {
                       final items = controller.states.map((v) => v.toString()).toList();
                       return CustomDropdown<String>.search(
+                        key: ValueKey('state_${controller.selectedState ?? ""}'),
                         hintText: "Select State",
                         decoration: CustomDropdownDecoration(
                           closedFillColor: Colors.grey[100],
@@ -491,6 +488,7 @@ import 'package:geocoding/geocoding.dart';
                     builder: (controller) {
                       final items = controller.districts.map((v) => v.toString()).toList();
                       return CustomDropdown<String>.search(
+                        key: ValueKey('district_${controller.selectedDistrict ?? ""}'),
                         hintText: "Select District",
                         items: controller.districts.map((d) => d.toString()).toList(),
                         initialItem: controller.selectedDistrict,
@@ -537,6 +535,7 @@ import 'package:geocoding/geocoding.dart';
                         return  DefaultTextStyle(
                           style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
                           child: CustomDropdown<String>.search(
+                            key: ValueKey('taluka_${controller.selectedTaluka ?? ""}'),
                             hintText: "Select  taluka/town",
                             items: loginController.talukas.map((t) => t.toString()).toList(),
                             decoration: CustomDropdownDecoration(
@@ -580,6 +579,7 @@ import 'package:geocoding/geocoding.dart';
                         return DefaultTextStyle(
                           style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
                           child: CustomDropdown<String>.search(
+                            key: ValueKey('village_${controller.selectedVillage ?? ""}'),
                             hintText: "Select Area",
                             // items: loginController.villages.map((v) => v['name'].toString()).toList(),
                             items: items,

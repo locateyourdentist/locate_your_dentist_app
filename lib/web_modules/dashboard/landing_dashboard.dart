@@ -525,6 +525,8 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                           //  featuresSection (),
                             AboutUsSection(),
                             SizedBox(height: size*0.01,),
+                            platformOverviewSection(context),
+                            SizedBox(height: size*0.01,),
 
                             userTypesSection(),
                            SizedBox(height: size*0.01,),
@@ -1152,7 +1154,7 @@ class _HeroBannerState extends State<HeroBanner>
 
   final List<Map<String, String>> banners = [
     {
-      "image": "assets/images/front.png",
+      "image": "assets/images/front_image.png",
       "title": "Find Your Dental Clinic near you",
       "button": "Enquire Now",
       "route": "/userTypeListWeb",
@@ -1343,6 +1345,176 @@ class _HeroBannerState extends State<HeroBanner>
       ),
     );
   }
+
+}
+Widget platformOverviewSection(context) {
+  final size = MediaQuery.of(context).size.width;
+  final isMobile = size < 800;
+
+  final items = [
+    {
+      "title": "Dental Clinics",
+      "desc": "Create profile, get patients, manage your clinic online",
+      "icon": Icons.local_hospital,
+    },
+    {
+      "title": "Dental Labs",
+      "desc": "Connect with clinics and receive lab work orders easily",
+      "icon": Icons.biotech,
+    },
+    {
+      "title": "Dental Shops",
+      "desc": "Show your dental products and reach nearby buyers",
+      "icon": Icons.store,
+    },
+    {
+      "title": "Dental Mechanics",
+      "desc": "Get repair and equipment service jobs from clinics",
+      "icon": Icons.build,
+    },
+    {
+      "title": "Dental Professionals",
+      "desc": "Consultants, assistants & experts can grow visibility",
+      "icon": Icons.person_pin,
+    },
+    {
+      "title": "Job Seekers",
+      "desc": "Find dental jobs and attend webinars for career growth",
+      "icon": Icons.work,
+    },
+  ];
+
+  return Container(
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
+    color: const Color(0xffF8FAFC),
+    child: Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 1500),
+        child: Column(
+          children: [
+            Text(
+              "One Platform for the Entire Dental Ecosystem",
+              textAlign: TextAlign.center,
+              style: AppTextStyles.headline1(
+                context,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              "Free registration for all users • Connect • Grow • Get Opportunities",
+              textAlign: TextAlign.center,
+              style: AppTextStyles.caption(context, color: AppColors.grey),
+            ),
+            const SizedBox(height: 40),
+
+            Wrap(
+              spacing: 20,
+              runSpacing: 20,
+              alignment: WrapAlignment.center,
+              children: items.map((item) {
+                return Container(
+                  width: isMobile ? double.infinity : 320,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(item["icon"] as IconData,
+                          color: AppColors.primary, size: 35),
+                      const SizedBox(height: 15),
+                      Text(
+                        item["title"].toString(),
+                        style: AppTextStyles.subtitle(context,
+                            color: Colors.black),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        item["desc"].toString(),
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+
+            const SizedBox(height: 40),
+
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primary,
+                    AppColors.secondary,
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    "What You Can Do Here",
+                    style: AppTextStyles.subtitle(
+                      context,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Wrap(
+                    spacing: 20,
+                    runSpacing: 10,
+                    alignment: WrapAlignment.center,
+                    children: const [
+                      _FeatureChip(text: "🔍 Find nearby clinics"),
+                      _FeatureChip(text: "💼 Post & find dental jobs"),
+                      _FeatureChip(text: "🎓 Attend webinars"),
+                      _FeatureChip(text: "📍 Location-based search"),
+                      _FeatureChip(text: "🆓 Free registration"),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _FeatureChip extends StatelessWidget {
+  final String text;
+  const _FeatureChip({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        text,
+        style: AppTextStyles.caption(context, color: Colors.black),
+      ),
+    );
+  }
 }
 class AnimatedText extends StatelessWidget {
   final String text;
@@ -1390,31 +1562,28 @@ class AnimatedText extends StatelessWidget {
 class AboutUsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width;
-    final isMobile = size < 800;
+    final isMobile = Responsive.isMobile(context);
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
       color: Colors.white,
-
       child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 1500),
-
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
           child: isMobile
               ? Column(
             children: [
               _content(context),
-              const SizedBox(height: 30),
-              _image(context),
+              const SizedBox(height: 20),
+              _image(),
             ],
           )
               : Row(
             children: [
               Expanded(child: _content(context)),
               const SizedBox(width: 40),
-              Expanded(child: _image(context)),
+              Expanded(child: _image()),
             ],
           ),
         ),
@@ -1423,87 +1592,73 @@ class AboutUsSection extends StatelessWidget {
   }
 
   Widget _content(BuildContext context) {
-    double size = MediaQuery.of(context).size.width;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "ABOUT US",
-            style: TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
-              fontSize: size * 0.018,
-              letterSpacing: 1.5,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "ABOUT OUR PLATFORM",
+          style: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+            fontSize: Responsive.width(context, 18),
           ),
-          const SizedBox(height: 10),
-
-          Text(
-            "Connecting the Dental Ecosystem in One Place",
-            style: TextStyle(
-              color: AppColors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: size * 0.014,
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          Text(
-            "We are building a unified digital platform...",
-            style: TextStyle(
-              height: 1.6,
-              color: Colors.grey,
-              fontSize: size * 0.009,
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          _bullet("Connect Patients with verified clinics", context),
-          _bullet("Link Clinics with Dental Labs & Shops", context),
-          _bullet("Support Dental Consultants & Professionals", context),
-          _bullet("Faster communication & workflow", context),
-          _bullet("One unified dental network", context),
-        ],
-      ),
-    );
-  }
-
-  Widget _image(BuildContext context) {
-    double size = MediaQuery.of(context).size.width;
-
-    return Center(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Image.asset(
-          "assets/images/lp1.jpg",
-          fit: BoxFit.cover,
-          height: size * 0.18,
         ),
-      ),
+        const SizedBox(height: 10),
+
+        Text(
+          "A Complete Dental Ecosystem in One Platform",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: Responsive.width(context, 22),
+          ),
+        ),
+
+        const SizedBox(height: 15),
+
+        Text(
+          "Locate Your Dentist is a unified digital healthcare platform designed exclusively for the dental community. "
+              "We bring together patients, dental clinics, dental laboratories, dental shops, dental mechanics, consultants, "
+              "and job seekers into a single connected ecosystem.\n\n"
+              "Our mission is to simplify dental healthcare access by enabling patients to easily discover nearby verified clinics "
+              "based on location. Clinics can manage their profile, showcase services, hire professionals, and grow their practice. "
+              "Dental labs and shops can connect directly with clinics for faster workflow and communication.\n\n"
+              "We also empower dental professionals and job seekers by providing a dedicated job portal and webinar system where "
+              "they can explore opportunities, enhance skills, and build their careers.\n\n"
+              "This platform is built to strengthen the dental network by improving visibility, collaboration, and accessibility "
+              "across the entire dental industry.",
+          style: TextStyle(
+            height: 1.6,
+            fontSize: Responsive.width(context, 14),
+            color: Colors.grey[700],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _bullet(String text, BuildContext context) {
-    double size = MediaQuery.of(context).size.width;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          Icon(Icons.check_circle, color: Colors.green, size: size * 0.012),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              text,
-              style: AppTextStyles.caption(context),
-            ),
-          ),
-        ],
+  Widget _image() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Image.asset(
+        "assets/images/lp1.jpg",
+        fit: BoxFit.cover,
       ),
     );
+  }
+}
+class Responsive {
+  static bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 600;
+
+  static bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 600 &&
+          MediaQuery.of(context).size.width < 1024;
+
+  static bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 1024;
+
+  static double width(BuildContext context, double value) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return (screenWidth / 1440) * value;
   }
 }

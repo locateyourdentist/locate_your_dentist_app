@@ -808,14 +808,19 @@ class LoginController extends GetxController {
         locationController.text=user.location??"";
 
         // Fetch cascading lists for dropdowns
+        // Note: fetchDistricts resets selectedDistrict/Taluka/Village to null internally,
+        // so we must restore the user's saved values after each cascade call.
         if (selectedState != null && selectedState!.isNotEmpty) {
           await fetchDistricts(selectedState!);
+          selectedDistrict = user.address["district"] ?? "";
         }
         if (selectedDistrict != null && selectedDistrict!.isNotEmpty) {
           await fetchTalukas(selectedDistrict!);
+          selectedTaluka = user.address["city"] ?? "";
         }
         if (selectedTaluka != null && selectedTaluka!.isNotEmpty) {
           await fetchVillages(selectedTaluka!);
+          selectedVillage = user.address["area"] ?? "";
         }
         // if (user.details["jobCategory"] != null) {
         //   final jc = user.details["jobCategory"];
@@ -1032,6 +1037,23 @@ class LoginController extends GetxController {
       }):
      await showSuccessDialog(context, title:"Success",message :"User updated successfully!", onOkPressed: () {
         Get.back();});
+      if (userId != "0") {
+        List<String> _parseList(dynamic value) {
+          if (value == null) return [];
+          if (value is List) return value.map((e) => e.toString()).toList();
+          if (value is String && value.isNotEmpty) return [value];
+          return [];
+        }
+        final updatedUser = ProfileModel.fromJson(data["data"]);
+        _userData = [updatedUser];
+        editImages = updatedUser.images.map((e) {
+          final url = e.replaceAll("\\", "/");
+          return AppImage(url: url, isVideo: url.toLowerCase().endsWith(".mp4"));
+        }).toList();
+        logoImage = _parseList(updatedUser.logoImages).map((e) => e.replaceAll("\\", "/")).toList();
+        editCertificates = _parseList(updatedUser.certificates).map((e) => AppImage(url: e.replaceAll("\\", "/"))).toList();
+        logoImages.clear();
+      }
       String userId1=data["data"]["userId"];
       String userType=data["data"]["userType"];
         selectedCategories.clear();
@@ -1059,7 +1081,8 @@ class LoginController extends GetxController {
          selectedUserType=null;
          image==null;
        // (userId=="0")?   await sentMailUser(userId1, "register", "New User Register From LYD", "your Registered successfully", context):"";
-      (userId=="0")?   await notificationController.createNotification(userId1,userType,true, 'new', '$userId1 Registered successfully ',Api.userInfo.read('state')??"",Api.userInfo.read('district')??"",Api.userInfo.read('city')??"",Api.userInfo.read('area')??"", context):"";
+      //(userId=="0")?   await notificationController.createNotification(userId1,"",true, 'new', '$userId1 Registered successfully ',Api.userInfo.read('state')??"",Api.userInfo.read('district')??"",Api.userInfo.read('city')??"",Api.userInfo.read('area')??"", context):"";
+        (userId=="0")?   await notificationController.createNotification(userId1,"",true, 'new', '$userId1 Registered successfully ',"","","","", context):"";
         //kIsWeb? Get.offAllNamed('/webLoginPage'):Get.offAllNamed('/loginPage') ;
       } else {
         await showSuccessDialog(context, title:"Error",message :"${data["message"] ?? "error"}",

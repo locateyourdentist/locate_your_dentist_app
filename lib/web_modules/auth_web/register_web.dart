@@ -36,8 +36,28 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   late QuillController _controller;
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
-  final allItems = ["admin", "superAdmin", "Dental Clinic", "Dental Lab", "Dental Shop", "Dental Mechanic", "Job Seekers", "Dental Consultant"];
-  final int maxFiles = 3;
+  final allItems = [
+    "admin",
+    "superAdmin",
+    "Dental Clinic",
+    "Dental Lab",
+    "Dental Shop",
+    "Dental Mechanic",
+    "Job Seekers",
+    "Dental Consultant"
+  ];
+
+  List<String> get filteredItems {
+    final userType = Api.userInfo.read('userType');
+
+    if (userType != 'superAdmin') {
+      return allItems
+          .where((e) => e != "admin" && e != "superAdmin")
+          .toList();
+    }
+
+    return allItems;
+  }  final int maxFiles = 3;
   bool isPicking = false;
 
   @override
@@ -180,23 +200,56 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     }
   }
 
+  // Future<void> pickMedia(String source) async {
+  //   bool isVideo = source == "video";
+  //   if (kIsWeb) {
+  //     final result = await FilePicker.platform.pickFiles(type: isVideo ? FileType.video : FileType.image, withData: true);
+  //     if (result == null || result.files.isEmpty) return;
+  //     final file = result.files.first;
+  //     loginController.editImages.add(AppImage(bytes: file.bytes, isVideo: isVideo));
+  //   } else {
+  //     XFile? pickedFile = isVideo
+  //         ? await _picker.pickVideo(source: ImageSource.gallery)
+  //         : await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+  //     if (pickedFile == null) return;
+  //     loginController.editImages.add(AppImage(file: File(pickedFile.path), isVideo: isVideo));
+  //     loginController.update();
+  //
+  //   }
+  //   loginController.update();
+  // }
   Future<void> pickMedia(String source) async {
     bool isVideo = source == "video";
+
     if (kIsWeb) {
-      final result = await FilePicker.platform.pickFiles(type: isVideo ? FileType.video : FileType.image, withData: true);
+      final result = await FilePicker.platform.pickFiles(
+        type: isVideo ? FileType.video : FileType.image,
+        withData: true,
+      );
+
       if (result == null || result.files.isEmpty) return;
+
       final file = result.files.first;
-      loginController.editImages.add(AppImage(bytes: file.bytes, isVideo: isVideo));
+
+      loginController.images1.add(
+        AppImage2(
+          bytes: file.bytes,
+        ),
+      );
     } else {
       XFile? pickedFile = isVideo
           ? await _picker.pickVideo(source: ImageSource.gallery)
           : await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-      if (pickedFile == null) return;
-      loginController.editImages.add(AppImage(file: File(pickedFile.path), isVideo: isVideo));
-    }
-    loginController.update();
-  }
 
+      if (pickedFile == null) return;
+
+      loginController.images1.add(
+        AppImage2(file: File(pickedFile.path)),
+      );
+    }
+
+    loginController.update(); // MUST be once at end
+  }
   List<Step> getSteps(bool isMobile) {
     return [
       Step(title: Text(isMobile ? "" : "Personal"), content: _step1(isMobile), isActive: currentStep >= 0),
@@ -345,7 +398,8 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   }
 
   Future<void> _handleRegistration() async {
-    final imageBytes = await _convertAppImages(loginController.editImages);
+   // final imageBytes = await _convertAppImages(loginController.editImages);
+    final imageBytes = await _convertAppImage2s(loginController.images1);
     final logoBytes = await _convertAppImage2s(loginController.logoImages1);
     final certBytes = await _convertAppImage2s(loginController.certificates1);
 
@@ -464,10 +518,12 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       children: [
         CustomDropdownField(
           hint: "User Type",
-          items: allItems,
+          items: filteredItems,
           selectedValue: loginController.selectedUserType,
           onChanged: (v) => setState(() => loginController.selectedUserType = v),
         ),
+        const SizedBox(height: 15),
+
         if (loginController.selectedUserType != 'Job Seekers' && loginController.selectedUserType != null)
           Padding(
             padding: const EdgeInsets.only(top: 15,bottom: 15),
@@ -696,11 +752,15 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         spacing: 10,
         runSpacing: 10,
         children: [
-          ...c.images1.map((img) => _buildThumb(img, () {
-            c.images1.remove(img);
-            c.update();
-          })),
-          if (c.images1.length < maxFiles) _buildAddThumb(pickCertificates),
+          ...c.images1.map((img) {
+            return _buildThumb(img, () {
+              c.images1.remove(img);
+              c.update();
+            });
+          }).toList(),
+
+          if (c.images1.length < maxFiles)
+            _buildAddThumb(() => pickMedia("image")),
         ],
       );
     });

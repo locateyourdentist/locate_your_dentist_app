@@ -168,11 +168,12 @@ class _AppliedJobListsState extends State<AppliedJobLists> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Container(
-                                                  width: size * 0.22,
-                                                  height: size * 0.22,
+                                                  width: size * 0.18,
+                                                  height: size * 0.18,
                                                   clipBehavior: Clip.hardEdge,
                                                   decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
+                                                    shape: BoxShape.circle,
+                                                   // borderRadius: BorderRadius.circular(10),
                                                     color: Colors.white,
                                                   ),
                                                   child: Image.network(
@@ -182,28 +183,45 @@ class _AppliedJobListsState extends State<AppliedJobLists> {
                                                     height: size * 0.26,
                                                     errorBuilder: (context, error, stackTrace) {
                                                       return Container(
-                                                        decoration: BoxDecoration(color: getRandomColor(appliedJobs.orgName.toString()),
-                                                        ),
+                                                        decoration: BoxDecoration(color: Colors.grey.shade100),
                                                         //'assets/images/hospital.jpg',
                                                         //fit: BoxFit.cover,
                                                         width: size * 0.12,
                                                         height: size * 0.12,
                                                         child: Center(
-                                                          child: Text(getFirstLetter(appliedJobs.orgName.toString(),),style: AppTextStyles.headline(context,color: AppColors.white),
+                                                          child: Text(getFirstLetter(appliedJobs.orgName.toString(),),style: AppTextStyles.headline(context,color: getRandomColor(appliedJobs.orgName.toString()),
                                                           ),
                                                         ),
-                                                      );
+                                                      ));
                                                     },)
                                               ),
-            
-                                              //
+
+                                              // Container(
+                                              //   width: 80,
+                                              //   height: 90,
+                                              //   decoration: BoxDecoration(
+                                              //     //shape: BoxShape.circle,
+                                              //     color: Colors.grey.shade100,borderRadius: BorderRadius.circular(10)
+                                              //   ),
+                                              //   child: Padding(
+                                              //     padding: const EdgeInsets.all(12),
+                                              //     child: Image.asset(
+                                              //       'assets/images/tooth.png',
+                                              //       fit: BoxFit.contain,
+                                              //     ),
+                                              //   ),
+                                              // ),
                                               const SizedBox(width: 10,),
                                               Expanded(
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(appliedJobs.orgName.toString()??"N/A",style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
-                                                    Text(appliedJobs.jobType.toString()??"N/A",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Text(appliedJobs.jobType.toString()??"N/A",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),),
+
                                                     Container(
                                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                                       decoration: BoxDecoration(
@@ -222,8 +240,9 @@ class _AppliedJobListsState extends State<AppliedJobLists> {
                                                           color: getStatusColor(appliedJobs.status ?? ""),
                                                         ),
                                                       ),
+                                                    ),  ],
                                                     ),
-                                                    const SizedBox(height: 15,),
+                                                    const SizedBox(height: 5,),
                                                     Text(appliedJobs.jobTitle.toString()??"N/A",softWrap:true,style: TextStyle(fontSize: size*0.032,fontWeight: FontWeight.bold,color: Colors.black),),
                                                     const SizedBox(height: 5),
             
