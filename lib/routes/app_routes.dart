@@ -316,7 +316,7 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.myInvoiceListWebPage,
-        page: ()=>  InvoiceListPageWeb()
+        page: ()=>  InvoiceListPageWeb(),
     ),
     GetPage(
         name: AppRoutes.viewPlanPage,

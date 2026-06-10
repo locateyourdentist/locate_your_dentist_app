@@ -97,15 +97,52 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
     loginController.update();
   }
+  Map<String, int> getPlanLimits() {
+    if (loginController.userData.isEmpty) {
+      loginController.maxFilesImage = 2;
+      loginController.maxFilesVideo = 1;
+      loginController.filesImageSize = 0;
+      loginController.filesVideoSize = 0;
 
+      loginController.update();
+      return {};
+    }
+
+    final userData = loginController.userData.first;
+
+    final planDetails =
+    userData.details?["plan"]?["basePlan"]?["details"];
+
+    loginController.maxFilesImage =
+        int.tryParse(planDetails?["imageCount"]?.toString() ?? "2") ?? 2;
+
+    loginController.maxFilesVideo =
+        int.tryParse(planDetails?["videoCount"]?.toString() ?? "1") ?? 1;
+
+    loginController.filesImageSize =
+        int.tryParse(planDetails?["imageSize"]?.toString() ?? "0") ?? 0;
+
+    loginController.filesVideoSize =
+        int.tryParse(planDetails?["videoSize"]?.toString() ?? "0") ?? 0;
+
+    loginController.update();
+
+    print('Max Images: ${loginController.maxFilesImage}');
+    print('Max Videos: ${loginController.maxFilesVideo}');
+
+    return {};
+  }
   Future<void> _refresh() async {
     await getLocation();
     loadJobDescription(loginController.descriptionData);
     await loginController.fetchStates();
-    await setProfileData(loginController.userData);
-    if (loginController.userData.isNotEmpty) getPlanLimits();
+    if (loginController.userData.isNotEmpty) {
+      await setProfileData(loginController.userData.first);
+      getPlanLimits();
+    }
     await jobController.getJobCategoryLists("", context);
     branchId = Get.arguments?['branchId'] ?? "";
+    print('userid is${Get.arguments?['userId']}ss');
     if (Get.arguments?['userId'] == "0") loginController.clearProfileData();
   }
 
@@ -146,17 +183,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       if (mounted) setState(() {});
     }
   }
-
-  void getPlanLimits() {
-    final userData = loginController.userData.first;
-    final planDetails = userData.details?["plan"]?["basePlan"]?["details"];
-    if (planDetails != null) {
-      loginController.maxFilesImage = int.tryParse(planDetails["imageCount"]?.toString() ?? "") ?? 2;
-     // loginController.maxFilesImage = int.tryParse(planDetails["imageCount"]?.toString() ?? "0") ?? 2;
-      loginController.maxFilesVideo = int.tryParse(planDetails["videoCount"]?.toString() ?? "0") ?? 1;
-    }
-  }
-
   Future<void> pickLogo() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
     if (image == null) return;
@@ -219,36 +245,40 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   //   loginController.update();
   // }
   Future<void> pickMedia(String source) async {
-    bool isVideo = source == "video";
+    final isVideo = source == "video";
 
     if (kIsWeb) {
       final result = await FilePicker.platform.pickFiles(
         type: isVideo ? FileType.video : FileType.image,
         withData: true,
+        withReadStream: true,
       );
-
       if (result == null || result.files.isEmpty) return;
-
       final file = result.files.first;
 
-      loginController.images1.add(
-        AppImage2(
-          bytes: file.bytes,
-        ),
-      );
+      // file.bytes can be null for large files — fall back to stream
+      Uint8List? bytes = file.bytes;
+      if (bytes == null && file.readStream != null) {
+        final chunks = <int>[];
+        await for (final chunk in file.readStream!) {
+          chunks.addAll(chunk);
+        }
+        bytes = Uint8List.fromList(chunks);
+      }
+      if (bytes == null) {
+        Get.snackbar("Error", "Could not read file. Try a smaller file.");
+        return;
+      }
+      loginController.images1.add(AppImage2(bytes: bytes, isVideo: isVideo));
     } else {
       XFile? pickedFile = isVideo
           ? await _picker.pickVideo(source: ImageSource.gallery)
           : await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-
       if (pickedFile == null) return;
-
-      loginController.images1.add(
-        AppImage2(file: File(pickedFile.path)),
-      );
+      loginController.images1.add(AppImage2(file: File(pickedFile.path), isVideo: isVideo));
     }
 
-    loginController.update(); // MUST be once at end
+    loginController.update();
   }
   List<Step> getSteps(bool isMobile) {
     return [
@@ -403,8 +433,15 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     final logoBytes = await _convertAppImage2s(loginController.logoImages1);
     final certBytes = await _convertAppImage2s(loginController.certificates1);
 
-    final oldImageUrls = loginController.editImages.where((e) => e.url != null).map((e) => e.url!).toList();
-    final oldCertUrls = loginController.certificates1.where((e) => e.url != null).map((e) => e.url!).toList();
+    // URL-only items in images1 = existing server files to preserve
+    final oldImageUrls = loginController.images1
+        .where((e) => e.url != null && e.bytes == null && e.file == null)
+        .map((e) => e.url!)
+        .toList();
+    final oldCertUrls = loginController.certificates1
+        .where((e) => e.url != null && e.bytes == null && e.file == null)
+        .map((e) => e.url!)
+        .toList();
 
     await loginController.registerUser(
       userId: (Api.userInfo.read('token') == null || Get.arguments?['userId'] == "0")
@@ -438,16 +475,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       context: context,
     );
   }
-
-  Future<List<Uint8List>> _convertAppImages(List<AppImage> images) async {
-    List<Uint8List> res = [];
-    for (var img in images) {
-      if (kIsWeb && img.bytes != null) res.add(img.bytes!);
-      else if (img.file != null) res.add(await img.file!.readAsBytes());
-    }
-    return res;
-  }
-
   Future<List<Uint8List>> _convertAppImage2s(List<AppImage2> images) async {
     List<Uint8List> res = [];
     for (var img in images) {
@@ -456,7 +483,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     }
     return res;
   }
-
   Widget _responsiveRow(bool isMobile, Widget first, Widget second) {
     if (isMobile) {
       return Column(
@@ -468,7 +494,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       children: [Expanded(child: first), const SizedBox(width: 15), Expanded(child: second)],
     );
   }
-
   Widget _step1(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -724,6 +749,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
         _buildImagePicker(),
         const SizedBox(height: 20),
+        if(Api.userInfo.read('userId')!=null)
+          Column(children: [
+            const Text("Upload Video"),
+            const SizedBox(height: 10),
+
+            _buildVideoPicker(),
+            const SizedBox(height: 20),
+          ],),
         const Text("Logo / Profile Image"),
         const SizedBox(height: 10),
         _buildLogoPicker(),
@@ -748,19 +781,35 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   }
   Widget _buildImagePicker() {
     return GetBuilder<LoginController>(builder: (c) {
+      final imageItems = c.images1.where((img) => !img.isVideo).toList();
       return Wrap(
         spacing: 10,
         runSpacing: 10,
         children: [
-          ...c.images1.map((img) {
-            return _buildThumb(img, () {
-              c.images1.remove(img);
-              c.update();
-            });
-          }).toList(),
-
-          if (c.images1.length < maxFiles)
+          ...imageItems.map((img) => _buildThumb(img, () {
+            c.images1.remove(img);
+            c.update();
+          })),
+          if (imageItems.length < c.maxFilesImage)
             _buildAddThumb(() => pickMedia("image")),
+        ],
+      );
+    });
+  }
+
+  Widget _buildVideoPicker() {
+    return GetBuilder<LoginController>(builder: (c) {
+      final videoItems = c.images1.where((img) => img.isVideo).toList();
+      return Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: [
+          ...videoItems.map((img) => _buildThumb(img, () {
+            c.images1.remove(img);
+            c.update();
+          })),
+          if (videoItems.length < c.maxFilesVideo)
+            _buildAddThumb(() => pickMedia("video")),
         ],
       );
     });
@@ -782,11 +831,17 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     return Stack(
       children: [
         Container(
-          width: 80,
-          height: 80,
+          width: 120,
+          height: 120,
           decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(8)),
           child: ClipRRect(borderRadius: BorderRadius.circular(8), child: _buildImage(img)),
         ),
+        if (img.isVideo)
+          const Positioned(
+            bottom: 4,
+            left: 4,
+            child: Icon(Icons.play_circle_fill, color: Colors.white, size: 28),
+          ),
         Positioned(
           top: 0,
           right: 0,
@@ -813,9 +868,24 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   }
 
   Widget _buildImage(AppImage2 image) {
-    if (kIsWeb && image.bytes != null) return Image.memory(image.bytes!, fit: BoxFit.cover);
-    if (image.file != null) return Image.file(image.file!, fit: BoxFit.cover);
-    if (image.url != null && image.url!.isNotEmpty) return Image.network(image.url!, fit: BoxFit.cover);
+    if (image.isVideo) {
+      return Container(
+        color: Colors.black87,
+        child: const Center(child: Icon(Icons.videocam, color: Colors.white, size: 40)),
+      );
+    }
+    if (kIsWeb && image.bytes != null) return Image.memory(image.bytes!, width: 120, height: 120, fit: BoxFit.cover);
+    if (image.file != null) return Image.file(image.file!, width: 120, height: 120, fit: BoxFit.cover);
+    if (image.url != null && image.url!.isNotEmpty) {
+      final url = image.url!.toLowerCase();
+      if (url.endsWith('.mp4') || url.endsWith('.mov') || url.endsWith('.avi')) {
+        return Container(
+          color: Colors.black87,
+          child: const Center(child: Icon(Icons.videocam, color: Colors.white, size: 40)),
+        );
+      }
+      return Image.network(image.url!, width: 120, height: 120, fit: BoxFit.cover);
+    }
     return const Icon(Icons.image);
   }
 

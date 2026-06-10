@@ -293,7 +293,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                         ),
 
                         const SizedBox(height: 20),
-                      //if(Api.userInfo.read('userType')=='Job Seekers')
+                      if(experiences.isNotEmpty)
                         _card(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

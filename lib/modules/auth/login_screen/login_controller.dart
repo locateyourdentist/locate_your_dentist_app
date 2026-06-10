@@ -822,19 +822,6 @@ class LoginController extends GetxController {
           await fetchVillages(selectedTaluka!);
           selectedVillage = user.address["area"] ?? "";
         }
-        // if (user.details["jobCategory"] != null) {
-        //   final jc = user.details["jobCategory"];
-        //   if (jc is List) {
-        //     selectedCategories = jc.map((e) => e.toString()).toList();
-        //   } else if (jc is String && jc.isNotEmpty) {
-        //     selectedCategories = [jc];
-        //   } else {
-        //     selectedCategories = [];
-        //   }
-        // } else {
-        //   selectedCategories = [];
-        // }
-        // print('categoryy$selectedCategories');
         String normalize(String value) => value.trim().toLowerCase();
 
         if (user.details["jobCategory"] != null) {
@@ -849,8 +836,6 @@ class LoginController extends GetxController {
         } else {
           selectedCategories = [];
         }
-
-        print('categoryy $selectedCategories');
         void setSelectedCategoriesFromUser(List<dynamic>? jc) {
           String normalize(String v) => v.trim().toLowerCase();
 
@@ -861,6 +846,12 @@ class LoginController extends GetxController {
           }
 
          update();
+        }
+        List<String> parseStringList(dynamic value) {
+          if (value == null) return [];
+          if (value is List) return value.map((e) => e.toString()).toList();
+          if (value is String && value.isNotEmpty) return [value];
+          return [];
         }
         setSelectedCategoriesFromUser(user.details["jobCategory"]);
         final college = user.details["collegeDetails"] ?? {};
@@ -885,21 +876,36 @@ class LoginController extends GetxController {
             ),
           );
         }
-        // for (var e in user.experienceDetails) {
-        //   experienceList.add(
-        //     ExperienceFieldModel(
-        //       companyName: TextEditingController(text: e.companyName.text),
-        //       experience: TextEditingController(text: e.experience.text),
-        //       jobDescription:
-        //       TextEditingController(text: e.jobDescription.text),
-        //     ),
-        //   );
-        // }
-        List<String> parseStringList(dynamic value) {
-          if (value == null) return [];
-          if (value is List) return value.map((e) => e.toString()).toList();
-          if (value is String && value.isNotEmpty) return [value];
-          return [];
+        images1.clear();
+
+        for (var image in user.images) {
+          final url = image.replaceAll("\\", "/");
+          final lower = url.toLowerCase();
+          images1.add(AppImage2(
+            url: url,
+            name: url.split('/').last,
+            isVideo: lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.avi'),
+          ));
+        }
+        certificates1.clear();
+
+        for (var cert in parseStringList(user.certificates)) {
+          certificates1.add(
+            AppImage2(
+              url: cert.replaceAll("\\", "/"),
+              name: cert.split('/').last,
+            ),
+          );
+        }
+        logoImages1.clear();
+
+        for (var logo in parseStringList(user.logoImages)) {
+          logoImages1.add(
+            AppImage2(
+              url: logo.replaceAll("\\", "/"),
+              name: logo.split('/').last,
+            ),
+          );
         }
         editImages = user.images.map((e) {
           final url = e.replaceAll("\\", "/");

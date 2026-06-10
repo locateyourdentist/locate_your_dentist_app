@@ -72,7 +72,7 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
     return Scaffold(
       key: _scaffoldKeyJobList,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer:( !isDesktop&&isLoggedIn) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       endDrawer: !isDesktop ? const Drawer(width: 300, child: FilterSidebar()) : null,
       appBar: buildAppBar(context),
       body: Row(

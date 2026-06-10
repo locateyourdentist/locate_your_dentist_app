@@ -13,6 +13,8 @@ import 'package:locate_your_dentist/web_modules/dental_clinic/branch_list_web.da
 import '../../common_widgets/color_code.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../common_widgets/common_widget_all.dart';
+
 
 PreferredSizeWidget buildAppBar(dynamic context) {
   double size=MediaQuery.of(context).size.width;
@@ -287,6 +289,14 @@ class _CommonFooterState extends State<CommonFooter> {
     );
   }
 
+  Future<void> launchCall1(String phone) async {
+    final Uri uri = Uri.parse('tel:$phone');
+
+    await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+  }
   Widget _buildContactSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,9 +307,13 @@ class _CommonFooterState extends State<CommonFooter> {
         _infoRow(Icons.location_on,
             "${planController.streetController.text}, ${planController.cityController.text}, ${planController.stateController.text}, ${planController.zipController.text}"),
 
-        _infoRow(Icons.phone, planController.phoneController.text),
+        _infoRow(Icons.phone,onTap: ()async {
+          await   launchCall1("tel:${planController.phoneController.text.toString()}");
+        }, planController.phoneController.text),
 
-        _infoRow(Icons.email, planController.emailController.text),
+        _infoRow(Icons.email,   onTap: ()async {
+          await  sendEmail("mailto:${planController.emailController.text.toString()}");
+        }, planController.emailController.text),
       ],
     );
   }
@@ -347,27 +361,33 @@ class _CommonFooterState extends State<CommonFooter> {
     );
   }
 
-  Widget _infoRow(IconData icon, String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white, size: 16),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              text,
-              style: AppTextStyles.caption(
-                context,
-                color: AppColors.white,
+  Widget _infoRow(
+      IconData icon,
+      String text, {
+        VoidCallback? onTap,
+      }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.white, size: 16),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                text,
+                style: AppTextStyles.caption(
+                  context,
+                  color: AppColors.white,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
   Widget _socialIcon(String path, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,

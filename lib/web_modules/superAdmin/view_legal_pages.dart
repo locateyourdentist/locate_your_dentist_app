@@ -144,12 +144,11 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (!isDesktop)
-                        Positioned(
-                          top: 10,
-                          left: 10,
+                      if ((isLoggedIn && !isDesktop))
+                        Align(
+                          alignment: Alignment.centerLeft,
                           child: IconButton(
-                            icon: const Icon(Icons.menu,color: AppColors.white,),
+                            icon: const Icon(Icons.menu, color: AppColors.white),
                             onPressed: () => _scaffoldKeyLegal.currentState?.openDrawer(),
                           ),
                         ),

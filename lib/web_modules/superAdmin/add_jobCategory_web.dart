@@ -73,9 +73,8 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (!isDesktop)
-                  Positioned(
-                    top: 10,
-                    left: 10,
+                  Align(
+                    alignment: Alignment.centerLeft,
                     child: IconButton(
                       icon: const Icon(Icons.menu),
                       onPressed: () => _scaffoldKeyJobCategory.currentState?.openDrawer(),
@@ -400,9 +399,8 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                             CrossAxisAlignment.start,
                             children: [
                               if (!isDesktop)
-                                Positioned(
-                                  top: 10,
-                                  left: 10,
+                                Align(
+                                  alignment: Alignment.centerLeft,
                                   child: IconButton(
                                     icon: const Icon(Icons.menu),
                                     onPressed: () => _scaffoldKeyJobCategory.currentState?.openDrawer(),

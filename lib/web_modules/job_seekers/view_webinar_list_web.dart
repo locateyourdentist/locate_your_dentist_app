@@ -37,13 +37,14 @@ print('dflog$isLoggedIn');
     return Scaffold(
       key: _scaffoldKeyWebinarList,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer:( !isDesktop&&isLoggedIn) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: buildAppBar(context),
       body: GetBuilder<JobController>(
           builder: (controller) {
             return Row(
               children: [
-                if (isDesktop && isLoggedIn) const AdminSideBar(),
+                //if (isDesktop &&isLoggedIn) const AdminSideBar(),
+                if (isDesktop &&isLoggedIn) const AdminSideBar(),
                 Expanded(
                   child: Center(
                     child: SingleChildScrollView(

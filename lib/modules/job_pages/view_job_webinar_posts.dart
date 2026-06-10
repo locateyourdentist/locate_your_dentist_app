@@ -13,6 +13,8 @@ import '../../common_widgets/color_code.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
+import '../../web_modules/job_seekers/view_jobWebinar_web.dart';
+
 
 class ViewJobWebinar extends StatefulWidget {
   const ViewJobWebinar({super.key});
@@ -316,7 +318,8 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                                             },
                                             child: JobCard(
                                               title: jobs.jobTitle.toString(),
-                                              description: jobs.jobDescription.toString(),
+                                              //description: jobs.jobDescription.toString(),
+                                              description:"Posted On: ${formatDate1("${jobs.createdDate}")}",
                                               jobType: jobs.jobType.toString(),
                                               appliedCount:
                                               jobs.totalApplicants.toString(),
@@ -385,7 +388,8 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                                           Api.userInfo.write('webinarId', webinars.webinarId.toString());
                                           Api.userInfo.write('statusWebinar', webinars.isActive.toString());
                                           Get.toNamed('/viewWebinarPage');
-                                        },
+                                          print("DATE => ${webinars.createdDate}");
+                                          },
                                         child: AnimationConfiguration.staggeredList(
                                           position: index,
                                           duration: const Duration(milliseconds: 1300),
@@ -395,7 +399,8 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                                             child: FadeInAnimation(
                                               child: JobCard(
                                                 title: webinars.webinarTitle.toString(),
-                                                description: webinars.webinarDescription.toString(),
+                                                description:"Posted On: ${formatDate1("${webinars.createdDate}")}",
+                                                //description: webinars.webinarDescription.toString(),
                                                 jobType: "",
                                                 appliedCount: webinars.totalApplicants.toString()??'0',
                                                 postedAgo: postedAgo,
@@ -404,8 +409,8 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                                                 jobId:webinars.webinarId.toString(),
                                                 isActive: webinars.isActive.toString(),
                                                 size: size,
-                                                onTap: (){
-                                                  jobController.getWebinarById(webinars.webinarId.toString(), webinars.isActive.toString(), context);
+                                                onTap: ()async{
+                                                  await jobController.getWebinarById(webinars.webinarId.toString(), webinars.isActive.toString(), context);
                                                   Get.toNamed('/createJobAdminPage',arguments: {"selectedString":"Webinar"});
                                                 },
 

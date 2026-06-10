@@ -59,7 +59,11 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
                   child: Stack(
                     children: [
                       if (isLoggedIn && !isDesktop)
-                        Positioned(top: 10, left: 10, child: IconButton(icon: const Icon(Icons.menu,color: AppColors.black,), onPressed: () => _scaffoldKeyService.currentState?.openDrawer())),
+                        Positioned(top: 10, left: 10, child: Builder(
+                          builder: (innerContext) {
+                            return IconButton(icon: const Icon(Icons.menu,color: AppColors.black,), onPressed: () => Scaffold.of(innerContext).openDrawer());
+                          }
+                        )),
                       SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.fromLTRB(isMobile ? 10 : 30, isLoggedIn && !isDesktop ? 60 : 30, isMobile ? 10 : 30, 30),
@@ -132,6 +136,7 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
           childAspectRatio: isMobile ? 2.5 : 0.8,
         ),
         itemBuilder: (context, index) {
+          final double width = MediaQuery.of(context).size.width;
           final service = services[index];
           String imgUrl = (service.image?.isNotEmpty ?? false) ? service.image!.first : "";
           return AnimationConfiguration.staggeredGrid(
@@ -149,7 +154,7 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     child: Column(
                       children: [
-                        Expanded(child: Image.network(imgUrl, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(color: Colors.grey[200], child: const Icon(Icons.image)))),
+                        Expanded(child: Image.network(imgUrl,height:isMobile ? (width * 0.65) : 300.0,width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(color: Colors.grey[200], child: const Icon(Icons.image)))),
                         Padding(
                           padding: const EdgeInsets.all(10),
                           child: Column(

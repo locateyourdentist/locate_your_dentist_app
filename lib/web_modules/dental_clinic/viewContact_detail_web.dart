@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
+import '../../common_widgets/common_widget_all.dart';
 import '../../modules/contact_form/contact_controller.dart';
 
 void showContactDetailsDialog(BuildContext context) {
@@ -59,10 +60,12 @@ void showContactDetailsDialog(BuildContext context) {
                         // Header
                         Row(
                           children: [
-                            CircleAvatar(
-                              radius: size*0.03,
-                              backgroundColor: Colors.white,
-                              child:  Icon(Icons.person, size: size*0.014, color: Colors.grey),
+                            Center(
+                              child: CircleAvatar(
+                                radius: 22,
+                                backgroundColor: Colors.white,
+                                child:  Icon(Icons.person, size:15, color: Colors.grey),
+                              ),
                             ),
                             const SizedBox(width: 16),
                             Column(
@@ -88,9 +91,13 @@ void showContactDetailsDialog(BuildContext context) {
                           spacing: 40,
                           runSpacing: 20,
                           children: [
-                            _infoTile(Icons.phone, "Mobile", contact.mobileNumber),
-                            _infoTile(Icons.email, "Email", contact.email),
-                            _infoTile(Icons.description, "Description", contact.materialDescription),
+                            _infoTile(Icons.phone, "Mobile", contact.mobileNumber, ()async {
+                  await   launchCallWeb("tel:${contact.mobileNumber}");
+                  },),
+                            _infoTile(Icons.email, "Email", contact.email,()async {
+                              await  sendEmail("mailto:${contact.email}");
+                            },),
+                            _infoTile(Icons.description, "Description", contact.materialDescription,(){}),
                           ],
                         ),
 
@@ -147,23 +154,26 @@ void showContactDetailsDialog(BuildContext context) {
 }
 
 // Info Tile Widget
-Widget _infoTile(IconData icon, String title, String? value) {
-  return SizedBox(
-    width: 250,
-    child: Row(
-      children: [
-        Icon(icon, color: Colors.blue),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-              Text(value ?? '', style: TextStyle(color: Colors.grey.shade700)),
-            ],
+Widget _infoTile(IconData icon, String title, String? value, VoidCallback onTap) {
+  return GestureDetector(
+    onTap: onTap,
+    child: SizedBox(
+      width: 250,
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.blue),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                Text(value ?? '', style: TextStyle(color: Colors.grey.shade700)),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }

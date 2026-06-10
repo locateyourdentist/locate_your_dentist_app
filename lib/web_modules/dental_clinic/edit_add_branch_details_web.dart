@@ -51,7 +51,9 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
   await  loginController.getBranchDetails(context);
     //loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
     final position = await LocationService.getCurrentLocation();
-      setProfileData(loginController.userData);
+    if (loginController.userData.isNotEmpty) {
+      setProfileData(loginController.userData.first);
+    }
     if (position != null) {
       loginController.latitude = position.latitude;
       loginController.longitude = position.longitude;
@@ -107,11 +109,10 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                     children: [
                                       SizedBox(height: size*0.01,),
                                       if (!isDesktop)
-                                        Positioned(
-                                          top: 10,
-                                          left: 10,
+                                        Align(
+                                          alignment: Alignment.centerLeft,
                                           child: IconButton(
-                                            icon: const Icon(Icons.menu,color: AppColors.black),
+                                            icon: const Icon(Icons.menu, color: AppColors.black),
                                             onPressed: () => _scaffoldKeyBranch.currentState?.openDrawer(),
                                           ),
                                         ),
@@ -161,9 +162,12 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                                           children: [
                                                             Icon(Icons.add, size: size * 0.012, color: AppColors.white),
                                                             const SizedBox(width: 8),
-                                                            Text(
-                                                              "Add Branches",
-                                                              style: AppTextStyles.caption(context, color: AppColors.white),
+                                                            Flexible(
+                                                              child: Text(
+                                                                "Add Branches",
+                                                                style: AppTextStyles.caption(context, color: AppColors.white),
+                                                                overflow: TextOverflow.ellipsis,
+                                                              ),
                                                             ),
                                                           ],
                                                         ),

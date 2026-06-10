@@ -9,6 +9,7 @@ import 'package:locate_your_dentist/modules/contact_form/contact_controller.dart
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../model/contact_model_web.dart';
 
 
@@ -58,6 +59,9 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
       key: _scaffoldKeyContactView,
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       appBar: buildAppBar(),
       body: GetBuilder<LoginController>(
         builder: (controller) {
@@ -71,7 +75,11 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
                     children: [
 
                       Container(
-                        height: width * 0.25,
+                        height: isMobile
+                            ? 220
+                            : isTablet
+                            ? 280
+                            : 350,
                         width: double.infinity,
                         decoration: const BoxDecoration(
                           image: DecorationImage(
@@ -84,12 +92,11 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (!isDesktop)
-                              Positioned(
-                                top: 10,
-                                left: 10,
+                            if (isLoggedIn && !isDesktop)
+                              Align(
+                                alignment: Alignment.centerLeft,
                                 child: IconButton(
-                                  icon: const Icon(Icons.menu,color: AppColors.black,),
+                                  icon: const Icon(Icons.menu, color: AppColors.white),
                                   onPressed: () => _scaffoldKeyContactView.currentState?.openDrawer(),
                                 ),
                               ),
@@ -122,7 +129,10 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
                         offset: const Offset(0, -80),
                         child: Center(
                           child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 800),
+                            constraints: BoxConstraints(
+                              maxWidth: isMobile ? width * 0.95 : 800,
+                            ),
+                            //constraints: const BoxConstraints(maxWidth: 800),
                             child: Container(
                               padding: const EdgeInsets.all(25),
                               decoration: BoxDecoration(
@@ -147,8 +157,11 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
                       ),
 
 
-                      SizedBox(
-                          width: 1000,
+                      Container(
+                          width: double.infinity,
+                          constraints: const BoxConstraints(
+                            maxWidth: 1000,
+                          ),
                           child: Column(
                               children: [
                                 Center(child: Text("All Contact Details",style: AppTextStyles.subtitle(context,color: AppColors.black),)),
@@ -159,7 +172,9 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
                              ])
                              ),
 
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 60),
+                      if (!isLoggedIn) const CommonFooter(),
+
                     ],
                   ),
                 ),
@@ -188,8 +203,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 1.8,
-        ),
+          childAspectRatio: width < 600 ? 1.5 : 1.8,        ),
         itemBuilder: (context, index) {
           return _modernContactCard(controller.contactListApi[index]);
         },
@@ -340,8 +354,8 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
           const SizedBox(height: 12),
 
           InkWell(
-            onTap: () {
-              launchCall("tel:${contact.mobileNumber}");
+            onTap: ()async {
+           await   launchCallWeb("tel:${contact.mobileNumber}");
             },
             child: Row(
               children: [
@@ -359,8 +373,8 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
           const SizedBox(height: 8),
 
           InkWell(
-            onTap: () {
-              sendEmail("mailto:${contact.email}");
+            onTap: ()async {
+            await  sendEmail("mailto:${contact.email}");
             },
             child: Row(
               children: [
@@ -377,6 +391,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
               ],
             ),
           ),
+          const SizedBox(height: 50),
         ],
       ),
     );

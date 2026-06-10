@@ -1,7 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
@@ -12,6 +12,7 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import '../../common_widgets/color_code.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+
 
 
 class ViewJobWebinarWebPage extends StatefulWidget {
@@ -58,14 +59,6 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
   }
   @override
   void initState() {
-    _controller = QuillController.basic(
-      config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
-
-      ),
-    );
     _refresh();
     super.initState();
   }
@@ -75,7 +68,6 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
       await jobController.getAppliedJobsAdmin(jobController.jobList[0].jobId.toString(), context);
     }
     await jobController.getWebinarListAdmin(context);
-    loadJobDescription(jobController.webDescriptionData);
   }
   @override
   Widget build(BuildContext context) {
@@ -84,16 +76,13 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
     final bool isTablet = width >= 700 && width < 1100;
     final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-
     final totalApplicants = jobController.jobList.isNotEmpty ? jobController.jobList[0].totalApplicants : 0;
     int shortlistedCount = jobController.jobIdListAdmin.where((e) => e.status == "Shortlisted").length;
     int rejectedCount = jobController.jobIdListAdmin.where((e) => e.status == "Rejected").length;
-    
     String getPlainText(List<Map<String, dynamic>>? delta) {
       if (delta == null) return "";
       return delta.map((e) => e['insert'] ?? "").join();
     }
-
     return Scaffold(
       key: _scaffoldKeyJobs,
       backgroundColor: AppColors.backGroundColor,
@@ -320,10 +309,11 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
                     Api.userInfo.write('selectJobId', jobs.jobId.toString());
                     Api.userInfo.write('activeStatus', jobs.isActive.toString());
                     Get.toNamed('/viewJobDetailWebPage');
+
                   },
                   child: _modernCard(
                     title: jobs.jobTitle ?? "",
-                    desc: getPlainText(jobs.jobDescription),
+                    desc:  "Posted On: ${formatDate1("${jobs.createdDate}")}",
                     status: (jobs.isActive ?? false) ? "Open" : "Closed",
                     statusColor: (jobs.isActive ?? false) ? Colors.green : Colors.red,
                     subtitle: jobs.jobType ?? "",
@@ -331,6 +321,7 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
                     onTap: () async {
                       await jobController.getJobsById(jobs.jobId.toString(), context);
                       Get.toNamed('/createJobWebPage');
+                      print('${jobs.createdDate}gfdg');
                     },
                     context: context
                   ),
@@ -374,7 +365,8 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
                   },
                   child: _modernCard(
                     title: webinars.webinarTitle ?? "",
-                    desc: getPlainText(webinars.webinarDescription),
+                      desc: "Posted On: ${formatDate1("${webinars.createdDate}")}",
+                      // desc: getPlainText(webinars.webinarDescription),
                     status: webinars.isActive == true ? "Open" : "Closed",
                     statusColor: webinars.isActive == true ? Colors.green : Colors.red,
                     subtitle: "Webinar",
@@ -567,4 +559,29 @@ Widget _statCard({
       ],
     ),
   );
+}
+String formatDate1(dynamic isoDate) {
+  if (isoDate == null) return "N/A";
+
+  try {
+    // If it's already a DateTime object, format it directly
+    if (isoDate is DateTime) {
+      return DateFormat('MMM dd, yyyy').format(isoDate);
+    }
+
+    // If it's a String, ensure it's clean and parse it
+    if (isoDate is String) {
+      if (isoDate.trim().isEmpty) return "N/A";
+
+      // Remove any accidental wrapped quotes from poor JSON encoding
+      String cleanStr = isoDate.trim().replaceAll('"', '');
+      final date = DateTime.parse(cleanStr);
+      return DateFormat('MMM dd, yyyy').format(date);
+    }
+
+    return "N/A";
+  } catch (e) {
+    print("Date Error Parsing ($isoDate): $e");
+    return "N/A";
+  }
 }

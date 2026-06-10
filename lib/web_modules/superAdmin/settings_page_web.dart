@@ -156,11 +156,10 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (!isDesktop)
-                          Positioned(
-                            top: 10,
-                            left: 10,
+                          Align(
+                            alignment: Alignment.centerLeft,
                             child: IconButton(
-                              icon: const Icon(Icons.menu,color: AppColors.black,),
+                              icon: const Icon(Icons.menu, color: AppColors.black),
                               onPressed: () => _scaffoldKeySetting.currentState?.openDrawer(),
                             ),
                           ),

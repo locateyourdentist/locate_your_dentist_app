@@ -51,14 +51,15 @@ import 'package:path_provider/path_provider.dart';
       final response = await api.createNotification( userId, userType,isAdmin, title, message, state, district, city, area,notificationImage1);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context, title:"Success",message :"Notification Created Successfully", onOkPressed: () {});
+        showSuccessDialog(context, title:"Success",message :"Created Successfully ${data["status"]}", onOkPressed: () {});
         titleController.clear();
         messageController.clear();
         notificationImage.clear();
         notificationImage1=null;
         //loginController.update();
       } else {
-        showCustomToast(context,  "notification error ,${data["message"] ?? "error"}",);
+        print('notification error ,${data["message"] ?? "error"}');
+        //showCustomToast(context,  "notification error ,${data["message"] ?? "error"}",);
       }
     } catch (error) {
       print('notification list admin error $error');
@@ -144,10 +145,8 @@ import 'package:path_provider/path_provider.dart';
           notificationFileImages = imageUrl.map((u) => AppImage(url: AppConstants.baseUrl + u.replaceAll("\\", "/"))).toList();
         }
       } else {
-        showCustomToast(
-          context,
-          "Notification Failed, ${data["message"] ?? "error"}",
-        );
+        print('notification error ,${data["message"] ?? "error"}');
+        // showCustomToast(context, "Notification Failed, ${data["message"] ?? "error"}",);
       }
     } catch (error) {
       print('notification list admin error $error');

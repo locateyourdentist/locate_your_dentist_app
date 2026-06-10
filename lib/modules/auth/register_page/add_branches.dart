@@ -100,7 +100,8 @@ class _AddBranchesState extends State<AddBranches> {
                                         loginController.userData.clear();
                                         loginController.clearProfileData();
                                         await loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-                                        Get.toNamed('/clinicEditProfile',arguments: {'branchId':'0'});
+                                        Get.toNamed('/clinicEditProfile',arguments: {'branchId':'0'}
+                                        );
                                       },
                                           //loginController.addBranchList(),
                                       style: ElevatedButton.styleFrom(

@@ -28,32 +28,53 @@ class _AdminSideBarState extends State<AdminSideBar> {
     String userType = Api.userInfo.read('userType') ?? "";
     settingList = _getSettingsForUser(userType);
   }
+
   void _showDeleteDialog() {
     showDeleteDialog(
-      context: context, title: "Delete Account", message: "Do you want to Delete this Account?",
+      context: context,
+      title: "Delete Account",
+      message: "Do you want to Delete this Account?",
       onConfirm: () async {
-        await loginController.deactivateUserAdmin(Api.userInfo.read('userId')??"", false, context);
+        await loginController.deactivateUserAdmin(
+            Api.userInfo.read('userId') ?? "", false, context);
         Get.toNamed('/loginPage');
         loginController.update();
       },
     );
   }
+
   bool isMobile(BuildContext context) =>
-      MediaQuery.of(context).size.width < 600;
+      MediaQuery
+          .of(context)
+          .size
+          .width < 600;
 
   bool isTablet(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 600 &&
-          MediaQuery.of(context).size.width < 1024;
+      MediaQuery
+          .of(context)
+          .size
+          .width >= 600 &&
+          MediaQuery
+              .of(context)
+              .size
+              .width < 1024;
 
   bool isDesktop(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 1024;
+      MediaQuery
+          .of(context)
+          .size
+          .width >= 1024;
 
   double getSidebarWidth(BuildContext context) {
-    double w = MediaQuery.of(context).size.width;
+    double w = MediaQuery
+        .of(context)
+        .size
+        .width;
     if (isMobile(context)) return w * 0.3;
     if (isTablet(context)) return w * 0.25;
     return w * 0.15;
   }
+
   double getAvatarSize(BuildContext context) {
     if (isMobile(context)) return 50;
     if (isTablet(context)) return 60;
@@ -90,7 +111,10 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Add User", "page": "/registerPageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "Reports", "page": "/reportPageWeb"},
-          {"title": "Create Scrolling Ads Post", "page": "/scrollingAdsWebPage"},
+          {
+            "title": "Create Scrolling Ads Post",
+            "page": "/scrollingAdsWebPage"
+          },
           {"title": "Create Notification", "page": "/notificationWebPage"},
           {"title": "Create Plan", "page": "/createPlanPageWeb"},
           {"title": "Add JobCategory", "page": "/jobCategoryWeb"},
@@ -197,6 +221,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
         return [];
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double sidebarWidth = getSidebarWidth(context);
@@ -225,12 +250,13 @@ class _AdminSideBarState extends State<AdminSideBar> {
                   width: avatarSize,
                   height: avatarSize,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    width: avatarSize,
-                    height: avatarSize,
-                    color: Colors.grey,
-                    child: const Icon(Icons.person, color: Colors.white),
-                  ),
+                  errorBuilder: (_, __, ___) =>
+                      Container(
+                        width: avatarSize,
+                        height: avatarSize,
+                        color: Colors.grey,
+                        child: const Icon(Icons.person, color: Colors.white),
+                      ),
                 ),
               ),
 
@@ -283,26 +309,34 @@ class _AdminSideBarState extends State<AdminSideBar> {
                         controller.update();
 
                         if (setting['title'] == "Logout") {
-                          Api.userInfo.erase();
-                          Get.offAllNamed("/webLoginPage");
+                          showLogoutDialog(context);
+                          return;
+                        }
+
+                        if (setting['title'] == "Delete Account") {
+                          _showDeleteDialog();
+                          return;
                         }
 
                         if (setting['title'] == "Edit Profile") {
-                          String userId=Api.userInfo.read('userId')??"";
-                          Api.userInfo.write('selectUId',userId);
+                          String userId = Api.userInfo.read('userId') ?? "";
+                          Api.userInfo.write('selectUId', userId);
+                          loginController.getProfileByUserId(userId , context);
                           Get.offAllNamed("/viewProfilePageWeb");
+                          return;
                         }
+
                         if (setting['title'] == "Add User") {
-                          String userId=Api.userInfo.read('userId')??"";
-                          Api.userInfo.write('selectUId',userId);
-                          Get.offAllNamed("/registerPageWeb",arguments: {"userId":0});
+                          String userId = Api.userInfo.read('userId') ?? "";
+                          Api.userInfo.write('selectUId', userId);
+                          Get.offAllNamed(
+                            "/registerPageWeb",
+                            arguments: {"userId": 0},
+                          );
+                          return;
                         }
-                        if (setting['title'] == "Delete Account") {
-                          _showDeleteDialog();
-                        }
-                        else {
-                          Get.toNamed(setting['page'] ?? "");
-                        }
+
+                        Get.toNamed(setting['page'] ?? "");
                       },
                     );
                   },
@@ -318,23 +352,86 @@ class _AdminSideBarState extends State<AdminSideBar> {
   IconData _getIcon(String title) {
     switch (title) {
       case "Dashboard":
-        return Icons.dashboard;
+        return Icons.dashboard_rounded;
+
       case "Edit Profile":
-        return Icons.edit;
+        return Icons.person_outline;
+
       case "User List":
-        return Icons.people;
-      case "Add admin":
-        return Icons.admin_panel_settings;
-      case "Create Plan":
-        return Icons.add_card;
+        return Icons.groups;
+
+      case "Add User":
+        return Icons.person_add_alt_1;
+
+      case "My Subscription":
+        return Icons.workspace_premium;
+
+      case "My Purchases":
+        return Icons.shopping_bag_outlined;
+
+      case "Services":
+        return Icons.medical_services_outlined;
+
+      case "Products":
+        return Icons.inventory_2_outlined;
+
+      case "Job/Webinars":
+      case "Jobs/Webinars":
+        return Icons.work_outline;
+
+      case "Jobs":
+        return Icons.badge_outlined;
+
+      case "My Jobs":
+        return Icons.assignment_outlined;
+
+      case "Webinars":
+        return Icons.video_camera_front_outlined;
+
+      case "Contact Form":
+        return Icons.contact_mail_outlined;
+
+      case "Add Branches":
+        return Icons.account_tree_outlined;
+
       case "Reports":
-        return Icons.bar_chart;
+        return Icons.analytics_outlined;
+
       case "Settings":
-        return Icons.settings;
+        return Icons.settings_outlined;
+
+      case "Create Plan":
+        return Icons.card_membership_outlined;
+
+      case "Create Notification":
+        return Icons.notifications_active_outlined;
+
+      case "Create Scrolling Ads Post":
+        return Icons.campaign_outlined;
+
+      case "Add JobCategory":
+        return Icons.category_outlined;
+
+      case "Add Legal Pages":
+        return Icons.gavel_outlined;
+
+      case "Change Password":
+        return Icons.lock_outline;
+
+      case "Delete Account":
+        return Icons.delete_forever_outlined;
+
+      case "About Us":
+        return Icons.info_outline;
+
+      case "Contact Us":
+        return Icons.support_agent_outlined;
+
       case "Logout":
-        return Icons.logout;
+        return Icons.logout_rounded;
+
       default:
-        return Icons.circle;
+        return Icons.circle_outlined;
     }
   }
 }

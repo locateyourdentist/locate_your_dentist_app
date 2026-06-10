@@ -169,11 +169,10 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       if (isLoggedIn && !isDesktop)
-                                        Positioned(
-                                          top: 10,
-                                          left: 10,
+                                        Align(
+                                          alignment: Alignment.centerLeft,
                                           child: IconButton(
-                                            icon: const Icon(Icons.menu,color: AppColors.black,),
+                                            icon: const Icon(Icons.menu, color: AppColors.black),
                                             onPressed: () => _scaffoldKeyJobDetail.currentState?.openDrawer(),
                                           ),
                                         ),
@@ -191,7 +190,7 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                                 } catch (_) {}
                                               }
                                             },
-                                            child: _networkImageSafe(url, width: double.infinity, height: screenWidth * 0.15, borderRadius: BorderRadius.circular(10)),
+                                            child: _networkImageSafe(url, width: double.infinity, height:isDesktop? screenWidth * 0.15:screenWidth * 0.35, borderRadius: BorderRadius.circular(10)),
                                           ),
                                         ),
                                       ),
@@ -228,10 +227,11 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                               Icon(Icons.place, color: AppColors.grey, size: screenWidth * 0.015),
                                               const SizedBox(width: 6),
                                               Flexible(child: Text("${job.city ?? ''}, ${job.district ?? ''}, ${job.state ?? ''}", style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.grey))),
+                                              const SizedBox(width: 6),
                                               Container(
                                                 decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(3.0),
+                                                  padding: const EdgeInsets.all(6.0),
                                                   child: Text(job.jobType ?? '', style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: Colors.white)),
                                                 ),
                                               ),
@@ -351,7 +351,7 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                                   Api.userInfo.read('userType') == 'Job Seekers'
                                                       ? Padding(
                                                     padding: const EdgeInsets.all(8.0),
-                                                    child: Center(child: Text(job.companyDescription ?? 'No clinic description available', style: AppTextStyles.body(context, fontWeight: FontWeight.normal, color: AppColors.black, ))),
+                                                    child: Center(child: Text(job.companyDescription ?? 'No clinic description available', style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, ))),
                                                   )
                                                       : (jobController.jobIdListAdmin.isNotEmpty
                                                       ? ListView.builder(

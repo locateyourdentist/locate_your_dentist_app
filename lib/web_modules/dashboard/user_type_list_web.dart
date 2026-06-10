@@ -115,7 +115,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
       child: Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+        drawer:( !isDesktop&&isLoggedIn) ? const Drawer(width: 250, child: AdminSideBar()) : null,
         endDrawer: isMobile ? const Drawer(width: 300, child: FilterSidebar()) : null,
         appBar: buildAppBar(),
         body: GetBuilder<LoginController>(

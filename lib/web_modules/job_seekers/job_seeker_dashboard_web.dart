@@ -178,7 +178,7 @@ class _JobSeekerDashboardWebState extends State<JobSeekerDashboardWeb> {
                                         return GestureDetector(
                                           onTap: () async {
                                             Api.userInfo.write('selectJobId', job.jobId.toString());
-                                            await jobController.getJobsById(job.jobId!, context);
+                                            Api.userInfo.write('activeStatus', job.isActive.toString());
                                             Get.toNamed('/viewJobDetailWebPage');
                                           },
                                           child: Container(

@@ -16,6 +16,7 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../modules/job_pages/view_webinar_page.dart';
+import '../job_seekers/view_jobWebinar_web.dart';
 
 class DentalClinicDashboardWebPage extends StatefulWidget {
   const DentalClinicDashboardWebPage({super.key});
@@ -81,7 +82,6 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
 
                   child: Stack(
                     children: [
-                      // MAIN CONTENT
                       DefaultTabController(
                         length: 2,
 
@@ -469,7 +469,8 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                         Api.userInfo.write('activeStatus', jobs.isActive.toString());
                         Get.toNamed('/viewJobDetailWebPage');
                       },
-                        child: _modernCard(title: jobs.jobTitle ?? "", desc: formatDate("Posted On :${jobs.createdDate?.toString() ?? ""}"), status: (jobs.isActive ?? false) ? "Open" : "Closed", statusColor: (jobs.isActive ?? false) ? Colors.green : Colors.red, subtitle: jobs.jobType ?? "", trailing: "${jobs.totalApplicants} Applicants", onTap: () async {
+                        child: _modernCard(title: jobs.jobTitle ?? "",                                               desc:"Posted On: ${formatDate1("${jobs.createdDate}")}",
+                            status: (jobs.isActive ?? false) ? "Open" : "Closed", statusColor: (jobs.isActive ?? false) ? Colors.green : Colors.red, subtitle: jobs.jobType ?? "", trailing: "${jobs.totalApplicants} Applicants", onTap: () async {
                          // child: _modernCard(title: jobs.jobTitle ?? "", desc: getPlainText(jobs.jobDescription), status: (jobs.isActive ?? false) ? "Open" : "Closed", statusColor: (jobs.isActive ?? false) ? Colors.green : Colors.red, subtitle: jobs.jobType ?? "", trailing: "${jobs.totalApplicants} Applicants", onTap: () async {
                         await jobController.getJobsById(jobs.jobId.toString(), context);
                         Get.toNamed('/createJobWebPage');
@@ -513,7 +514,7 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                         Get.toNamed('/viewWebinarDetailWebPage');
                       },
                      // child: _modernCard(title: webinars.webinarTitle ?? "", desc: getPlainText(webinars.webinarDescription), status: webinars.isActive == true ? "Open" : "Closed", statusColor: webinars.isActive == true ? Colors.green : Colors.red, subtitle: "Webinar", trailing: "${webinars.totalApplicants ?? 0} Joined", onTap: () async {
-                      child: _modernCard(title: webinars.webinarTitle ?? "", desc: formatDate("Posted On :${webinars.createdDate?.toString() ?? ""}"),status: webinars.isActive == true ? "Open" : "Closed", statusColor: webinars.isActive == true ? Colors.green : Colors.red, subtitle: "Webinar", trailing: "${webinars.totalApplicants ?? 0} Joined", onTap: () async {
+                      child: _modernCard(title: webinars.webinarTitle ?? "", desc: "Posted On: ${formatDate1("${webinars.createdDate}")}",status: webinars.isActive == true ? "Open" : "Closed", statusColor: webinars.isActive == true ? Colors.green : Colors.red, subtitle: "Webinar", trailing: "${webinars.totalApplicants ?? 0} Joined", onTap: () async {
 
                         await jobController.getWebinarById(webinars.webinarId.toString(), webinars.isActive.toString(), context);
                         Get.toNamed('/createJobWebPage', arguments: {"selectedString": "Webinar"});

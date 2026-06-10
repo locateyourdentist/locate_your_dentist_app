@@ -152,10 +152,10 @@ class _AppliedJobListsWebState extends State<AppliedJobListsWeb> {
                                             child: Padding(
                                               padding: const EdgeInsets.symmetric(vertical: 10),
                                               child: GestureDetector(
-                                                onTap: () {
-                                                  Api.userInfo.write('selectJobId', appliedJobs.jobId.toString());
-                                                  Api.userInfo.write('activeStatus', appliedJobs.isActive.toString());
-                                                  Get.toNamed('/viewJobDetailWebPage');
+                                                onTap: ()async {
+                                                  await Api.userInfo.write('selectJobId', appliedJobs.jobId.toString());
+                                                 await Api.userInfo.write('activeStatus', appliedJobs.isActive.toString());
+                                                   Get.toNamed('/viewJobDetailWebPage');
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(

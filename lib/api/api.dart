@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart'as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:locate_your_dentist/model/company_invoice_model.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
@@ -439,6 +440,9 @@ class Api {
           'image',
           bytes,
           filename: 'image_${userId}_$i.$ext',
+          contentType: ext == 'mp4'
+              ? MediaType('video', 'mp4')
+              : MediaType('image', ext),
         ));
       }
     }

@@ -465,7 +465,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
       children: [
         _actionButton(Icons.call, "Call", () async {
           if ((planActive && user?.details["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) || isAdminUser) {
-            await launchCall(user?.mobileNumber.toString() ?? "");
+            await launchCallWeb(user?.mobileNumber.toString() ?? "");
           }
         }, context),
         _actionButton(Icons.language, "Website", () {

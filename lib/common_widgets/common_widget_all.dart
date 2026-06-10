@@ -370,6 +370,14 @@ String imgUserType(String userType) {
   }
   return page;
 }
+Future<void> launchCallWeb(String phone) async {
+  final Uri uri = Uri.parse('tel:$phone');
+
+  await launchUrl(
+    uri,
+    mode: LaunchMode.externalApplication,
+  );
+}
 Future<void> launchCall(String input) async {
   Uri uri;
   if (RegExp(r'^\+?\d+$').hasMatch(input)) {
