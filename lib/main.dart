@@ -17,6 +17,7 @@ import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -263,6 +264,7 @@ Future<void> main() async {
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isShowOnboard = prefs.getBool('isShowOnboard') ?? false;
+  setUrlStrategy(PathUrlStrategy()); // ✅ removes #
 
   runApp(MyApp(isShowOnboard: isShowOnboard));
 }

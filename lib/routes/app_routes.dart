@@ -520,9 +520,13 @@ class AppPages {
         SuperAdminMiddleware(),
       ],
     ),
+    // GetPage(
+    //     name: AppRoutes.landingPage,
+    //     page: ()=>  const LandingPage()
+    // ),
     GetPage(
-        name: AppRoutes.landingPage,
-        page: ()=>  const LandingPage()
+      name: '/',
+      page: () => const LandingPage(),
     ),
     GetPage(
         name: AppRoutes.viewJobDetailWebPage,
