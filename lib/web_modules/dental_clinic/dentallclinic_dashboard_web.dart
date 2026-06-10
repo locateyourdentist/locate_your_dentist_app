@@ -15,6 +15,8 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../modules/job_pages/view_webinar_page.dart';
+
 class DentalClinicDashboardWebPage extends StatefulWidget {
   const DentalClinicDashboardWebPage({super.key});
   @override
@@ -436,149 +438,7 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
           );
         },
       ),
-      // body: GetBuilder<JobController>(
-      //     builder: (controller) {
-      //       return Row(
-      //         children: [
-      //           if (isLoggedIn && isDesktop) const AdminSideBar(),
-      //           Expanded(
-      //             child: RefreshIndicator(
-      //               onRefresh: _refresh,
-      //               child: Stack(
-      //                 children: [
-      //                   if (isLoggedIn || !isDesktop)
-      //                     Positioned(
-      //                       top: 10,
-      //                       left: 10,
-      //                       child: IconButton(
-      //                         icon: const Icon(Icons.menu),
-      //                         onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-      //                       ),
-      //                     ),
-      //                   DefaultTabController(
-      //                     length: 2,
-      //                     child: NestedScrollView(
-      //                       headerSliverBuilder: (context, innerBoxIsScrolled) => [
-      //                         SliverToBoxAdapter(
-      //                           child: Padding(
-      //                             padding: EdgeInsets.all(isMobile ? 10.0 : 30.0),
-      //                             child: Center(
-      //                               child: ConstrainedBox(
-      //                                 constraints: const BoxConstraints(maxWidth: 1400),
-      //                                 child: Container(
-      //                                   decoration: BoxDecoration(
-      //                                     color: AppColors.white,
-      //                                     borderRadius: BorderRadius.circular(12),
-      //                                     boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
-      //                                   ),
-      //                                   child: Padding(
-      //                                     padding: EdgeInsets.all(isMobile ? 15.0 : 30.0),
-      //                                     child: Column(
-      //                                       crossAxisAlignment: CrossAxisAlignment.start,
-      //                                       children: [
-      //                                         if (isLoggedIn && !isDesktop) const SizedBox(height: 40),
-      //                                         Align(
-      //                                           alignment: Alignment.topRight,
-      //                                           child: Container(
-      //                                             width: isMobile ? double.infinity : width * 0.35,
-      //                                             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-      //                                             decoration: BoxDecoration(
-      //                                               color: Colors.grey.shade100,
-      //                                               borderRadius: BorderRadius.circular(10),
-      //                                               boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.15), blurRadius: 6)],
-      //                                             ),
-      //                                             child: CommonSearchTextField(
-      //                                               controller: searchController,
-      //                                               hintText: "Search by userType, name, userId, Mobile number",
-      //                                               onSubmitted: (value) async {
-      //                                                 await loginController.getProfileDetails('', '', '', 'true', '', '', '', searchController.text, value, context);
-      //                                                 Get.toNamed('/userTypeListWeb');
-      //                                               },
-      //                                             ),
-      //                                           ),
-      //                                         ),
-      //                                         const SizedBox(height: 20),
-      //                                         Text('What are you looking for?', style: AppTextStyles.subtitle(context)),
-      //                                         const SizedBox(height: 20),
-      //                                         LayoutBuilder(
-      //                                           builder: (context, constraints) {
-      //                                             double w = constraints.maxWidth;
-      //                                             int crossAxisCount = w < 500 ? 2 : (w < 800 ? 3 : (w < 1200 ? 4 : 5));
-      //                                             double childAspectRatio = w < 500 ? 0.9 : (w < 800 ? 1.0 : (w < 1200 ? 1.1 : 1.2));
-      //                                             return GridView.builder(
-      //                                               shrinkWrap: true,
-      //                                               physics: const NeverScrollableScrollPhysics(),
-      //                                               itemCount: title.length,
-      //                                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      //                                                 crossAxisCount: crossAxisCount,
-      //                                                 crossAxisSpacing: 16,
-      //                                                 mainAxisSpacing: 16,
-      //                                                 childAspectRatio: childAspectRatio,
-      //                                               ),
-      //                                               itemBuilder: (context, index) {
-      //                                                 return _dashboardTile(
-      //                                                   title: title[index],
-      //                                                   image: imgUserType(title[index]),
-      //                                                   context: context,
-      //                                                   onTap: () async {
-      //                                                     if (title[index] == "Job Posts/Webinars") {
-      //                                                       Get.toNamed('/viewJobWebinarWebPage');
-      //                                                     } else {
-      //                                                       Api.userInfo.write('sUserType1', title[index]);
-      //                                                       await loginController.getProfileDetails(title[index], '', '', '', 'true', '', '', '', '', context);
-      //                                                       Get.toNamed('/userTypeListWeb');
-      //                                                     }
-      //                                                   },
-      //                                                 );
-      //                                               },
-      //                                             );
-      //                                           },
-      //                                         ),
-      //                                         const SizedBox(height: 30),
-      //                                         Text('Jobs & Webinars', style: AppTextStyles.subtitle(context, color: AppColors.black)),
-      //                                         const SizedBox(height: 20),
-      //                                         Center(
-      //                                           child: Container(
-      //                                             width: isMobile ? double.infinity : 400,
-      //                                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.grey.shade100),
-      //                                             child: TabBar(
-      //                                               indicatorSize: TabBarIndicatorSize.tab,
-      //                                               dividerColor: Colors.transparent,
-      //                                               indicator: BoxDecoration(
-      //                                                 borderRadius: BorderRadius.circular(10),
-      //                                                 gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary], begin: Alignment.topLeft, end: Alignment.bottomRight),
-      //                                               ),
-      //                                               labelColor: AppColors.white,
-      //                                               unselectedLabelColor: AppColors.black,
-      //                                               tabs: const [Tab(text: 'Jobs'), Tab(text: 'Webinars')],
-      //                                             ),
-      //                                           ),
-      //                                         ),
-      //                                         const SizedBox(height: 10),
-      //                                       ],
-      //                                     ),
-      //                                   ),
-      //                                 ),
-      //                               ),
-      //                             ),
-      //                           ),
-      //                         ),
-      //                       ],
-      //                       body: TabBarView(
-      //                         children: [
-      //                           _buildJobGrid(context, controller, getPlainText),
-      //                           _buildWebinarGrid(context, controller, getPlainText),
-      //                         ],
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ],
-      //               ),
-      //             ),
-      //           ),
-      //         ],
-      //       );
-      //     }),
+
     );
   }
 
@@ -609,7 +469,8 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                         Api.userInfo.write('activeStatus', jobs.isActive.toString());
                         Get.toNamed('/viewJobDetailWebPage');
                       },
-                      child: _modernCard(title: jobs.jobTitle ?? "", desc: getPlainText(jobs.jobDescription), status: (jobs.isActive ?? false) ? "Open" : "Closed", statusColor: (jobs.isActive ?? false) ? Colors.green : Colors.red, subtitle: jobs.jobType ?? "", trailing: "${jobs.totalApplicants} Applicants", onTap: () async {
+                        child: _modernCard(title: jobs.jobTitle ?? "", desc: formatDate("Posted On :${jobs.createdDate?.toString() ?? ""}"), status: (jobs.isActive ?? false) ? "Open" : "Closed", statusColor: (jobs.isActive ?? false) ? Colors.green : Colors.red, subtitle: jobs.jobType ?? "", trailing: "${jobs.totalApplicants} Applicants", onTap: () async {
+                         // child: _modernCard(title: jobs.jobTitle ?? "", desc: getPlainText(jobs.jobDescription), status: (jobs.isActive ?? false) ? "Open" : "Closed", statusColor: (jobs.isActive ?? false) ? Colors.green : Colors.red, subtitle: jobs.jobType ?? "", trailing: "${jobs.totalApplicants} Applicants", onTap: () async {
                         await jobController.getJobsById(jobs.jobId.toString(), context);
                         Get.toNamed('/createJobWebPage');
                       }, context: context),
@@ -651,7 +512,9 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                         Api.userInfo.write('activeStatus1', webinars.isActive.toString());
                         Get.toNamed('/viewWebinarDetailWebPage');
                       },
-                      child: _modernCard(title: webinars.webinarTitle ?? "", desc: getPlainText(webinars.webinarDescription), status: webinars.isActive == true ? "Open" : "Closed", statusColor: webinars.isActive == true ? Colors.green : Colors.red, subtitle: "Webinar", trailing: "${webinars.totalApplicants ?? 0} Joined", onTap: () async {
+                     // child: _modernCard(title: webinars.webinarTitle ?? "", desc: getPlainText(webinars.webinarDescription), status: webinars.isActive == true ? "Open" : "Closed", statusColor: webinars.isActive == true ? Colors.green : Colors.red, subtitle: "Webinar", trailing: "${webinars.totalApplicants ?? 0} Joined", onTap: () async {
+                      child: _modernCard(title: webinars.webinarTitle ?? "", desc: formatDate("Posted On :${webinars.createdDate?.toString() ?? ""}"),status: webinars.isActive == true ? "Open" : "Closed", statusColor: webinars.isActive == true ? Colors.green : Colors.red, subtitle: "Webinar", trailing: "${webinars.totalApplicants ?? 0} Joined", onTap: () async {
+
                         await jobController.getWebinarById(webinars.webinarId.toString(), webinars.isActive.toString(), context);
                         Get.toNamed('/createJobWebPage', arguments: {"selectedString": "Webinar"});
                       }, context: context),

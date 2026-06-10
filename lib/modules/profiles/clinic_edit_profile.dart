@@ -40,6 +40,10 @@ import 'package:geocoding/geocoding.dart';
     late QuillController _controller;
     final ScrollController _scrollController = ScrollController();
     final FocusNode _focusNode = FocusNode();
+    final SingleSelectController<String?> _stateCtrl = SingleSelectController(null);
+    final SingleSelectController<String?> _districtCtrl = SingleSelectController(null);
+    final SingleSelectController<String?> _talukaCtrl = SingleSelectController(null);
+    final SingleSelectController<String?> _villageCtrl = SingleSelectController(null);
     @override
     final ImagePicker _picker = ImagePicker();
     final planController = Get.put(PlanController());
@@ -216,6 +220,12 @@ import 'package:geocoding/geocoding.dart';
       print('sd${Api.userInfo.read('selectUId')??""}');
       await loginController.fetchStates();
       await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
+      if (mounted) {
+        _stateCtrl.value = loginController.selectedState;
+        _districtCtrl.value = loginController.selectedDistrict;
+        _talukaCtrl.value = loginController.selectedTaluka;
+        _villageCtrl.value = loginController.selectedVillage;
+      }
       loadJobDescription(loginController.descriptionData);
       await getPlanLimits();
     }
@@ -444,7 +454,6 @@ import 'package:geocoding/geocoding.dart';
                     builder: (controller) {
                       final items = controller.states.map((v) => v.toString()).toList();
                       return CustomDropdown<String>.search(
-                        key: ValueKey('state_${controller.selectedState ?? ""}'),
                         hintText: "Select State",
                         decoration: CustomDropdownDecoration(
                           closedFillColor: Colors.grey[100],
@@ -463,8 +472,7 @@ import 'package:geocoding/geocoding.dart';
                           headerStyle: AppTextStyles.caption(context, color: Colors.black),
                           listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
                         items: controller.states.map((s) => s.toString()).toList(),
-                        initialItem: controller.selectedState,
-                        //initialItem: items.contains(controller.selectedState) ? controller.selectedState : null,
+                        controller: _stateCtrl,
                         onChanged: (val) {
                           if (val != null) {
                             controller.selectedState = val;
@@ -472,8 +480,10 @@ import 'package:geocoding/geocoding.dart';
                             controller.selectedDistrict = null;
                             controller.selectedTaluka = null;
                             controller.selectedVillage = null;
+                            _districtCtrl.value = null;
+                            _talukaCtrl.value = null;
+                            _villageCtrl.value = null;
                             final state = controller.states.firstWhere((s) => s == val);
-                            print('state  selected$state');
                             controller.fetchDistricts(state.toString());
                             controller.update();
                           }
@@ -488,13 +498,9 @@ import 'package:geocoding/geocoding.dart';
                     builder: (controller) {
                       final items = controller.districts.map((v) => v.toString()).toList();
                       return CustomDropdown<String>.search(
-                        key: ValueKey('district_${controller.selectedDistrict ?? ""}'),
                         hintText: "Select District",
                         items: controller.districts.map((d) => d.toString()).toList(),
-                        initialItem: controller.selectedDistrict,
-                        // initialItem: items.contains(controller.selectedDistrict)
-                        //     ? controller.selectedDistrict
-                        //     : null,
+                        controller: _districtCtrl,
                         decoration: CustomDropdownDecoration(
                           hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
                           headerStyle: AppTextStyles.caption(context, color: Colors.black),
@@ -517,6 +523,8 @@ import 'package:geocoding/geocoding.dart';
                             controller.villages.clear();
                             controller.selectedTaluka = null;
                             controller.selectedVillage = null;
+                            _talukaCtrl.value = null;
+                            _villageCtrl.value = null;
                             final district = controller.districts.firstWhere((d) => d == val);
                             print('sub district selected$district');
                             controller.fetchTalukas(district.toString());
@@ -535,7 +543,6 @@ import 'package:geocoding/geocoding.dart';
                         return  DefaultTextStyle(
                           style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
                           child: CustomDropdown<String>.search(
-                            key: ValueKey('taluka_${controller.selectedTaluka ?? ""}'),
                             hintText: "Select  taluka/town",
                             items: loginController.talukas.map((t) => t.toString()).toList(),
                             decoration: CustomDropdownDecoration(
@@ -553,20 +560,15 @@ import 'package:geocoding/geocoding.dart';
                                 width: 1.5,
                               ),
                             ),
-                            initialItem: loginController.selectedTaluka,
-                            // initialItem: items.contains(controller.selectedTaluka)
-                            //     ? controller.selectedTaluka
-                            //     : null,
+                            controller: _talukaCtrl,
                             excludeSelected: false,
                             onChanged: (val) {
                               setState(() => loginController.selectedTaluka = val);
                               if (val != null) {
-                                final taluka =
-                                loginController. talukas.firstWhere((t) => t == val);
+                                _villageCtrl.value = null;
                                 loginController.villages.clear();
-                                loginController.fetchVillages(taluka.toString());
+                                loginController.fetchVillages(val);
                                 loginController.update();
-                                print('taluka${loginController.selectedTaluka}');
                               }
                             },),
                         );
@@ -579,7 +581,6 @@ import 'package:geocoding/geocoding.dart';
                         return DefaultTextStyle(
                           style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
                           child: CustomDropdown<String>.search(
-                            key: ValueKey('village_${controller.selectedVillage ?? ""}'),
                             hintText: "Select Area",
                             // items: loginController.villages.map((v) => v['name'].toString()).toList(),
                             items: items,
@@ -593,10 +594,7 @@ import 'package:geocoding/geocoding.dart';
                               expandedBorder: Border.all(color: AppColors.primary, width: 1.5,
                               ),
                             ),
-                            initialItem:controller.selectedVillage,
-                            // initialItem: items.contains(controller.selectedVillage)
-                            //     ? controller.selectedVillage
-                            //     : null,
+                            controller: _villageCtrl,
                             excludeSelected: false,
                             onChanged: (val) {
                               setState(() => loginController.selectedVillage = val);
@@ -1108,6 +1106,15 @@ import 'package:geocoding/geocoding.dart';
         Get.snackbar("Error", "Failed to pick media");
       }
     }
+
+  @override
+  void dispose() {
+    _stateCtrl.dispose();
+    _districtCtrl.dispose();
+    _talukaCtrl.dispose();
+    _villageCtrl.dispose();
+    super.dispose();
+  }
 }
 String getCertificateFileName(cert) {
   if (cert.file != null) {

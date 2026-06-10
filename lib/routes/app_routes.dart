@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/auth/password_page/change_password.dart';
 import 'package:locate_your_dentist/modules/auth/password_page/forgot_password_page.dart';
@@ -520,10 +521,11 @@ class AppPages {
         SuperAdminMiddleware(),
       ],
     ),
-    // GetPage(
-    //     name: AppRoutes.landingPage,
-    //     page: ()=>  const LandingPage()
-    // ),
+    GetPage(
+      name: AppRoutes.landingPage,
+      page: () => const LandingPage(),
+      middlewares: [_LandingRedirect()],
+    ),
     GetPage(
       name: '/',
       page: () => const LandingPage(),
@@ -568,4 +570,11 @@ class AppPages {
     ),
 
   ];
+}
+
+class _LandingRedirect extends GetMiddleware {
+  @override
+  RouteSettings? redirect(String? route) {
+    return const RouteSettings(name: '/');
+  }
 }

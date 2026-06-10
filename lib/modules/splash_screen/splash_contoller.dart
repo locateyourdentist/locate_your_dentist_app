@@ -70,7 +70,7 @@ class SplashController extends GetxController with GetSingleTickerProviderStateM
     print('spalsh token$token');
     if (token == null || token.isEmpty) {
       platform == "Web" ?
-      Get.offAllNamed("/landingPage") :Get.offAllNamed("/patientDashboard") ;
+      Get.offAllNamed("/") :Get.offAllNamed("/patientDashboard") ;
     } else {
       String? userType = await Api.userInfo.read('userType');
       platform == "Web" ? Get.offAllNamed('/${pageUserTypeWeb(userType ?? '')}'):  Get.offAllNamed('/${pageUserType(userType ?? '')}');

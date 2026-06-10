@@ -24,7 +24,7 @@ class _WebLoginPageState extends State<WebLoginPage> {
     if (currentBackPressTime == null || now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
       //CommonDialog.showExitDialog(context);
-      Get.toNamed('/landingPage');
+      Get.toNamed('/');
       return true;
     }
     exit(0);

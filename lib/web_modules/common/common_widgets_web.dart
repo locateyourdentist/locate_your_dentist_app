@@ -560,7 +560,7 @@ class _CommonHeaderState extends State<CommonHeader> {
             if (width > 900)
               Row(
                 children: [
-                  navItem("Home", "/landingPage"),
+                  navItem("Home", "/"),
                   navItem("Jobs", "/jobListJobSeekersWebPage"),
                   navItem("About Us", "/aboutUsWebPage"),
                   navItem("Contact", "/contactWebPage"),
