@@ -51,28 +51,41 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
   void loadJobDescription(dynamic data) {
     try {
       List<Map<String, dynamic>> delta = [];
+
       if (data == null) {
         delta = [{"insert": "\n"}];
-      } else if (data is List) {
+      }
+
+      else if (data is List) {
         delta = List<Map<String, dynamic>>.from(data);
-      } else if (data is String) {
+      }
+
+      else if (data is String) {
         delta = List<Map<String, dynamic>>.from(jsonDecode(data));
       }
+
       _controller = QuillController(
         document: Document.fromJson(delta),
         selection: const TextSelection.collapsed(offset: 0),
       );
-      if (mounted) setState(() {});
+
+      setState(() {});
     } catch (e) {
+      print("Quill load error: $e");
+
       _controller = QuillController.basic();
-      if (mounted) setState(() {});
+      setState(() {});
     }
   }
-
-  @override
+    @override
   void initState() {
-    _controller = QuillController.basic();
-    _refresh();
+      _controller = QuillController.basic(
+        config: QuillControllerConfig(
+          clipboardConfig: QuillClipboardConfig(
+            enableExternalRichPaste: true,
+          ),
+        ),
+      );    _refresh();
     super.initState();
   }
 
