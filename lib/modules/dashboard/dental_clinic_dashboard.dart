@@ -13,6 +13,8 @@ import 'package:locate_your_dentist/modules/notification_page/notificationContro
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
+import '../../web_modules/job_seekers/view_jobWebinar_web.dart';
+
 class DentalClinicDashboard extends StatefulWidget {
   const DentalClinicDashboard({super.key});
   @override
@@ -574,7 +576,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                     },
                     child: JobCard(
                     title: jobs.jobTitle.toString(),
-                    description: jobs.jobDescription.toString(),
+                    description: "Posted On: ${formatDate1("${jobs.createdDate}")}",
                     jobType: jobs.jobType.toString(),
                     appliedCount:
                     jobs.totalApplicants.toString(),
@@ -640,8 +642,8 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                     },
                                     child: JobCard(
                                     title: webinars.webinarTitle.toString(),
-                                    description:
-                                    webinars.webinarDescription.toString(),
+                                    description:"Posted On: ${formatDate1("${webinars.createdDate}")}",
+                                    //webinars.webinarDescription.toString(),
                                     jobType: "",
                                     appliedCount:
                                     webinars.totalApplicants.toString()??'0',

@@ -2486,7 +2486,7 @@ print('otifi img$notificationImage1');
       throw "Failed to fetch job details: $e";
     }
   }
-  Future<http.Response> getSenderContactLists(String senderId,String fromDate,String toDate,String search) async {
+  Future<http.Response> getSenderContactLists(String? senderId,String? fromDate,String toDate,String search) async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.senderContactListUrl}";
     print('API senderContactListUrl $url');
@@ -2512,6 +2512,33 @@ print('otifi img$notificationImage1');
       return response;
     } catch (e) {
       throw "Failed to fetch job details: $e";
+    }
+  }
+  Future<http.Response> getFeedbackFormLists(String fromDate,String toDate,String search) async {
+    String url =
+        "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.feedbackContactListUrl}";
+    print('API feedbackContactListUrl $url');
+    String? token = Api.userInfo.read('token');
+    try {
+      final String token = Api.userInfo.read('token') ?? "";
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode({
+          'fromDate':fromDate,
+          'toDate':toDate,
+          'search':search
+        }),
+      );
+      print('api feedbackContact ListUrl Contact Form ${response.body}');
+      return response;
+    } catch (e) {
+      throw "Failed feedbackContactListUrl: $e";
     }
   }
   Future<http.Response> getReceiverContactFormLists(String receiverId,String fromDate,String toDate,String search,) async {

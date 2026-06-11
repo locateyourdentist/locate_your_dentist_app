@@ -44,11 +44,11 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
     final bool isMobile = width < 600;
     final bool isTablet = width >= 600 && width < 1024;
     final bool isDesktop = width >= 1100;
-
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
     key: _scaffoldKeyContact,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
         height: width * 0.03 > 60 ? width * 0.03 : 60,
         title: "LOCATE YOUR DENTIST",
@@ -59,7 +59,7 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
         builder: (controller) {
           return Row(
             children: [
-              if (isDesktop) const AdminSideBar(),
+              if (isLoggedIn && isDesktop) const AdminSideBar(),
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: _refresh,
@@ -70,7 +70,7 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                           top: 10,
                           left: 10,
                           child: IconButton(
-                            icon: const Icon(Icons.menu),
+                            icon: const Icon(Icons.menu,color: AppColors.black,),
                             onPressed: () => _scaffoldKeyContact.currentState?.openDrawer(),
                           ),
                         ),
@@ -303,8 +303,9 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
               Text(date, style: AppTextStyles.caption(context, color: Colors.grey)),
             ],
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 10),
           Text(contact.Name ?? "-", style: AppTextStyles.caption(context)),
+          const SizedBox(height: 10),
           Text(contact.mobileNumber ?? "-", style: AppTextStyles.caption(context, color: Colors.grey)),
           const SizedBox(height: 10),
           Align(
@@ -314,7 +315,7 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                 Api.userInfo.write('contactId1', contact.id);
                 showContactDetailsDialog(context);
               },
-              child: const Text("View Details"),
+              child:  Text("View Details",style: AppTextStyles.caption(context,color: AppColors.primary),),
             ),
           ),
         ],

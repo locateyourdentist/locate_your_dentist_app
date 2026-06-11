@@ -638,3 +638,52 @@ Widget buildShimmerEmptyWidget(double size) {
     ),
   );
 }
+Widget buildActionButton({
+  required IconData icon,
+  required String label,
+  required VoidCallback onTap,dynamic context
+}) {
+  return InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(18),
+    child: Container(
+      width: 90,
+      padding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: 10,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.transparent,
+        //color: AppColors.primary.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: AppColors.transparent,
+          // color: AppColors.primary.withOpacity(0.15),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: AppColors.primary,
+              size: 25,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+              label,
+              textAlign: TextAlign.center,
+              style:AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold)
+          ),
+        ],
+      ),
+    ),
+  );
+}

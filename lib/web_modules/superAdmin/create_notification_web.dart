@@ -122,7 +122,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
     }
     return Scaffold(
       key:_scaffoldKeyNotification,
-      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       backgroundColor: AppColors.scaffoldBg,
       appBar: buildAppBar(),
       body: GetBuilder<NotificationController>(
@@ -375,7 +375,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                         ],
                                       ),
 
-                                      SizedBox(height: s*0.01,),
+                                      SizedBox(height: s*0.02,),
 
                                       Row(
                                         children: [
@@ -469,14 +469,14 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
 
 
 
-                                      SizedBox(height: s*0.01,),
+                                      SizedBox(height: s*0.015,),
                                       Column(
                                         children: [
                                           Text('Add Image',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
-                                          SizedBox(height: s * 0.001),
+                                          SizedBox(height: s * 0.01),
                                           SizedBox(
-                                            height: s * 0.11,
-                                            width: s*0.12,
+                                            height: isDesktop?s * 0.11:s*0.3,
+                                            width: isDesktop?s*0.12:s*0.3,
                                             child: GetBuilder<NotificationController>(
                                               builder: (controller) {
                                                 if (kIsWeb && notificationWebImage != null) {
@@ -505,8 +505,8 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
 
                                           Center(
                                             child: Container(
-                                              width: s*0.35,
-                                              height: s*0.025,
+                                              width: 130,
+                                              height: 50,
                                               decoration: BoxDecoration(
                                                 gradient: const LinearGradient(
                                                   colors: [AppColors.primary, AppColors.secondary],

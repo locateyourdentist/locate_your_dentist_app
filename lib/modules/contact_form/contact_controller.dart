@@ -7,6 +7,9 @@ import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
 import 'package:locate_your_dentist/model/contact_model.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
+import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
+
+import '../../model/public_contact_form_model.dart';
 
 
 class ContactController extends GetxController{
@@ -17,6 +20,8 @@ class ContactController extends GetxController{
   TextEditingController clinicAddressController=TextEditingController();
   TextEditingController contactDetailsController=TextEditingController();
   final loginController=Get.put(LoginController());
+  List<PublicContactModel>_publicContactFormLists=[];
+  List<PublicContactModel> get publicContactFormLists=>_publicContactFormLists;
   List<ContactModel>_senderContactLists=[];
   List<ContactModel> get senderContactLists=>_senderContactLists;
   List<ContactModel>_filterContactLists=[];
@@ -24,6 +29,7 @@ class ContactController extends GetxController{
   List<ContactModel>_receiverContactLists=[];
   List<ContactModel> get receiverContactLists=>_receiverContactLists;
   List<AppImage> editImages = [];
+  final notificationController=Get.put(NotificationController());
 
   Future<void> postContactDetail(String senderUserId,String receiverUserId,String email,String mobileNumber,String clinicName,String doctorName, String materialDescription,String state,String district,String city,contactImage1,dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
@@ -70,6 +76,8 @@ class ContactController extends GetxController{
 
         showSuccessDialog(context, title:"Success",message :"Contact Form submitted Successfully", onOkPressed: () {
         });
+        await notificationController.createNotification('','superAdmin',false, 'Feedback', "Received Feedback from $name ", '','','','',context);
+
         contactClinicNameController.clear();
         doctorNameController.clear();
         contactDetailsController.clear();
@@ -151,6 +159,35 @@ class ContactController extends GetxController{
       }
     } catch (e) {
       print('view Jobs  list error $e');
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> getFeedbackFormLists(String fromDate,String toDate,String search,dynamic context) async {
+    var connection = await Connectivity().checkConnectivity();
+    if (connection == ConnectivityResult.none) {
+      Get.snackbar("No Internet", "Please check your connection");
+      return;
+    }
+    isLoading=true;
+    try {
+      _publicContactFormLists=[];
+      final response = await api.getFeedbackFormLists(fromDate, toDate, search,);
+      var data = jsonDecode(response.body);
+      if ( data["status"].toString().toLowerCase() == "success") {
+        // List<dynamic> jobs = data["data"];
+        // _senderContactLists = jobs.map((e) => ContactModel.fromJson(e)).toList();
+        List<dynamic> jobs = data["data"];
+        _publicContactFormLists =
+            jobs.map((e) => PublicContactModel.fromJson(e)).toList();
+        update();
+      } else {
+        showCustomToast(context, "can not get FeedbackFormLists: ${data["message"]}");
+      }
+    } catch (e) {
+      print('view getFeedbackFormLists  list error $e');
     } finally {
       isLoading = false;
       update();

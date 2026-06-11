@@ -40,25 +40,47 @@ class Media {
     try {
       List<Map<String, dynamic>> delta = [];
 
-      if (data == null) {
-        delta = [{"insert": "\n"}];
-      }
+      if (data == null ||
+          data.toString().trim().isEmpty ||
+          data.toString() == "[]") {
+        delta = [
+          {"insert": "\n"}
+        ];
+      } else if (data is List) {
+        delta = data.isEmpty
+            ? [
+          {"insert": "\n"}
+        ]
+            : List<Map<String, dynamic>>.from(data);
+      } else if (data is String) {
+        final decoded = jsonDecode(data);
 
-      else if (data is List) {
-        delta = List<Map<String, dynamic>>.from(data);
-      }
-
-      else if (data is String) {
-        delta = List<Map<String, dynamic>>.from(jsonDecode(data));
+        if (decoded is List && decoded.isNotEmpty) {
+          delta = List<Map<String, dynamic>>.from(decoded);
+        } else {
+          delta = [
+            {"insert": "\n"}
+          ];
+        }
       }
 
       _controller = QuillController(
         document: Document.fromJson(delta),
         selection: const TextSelection.collapsed(offset: 0),
       );
+
+      if (mounted) setState(() {});
     } catch (e) {
       print("Quill load error: $e");
-      _controller = QuillController.basic();
+
+      _controller = QuillController(
+        document: Document.fromJson([
+          {"insert": "\n"}
+        ]),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      if (mounted) setState(() {});
     }
   }
   @override
@@ -115,58 +137,118 @@ class Media {
     }
     return Scaffold(
       backgroundColor: AppColors.white,
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text('Profile',style: AppTextStyles.subtitle(context,color: AppColors.white),
-          ),
-          actions: [
-            // CircleAvatar(
-            //   backgroundColor: Colors.black.withOpacity(0.4),
-            //   child: IconButton(
-            //     icon: const Icon(Icons.arrow_back,
-            //         color: Colors.white),
-            //     onPressed: () {
-            //       Get.back();
-            //     },
-            //   ),
-            // ),
+        // appBar: AppBar(
+        //   centerTitle: true,automaticallyImplyLeading: true,
+        //   iconTheme:IconThemeData(color: AppColors.white),
+        //   title: Text('Profile',style: AppTextStyles.subtitle(context,color: AppColors.white),
+        //   ),
+        //   actions: [
+        //     // CircleAvatar(
+        //     //   backgroundColor: Colors.black.withOpacity(0.4),
+        //     //   child: IconButton(
+        //     //     icon: const Icon(Icons.arrow_back,
+        //     //         color: Colors.white),
+        //     //     onPressed: () {
+        //     //       Get.back();
+        //     //     },
+        //     //   ),
+        //     // ),
+        //
+        //     if (userType == 'admin' ||
+        //         userType == 'superAdmin' ||
+        //         userId == editUserId)
+        //       Positioned(
+        //         top: 10,
+        //         right: 10,
+        //         child: GestureDetector(
+        //           onTap: () {
+        //             Get.toNamed('/clinicEditProfile');
+        //           },
+        //           child: Container(
+        //             padding: const EdgeInsets.symmetric(
+        //                 horizontal: 12, vertical: 6),
+        //             decoration: BoxDecoration(
+        //               color: Colors.black.withOpacity(0.4),
+        //               borderRadius: BorderRadius.circular(20),
+        //             ),
+        //             child: Row(
+        //               children: const [
+        //                 Icon(Icons.edit,
+        //                     color: Colors.white, size: 18),
+        //                 SizedBox(width: 5),
+        //                 Text(
+        //                   "Edit",
+        //                   style: TextStyle(
+        //                     color: Colors.white,
+        //                     fontWeight: FontWeight.bold,
+        //                   ),
+        //                 ),
+        //               ],
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //   ],
+        //   backgroundColor: AppColors.primary,),
+      appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: true,
+        backgroundColor: AppColors.primary,
 
-            if (userType == 'admin' ||
-                userType == 'superAdmin' ||
-                userId == editUserId)
-              Positioned(
-                top: 10,
-                right: 10,
-                child: GestureDetector(
-                  onTap: () {
-                    Get.toNamed('/clinicEditProfile');
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      children: const [
-                        Icon(Icons.edit,
-                            color: Colors.white, size: 18),
-                        SizedBox(width: 5),
-                        Text(
-                          "Edit",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Back button color
+        ),
+
+        title: Text(
+          'Profile',
+          style: AppTextStyles.subtitle(
+            context,
+            color: Colors.white,
+          ),
+        ),
+
+        actions: [
+          if (userType == 'admin' ||
+              userType == 'superAdmin' ||
+              userId == editUserId)
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: GestureDetector(
+                onTap: () {
+                  Get.toNamed('/clinicEditProfile');
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.4),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.edit,
+                        color: Colors.white, // Edit icon color
+                        size: 18,
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        "Edit",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-          ],
-          backgroundColor: AppColors.primary,iconTheme: const IconThemeData(color: AppColors.white),),
+            ),
+        ],
+      ),
           body: GetBuilder<LoginController>(
           init: LoginController(),
           builder: (controller) {
@@ -498,9 +580,7 @@ class Media {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-
-                              /// WhatsApp
-                              _buildActionButton(
+                              buildActionButton(
                                 icon: Icons.chat_rounded,
                                 label: "WhatsApp",
                                 onTap: () async {
@@ -529,11 +609,10 @@ class Media {
                                     message:
                                     "Hi Message From ${userData.details?["name"] ?? ''}",
                                   );
-                                },
+                                },context: context
                               ),
 
-                              /// Website
-                              _buildActionButton(
+                              buildActionButton(
                                 icon: Icons.language_rounded,
                                 label: "Website",
                                 onTap: () async {
@@ -561,11 +640,11 @@ class Media {
                                       },
                                     );
                                   }
-                                },
+                                },context: context
                               ),
 
                               /// Call
-                              _buildActionButton(
+                              buildActionButton(
                                 icon: Icons.call_rounded,
                                 label: "Call",
                                 onTap: () {
@@ -574,7 +653,7 @@ class Media {
                                       isAdminUser) {
                                     launchCall(user?.mobileNumber?.toString() ?? "");
                                   }
-                                },
+                                },context: context
                               ),
                             ],
                           ),
@@ -847,54 +926,6 @@ class Media {
         }
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
-    );
-  }Widget _buildActionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        width: 90,
-        padding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 10,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.transparent,
-          //color: AppColors.primary.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: AppColors.transparent,
-            // color: AppColors.primary.withOpacity(0.15),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                color: AppColors.primary,
-                size: 25,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style:AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold)
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

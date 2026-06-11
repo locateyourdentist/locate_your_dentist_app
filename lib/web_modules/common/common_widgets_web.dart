@@ -128,11 +128,13 @@ class _CommonFooterState extends State<CommonFooter> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(flex: 3, child: _buildLogoSection(context)),
-                  const SizedBox(width: 40),
+                  const SizedBox(width: 20),
 
                   Expanded(flex: 1, child: _buildCompanySection(context)),
+                 // const SizedBox(width: 20),
 
                   Expanded(flex: 2, child: _buildContactSection(context)),
+                  const SizedBox(width: 20),
 
                   Expanded(flex: 2, child: _buildLegalSection(context)),
                 ],
@@ -553,7 +555,7 @@ class _CommonHeaderState extends State<CommonHeader> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      AppConstants.appNameShort,
+                      AppConstants.appName,
                       style: const TextStyle(
                         fontSize: 19,
                         fontWeight: FontWeight.bold,

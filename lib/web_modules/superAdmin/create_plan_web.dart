@@ -223,7 +223,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
               onRefresh: _refresh,
               child: Row(
                 children: [
-                  if (isDesktop) const AdminSideBar(),
+                  if (isDesktop && isLoggedIn) const AdminSideBar(),
 
                   Expanded(
                     child: Center(
@@ -246,9 +246,16 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                   Positioned(
                                     top: 10,
                                     left: 10,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.menu,color: AppColors.black),
-                                      onPressed: () => _scaffoldKeyCreatePlan.currentState?.openDrawer(),
+                                    child: Builder(
+                                      builder: (context) => IconButton(
+                                        icon: const Icon(
+                                          Icons.menu,
+                                          color: AppColors.black,
+                                        ),
+                                        onPressed: () {
+                                          Scaffold.of(context).openDrawer();
+                                        },
+                                      ),
                                     ),
                                   ),
                                 SingleChildScrollView(

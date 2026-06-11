@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
@@ -144,169 +145,453 @@ _controller.clear();
         },
       ),
     );
-  }  @override
-  Widget build(BuildContext context) {
-    double s=MediaQuery.of(context).size.width;
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: CommonWebAppBar(
-        height: s * 0.03,
-        title: "LYD",
-        onLogout: () {
-        },
-        onNotification: () {
-        },
+  }
+  void showPolicyPopup() {
+    Get.dialog(
+      AlertDialog(
+        title: const Text("Select Policy"),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: typesPolicy.length,
+            itemBuilder: (context, index) {
+              final type = typesPolicy[index];
+
+              return RadioListTile<String>(
+                value: type,
+                groupValue: jobController.selectedTitle,
+                activeColor: AppColors.primary,
+                title: Text(type),
+                onChanged: (value) async {
+                  Get.back();
+
+                  jobController.selectedTitle = value;
+                  jobController.update();
+
+                  final data =
+                  await serviceController.getPrivacyPolicyDetails(
+                    value!,
+                    context,
+                  );
+
+                  loadDescription(data);
+                },
+              );
+            },
+          ),
+        ),
       ),
+    );
+  }
+  Widget buildTitleSection() {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
+    return isMobile
+        ? ElevatedButton.icon(
+      onPressed: showPolicyPopup,
+      icon: const Icon(Icons.list),
+      label: Text(
+        jobController.selectedTitle ?? "Select Policy",
+      ),
+    )
+        : buildTitleSidebar();
+  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   double s=MediaQuery.of(context).size.width;
+  //   final bool isLoggedIn = Api.userInfo.read('token') != null;
+  //   final bool isDesktop = s >= 1100;
+  //   return Scaffold(
+  //     backgroundColor: AppColors.white,
+  //     appBar: CommonWebAppBar(
+  //       height: s * 0.03,
+  //       title: "LYD",
+  //       onLogout: () {
+  //       },
+  //       onNotification: () {
+  //       },
+  //     ),
+  //     drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+  //     body: GetBuilder<JobController>(
+  //       builder: (controller) {
+  //         return Row(
+  //           children: [
+  //             if (isDesktop && isLoggedIn) const AdminSideBar(),
+  //            // buildTitleSidebar(),
+  //             buildTitleSection(),
+  //             Expanded(
+  //               child: Center(
+  //                 child: ConstrainedBox(
+  //                   constraints:
+  //                   const BoxConstraints(maxWidth: 1200),
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.all(24),
+  //                     child: Container(
+  //                       decoration: BoxDecoration(
+  //                         color: Colors.white,
+  //                         borderRadius: BorderRadius.circular(12),
+  //                         boxShadow: const [
+  //                           BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+  //                         ],
+  //                       ),
+  //                       child: Padding(
+  //                         padding: const EdgeInsets.all(20.0),
+  //                         child: Form(
+  //                           key: _formKeyCreatePrivacyPolicy,
+  //                           child: Column(
+  //                             crossAxisAlignment:
+  //                             CrossAxisAlignment.start,
+  //                             children: [
+  //
+  //                               Text(
+  //         "${jobController.selectedTitle??""}",
+  //                                 style: AppTextStyles.subtitle(
+  //                                   context,
+  //                                 ),
+  //                               ),
+  //
+  //                               const SizedBox(height: 25),
+  //                               AnimatedOpacity(
+  //                                 duration: const Duration(milliseconds: 200),
+  //                                 opacity: isTitleSidebarOpen ? 1 : 0,
+  //                                 child: IgnorePointer(
+  //                                   ignoring: !isTitleSidebarOpen,
+  //                                   child: GestureDetector(
+  //                                     onTap: () {
+  //                                       setState(() {
+  //                                         isTitleSidebarOpen = false;
+  //                                       });
+  //                                     },
+  //                                     child: Container(
+  //                                       color: Colors.black.withOpacity(0.4),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //
+  //                               const SizedBox(height: 25),
+  //
+  //                               Column(
+  //                                 children: [
+  //                                   Container(
+  //                                     decoration: BoxDecoration(
+  //                                       color: Colors.grey.shade100,
+  //                                       borderRadius: const BorderRadius.only(
+  //                                         topLeft: Radius.circular(10),
+  //                                         topRight: Radius.circular(10),
+  //                                       ),),
+  //                                     height: s*0.05,
+  //                                     width: double.infinity,
+  //                                     child: QuillSimpleToolbar(
+  //                                       controller: _controller,
+  //                                       config: QuillSimpleToolbarConfig(
+  //                                         embedButtons: [],
+  //                                         showBackgroundColorButton: false,
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                   Container(
+  //                                     height: s*0.25,
+  //                                     width: double.infinity,
+  //                                     decoration: BoxDecoration(
+  //                                       color: Colors.grey.shade100,
+  //                                       borderRadius: const BorderRadius.only(
+  //                                         bottomLeft: Radius.circular(10),
+  //                                         bottomRight: Radius.circular(10),
+  //                                       ),),
+  //                                     child: QuillEditor(
+  //                                       controller: _controller,
+  //                                       scrollController: _scrollController,
+  //                                       focusNode: _focusNode,
+  //                                       config: QuillEditorConfig(
+  //                                         placeholder: "${jobController.selectedTitle??""}  description...",
+  //                                         padding: const EdgeInsets.all(16),
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                               SizedBox(height: 20,),
+  //                               Center(
+  //                                 child: Container(
+  //                                   width: 120,
+  //                                   height: 40,
+  //                                   decoration: BoxDecoration(
+  //                                     gradient: const LinearGradient(
+  //                                       colors: [AppColors.primary, AppColors.secondary],
+  //                                       begin: Alignment.topLeft,
+  //                                       end: Alignment.bottomRight,
+  //                                     ),
+  //                                     borderRadius: BorderRadius.circular(12),
+  //                                   ),
+  //                                   child: ElevatedButton(
+  //                                     onPressed: () async {
+  //                                       if (_formKeyCreatePrivacyPolicy.currentState!.validate()) {
+  //                                         if(jobController.selectedTitle==null){
+  //                                           await showSuccessDialog(context, title:"Error",message :"Please Choose title",
+  //                                               onOkPressed: () {Get.back();});                                            return;
+  //                                         }
+  //                                         final doc = _controller.document;
+  //                                         final text = doc.toPlainText().trim();
+  //
+  //                                         if (text.isEmpty) {
+  //                                           await showSuccessDialog(context, title:"Error",message :"Please add content",
+  //                                               onOkPressed: () {Get.back();});
+  //                                           return;
+  //                                         }
+  //
+  //                                         final description = jsonEncode(doc.toDelta().toJson());
+  //                                       //  final description = jsonEncode(_controller.document.toDelta().toJson());
+  //
+  //                                         planController.addPrivacyPolicyContent(jobController.selectedTitle!,description,context);
+  //                                       }
+  //                                     },
+  //                                     style: ElevatedButton.styleFrom(
+  //                                         shape: RoundedRectangleBorder(
+  //                                           borderRadius: BorderRadius.circular(12),
+  //                                         ),
+  //                                         backgroundColor: Colors.transparent,shadowColor: Colors.transparent
+  //                                     ),
+  //                                     child: Text(
+  //                                       "Add",
+  //                                       style: AppTextStyles.body(context, color: AppColors.white,fontWeight: FontWeight.bold),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    final bool isMobile = width < 768;
+    final bool isDesktop = width >= 1100;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+
+      appBar: CommonWebAppBar(
+        height: 60,
+        title: "LYD",
+        onLogout: () {},
+        onNotification: () {},
+      ),
+
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(
+        width: 250,
+        child: AdminSideBar(),
+      )
+          : null,
+
       body: GetBuilder<JobController>(
-        builder: (controller) {
+        builder: (_) {
           return Row(
             children: [
-              const AdminSideBar(),
-              buildTitleSidebar(),
+              if (isDesktop && isLoggedIn)
+                const AdminSideBar(),
+
+              if (!isMobile)
+                buildTitleSidebar(),
+
               Expanded(
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints:
-                    const BoxConstraints(maxWidth: 1200),
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: 1200,
+                      ),
                       child: Container(
+                        padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(15),
                           boxShadow: const [
-                            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 8,
+                            )
                           ],
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Form(
-                            key: _formKeyCreatePrivacyPolicy,
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: [
 
-                                Text(
-          "${jobController.selectedTitle??""}",
-                                  style: AppTextStyles.subtitle(
+                            /// Mobile Policy Selector
+                            if (isMobile)
+                              DropdownButtonFormField<String>(
+                                value: jobController.selectedTitle,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                  ),
+                                ),
+                                items: typesPolicy
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e),
+                                  ),
+                                )
+                                    .toList(),
+                                onChanged: (value) async {
+                                  jobController.selectedTitle =
+                                      value;
+
+                                  jobController.update();
+
+                                  final data =
+                                  await serviceController
+                                      .getPrivacyPolicyDetails(
+                                    value!,
                                     context,
-                                  ),
-                                ),
+                                  );
 
-                                const SizedBox(height: 25),
-                                AnimatedOpacity(
-                                  duration: const Duration(milliseconds: 200),
-                                  opacity: isTitleSidebarOpen ? 1 : 0,
-                                  child: IgnorePointer(
-                                    ignoring: !isTitleSidebarOpen,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          isTitleSidebarOpen = false;
-                                        });
-                                      },
-                                      child: Container(
-                                        color: Colors.black.withOpacity(0.4),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                  loadDescription(data);
+                                },
+                              ),
 
-                                const SizedBox(height: 25),
+                            if (isMobile)
+                              const SizedBox(height: 20),
 
-                                Column(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10),
-                                        ),),
-                                      height: s*0.05,
-                                      width: double.infinity,
-                                      child: QuillSimpleToolbar(
-                                        controller: _controller,
-                                        config: QuillSimpleToolbarConfig(
-                                          embedButtons: [],
-                                          showBackgroundColorButton: false,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      height: s*0.25,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
-                                        borderRadius: const BorderRadius.only(
-                                          bottomLeft: Radius.circular(10),
-                                          bottomRight: Radius.circular(10),
-                                        ),),
-                                      child: QuillEditor(
-                                        controller: _controller,
-                                        scrollController: _scrollController,
-                                        focusNode: _focusNode,
-                                        config: QuillEditorConfig(
-                                          placeholder: "${jobController.selectedTitle??""}  description...",
-                                          padding: const EdgeInsets.all(16),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20,),
-                                Center(
-                                  child: Container(
-                                    width: s*0.15,
-                                    height: s*0.018,
-                                    decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        colors: [AppColors.primary, AppColors.secondary],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        if (_formKeyCreatePrivacyPolicy.currentState!.validate()) {
-                                          if(jobController.selectedTitle==null){
-                                            await showSuccessDialog(context, title:"Error",message :"Please Choose title",
-                                                onOkPressed: () {Get.back();});                                            return;
-                                          }
-                                          final doc = _controller.document;
-                                          final text = doc.toPlainText().trim();
-
-                                          if (text.isEmpty) {
-                                            await showSuccessDialog(context, title:"Error",message :"Please add content",
-                                                onOkPressed: () {Get.back();});
-                                            return;
-                                          }
-
-                                          final description = jsonEncode(doc.toDelta().toJson());
-                                        //  final description = jsonEncode(_controller.document.toDelta().toJson());
-
-                                          planController.addPrivacyPolicyContent(jobController.selectedTitle!,description,context);
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          backgroundColor: Colors.transparent,shadowColor: Colors.transparent
-                                      ),
-                                      child: Text(
-                                        "Add",
-                                        style: AppTextStyles.body(context, color: AppColors.white,fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                              ],
+                            Text(
+                              jobController.selectedTitle ??
+                                  "",
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
+
+                            const SizedBox(height: 20),
+
+                            /// Toolbar
+                            if (!isMobile)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius:
+                                  const BorderRadius.only(
+                                    topLeft:
+                                    Radius.circular(10),
+                                    topRight:
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                child: QuillSimpleToolbar(
+                                  controller: _controller,
+                                  config:
+                                  const QuillSimpleToolbarConfig(
+                                    embedButtons: [],
+                                    showBackgroundColorButton:
+                                    false,
+                                  ),
+                                ),
+                              ),
+
+                            Container(
+                              height:
+                              isMobile ? 350 : 500,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius:
+                                BorderRadius.circular(10),
+                              ),
+                              child: QuillEditor(
+                                controller: _controller,
+                                scrollController:
+                                _scrollController,
+                                focusNode: _focusNode,
+                                config: QuillEditorConfig(
+                                  padding:
+                                  const EdgeInsets.all(16),
+                                  placeholder:
+                                  "${jobController.selectedTitle} description...",
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 25),
+
+                            Center(
+                              child: SizedBox(
+                                width: 150,
+                                height: 50,
+                                child: ElevatedButton(
+                                  style:
+                                  ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                    AppColors.primary,
+                                    shape:
+                                    RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(
+                                          10),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+
+                                    final text =
+                                    _controller.document
+                                        .toPlainText()
+                                        .trim();
+
+                                    if (text.isEmpty) {
+                                      Get.snackbar(
+                                        "Error",
+                                        "Please add content",
+                                      );
+                                      return;
+                                    }
+
+                                    final description =
+                                    jsonEncode(
+                                      _controller.document
+                                          .toDelta()
+                                          .toJson(),
+                                    );
+
+                                    await planController
+                                        .addPrivacyPolicyContent(
+                                      jobController
+                                          .selectedTitle!,
+                                      description,
+                                      context,
+                                    );
+                                  },
+                                  child: const Text(
+                                    "Save Policy",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight:
+                                      FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

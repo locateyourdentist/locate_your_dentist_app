@@ -55,7 +55,7 @@ class AppRoutes {
   static const viewLegalPage='/viewLegalPage';
   static const viewLegalMobilePage='/viewLegalMobilePage';
   static const contactUsMobilePage='/contactUsMobilePage';
-
+  static const ViewFeedbackFormsPage='/ViewFeedbackFormsPage';
 
   //profile
   static const clinicProfilePage='/clinicProfilePage';

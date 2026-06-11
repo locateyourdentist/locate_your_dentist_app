@@ -22,7 +22,7 @@ class ClinicProfileWeb extends StatefulWidget {
 }
 
 class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyClinic = GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
   final serviceController = Get.put(ServiceController());
   final ScrollController _scrollController = ScrollController();
@@ -115,7 +115,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
     final bool isLoggedIn = Api.userInfo.read('token') != null;
 
     return Scaffold(
-      key: _scaffoldKey,
+      key: _scaffoldKeyClinic,
       backgroundColor: AppColors.scaffoldBg,
       appBar: isLoggedIn ? CommonWebAppBar(height: isMobile ? 60 : 80, title: "LYD") : const CommonHeader(),
       drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
@@ -152,7 +152,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
             top: 10, left: 10,
             child: IconButton(
               icon: const Icon(Icons.menu),
-              onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+              onPressed: () => _scaffoldKeyClinic.currentState?.openDrawer(),
             ),
           ),
         SingleChildScrollView(

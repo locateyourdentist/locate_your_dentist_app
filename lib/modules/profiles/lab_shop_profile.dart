@@ -101,6 +101,7 @@ import 'package:flutter_quill/flutter_quill.dart';
     final size = MediaQuery.of(context).size.width;
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
     final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
+    final user = loginController.userData.isNotEmpty ? loginController.userData.first : null;
     //print('ff${AppConstants.baseUrl + loginController.userData.first.images[0]}');
     if (loginController.userData.isNotEmpty &&
         loginController.userData.first.images.isNotEmpty) {
@@ -110,6 +111,7 @@ import 'package:flutter_quill/flutter_quill.dart';
     }
     String userId=Api.userInfo.read('userId')??"";
     String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
+    print('edit id$editUserId');
     return Scaffold(
       body: GetBuilder<LoginController>(
         builder: (controller) {
@@ -214,7 +216,7 @@ import 'package:flutter_quill/flutter_quill.dart';
                                     ),
                                   ),
                                 ),
-                                if(userId != editUserId)
+                               if(userId != editUserId)
                                 Container(
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
@@ -315,74 +317,154 @@ import 'package:flutter_quill/flutter_quill.dart';
                                   ),
                                 ),
                               ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            //   children: [
+                            //     AnimatedIconButton(
+                            //       iconPath: 'assets/images/watsapp.png',
+                            //       text: 'WhatsApp',
+                            //       onTap: () async {
+                            //         final userData = loginController.userData.isNotEmpty
+                            //             ? loginController.userData.first
+                            //             : null;
+                            //
+                            //         if (userData == null) return;
+                            //
+                            //         final bool isMobileAllowed =
+                            //             userData.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true;
+                            //
+                            //         final bool isAdminUser =
+                            //             userType == 'admin' || userType == 'superAdmin';
+                            //
+                            //         final bool isMobilePlatform =
+                            //             PlatformHelper.platform == 'Android' ||
+                            //                 PlatformHelper.platform == 'iOS';
+                            //         if (!isMobilePlatform) return;
+                            //         if (!planActive) return;
+                            //         if (!isMobileAllowed && !isAdminUser) return;
+                            //
+                            //         // WhatsApp call (single place)
+                            //         WhatsAppUtils.openWhatsApp(
+                            //           phoneNumber: userData.mobileNumber?.toString() ?? '',
+                            //           message: "Hi Message From ${userData.details?["name"] ?? ''}",
+                            //         );
+                            //       },
+                            //     ),
+                            //     AnimatedIconButton(
+                            //       iconPath: 'assets/images/web.png',
+                            //       text: 'Website',
+                            //       onTap: () async {
+                            //         if((planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]?["location"]==true)||
+                            //             isAdminUser) {
+                            //           if (PlatformHelper.platform == 'Android' ||
+                            //               PlatformHelper.platform == 'iOS') {
+                            //             Get.toNamed('/webViewProfilePage', arguments: {
+                            //               "url": loginController.userData.first
+                            //                   .details["website"] ?? "".toString() ?? "",
+                            //               "clinicName": loginController.userData.first
+                            //                   .details["name"] ?? "".toString()
+                            //             });
+                            //             if (loginController.userData.first
+                            //                 .details["website"] ?? ""
+                            //                 .toString()
+                            //                 .isEmpty || loginController.userData.first
+                            //                 .details["website"] ??
+                            //                 "".toString() == null) {
+                            //               showCustomToast(context, "Website error",
+                            //                   backgroundColor: AppColors.secondary);
+                            //             }
+                            //           }
+                            //         }
+                            //       },
+                            //     ),
+                            //     AnimatedIconButton(
+                            //       iconPath: 'assets/images/call.png',
+                            //       text: 'Call',
+                            //       onTap: () async {
+                            //         if((planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]?["mobileNumber"]==true)|| isAdminUser) {
+                            //           launchCall(loginController.userData.first.mobileNumber.toString() ?? "");
+                            //         }
+                            //       },
+                            //     ),
+                            //   ],
+                            // ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                AnimatedIconButton(
-                                  iconPath: 'assets/images/watsapp.png',
-                                  text: 'WhatsApp',
-                                  onTap: () async {
-                                    final userData = loginController.userData.isNotEmpty
-                                        ? loginController.userData.first
-                                        : null;
+                                buildActionButton(
+                                    icon: Icons.chat_rounded,
+                                    label: "WhatsApp",
+                                    onTap: () async {
+                                      final userData = loginController.userData.isNotEmpty
+                                          ? loginController.userData.first
+                                          : null;
 
-                                    if (userData == null) return;
+                                      if (userData == null) return;
 
-                                    final bool isMobileAllowed =
-                                        userData.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true;
+                                      final bool isMobileAllowed =
+                                          userData.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true;
 
-                                    final bool isAdminUser =
-                                        userType == 'admin' || userType == 'superAdmin';
+                                      final bool isAdminUser =
+                                          userType == 'admin' || userType == 'superAdmin';
 
-                                    final bool isMobilePlatform =
-                                        PlatformHelper.platform == 'Android' ||
-                                            PlatformHelper.platform == 'iOS';
-                                    if (!isMobilePlatform) return;
-                                    if (!planActive) return;
-                                    if (!isMobileAllowed && !isAdminUser) return;
+                                      final bool isMobilePlatform =
+                                          PlatformHelper.platform == 'Android' ||
+                                              PlatformHelper.platform == 'iOS';
 
-                                    // WhatsApp call (single place)
-                                    WhatsAppUtils.openWhatsApp(
-                                      phoneNumber: userData.mobileNumber?.toString() ?? '',
-                                      message: "Hi Message From ${userData.details?["name"] ?? ''}",
-                                    );
-                                  },
+                                      if (!isMobilePlatform) return;
+                                      if (!planActive) return;
+                                      if (!isMobileAllowed && !isAdminUser) return;
+
+                                      WhatsAppUtils.openWhatsApp(
+                                        phoneNumber: userData.mobileNumber?.toString() ?? '',
+                                        message:
+                                        "Hi Message From ${userData.details?["name"] ?? ''}",
+                                      );
+                                    },context: context
                                 ),
-                                AnimatedIconButton(
-                                  iconPath: 'assets/images/web.png',
-                                  text: 'Website',
-                                  onTap: () async {
-                                    if((planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]?["location"]==true)||
-                                        isAdminUser) {
-                                      if (PlatformHelper.platform == 'Android' ||
-                                          PlatformHelper.platform == 'iOS') {
-                                        Get.toNamed('/webViewProfilePage', arguments: {
-                                          "url": loginController.userData.first
-                                              .details["website"] ?? "".toString() ?? "",
-                                          "clinicName": loginController.userData.first
-                                              .details["name"] ?? "".toString()
-                                        });
-                                        if (loginController.userData.first
-                                            .details["website"] ?? ""
-                                            .toString()
-                                            .isEmpty || loginController.userData.first
-                                            .details["website"] ??
-                                            "".toString() == null) {
-                                          showCustomToast(context, "Website error",
-                                              backgroundColor: AppColors.secondary);
+
+                                buildActionButton(
+                                    icon: Icons.language_rounded,
+                                    label: "Website",
+                                    onTap: () async {
+                                      if ((planActive == true &&
+                                          user?.details["plan"]?["basePlan"]?["details"]?["location"] == true) ||
+                                          isAdminUser) {
+                                        final website =
+                                            user?.details["website"]?.toString() ?? "";
+
+                                        if (website.isEmpty) {
+                                          showCustomToast(
+                                            context,
+                                            "Website not available",
+                                            backgroundColor: AppColors.secondary,
+                                          );
+                                          return;
                                         }
+
+                                        Get.toNamed(
+                                          '/webViewProfilePage',
+                                          arguments: {
+                                            "url": website,
+                                            "clinicName":
+                                            user?.details["name"]?.toString() ?? "",
+                                          },
+                                        );
                                       }
-                                    }
-                                  },
+                                    },context: context
                                 ),
-                                AnimatedIconButton(
-                                  iconPath: 'assets/images/call.png',
-                                  text: 'Call',
-                                  onTap: () async {
-                                    if((planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]?["mobileNumber"]==true)|| isAdminUser) {
-                                      launchCall(loginController.userData.first.mobileNumber.toString() ?? "");
-                                    }
-                                  },
+
+                                /// Call
+                                buildActionButton(
+                                    icon: Icons.call_rounded,
+                                    label: "Call",
+                                    onTap: () {
+                                      if ((planActive == true &&
+                                          user?.details["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
+                                          isAdminUser) {
+                                        launchCall(user?.mobileNumber?.toString() ?? "");
+                                      }
+                                    },context: context
                                 ),
                               ],
                             ),

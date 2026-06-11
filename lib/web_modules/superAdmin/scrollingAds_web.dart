@@ -355,8 +355,26 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                           icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                          onPressed: () {
+                          onPressed: ()async {
                             controller.editUploadImage1.removeAt(index);
+
+                            String currentUserId = Api.userInfo.read('userId')?.toString() ?? "";
+                            String storedUserType = Api.userInfo.read('userType')?.toString() ?? "";
+                            String targetUserType = (storedUserType.toLowerCase() == 'superadmin')
+                                ? (controller.selectedUserType ?? "Dental Clinic")
+                                : storedUserType;
+                            //_handleStatusChange(controller, image, index, userType, 'delete'),
+                            // await controller.uploadImagesUserType(
+                            // currentUserId,
+                            // targetUserType,
+                            // image.id ?? "0",
+                            // // "1",
+                            // '',
+                            // '',
+                            // true.toString(),
+                            // currentFile,
+                            // context,
+                            // );
                             controller.update();
                           },
                         ),

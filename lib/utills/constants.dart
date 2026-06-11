@@ -1,13 +1,13 @@
 
 class AppConstants{
   static const baseUrl=
- //'http://192.168.31.117:3000/';
+ // 'http://192.168.31.117:3000/';
   'https://locateyourdentist.onrender.com/';
   static const razorPayKey='rzp_test_RzNhGYRP9d54Ca';
   static const webFireBaseVAPID_KEY='BPIa_iU8vOaJk3MquVBrNP0ONtl1Kcf7eMhhArQTXn33d_yPxnsVxcpDulrLu5ijuifyCXZH2MFAWHy7olnTM5o';
       //'BIQ7RfHOZhssH1uXBZpuun3r6D7UhoHuAuqE4QjvpLolyo-E7_LDrYUnUOPYkMCh7VASKy2UWfyDg4DBNl7Khw8';
   static const appLogo='';
-  static const appName='LOCATE YOUR DENTIST';
+  static const appName='Locate Your Dentist';
   static const appNameShort='LYD';
   static const developerCompanyName='Vorynto Private Limited';
   static const developerCompanyUrl='https://www.vorynto.com/';
@@ -122,6 +122,7 @@ class AppConstants{
  //Contact
   static const String postContactFormUrl='postContactDetails';
   static const String postPublicContactFormUrl='createPublicContact';
+  static const String feedbackContactListUrl='get_public_contacts';
   static const String senderContactListUrl='senderContactLists';
   static const String receiverContactListUrl='receiverIdContactLists';
   static const String contactFilterSearchUrl='filterContactLists';

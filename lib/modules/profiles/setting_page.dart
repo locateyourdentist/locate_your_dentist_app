@@ -70,6 +70,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "change Logo", "page": "/changLogoImagePage"},
           {"title": "Add JobCategory", "page": "/addJobCategoryPage"},
           {"title": "AddCompany", "page": "/addCompanyPage"},
+          {"title": "Feedback Forms", "page": "/ViewFeedbackFormsPage"},
           {"title": "Add Legal Pages", "page": "/addLegalPageMobile"},
           {"title": "Delete Account", "page": "/DeleteAccount"},
           {"title": "About Us", "page": "/aboutUsPage"},
@@ -159,15 +160,15 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.primary,
         centerTitle: true,
         iconTheme: IconThemeData(
-          color: AppColors.black,
+          color: AppColors.white,
           size: s * 0.05,
         ),
         title: Text(
           "Settings",
-          style: AppTextStyles.subtitle(context, color: AppColors.black),
+          style: AppTextStyles.subtitle(context, color: AppColors.white),
         ),
       ),
 
@@ -349,41 +350,97 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
       case "Clinic Profile":
       case "Lab Profile":
       case "Shop Profile":
-        return Icons.person;
+        return Icons.person_outline;
+
+      case "Edit Profile":
+        return Icons.edit_outlined;
 
       case "Dashboard":
-        return Icons.dashboard;
+        return Icons.dashboard_customize_outlined;
 
-      case "Plans":
-      case "My Plan":
       case "My Subscription":
-        return Icons.workspace_premium;
+        return Icons.workspace_premium_outlined;
+
+      case "My Purchases":
+        return Icons.receipt_long_outlined;
 
       case "Services":
-        return Icons.medical_services;
-      case "Add Admin":
-        return Icons.person;
-      case "Reports":
-        return Icons.list_alt_rounded;
+        return Icons.medical_services_outlined;
+
+      case "Products":
+        return Icons.inventory_2_outlined;
+
+      case "Job/Webinars":
+        return Icons.campaign_outlined;
+
       case "Jobs":
-        return Icons.work;
-      case "Create Notification":
-        return Icons.notifications_none;
-      case "Change Password":
-        return Icons.lock;
-        case "Logout":
-        return Icons.logout;
-    case "About Us":
-        return Icons.info;
-      case "AddCompany":
         return Icons.work_outline;
-    case "AddGst":
-    return Icons.monetization_on_outlined;
-    case "Add JobCategory":
-    return Icons.splitscreen;
+
+      case "Webinars":
+        return Icons.video_camera_front_outlined;
+
+      case "My Jobs":
+        return Icons.assignment_outlined;
+
+      case "Applicants List":
+        return Icons.groups_outlined;
+
+      case "User List":
+        return Icons.people_alt_outlined;
+
+      case "Add admin":
+        return Icons.admin_panel_settings_outlined;
+
+      case "Add Branches":
+        return Icons.account_tree_outlined;
+
+      case "Contact Form":
+        return Icons.contact_mail_outlined;
+
+      case "Contact Us":
+        return Icons.support_agent_outlined;
+
+      case "Feedback Forms":
+        return Icons.feedback_outlined;
+
+      case "Reports":
+        return Icons.analytics_outlined;
+
+      case "Create Notification":
+        return Icons.notifications_active_outlined;
+
+      case "Create Scrolling Ads Post":
+        return Icons.slideshow_outlined;
+
+      case "Add Legal Pages":
+        return Icons.gavel_outlined;
+
+      case "Add JobCategory":
+        return Icons.category_outlined;
+
+      case "AddCompany":
+        return Icons.business_outlined;
+
+      case "AddGst":
+        return Icons.receipt_outlined;
+
+      case "change Logo":
+        return Icons.image_outlined;
+
+      case "Change Password":
+        return Icons.lock_outline;
+
+      case "Delete Account":
+        return Icons.delete_forever_outlined;
+
+      case "About Us":
+        return Icons.info_outline;
+
+      case "Logout":
+        return Icons.logout_outlined;
+
       default:
-        return Icons.settings;
+        return Icons.settings_outlined;
     }
   }
-
 }

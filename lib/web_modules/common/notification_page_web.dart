@@ -24,17 +24,25 @@ class _ViewNotificationWebState extends State<ViewNotificationWeb> {
   final GlobalKey<ScaffoldState> _scaffoldKeyViewNotification = GlobalKey<ScaffoldState>();
   String selectedTab = "All";
   final ImagePicker _picker = ImagePicker();
-
   IconData changeIcon(String title) {
     final t = title.trim().toLowerCase();
-    if (t.contains("new")) return Icons.person;
+
     switch (t) {
-      case "view":
-        return Icons.visibility;
-      case "plan":
-        return Icons.next_plan_outlined;
-      case "renewal":
-        return Icons.autorenew;
+      case "offers":
+        return Icons.local_offer;
+
+      case "wishes":
+        return Icons.celebration;
+
+      case "jobs":
+        return Icons.work;
+
+      case "webinars":
+        return Icons.video_camera_front;
+
+      case "others":
+        return Icons.notifications;
+
       default:
         return Icons.message;
     }

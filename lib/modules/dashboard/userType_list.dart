@@ -556,8 +556,8 @@ class _userTypeListState extends State<userTypeList> {
                                     child: SuperAdminProfileCard(
                                       profile: profile,
                                       size: MediaQuery.of(context).size.width,
-                                      onCall: () {
-                                        launchCall(profile.mobileNumber);
+                                      onCall: () async{
+                                        await launchCall(profile.mobileNumber);
                                       },
                                     ),
                                   ),

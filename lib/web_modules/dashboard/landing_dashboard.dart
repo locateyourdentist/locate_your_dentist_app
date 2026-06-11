@@ -546,13 +546,13 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                             platformOverviewSection(context),
                             SizedBox(height: size*0.01,),
 
-                            userTypesSection(),
-                           SizedBox(height: size*0.01,),
+
                            // howItWorks(),
                             jobsWebinarSection(),
                             const SizedBox(height: 60),
 
-
+                            userTypesSection(),
+                            SizedBox(height: size*0.01,),
                             const SizedBox(height: 60),
 
                             // Footer
@@ -1471,14 +1471,59 @@ Widget platformOverviewSection(context) {
             ),
 
             const SizedBox(height: 40),
-
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
                     AppColors.primary,
-                    AppColors.secondary,
+                    AppColors.primary,
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(height: 15),
+
+                  Text(
+                    "New to Locate Your Dentist?",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,color: AppColors.white
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    "Create your account to explore jobs, webinars, clinics and dental services.",
+                    textAlign: TextAlign.center,style: AppTextStyles.caption(context,color: AppColors.white),
+                  ),
+                  SizedBox(height: 15),
+                  TextButton(
+                    onPressed: () {
+                      Get.toNamed('/registerPageWeb');
+                    },
+                    child: Text(
+                      "REGISTER NOW",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,color: AppColors.white,
+                        decoration: TextDecoration.underline,decorationColor: AppColors.white
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 40),
+
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.transparent,
+                    AppColors.transparent,
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
@@ -1489,7 +1534,7 @@ Widget platformOverviewSection(context) {
                     "What You Can Do Here",
                     style: AppTextStyles.subtitle(
                       context,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -1508,38 +1553,6 @@ Widget platformOverviewSection(context) {
                 ],
               ),
             ),
-            Column(
-              children: [
-                SizedBox(height: 15),
-
-                Text(
-                  "New to Locate Your Dentist?",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,color: AppColors.black
-                  ),
-                ),
-                SizedBox(height: 15),
-                Text(
-                  "Create your account to explore jobs, webinars, clinics and dental services.",
-                  textAlign: TextAlign.center,style: AppTextStyles.caption(context,color: AppColors.black),
-                ),
-                SizedBox(height: 15),
-                TextButton(
-                  onPressed: () {
-                    Get.toNamed('/registerPageWeb');
-                  },
-                  child: Text(
-                    "REGISTER NOW",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,color: AppColors.primary,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              ],
-            )
           ],
         ),
       ),
@@ -1556,12 +1569,12 @@ class _FeatureChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         text,
-        style: AppTextStyles.caption(context, color: Colors.black),
+        style: AppTextStyles.caption(context, color: Colors.white),
       ),
     );
   }

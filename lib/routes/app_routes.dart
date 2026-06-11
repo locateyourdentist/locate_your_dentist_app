@@ -100,6 +100,7 @@ import 'package:locate_your_dentist/web_modules/superAdmin/view_plan_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/view_report_web.dart';
 import '../modules/auth/login_screen/login_screen.dart';
 import '../modules/auth/password_page/forgot_change_password.dart';
+import '../modules/contact_form/view_feedback_forms.dart';
 import '../modules/plans/create_plan.dart';
 import '../modules/profiles/clinic_web_view.dart';
 import '../web_modules/common/aboutus_web.dart';
@@ -246,6 +247,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.contactUsMobilePage,
       page: () => const ContactsMobilePage(),
+    ),
+    GetPage(
+      name: AppRoutes.ViewFeedbackFormsPage,
+      page: () => const ViewFeedbackForms(),
     ),
     GetPage(
       name: AppRoutes.addLegalPageMobile,

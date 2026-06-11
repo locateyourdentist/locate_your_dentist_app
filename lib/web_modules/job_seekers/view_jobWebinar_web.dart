@@ -493,7 +493,7 @@ Widget _modernCard({
 Widget _emptyState(dynamic context) {
   return Center(
     child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         const Icon(Icons.inbox_outlined, size: 60, color: Colors.grey),
         const SizedBox(height: 15),
@@ -564,16 +564,13 @@ String formatDate1(dynamic isoDate) {
   if (isoDate == null) return "N/A";
 
   try {
-    // If it's already a DateTime object, format it directly
     if (isoDate is DateTime) {
       return DateFormat('MMM dd, yyyy').format(isoDate);
     }
 
-    // If it's a String, ensure it's clean and parse it
     if (isoDate is String) {
       if (isoDate.trim().isEmpty) return "N/A";
 
-      // Remove any accidental wrapped quotes from poor JSON encoding
       String cleanStr = isoDate.trim().replaceAll('"', '');
       final date = DateTime.parse(cleanStr);
       return DateFormat('MMM dd, yyyy').format(date);

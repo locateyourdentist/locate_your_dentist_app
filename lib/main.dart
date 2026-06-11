@@ -17,7 +17,8 @@ import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'web_url_strategy_stub.dart'
+if (dart.library.html) 'web_url_strategy.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -43,23 +44,6 @@ Future<void> firebaseMessagingBackgroundHandler(
 
   print("Background message received: ${message.messageId}");
 }
-// Future<String> downloadAndSaveFile(
-//     String url,
-//     String fileName,
-//     ) async {
-//
-//   final directory = await getApplicationDocumentsDirectory();
-//
-//   final filePath = '${directory.path}/$fileName';
-//
-//   final response = await http.get(Uri.parse(url));
-//
-//   final file = File(filePath);
-//
-//   await file.writeAsBytes(response.bodyBytes);
-//
-//   return filePath;
-// }
 Future<String?> downloadAndSaveFile(
     String url,
     String fileName,
@@ -264,8 +248,8 @@ Future<void> main() async {
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isShowOnboard = prefs.getBool('isShowOnboard') ?? false;
-  setUrlStrategy(PathUrlStrategy()); // ✅ removes #
-
+  //setUrlStrategy(PathUrlStrategy()); // removes #
+  configureUrlStrategy();
   runApp(MyApp(isShowOnboard: isShowOnboard));
 }
 
@@ -316,7 +300,7 @@ class _MyAppState extends State<MyApp> {
       ],
       getPages: AppPages.page,
       initialRoute: PlatformHelper.platform == "Web" ? AppRoutes.splashScreen
-          : (widget.isShowOnboard ? AppRoutes.splashScreen : AppRoutes.splashScreen),
+          : (widget.isShowOnboard ? AppRoutes.splashScreen : AppRoutes.onBoardScreen),
     );
   }
 }

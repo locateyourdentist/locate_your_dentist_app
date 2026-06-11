@@ -120,8 +120,8 @@ Future<void> showBranchSelectionDialog({
 
                     gradientButton(
                       text: 'Continue',
-                      height: size * 0.016,
-                      width: size * 0.13,
+                      height: 50,
+                      width: 150,
                       context: context,
                       onTap: () async {
 

@@ -183,10 +183,11 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    final bool desktop = isDesktop(context);
-    final bool mobile = isMobile(context);
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
+    final bool isDesktop = width >= 1100;
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
-    
+    final bool isMobile = width < 700;
+
     bool isPosterActive = false;
     if (planController.checkPlanList.isNotEmpty) {
       final firstPlanDetails = planController.checkPlanList[0]["details"]?["plan"];
@@ -196,22 +197,22 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
     return Scaffold(
       key: _scaffoldKeyPlan,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: !desktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
-        height: mobile ? 60 : 80,
+        height: isMobile ? 60 : 80,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
       ),
       body: Row(
         children: [
-          if (desktop) const AdminSideBar(),
+          if (isDesktop && isLoggedIn) const AdminSideBar(),
           Expanded(
             child: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1200),
                 child: Padding(
-                  padding: EdgeInsets.all(mobile ? 10 : 25.0),
+                  padding: EdgeInsets.all(isMobile ? 10 : 25.0),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -220,7 +221,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                     ),
                     child: Stack(
                       children: [
-                        if (!desktop)
+                        if (!isDesktop)
                           Positioned(
                             top: 10,
                             left: 10,
@@ -233,7 +234,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                           length: 5,
                           child: Column(
                             children: [
-                              if (!desktop) const SizedBox(height: 40),
+                              if (!isDesktop) const SizedBox(height: 40),
                               _buildPlanSelector(userType, context, width),
                               if (userType != "admin" && userType != "superAdmin" && selectedString == "Buy Plans")
                                 Padding(
@@ -265,7 +266,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                                     if (selectedString == "Active Plans") {
                                       return SingleChildScrollView(child: PlanDetailsWidget(planList: controller.checkPlanList));
                                     } else {
-                                      return _buildBuyPlans(userType, context, width, controller, mobile);
+                                      return _buildBuyPlans(userType, context, width, controller, isMobile);
                                     }
                                   },
                                 ),
