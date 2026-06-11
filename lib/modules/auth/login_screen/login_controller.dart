@@ -1043,6 +1043,7 @@ class LoginController extends GetxController {
       }):
      await showSuccessDialog(context, title:"Success",message :"User updated successfully!", onOkPressed: () {
         Get.back();});
+       clearProfileData();
       if (userId != "0") {
         List<String> _parseList(dynamic value) {
           if (value == null) return [];

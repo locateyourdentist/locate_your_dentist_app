@@ -165,8 +165,26 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
     }
   }
   Widget clinicCard(ProfileModel clinic) {
-    String firstImage = clinic.images.firstWhere((img) => img.toLowerCase().endsWith('.jpg') || img.toLowerCase().endsWith('.png'), orElse: () => "");
+    //String firstImage = clinic.logoImages.firstWhere((img) => img.toLowerCase().endsWith('.jpg') || img.toLowerCase().endsWith('.png'), orElse: () => "");
+   // String firstImage = clinic.images.firstWhere((img) => img.toLowerCase().endsWith('.jpg') || img.toLowerCase().endsWith('.png'), orElse: () => "");
     String addOnsPlanStatus = clinic.details?["plan"]?["addonsPlan"]?["isActive"]?.toString() ?? "";
+    // 💡 Cleanly identify the first valid image string inside this item's specific data arrays
+    String firstImage = clinic.logoImages.firstWhere(
+          (img) => img.toLowerCase().endsWith('.jpg') ||
+          img.toLowerCase().endsWith('.png') ||
+          img.toLowerCase().endsWith('.jpeg'),
+      orElse: () => "",
+    );
+
+    // Fallback check: If logoImages is empty, check the regular images list
+    if (firstImage.isEmpty) {
+      firstImage = clinic.images.firstWhere(
+            (img) => img.toLowerCase().endsWith('.jpg') ||
+            img.toLowerCase().endsWith('.png') ||
+            img.toLowerCase().endsWith('.jpeg'),
+        orElse: () => "",
+      );
+    }
     return GestureDetector(
       onTap: ()async{
         Api.userInfo.write('selectUId',clinic.userId.toString());
@@ -199,10 +217,10 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                           borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
                           child: firstImage.isNotEmpty
                               ? Image.network(
-                              //firstImage,
-                              loginController.logoImage.isNotEmpty
-                                  ? loginController.logoImage.first ?? ""
-                                  : "",
+                              firstImage,
+                              // loginController.logoImage.isNotEmpty
+                              //     ? loginController.logoImage.first ?? ""
+                              //     : "",
                               width: double.infinity, fit: BoxFit.cover)
                               : Container(
                             width: double.infinity,
@@ -1489,6 +1507,38 @@ Widget platformOverviewSection(context) {
                   ),
                 ],
               ),
+            ),
+            Column(
+              children: [
+                SizedBox(height: 15),
+
+                Text(
+                  "New to Locate Your Dentist?",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,color: AppColors.black
+                  ),
+                ),
+                SizedBox(height: 15),
+                Text(
+                  "Create your account to explore jobs, webinars, clinics and dental services.",
+                  textAlign: TextAlign.center,style: AppTextStyles.caption(context,color: AppColors.black),
+                ),
+                SizedBox(height: 15),
+                TextButton(
+                  onPressed: () {
+                    Get.toNamed('/registerPageWeb');
+                  },
+                  child: Text(
+                    "REGISTER NOW",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,color: AppColors.primary,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
             )
           ],
         ),

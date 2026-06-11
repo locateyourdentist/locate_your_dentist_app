@@ -685,7 +685,7 @@ class _CommonHeaderState extends State<CommonHeader> {
                 Get.to(() => WebLoginPage());
               },
               child: Text(
-                "Login",
+                "Login/Register",
                 style: AppTextStyles.caption(
                   context,
                   color: Colors.white,

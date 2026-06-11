@@ -383,14 +383,40 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                                 child: const Text("Back"),
                                               ),
                                             const SizedBox(width: 20),
+                                            // ElevatedButton(
+                                            //   onPressed: details.onStepContinue,
+                                            //   style: ElevatedButton.styleFrom(
+                                            //     backgroundColor: AppColors.primary,
+                                            //     foregroundColor: Colors.white,
+                                            //   ),
+                                            //   child: Text(
+                                            //     currentStep == (loginController.selectedUserType == 'Job Seekers' ? 3 : 2)
+                                            //         ? "Submit"
+                                            //         : "Next",
+                                            //   ),
+                                            // ),
                                             ElevatedButton(
-                                              onPressed: details.onStepContinue,
+                                              onPressed: loginController.isLoading
+                                                  ? null
+                                                  : details.onStepContinue,
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: AppColors.primary,
                                                 foregroundColor: Colors.white,
                                               ),
-                                              child: Text(
-                                                currentStep == (loginController.selectedUserType == 'Job Seekers' ? 3 : 2)
+                                              child: loginController.isLoading
+                                                  ? const SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                                  : Text(
+                                                currentStep ==
+                                                    (loginController.selectedUserType == 'Job Seekers'
+                                                        ? 3
+                                                        : 2)
                                                     ? "Submit"
                                                     : "Next",
                                               ),
