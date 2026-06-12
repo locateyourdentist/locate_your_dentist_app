@@ -119,9 +119,55 @@ import 'package:flutter_quill/flutter_quill.dart';
             child: ListView(
               children: [
                 if(loginController.userData.isEmpty)
+                Column(
+                  children: [
+                    shimmerBox(height: size * 0.35, radius: 0),
 
-                if(loginController.isLoading)
-                  const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
+                    SizedBox(height: size * 0.02),
+
+                    shimmerBox(
+                      height: 20,
+                      width: size * 0.5,
+                    ),
+
+                    SizedBox(height: 10),
+
+                    shimmerBox(
+                      height: 16,
+                      width: size * 0.3,
+                    ),
+
+                    SizedBox(height: size * 0.03),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        shimmerBox(height: 50, width: 90),
+                        shimmerBox(height: 50, width: 90),
+                        shimmerBox(height: 50, width: 90),
+                      ],
+                    ),
+
+                    SizedBox(height: size * 0.03),
+
+                    ListView.builder(
+                      itemCount: 3,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (_, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: shimmerBox(
+                            height: size * 0.25,
+                            radius: 12,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                // if(loginController.isLoading)
+                //   const Center(child: CircularProgressIndicator(color: AppColors.primary,)),
                 if(loginController.userData.isNotEmpty)
                 Column(
                   children: [
@@ -155,36 +201,42 @@ import 'package:flutter_quill/flutter_quill.dart';
                         if (userType == 'admin' ||
                             userType == 'superAdmin' ||
                             userId == editUserId)
-                          Positioned(
-                            top: 10,
-                            right: 10,
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.toNamed('/clinicEditProfile');
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.4),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Row(
-                                  children: const [
-                                    Icon(Icons.edit,
-                                        color: Colors.white, size: 18),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      "Edit",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                          GetBuilder<LoginController>(
+                              init: LoginController(),
+                              builder: (controller) {
+                                print("Final images list: ${loginController.editImages}");
+                                return Positioned(
+                                top: 10,
+                                right: 10,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed('/clinicEditProfile');
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.4),
+                                      borderRadius: BorderRadius.circular(20),
                                     ),
-                                  ],
+                                    child: Row(
+                                      children: const [
+                                        Icon(Icons.edit,
+                                            color: Colors.white, size: 18),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          "Edit",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            }
                           ),
                       ],
                     ),
@@ -317,77 +369,6 @@ import 'package:flutter_quill/flutter_quill.dart';
                                   ),
                                 ),
                               ),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            //   children: [
-                            //     AnimatedIconButton(
-                            //       iconPath: 'assets/images/watsapp.png',
-                            //       text: 'WhatsApp',
-                            //       onTap: () async {
-                            //         final userData = loginController.userData.isNotEmpty
-                            //             ? loginController.userData.first
-                            //             : null;
-                            //
-                            //         if (userData == null) return;
-                            //
-                            //         final bool isMobileAllowed =
-                            //             userData.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true;
-                            //
-                            //         final bool isAdminUser =
-                            //             userType == 'admin' || userType == 'superAdmin';
-                            //
-                            //         final bool isMobilePlatform =
-                            //             PlatformHelper.platform == 'Android' ||
-                            //                 PlatformHelper.platform == 'iOS';
-                            //         if (!isMobilePlatform) return;
-                            //         if (!planActive) return;
-                            //         if (!isMobileAllowed && !isAdminUser) return;
-                            //
-                            //         // WhatsApp call (single place)
-                            //         WhatsAppUtils.openWhatsApp(
-                            //           phoneNumber: userData.mobileNumber?.toString() ?? '',
-                            //           message: "Hi Message From ${userData.details?["name"] ?? ''}",
-                            //         );
-                            //       },
-                            //     ),
-                            //     AnimatedIconButton(
-                            //       iconPath: 'assets/images/web.png',
-                            //       text: 'Website',
-                            //       onTap: () async {
-                            //         if((planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]?["location"]==true)||
-                            //             isAdminUser) {
-                            //           if (PlatformHelper.platform == 'Android' ||
-                            //               PlatformHelper.platform == 'iOS') {
-                            //             Get.toNamed('/webViewProfilePage', arguments: {
-                            //               "url": loginController.userData.first
-                            //                   .details["website"] ?? "".toString() ?? "",
-                            //               "clinicName": loginController.userData.first
-                            //                   .details["name"] ?? "".toString()
-                            //             });
-                            //             if (loginController.userData.first
-                            //                 .details["website"] ?? ""
-                            //                 .toString()
-                            //                 .isEmpty || loginController.userData.first
-                            //                 .details["website"] ??
-                            //                 "".toString() == null) {
-                            //               showCustomToast(context, "Website error",
-                            //                   backgroundColor: AppColors.secondary);
-                            //             }
-                            //           }
-                            //         }
-                            //       },
-                            //     ),
-                            //     AnimatedIconButton(
-                            //       iconPath: 'assets/images/call.png',
-                            //       text: 'Call',
-                            //       onTap: () async {
-                            //         if((planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]?["mobileNumber"]==true)|| isAdminUser) {
-                            //           launchCall(loginController.userData.first.mobileNumber.toString() ?? "");
-                            //         }
-                            //       },
-                            //     ),
-                            //   ],
-                            // ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -513,189 +494,193 @@ import 'package:flutter_quill/flutter_quill.dart';
 
                               SizedBox(
                               height: MediaQuery.of(context).size.height * 1.2,
-                              child: TabBarView(
-                                controller: _tabController,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                              child: GetBuilder<ServiceController>(
+                                  builder: (controller) {
+                                    return TabBarView(
+                                    controller: _tabController,
                                     children: [
-                                      const SizedBox(height: 10,),
-                                      if(serviceController.serviceList.isEmpty)
-                                        Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
-                                      if(serviceController.isLoading)
-                                        const CircularProgressIndicator(color: AppColors.primary,),
-                                      if (serviceController.serviceList.isNotEmpty && (
-                                          planActive == true && loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"] == true ||
-                                              isAdminUser == true || userId == editUserId))
-                                      // if(serviceController.serviceList.isNotEmpty&&(planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"]==true||
-                                      //     isAdminUser||userId==editUserId))
-                                       // Text('Services',style: AppTextStyles.body(context,fontWeight: FontWeight.bold),),
-                                      GetBuilder<ServiceController>(
-                                          builder: (controller) {
-                                            return AnimationLimiter(
-                                              child: ListView.builder(
-                                                  itemCount: serviceController.serviceList.length,
-                                                  shrinkWrap: true,
-                                                  physics: const NeverScrollableScrollPhysics(),
-                                                  itemBuilder: (BuildContext context, int index) {
-                                                    final service=serviceController.serviceList[index];
-                                                    print("${service.image.toString()??""}");
-                                                    if (service.image != null && service.image!.isNotEmpty) {
-                                                      imgUrl = service.image!.first.replaceAll("\\", "/");
-                                                    }
-                                                    return AnimationConfiguration.staggeredList(
-                                                      position: index,
-                                                      duration: const Duration(milliseconds: 1300),
-                                                      child: SlideAnimation(
-                                                        verticalOffset: 120.0,
-                                                        curve: Curves.easeOutBack,
-                                                        child: FadeInAnimation(
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: Container(
-                                                              decoration: BoxDecoration(border: Border.all(color: AppColors.grey,width: 0.3),borderRadius: BorderRadius.circular(10)),
-                                                              height: size * 0.31,
-                                                              width: double.infinity,
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 10,),
+                                          if(serviceController.serviceList.isEmpty)
+                                            Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
+                                          if(serviceController.isLoading)
+                                            const CircularProgressIndicator(color: AppColors.primary,),
+                                          if (serviceController.serviceList.isNotEmpty && (
+                                              planActive == true && loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"] == true ||
+                                                  isAdminUser == true || userId == editUserId))
+                                          // if(serviceController.serviceList.isNotEmpty&&(planActive==true&&loginController.userData.first.details["plan"]?["basePlan"]?["details"]["services"]==true||
+                                          //     isAdminUser||userId==editUserId))
+                                           // Text('Services',style: AppTextStyles.body(context,fontWeight: FontWeight.bold),),
+                                          GetBuilder<ServiceController>(
+                                              builder: (controller) {
+                                                return AnimationLimiter(
+                                                  child: ListView.builder(
+                                                      itemCount: serviceController.serviceList.length,
+                                                      shrinkWrap: true,
+                                                      physics: const NeverScrollableScrollPhysics(),
+                                                      itemBuilder: (BuildContext context, int index) {
+                                                        final service=serviceController.serviceList[index];
+                                                        print("${service.image.toString()??""}");
+                                                        if (service.image != null && service.image!.isNotEmpty) {
+                                                          imgUrl = service.image!.first.replaceAll("\\", "/");
+                                                        }
+                                                        return AnimationConfiguration.staggeredList(
+                                                          position: index,
+                                                          duration: const Duration(milliseconds: 1300),
+                                                          child: SlideAnimation(
+                                                            verticalOffset: 120.0,
+                                                            curve: Curves.easeOutBack,
+                                                            child: FadeInAnimation(
                                                               child: Padding(
-                                                                padding: const EdgeInsets.all(8.0),
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                  children: [
-                                                                    Column(
-                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                        children: [
-                                                                          Text(service.serviceTitle.toString()??"",
-                                                                            style: AppTextStyles.body(
-                                                                                context,fontWeight: FontWeight.bold,
-                                                                                color: AppColors.black),),
-                                                                          Text(
-                                                                            "Price Starts from ${service.serviceCost.toString()??""}",
-                                                                            style: AppTextStyles.caption(
-                                                                                context,
-                                                                                color: AppColors.grey),),
-                                                                          IconButton(onPressed: (){
-                                                                            serviceController.getServiceDetailAdmin(service.serviceId.toString()??"", context);
-                                                                            Get.toNamed('/viewServicePage',arguments: {"serviceId":service.serviceId.toString()??""});
-                                                                          }, icon: Icon(Icons.arrow_forward,color: Colors.black54,size: size*0.07,))
-
-                                                                        ]),
-                                                                    const SizedBox(width: 10),
-
-                                                                    Column(
+                                                                padding: const EdgeInsets.all(10.0),
+                                                                child: Container(
+                                                                  decoration: BoxDecoration(border: Border.all(color: AppColors.grey,width: 0.3),borderRadius: BorderRadius.circular(10)),
+                                                                  height: size * 0.31,
+                                                                  width: double.infinity,
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
                                                                       children: [
-                                                                        ClipRRect(borderRadius: BorderRadius.circular(8),
-                                                                          child: Image.network(
-                                                                            imgUrl,
-                                                                            fit: BoxFit.cover,
-                                                                            height: size * 0.16,
-                                                                            width: size * 0.16,
-                                                                            errorBuilder: (context, error, stackTrace) =>
-                                                                                Image.asset(
-                                                                                  'assets/images/lp3.jpg',
-                                                                                  // "assets/images/doctor1.jpg",
-                                                                                  fit: BoxFit.cover,
-                                                                                  height: size * 0.16,
-                                                                                  width: size * 0.16,
-                                                                                ),
-                                                                          ),
+                                                                        Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(service.serviceTitle.toString()??"",
+                                                                                style: AppTextStyles.body(
+                                                                                    context,fontWeight: FontWeight.bold,
+                                                                                    color: AppColors.black),),
+                                                                              Text(
+                                                                                "Price Starts from ${service.serviceCost.toString()??""}",
+                                                                                style: AppTextStyles.caption(
+                                                                                    context,
+                                                                                    color: AppColors.grey),),
+                                                                              IconButton(onPressed: (){
+                                                                                serviceController.getServiceDetailAdmin(service.serviceId.toString()??"", context);
+                                                                                Get.toNamed('/viewServicePage',arguments: {"serviceId":service.serviceId.toString()??""});
+                                                                              }, icon: Icon(Icons.arrow_forward,color: Colors.black54,size: size*0.07,))
+
+                                                                            ]),
+                                                                        const SizedBox(width: 10),
+
+                                                                        Column(
+                                                                          children: [
+                                                                            ClipRRect(borderRadius: BorderRadius.circular(8),
+                                                                              child: Image.network(
+                                                                                imgUrl,
+                                                                                fit: BoxFit.cover,
+                                                                                height: size * 0.16,
+                                                                                width: size * 0.16,
+                                                                                errorBuilder: (context, error, stackTrace) =>
+                                                                                    Image.asset(
+                                                                                      'assets/images/lp3.jpg',
+                                                                                      // "assets/images/doctor1.jpg",
+                                                                                      fit: BoxFit.cover,
+                                                                                      height: size * 0.16,
+                                                                                      width: size * 0.16,
+                                                                                    ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                  ],
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }),
-                                            );
-                                          }
+                                                        );
+                                                      }),
+                                                );
+                                              }
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  if(isAdminUser)
-                                    GetBuilder<LoginController>(
-                                        builder: (controller) {
-                                          return Column(
-                                              children: [
-                                                SizedBox(height: size*0.02,),
-                                                if(loginController.editCertificates.length==0)
-                                                  Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
-                                                if(loginController.isLoading)
-                                                  const CircularProgressIndicator(color: AppColors.primary,),
-                                                if(loginController.editCertificates.isNotEmpty)
-                                                  AnimationLimiter(
-                                                    child: ListView.builder(
-                                                        itemCount: loginController.editCertificates.length,
-                                                        shrinkWrap: true,
-                                                        physics: const NeverScrollableScrollPhysics(),
-                                                        itemBuilder: (BuildContext context, int index) {
-                                                          return AnimationConfiguration.staggeredList(
-                                                            position: index,
-                                                            duration: const Duration(milliseconds: 1300),
-                                                            child: SlideAnimation(
-                                                              verticalOffset: 120.0,
-                                                              curve: Curves.easeOutBack,
-                                                              child: FadeInAnimation(
-                                                                child:Padding(
-                                                                  padding: const EdgeInsets.all(10.0),
-                                                                  child:
-                                                                  GestureDetector(
-                                                                    onTap: () {
-                                                                      Get.toNamed('/viewImagePage',arguments: {'url':loginController.editCertificates[index].url??"",});
-                                                                      print('fgf${loginController.editCertificates[index]}');
-                                                                    },
-                                                                    child: Container(
-                                                                      //height: size * 0.7,
-                                                                      width: double.infinity,
-                                                                      decoration: BoxDecoration(
-                                                                        borderRadius: BorderRadius.circular(10),),
-                                                                      child: Column(
-                                                                        children: [
-                                                                          Text(
-                                                                              "${loginController.userData.first.userType} Certificate",
-                                                                              //labProfile['address'].toString(),
-                                                                              // "Catchy Dental Clinic",
-                                                                              textAlign: TextAlign.center,
-                                                                              style: AppTextStyles.caption(
-                                                                                  context, color: AppColors.black)
+                                      if(isAdminUser)
+                                        GetBuilder<LoginController>(
+                                            builder: (controller) {
+                                              return Column(
+                                                  children: [
+                                                    SizedBox(height: size*0.02,),
+                                                    if(loginController.editCertificates.length==0)
+                                                      Center(child: Text('No data found',style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),),
+                                                    if(loginController.isLoading)
+                                                      const CircularProgressIndicator(color: AppColors.primary,),
+                                                    if(loginController.editCertificates.isNotEmpty)
+                                                      AnimationLimiter(
+                                                        child: ListView.builder(
+                                                            itemCount: loginController.editCertificates.length,
+                                                            shrinkWrap: true,
+                                                            physics: const NeverScrollableScrollPhysics(),
+                                                            itemBuilder: (BuildContext context, int index) {
+                                                              return AnimationConfiguration.staggeredList(
+                                                                position: index,
+                                                                duration: const Duration(milliseconds: 1300),
+                                                                child: SlideAnimation(
+                                                                  verticalOffset: 120.0,
+                                                                  curve: Curves.easeOutBack,
+                                                                  child: FadeInAnimation(
+                                                                    child:Padding(
+                                                                      padding: const EdgeInsets.all(10.0),
+                                                                      child:
+                                                                      GestureDetector(
+                                                                        onTap: () {
+                                                                          Get.toNamed('/viewImagePage',arguments: {'url':loginController.editCertificates[index].url??"",});
+                                                                          print('fgf${loginController.editCertificates[index]}');
+                                                                        },
+                                                                        child: Container(
+                                                                          //height: size * 0.7,
+                                                                          width: double.infinity,
+                                                                          decoration: BoxDecoration(
+                                                                            borderRadius: BorderRadius.circular(10),),
+                                                                          child: Column(
+                                                                            children: [
+                                                                              Text(
+                                                                                  "${loginController.userData.first.userType} Certificate",
+                                                                                  //labProfile['address'].toString(),
+                                                                                  // "Catchy Dental Clinic",
+                                                                                  textAlign: TextAlign.center,
+                                                                                  style: AppTextStyles.caption(
+                                                                                      context, color: AppColors.black)
+                                                                              ),
+                                                                              const SizedBox(height: 5,),
+                                                                              ClipRRect(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                child:Image.network(
+                                                                                    loginController.editCertificates[index].url??"",
+                                                                                    fit: BoxFit.cover,
+                                                                                    height: size * 0.6,
+                                                                                    width: double.infinity,
+                                                                                    errorBuilder: (context, error, stackTrace) =>
+                                                                                        Container(
+                                                                                          decoration: BoxDecoration(border: Border.all(color: AppColors.grey,width: 0.6)),
+                                                                                          height: size * 0.55,
+                                                                                          width: double.infinity,
+                                                                                          child: Center(child: Icon(Icons.file_download_off,color: AppColors.grey,size: size*0.09,),),
+                                                                                        )
+                                                                                ),
+                                                                              ),
+                                                                            ],
                                                                           ),
-                                                                          const SizedBox(height: 5,),
-                                                                          ClipRRect(
-                                                                            borderRadius: BorderRadius.circular(10),
-                                                                            child:Image.network(
-                                                                                loginController.editCertificates[index].url??"",
-                                                                                fit: BoxFit.cover,
-                                                                                height: size * 0.6,
-                                                                                width: double.infinity,
-                                                                                errorBuilder: (context, error, stackTrace) =>
-                                                                                    Container(
-                                                                                      decoration: BoxDecoration(border: Border.all(color: AppColors.grey,width: 0.6)),
-                                                                                      height: size * 0.55,
-                                                                                      width: double.infinity,
-                                                                                      child: Center(child: Icon(Icons.file_download_off,color: AppColors.grey,size: size*0.09,),),
-                                                                                    )
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),),
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }),
-                                                  ),
-                                              ]
-                                          );
-                                        }
-                                    )
+                                                                        ),
+                                                                      ),),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }),
+                                                      ),
+                                                  ]
+                                              );
+                                            }
+                                        )
 
-                                ],
+                                    ],
+                                  );
+                                }
                               ),
                             ),
                           ],

@@ -224,11 +224,10 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
               child: Row(
                 children: [
                   if (isDesktop && isLoggedIn) const AdminSideBar(),
-
                   Expanded(
                     child: Center(
                       child: Padding(
-                        padding: EdgeInsets.all(isMobile ? 10 : 20.0),
+                        padding: EdgeInsets.all(isMobile ? 10 : 20),
                         child:ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 700),
                           child: Container(

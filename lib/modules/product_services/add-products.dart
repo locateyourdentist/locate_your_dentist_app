@@ -297,7 +297,6 @@ class _AddProductState extends State<AddProduct> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Dropdown to select user type
                             const SizedBox(height: 5),
 
                             //                        Text(
@@ -476,7 +475,8 @@ class _AddProductState extends State<AddProduct> {
                                            await serviceController
                                                 .createServiceAdmin(
                                                 serviceController.selectedServiceId.toString(),
-                                                loginController.selectUserId!,
+                                               Api.userInfo.read('userId') ?? "",
+                                                //loginController.selectUserId!,
                                                 loginController.selectedUserType.toString(),
                                                 serviceController.titleController.text.toString(),
                                                 serviceController.descriptionController.text.toString(),

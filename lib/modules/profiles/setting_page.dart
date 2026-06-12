@@ -148,7 +148,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
           {"title": "Logout", "page": "/logout"},
         ];
       default:
-        return []; // fallback
+        return [];
     }
   }
   @override

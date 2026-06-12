@@ -308,11 +308,9 @@ class LoginController extends GetxController {
       email: TextEditingController(),
     ));
   }
-
-
-
   String?searchText;
   var isLoading = false;
+  var isLoadingRegister = false;
   List<File> images = [];
   List<AppImage2> webinarImages = [];
   List<AppImage2> jobImages = [];
@@ -972,6 +970,7 @@ class LoginController extends GetxController {
       return;
     }
     isLoading=true;
+    isLoadingRegister=true;
     try {
       Future<List<Uint8List>?> convertToBytes(dynamic input) async {
         if (input == null) return null;
@@ -1102,6 +1101,7 @@ class LoginController extends GetxController {
       print("Stack Trace: $st");
     } finally {
       isLoading = false;
+      isLoadingRegister=false;
       update();
     }
   }

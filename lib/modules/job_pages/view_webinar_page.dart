@@ -88,21 +88,15 @@ void initState(){
 
       ),
     );
-    loadJobDescription(
-        jobController.webDescriptionData);
-
+     loadJobDescription(jobController.webDescriptionData);
   }
   @override
   Widget build(BuildContext context) {
   double size=MediaQuery.of(context).size.width;
   return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-          title: Text('Webinars',style: AppTextStyles.subtitle(context,color: AppColors.white),
-          ),
+      appBar: AppBar(centerTitle: true, title: Text('Webinars',style: AppTextStyles.subtitle(context,color: AppColors.white),),
         backgroundColor: AppColors.primary,iconTheme: const IconThemeData(color: AppColors.white),
-
-        actions:[ if(Api.userInfo.read('userType').toString()!='Job Seekers')PopupMenuButton<String>(
+          actions:[ if(Api.userInfo.read('userType').toString()!='Job Seekers')PopupMenuButton<String>(
           onSelected: (String isActive)async {
             String webinarId1=jobController.webinar.isNotEmpty?jobController.webinar.first.webinarId.toString():"";
             String isActive1=jobController.webinar.isNotEmpty?  jobController.webinar.first.isActive.toString():"";
@@ -230,39 +224,27 @@ void initState(){
                           //webinarData["orgName"],
                           style: AppTextStyles.caption(context,color: AppColors.grey,fontWeight: FontWeight.normal)),
                     ],
-                                   ),
-
-                                   const SizedBox(height: 20),
-
-                                   Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                   ),
+                       const SizedBox(height: 20),
+                       Card(shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),),
                     elevation: 1,color: AppColors.primary,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           _infoItem(Icons.calendar_month, "Date", formatDate(webinar.createdDate.toString()??""),context),
-                          _infoItem(Icons.access_time, "Time",
-                              "${webinar.startTime.toString()??"N/A"} - ${webinar.endTime.toString()??"N/A"}",context
+                          _infoItem(Icons.access_time, "Time", "${webinar.startTime.toString()??"N/A"} - ${webinar.endTime.toString()??"N/A"}",context
                           ),
-                          _infoItem(Icons.location_on, "Location",
-                              webinar.place.toString()??"N/A",context
-                          ),
+                          _infoItem(Icons.location_on, "Location", webinar.place.toString()??"N/A",context),
                         ],
                       ),
                     ),
                                    ),
 
-                                   const SizedBox(height: 20),
-
-                   Text(
-                    "Webinar Description",
-                      style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold)
-                                   ),
+                       const SizedBox(height: 20),
+                       Text("Webinar Description", style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold)),
                                    const SizedBox(height: 10),
                    // Text(webinar.webinarDescription.toString()??"N/A",
                    //  //webinarData["webinarDescription"],

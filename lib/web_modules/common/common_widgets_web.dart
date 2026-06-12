@@ -127,7 +127,7 @@ class _CommonFooterState extends State<CommonFooter> {
                   : Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(flex: 3, child: _buildLogoSection(context)),
+                  Expanded(flex: 2, child: _buildLogoSection(context)),
                   const SizedBox(width: 20),
 
                   Expanded(flex: 1, child: _buildCompanySection(context)),

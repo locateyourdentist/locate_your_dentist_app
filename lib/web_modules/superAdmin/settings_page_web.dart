@@ -27,9 +27,7 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
 
   final TextEditingController passwordController = TextEditingController();
   final loginController=Get.put(LoginController());
-
   final _formKeyChangePasswordWeb1 = GlobalKey<FormState>();
-
   bool passwordVisible = false;
   bool confirmPasswordVisible = false;
 
@@ -39,8 +37,6 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
     if (value != passwordController.text) return "Passwords do not match";
     return null;
   }
-
-  // Common Password Field
   Widget passwordField() {
     return   CustomTextField(
       hint: "Password",
@@ -70,8 +66,6 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
       },
     );
   }
-
-  // Common Confirm Password Field
   Widget confirmPasswordField() {
     return CustomTextField(
       hint: "Confirm Password",

@@ -13,6 +13,7 @@ import 'package:locate_your_dentist/modules/notification_page/notificationContro
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
+import '../../web_modules/common/common_side_bar.dart';
 import '../../web_modules/job_seekers/view_jobWebinar_web.dart';
 
 class DentalClinicDashboard extends StatefulWidget {
@@ -48,7 +49,9 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
   @override
   Widget build(BuildContext context) {
     double size=MediaQuery.of(context).size.width;
+    final bool isDesktop = size >= 1100;
     return  Scaffold(
+      drawer: !isDesktop ? Drawer(width: 250, child: AdminSideBar()) : null,
       //backgroundColor: AppColors.backGroundColor,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
@@ -62,23 +65,6 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
             ),
           ),
         ),
-
-//         leading: Padding(
-//           padding:  const EdgeInsets.all(8.0),
-//           child: GestureDetector(
-//             onTap: (){
-// //Navigator.push(context, MaterialPageRoute(builder: (context)=>const LocationScreen()));
-//               final userId = Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId');
-//               },
-//             child: CircleAvatar(
-//               radius: size * 0.13,
-//               child: ClipRRect(
-//                 borderRadius: BorderRadius.circular(50),
-//                 child: ProfileImageWidget(size: size),
-//               ),
-//             ),
-//           ),
-//         ),
         centerTitle: false,
         title: Column(
           mainAxisAlignment:MainAxisAlignment.start,
@@ -289,85 +275,6 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                       children: [
                         Text('What you Want?',style: AppTextStyles.subtitle(context,color: AppColors.black),),
                         SizedBox(height: size*0.02,),
-                        // SizedBox(
-                        //   height: size * 0.45,
-                        //   child: AnimationLimiter(
-                        //     child: ListView.builder(
-                        //       itemCount: title.length,
-                        //       scrollDirection: Axis.horizontal,
-                        //       padding: const EdgeInsets.symmetric(horizontal: 10),
-                        //       itemBuilder: (context, index) {
-                        //         return AnimationConfiguration.staggeredList(
-                        //           position: index,
-                        //           duration: const Duration(milliseconds: 500),
-                        //           child: SlideAnimation(
-                        //             horizontalOffset: 50,
-                        //             child: FadeInAnimation(
-                        //               child: GestureDetector(
-                        //                 onTap: ()async {
-                        //                   if (title[index] == "Job Posts/Webinars") {
-                        //                     Get.toNamed('/viewJobWebinarPage');
-                        //                   } else {
-                        //                     Api.userInfo.write('sUserType', title[index] ?? "");
-                        //                     print('cvv${title[index]}');
-                        //                    await loginController.getProfileDetails(
-                        //                       title[index], '', '', '', 'true', '', '', '', '',
-                        //                       context,
-                        //                     );
-                        //                     Get.toNamed('/userTypeListPage');
-                        //                   }
-                        //                 },
-                        //                 child: Container(
-                        //                   width: size * 0.37,
-                        //                   //margin: const EdgeInsets.only(right: 15),
-                        //                   decoration: BoxDecoration(
-                        //                     color: Colors.white,
-                        //                     borderRadius: BorderRadius.circular(16),
-                        //                     boxShadow: [
-                        //                       BoxShadow(
-                        //                         color: Colors.black.withOpacity(0.08),
-                        //                         blurRadius: 8,
-                        //                         offset: const Offset(0, 3),
-                        //                       ),
-                        //                     ],
-                        //                   ),
-                        //                   child: Column(
-                        //                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                        //                     children: [
-                        //                       ClipRRect(
-                        //                         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                        //                         child: Image.asset(
-                        //                           imgUserType(title[index]),
-                        //                           height: size * 0.28,
-                        //                           fit: BoxFit.cover,
-                        //                         ),
-                        //                       ),
-                        //                       Expanded(
-                        //                         child: Container(
-                        //                           alignment: Alignment.center,
-                        //                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                        //                           child: Text(
-                        //                             title[index],
-                        //                             textAlign: TextAlign.center,
-                        //                             style: AppTextStyles.caption(
-                        //                               context,
-                        //                               color: AppColors.black,
-                        //                               fontWeight: FontWeight.bold,
-                        //                             ),
-                        //                           ),
-                        //                         ),
-                        //                       ),
-                        //                     ],
-                        //                   ),
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         );
-                        //       },
-                        //     ),
-                        //   ),
-                        // ),
                         SizedBox(
                           height: size * 0.45,
                           child: AnimationLimiter(
@@ -421,7 +328,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                           });
                                         },
                                         child: Container(
-                                          width: 160,
+                                          width: 150,
                                           margin: const EdgeInsets.only(right: 12),
                                           decoration: BoxDecoration(
                                             color: Colors.white,
@@ -454,7 +361,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                                   alignment: Alignment.center,
                                                   padding: const EdgeInsets.symmetric(
                                                     horizontal: 8,
-                                                    vertical: 5,
+                                                   // vertical: 5,
                                                   ),
                                                   child: Text(
                                                     title[index].toString(),
@@ -480,7 +387,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                             ),
                           ),
                         ),
-                        SizedBox(height: size * 0.02),
+                        SizedBox(height: size * 0.03),
 
                         Text('Jobs & Webinars',style: AppTextStyles.subtitle(context,color: AppColors.black),),
                         SizedBox(height: size*0.02,),
@@ -535,15 +442,6 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
 
             jobController.jobList.isEmpty ?
             buildShimmerEmptyWidget(size)
-            //   Center(
-            // child: Text(
-            // 'No data found',
-            // style: AppTextStyles.caption(
-            // context,
-            // color: AppColors.black,
-            // ),
-            // ),
-            // )
                 :AnimationLimiter(
               child: ListView.builder(
               itemCount: jobController.jobList.length,
@@ -570,7 +468,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                       print("nnn${Api.userInfo.read('selectJobId')}");
                    await jobController.getJobsById(
                     jobs.jobId.toString(), context);
-                  await  jobController.getAppliedJobsAdmin(
+                   await  jobController.getAppliedJobsAdmin(
                     jobs.jobId.toString(), context);
                     Get.toNamed('/jobViewProfilePage');
                     },

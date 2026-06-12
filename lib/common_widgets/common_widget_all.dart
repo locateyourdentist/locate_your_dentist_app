@@ -618,7 +618,7 @@ Widget shimmerBox({
 }
 Widget buildShimmerEmptyWidget(double size) {
   return ListView.builder(
-    itemCount: 4,
+    itemCount: 3,
     shrinkWrap: true,
     scrollDirection: Axis.vertical,
     physics: const NeverScrollableScrollPhysics(),

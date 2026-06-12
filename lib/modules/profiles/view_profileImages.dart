@@ -176,7 +176,7 @@ import 'package:locate_your_dentist/modules/profiles/vedio_plays.dart';
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => Container(
           color: Colors.grey[200],
-          child: Icon(Icons.broken_image, size: height * 0.08),
+          child: Icon(Icons.image, size: height * 0.08,color: AppColors.grey,),
         ),
       );
     }

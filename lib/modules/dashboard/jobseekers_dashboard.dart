@@ -16,6 +16,8 @@ import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
+import '../../web_modules/common/common_side_bar.dart';
+
 
 class JobSeekerDashboard extends StatefulWidget {
   const JobSeekerDashboard({Key? key}) : super(key: key);
@@ -56,6 +58,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
   @override
   Widget build(BuildContext context) {
     double size=MediaQuery.of(context).size.width;
+    final bool isDesktop = size >= 1100;
     String getFirstLetter(String text) {
       if (text.isEmpty) return "";
       return text[0].toUpperCase();
@@ -63,7 +66,8 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
     return Scaffold(
       key: _scaffoldKeyJobs,
       backgroundColor: Colors.grey.shade100,
-        appBar: AppBar(
+      drawer: !isDesktop ? Drawer(width: 250, child: AdminSideBar()) : null,
+      appBar: AppBar(
           centerTitle: false,elevation: 0,
           automaticallyImplyLeading: false,
           flexibleSpace: Container(
@@ -131,7 +135,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
             )
           ],
         ),
-      drawer: FilterDrawer(
+      endDrawer: FilterDrawer(
         onApply: () async{
           print("Selected State: ${loginController.selectedState}");
           print("Selected District: ${loginController.selectedDistrict}");

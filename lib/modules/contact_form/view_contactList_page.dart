@@ -30,9 +30,8 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
     contactController.getSenderContactFormLists(Api.userInfo.read('userId')??"", '','','',context);
   }
   Future<void> _refresh() async {
-    contactController.getSenderContactFormLists(Api.userInfo.read('userId')??"", '','','',context);
+   await contactController.getSenderContactFormLists(Api.userInfo.read('userId')??"", '','','',context);
   }
-
   @override
   Widget build(BuildContext context) {
     double size=MediaQuery.of(context).size.width;

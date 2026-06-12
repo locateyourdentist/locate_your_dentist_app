@@ -105,8 +105,6 @@ class _UploadImagesState extends State<UploadImages> {
 
     try {
       for (var img in controller.editUploadImage1) {
-
-        // CHECK PLAN ID
         if (img.planId == null || img.planId!.isEmpty) {
           allSuccess = false;
           lastError = "Plan ID missing";

@@ -20,24 +20,20 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
   final GlobalKey<ScaffoldState> _scaffoldKeyService = GlobalKey<ScaffoldState>();
   final serviceController = Get.put(ServiceController());
   final loginController = Get.put(LoginController());
-
   @override
   void initState() {
     super.initState();
     _refresh();
   }
-
   Future<void> _refresh() async {
     await serviceController.getServiceListAdmin(Api.userInfo.read('userId') ?? "", context);
   }
-
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-
     return Scaffold(
       key: _scaffoldKeyService,
       backgroundColor: AppColors.scaffoldBg,

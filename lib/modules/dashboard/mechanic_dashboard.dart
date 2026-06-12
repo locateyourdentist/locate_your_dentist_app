@@ -8,6 +8,7 @@ import 'package:locate_your_dentist/modules/contact_form/contact_controller.dart
 import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
+import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import '../../common_widgets/color_code.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -25,6 +26,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
   final loginController=Get.put(LoginController());
   final contactController=Get.put(ContactController());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<String> title=["Dental Shop","Dental Lab","Dental Mechanic","Dental Consultant","Job Posts/Webinars"];
   @override
   void initState() {
     super.initState();
@@ -40,9 +42,11 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
   @override
   Widget build(BuildContext context) {
     double size=MediaQuery.of(context).size.width;
+    final bool isDesktop = size >= 1100;
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       key: _scaffoldKey,
+      drawer: !isDesktop ? Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         automaticallyImplyLeading: true,
@@ -174,7 +178,119 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
               ),
             ),
                 ),
-              const SizedBox(height: 10,),
+              const SizedBox(height: 30,),
+              SizedBox(
+                height: size * 0.45,
+                child: AnimationLimiter(
+                  child: ListView.builder(
+                    itemCount: title.length,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    itemBuilder: (context, index) {
+                      return AnimationConfiguration.staggeredList(
+                        position: index,
+                        duration: const Duration(milliseconds: 500),
+                        child: SlideAnimation(
+                          horizontalOffset: 50,
+                          child: FadeInAnimation(
+                            child: GestureDetector(
+                              onTap: () async {
+                                WidgetsBinding.instance.addPostFrameCallback((_) async {
+
+                                  if (title[index] == "Job Posts/Webinars") {
+
+                                    Get.toNamed('/viewJobWebinarPage');
+
+                                  } else {
+
+                                    Api.userInfo.write(
+                                      'sUserType',
+                                      title[index].toString(),
+                                    );
+
+                                    print('cvv ${title[index]}');
+
+                                    await loginController.getProfileDetails(
+                                      title[index],
+                                      '',
+                                      '',
+                                      '',
+                                      'true',
+                                      '',
+                                      '',
+                                      '',
+                                      '',
+                                      context,
+                                    );
+
+                                    if (Get.currentRoute != '/userTypeListPage') {
+                                      Get.toNamed('/userTypeListPage');
+                                    }
+                                  }
+                                });
+                              },
+                              child: Container(
+                                width: 150,
+                                margin: const EdgeInsets.only(right: 12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.08),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(16),
+                                      ),
+                                      child: Image.asset(
+                                        imgUserType(title[index]),
+                                        height: size * 0.28,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+
+                                    Expanded(
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          // vertical: 5,
+                                        ),
+                                        child: Text(
+                                          title[index].toString(),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: AppColors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Container(

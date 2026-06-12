@@ -396,14 +396,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                             //   ),
                                             // ),
                                             ElevatedButton(
-                                              onPressed: loginController.isLoading
+                                              onPressed: loginController.isLoadingRegister
                                                   ? null
                                                   : details.onStepContinue,
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: AppColors.primary,
                                                 foregroundColor: Colors.white,
                                               ),
-                                              child: loginController.isLoading
+                                              child: loginController.isLoadingRegister
                                                   ? const SizedBox(
                                                 height: 20,
                                                 width: 20,
