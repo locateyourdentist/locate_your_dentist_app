@@ -418,7 +418,7 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                               padding: const EdgeInsets.all(20),
                               child: GridView.builder(
                                 shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
+                              //  physics: const NeverScrollableScrollPhysics(),
                                 itemCount: controller.publicContactFormLists.length,
                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: crossAxisCount,

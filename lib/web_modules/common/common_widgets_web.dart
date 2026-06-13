@@ -130,13 +130,15 @@ class _CommonFooterState extends State<CommonFooter> {
                   Expanded(flex: 2, child: _buildLogoSection(context)),
                   const SizedBox(width: 20),
 
-                  Expanded(flex: 1, child: _buildCompanySection(context)),
-                 // const SizedBox(width: 20),
-
                   Expanded(flex: 2, child: _buildContactSection(context)),
                   const SizedBox(width: 20),
 
-                  Expanded(flex: 2, child: _buildLegalSection(context)),
+                  Expanded(flex: 1, child: _buildLegalSection(context)),
+                  const SizedBox(width: 20),
+
+                  Expanded(flex: 1, child: _buildCompanySection(context)),
+                  // const SizedBox(width: 20),
+
                 ],
               ),
 
