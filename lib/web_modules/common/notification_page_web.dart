@@ -151,7 +151,7 @@ class _ViewNotificationWebState extends State<ViewNotificationWeb> {
                       children: [
                         if (!isDesktop)
                           Align(
-                            alignment: Alignment.centerLeft,
+                            alignment: Alignment.topLeft,
                             child: IconButton(
                               icon: const Icon(Icons.menu, color: AppColors.black),
                               onPressed: () => _scaffoldKeyViewNotification.currentState?.openDrawer(),

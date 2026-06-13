@@ -241,19 +241,14 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                             ),
                             child: Stack(
                               children: [
-                                if (!isDesktop)
-                                  Positioned(
-                                    top: 10,
-                                    left: 10,
-                                    child: Builder(
-                                      builder: (context) => IconButton(
-                                        icon: const Icon(
-                                          Icons.menu,
-                                          color: AppColors.black,
-                                        ),
-                                        onPressed: () {
-                                          Scaffold.of(context).openDrawer();
-                                        },
+                                if (isLoggedIn && !isDesktop)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10, left: 10),
+                                    child:    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.menu,color: AppColors.black,),
+                                        onPressed: () => _scaffoldKeyCreatePlan.currentState?.openDrawer(),
                                       ),
                                     ),
                                   ),

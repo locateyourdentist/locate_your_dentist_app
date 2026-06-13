@@ -379,9 +379,12 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                       if (isLoggedIn && !isDesktop)
                         Padding(
                               padding: const EdgeInsets.only(top: 10, left: 10),
-                              child: IconButton(
-                                icon: const Icon(Icons.menu,color: AppColors.black,),
-                                onPressed: () => _scaffoldKeyFeedback.currentState?.openDrawer(),
+                              child:    Align(
+                                alignment: Alignment.topLeft,
+                                child: IconButton(
+                                  icon: const Icon(Icons.menu,color: AppColors.black,),
+                                  onPressed: () => _scaffoldKeyFeedback.currentState?.openDrawer(),
+                                ),
                               ),
                             ),
                       
@@ -409,6 +412,7 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                               style: TextStyle(fontSize: 16, color: Colors.grey.shade500, fontWeight: FontWeight.w600),
                             ),
                           ),
+                         SizedBox(height: 20,),
                          // showFilterSheet(context)
                           if (controller.publicContactFormLists.isNotEmpty)
                       
