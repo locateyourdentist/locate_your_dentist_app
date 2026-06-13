@@ -329,7 +329,7 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
       ),
     );
   }
-  final GlobalKey<ScaffoldState> _scaffoldKeyService = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyFeedback = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -349,7 +349,7 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
     }
 
     return Scaffold(
-      key: _scaffoldKeyService,
+      key: _scaffoldKeyFeedback,
       backgroundColor: AppColors.scaffoldBg,
       drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
@@ -378,7 +378,7 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                         padding: const EdgeInsets.only(top: 10, left: 10),
                         child: IconButton(
                           icon: const Icon(Icons.menu,color: AppColors.black,),
-                          onPressed: () => _scaffoldKeyService.currentState?.openDrawer(),
+                          onPressed: () => _scaffoldKeyFeedback.currentState?.openDrawer(),
                         ),
                       ),
 
