@@ -79,176 +79,178 @@ class _WebLoginPageState extends State<WebLoginPage> {
                   child: GetBuilder<LoginController>(
                       init: loginController,
                       builder: (controller) {
-                        return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            height: 80,
-                            width: 80,
-                            child: ClipOval(
-                              child: loginController.appLogoUrl != null
-                                  ? Image.network(
-                                loginController.appLogoUrl!,
-                                fit: BoxFit.cover,
-                                width: 80,
-                                height: 80,
-                              )
-                                  : Container(
-                                color: Colors.white.withOpacity(0.3),
-                                child: const Icon(
-                                  Icons.medical_services,
-                                  size: 50,
+                        return SingleChildScrollView(
+                          child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 80,
+                              width: 80,
+                              child: ClipOval(
+                                child: loginController.appLogoUrl != null
+                                    ? Image.network(
+                                  loginController.appLogoUrl!,
+                                  fit: BoxFit.cover,
+                                  width: 80,
+                                  height: 80,
+                                )
+                                    : Container(
+                                  color: Colors.white.withOpacity(0.3),
+                                  child: const Icon(
+                                    Icons.medical_services,
+                                    size: 50,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          
+                            const Text(
+                              "Welcome Back",
+                              style: TextStyle(
                                   color: Colors.white,
-                                ),
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              "Login to your account",
+                              style: TextStyle(color: Colors.white70, fontSize: 16),
+                            ),
+                            const SizedBox(height: 30),
+                          
+                            // Email field
+                            TextField(
+                              controller: loginController.emailController,
+                              style:  const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: "Email",
+                                hintStyle: AppTextStyles.caption(context,color: AppColors.white),
+                                filled: true,
+                                fillColor: Colors.white.withOpacity(0.1),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: BorderSide.none),
+                                prefixIcon:  const Icon(Icons.email, color: Colors.white),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          const Text(
-                            "Welcome Back",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            "Login to your account",
-                            style: TextStyle(color: Colors.white70, fontSize: 16),
-                          ),
-                          const SizedBox(height: 30),
-
-                          // Email field
-                          TextField(
-                            controller: loginController.emailController,
-                            style:  const TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              hintText: "Email",
-                              hintStyle: AppTextStyles.caption(context,color: AppColors.white),
-                              filled: true,
-                              fillColor: Colors.white.withOpacity(0.1),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide.none),
-                              prefixIcon:  const Icon(Icons.email, color: Colors.white),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          // Password field
-                          TextField(
-                            controller: loginController.passwordController,
-                            obscureText: true,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              hintText: "Password",
-                              hintStyle: AppTextStyles.caption(context,color: AppColors.white),
-                              filled: true,
-                              fillColor: Colors.white.withOpacity(0.1),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide.none),
-                              prefixIcon: const Icon(Icons.lock, color: Colors.white),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-
-                          // Forgot password
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                                onPressed: () {
-                                  Get.toNamed('/forgotPasswordEmailWeb');
-                                },
-                                child:  Text("Forgot Password?",
-                                    style: AppTextStyles.caption(context,color: AppColors.white))),
-                          ),
-                          const SizedBox(height: 20),
-
-                          // Login button
-                          SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: () async{
-
-                                if (_formKeyLoginWeb.currentState!
-                                    .validate()) {
-                                  String email = loginController.emailController
-                                      .text.trim();
-                                  String password = loginController.passwordController
-                                      .text;
-
-                                  if (email.isEmpty ||
-                                      password.isEmpty) {
-                                    showCustomToast(context, "Please enter email and password",backgroundColor: AppColors.secondary);
-
-                                    // ScaffoldMessenger
-                                    //     .of(context)
-                                    //     .showSnackBar(
-                                    //   const SnackBar(
-                                    //       content: Text(
-                                    //           "Please enter email and password")),
-                                    // );
-                                    return;
-                                  }
-                                  await loginController.login(
-                                      loginController.emailController.text.toString(),
-                                      loginController.passwordController.text.toString(),platform,context);
-                                  loginController.emailController.clear();
-                                  loginController.passwordController.clear();
-                                } else {
-                                  showCustomToast(context,  "Invalid email or password",backgroundColor: AppColors.secondary);
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                              child:  Text(
-                                "Login",
-                                style:
-                                AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),
+                            const SizedBox(height: 20),
+                          
+                            // Password field
+                            TextField(
+                              controller: loginController.passwordController,
+                              obscureText: true,
+                              style: const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: "Password",
+                                hintStyle: AppTextStyles.caption(context,color: AppColors.white),
+                                filled: true,
+                                fillColor: Colors.white.withOpacity(0.1),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: BorderSide.none),
+                                prefixIcon: const Icon(Icons.lock, color: Colors.white),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          // Divider
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Divider(color: Colors.white.withOpacity(0.4))),
-                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                child: Text("OR",
-                                    style: AppTextStyles.caption(context,color: AppColors.white),
-                              ),),
-                              Expanded(
-                                  child: Divider(color: Colors.white.withOpacity(0.4))),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                               Text(
-                                "Don't have an account? ",
-                                style: AppTextStyles.caption(context,color: AppColors.white),
-                              ),
-                              TextButton(
+                            const SizedBox(height: 10),
+                          
+                            // Forgot password
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
                                   onPressed: () {
-                                    Get.toNamed('/registerPageWeb');
+                                    Get.toNamed('/forgotPasswordEmailWeb');
                                   },
-                                  child:  Text("Sign Up", style: AppTextStyles.body(context,fontWeight:FontWeight.bold,color: AppColors.white),
-                        ),)
-                            ],
-                          ),
-                        ],
-                      );
+                                  child:  Text("Forgot Password?",
+                                      style: AppTextStyles.caption(context,color: AppColors.white))),
+                            ),
+                            const SizedBox(height: 20),
+                          
+                            // Login button
+                            SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: () async{
+                          
+                                  if (_formKeyLoginWeb.currentState!
+                                      .validate()) {
+                                    String email = loginController.emailController
+                                        .text.trim();
+                                    String password = loginController.passwordController
+                                        .text;
+                          
+                                    if (email.isEmpty ||
+                                        password.isEmpty) {
+                                      showCustomToast(context, "Please enter email and password",backgroundColor: AppColors.secondary);
+                          
+                                      // ScaffoldMessenger
+                                      //     .of(context)
+                                      //     .showSnackBar(
+                                      //   const SnackBar(
+                                      //       content: Text(
+                                      //           "Please enter email and password")),
+                                      // );
+                                      return;
+                                    }
+                                    await loginController.login(
+                                        loginController.emailController.text.toString(),
+                                        loginController.passwordController.text.toString(),platform,context);
+                                    loginController.emailController.clear();
+                                    loginController.passwordController.clear();
+                                  } else {
+                                    showCustomToast(context,  "Invalid email or password",backgroundColor: AppColors.secondary);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                                child:  Text(
+                                  "Login",
+                                  style:
+                                  AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          
+                            // Divider
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: Divider(color: Colors.white.withOpacity(0.4))),
+                                 Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Text("OR",
+                                      style: AppTextStyles.caption(context,color: AppColors.white),
+                                ),),
+                                Expanded(
+                                    child: Divider(color: Colors.white.withOpacity(0.4))),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                 Text(
+                                  "Don't have an account? ",
+                                  style: AppTextStyles.caption(context,color: AppColors.white),
+                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      Get.toNamed('/registerPageWeb');
+                                    },
+                                    child:  Text("Sign Up", style: AppTextStyles.body(context,fontWeight:FontWeight.bold,color: AppColors.white),
+                          ),)
+                              ],
+                            ),
+                          ],
+                                                ),
+                        );
                     }
                   ),
                 ),

@@ -21,8 +21,6 @@ Future<void> savePdf(Uint8List pdfBytes, String invoiceId) async {
     await OpenFilex.open(file.path);
   }
 }
-
-/// PDF Generator
 class PdfGenerator {
   static Future<void> generateInvoicePdf({
     required String userName,

@@ -1,7 +1,6 @@
 
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,6 @@ import 'package:video_player/video_player.dart';
 
 class ViewImage extends StatefulWidget {
   const ViewImage({super.key});
-
   @override
   State<ViewImage> createState() => _ViewImageState();
 }
@@ -64,8 +62,6 @@ class _ViewImageState extends State<ViewImage> {
           child: VideoPlayer(controller!),
         )
             : const CircularProgressIndicator()
-
-        // IMAGE SECTION
             : (kIsWeb && bytes != null)
             ? Image.memory(bytes!)
             : (file != null)

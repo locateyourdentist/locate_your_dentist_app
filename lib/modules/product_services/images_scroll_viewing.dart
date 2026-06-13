@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 
+
 class NetworkImageCarousel extends StatefulWidget {
   final List<String> services;
 
@@ -9,7 +10,6 @@ class NetworkImageCarousel extends StatefulWidget {
   @override
   State<NetworkImageCarousel> createState() => _NetworkImageCarouselState();
 }
-
 class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
   int currentIndex = 0;
 

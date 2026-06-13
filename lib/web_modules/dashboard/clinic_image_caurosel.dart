@@ -1,6 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:locate_your_dentist/api/api.dart';
+import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
+import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 
 class ClinicImageCarousel extends StatefulWidget {
   const ClinicImageCarousel({super.key, required this.imageUrls});
@@ -12,6 +15,8 @@ class ClinicImageCarousel extends StatefulWidget {
 
 class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
   int _currentIndex = 0;
+  final loginController = Get.put(LoginController());
+  final planController = Get.put(PlanController());
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +56,11 @@ class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
                 ],
               ),
               child: GestureDetector(
-                onTap: () {
+                onTap: () async {
                   Get.toNamed('/viewImagePage', arguments: {'url': url});
+                  Api.userInfo.write('selectUId', planController.posterImage[0].userId.toString());
+                  await loginController.getProfileByUserId(planController.posterImage[0].userId.toString(), context);
+                  Get.toNamed('/clinicProfileWebPage');
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),

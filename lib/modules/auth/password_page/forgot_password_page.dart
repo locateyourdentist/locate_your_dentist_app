@@ -18,39 +18,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final loginController=Get.put(LoginController());
   final _formKeyForgotPassword = GlobalKey<FormState>();
   @override
+  void initState() {
+    super.initState();
+    loginController.getAppLogoImage(context);
+  }
   Widget build(BuildContext context) {
     double size=MediaQuery.of(context).size.width;
     return  Scaffold(
-      appBar: AppBar(
-        centerTitle: true,backgroundColor: AppColors.white,
-        iconTheme: const IconThemeData(color: AppColors.white),
-        title: Text('Forgot Password',style: AppTextStyles.subtitle(context,color: AppColors.black),),
-        automaticallyImplyLeading: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () {
-               Get.back();
-               },
-            child: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.secondary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
       body: SingleChildScrollView(
         child: Form(
           key: _formKeyForgotPassword,
@@ -61,10 +35,61 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: size * 0.1),
-                  Text('Enter your Email Address',textAlign:TextAlign.left,style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                  SizedBox(height: size * 0.09),
+                  SizedBox(height: 60,),
+                  Center(
+                    child: Container(
+                      width: size * 0.35,
+                      height: size * 0.35,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.primary,
+                          width: 3,
+                        ),
+                      ),
+                      child: ClipOval(
+                        child: Image.network(
+                          loginController.appLogoUrl ?? "",
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: AppColors.secondary,
+                              child: const Icon(
+                                Icons.local_hospital,
+                                color: AppColors.white,
+                                size: 50,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
 
+
+                  const SizedBox(height: 30),
+
+                  const Text(
+                    "Forgot Password?",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF0F172A),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    "Enter your registered mobile number and we'll send you an OTP to reset your password.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
                   CustomTextField(
                       hint: "Email",
                       icon: Icons.email,
@@ -142,34 +167,20 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ),
               ),
                   SizedBox(height: size*0.12,),
-                  Center(
-                    child:   Container(
-                      width: size,
-                      decoration: BoxDecoration(color: AppColors.transparent,
-                        // gradient: const LinearGradient(
-                        //   colors: [AppColors.white, AppColors.white],
-                        //   begin: Alignment.topLeft,
-                        //   end: Alignment.bottomRight,
-                        // ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        onPressed: () async {
-                          Get.toNamed('/registerPage');
 
-                        },
-                        child: Text('Sign Up',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.black),),
-
-                      ),
+                  TextButton.icon(
+                    onPressed: () {
+                      Get.back();
+                     // Get.offAllNamed('/verifyPasswordPage');
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new,
+                      size: 16,
+                    ),
+                    label: const Text(
+                      "Back to Login",
                     ),
                   ),
-
-
                 ],
               ),
             ),

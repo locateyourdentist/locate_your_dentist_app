@@ -319,7 +319,11 @@ class _AdminSideBarState extends State<AdminSideBar> {
                           _showDeleteDialog();
                           return;
                         }
-
+                        if (setting['title'] == "User List") {
+                          Api.userInfo.write('sUserType1','');
+                          _showDeleteDialog();
+                          return;
+                        }
                         if (setting['title'] == "Edit Profile") {
                           String userId = Api.userInfo.read('userId') ?? "";
                           Api.userInfo.write('selectUId', userId);

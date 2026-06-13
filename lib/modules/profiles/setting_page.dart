@@ -40,7 +40,7 @@ class _SettingsPageMobileState extends State<SettingsPageMobile> {
     Api.userInfo.write('selectUId',userId);
     settingList = _getSettingsForUser(selectedUserType);
     //loginController.getProfileByUserId(Api.userInfo.read('userId') ?? "", context);
-    loginController.getBranchDetails(context);
+     loginController.getBranchDetails(context);
   }
   List<Map<String, String>> _getSettingsForUser(String userType) {
     switch (userType) {

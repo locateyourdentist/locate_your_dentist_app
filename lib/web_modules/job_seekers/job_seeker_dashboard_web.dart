@@ -11,6 +11,7 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/clinic_image_caurosel.dart';
 
+
 class JobSeekerDashboardWeb extends StatefulWidget {
   const JobSeekerDashboardWeb({Key? key}) : super(key: key);
   @override

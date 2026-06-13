@@ -7,6 +7,7 @@ import 'package:locate_your_dentist/modules/contact_form/contact_controller.dart
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../common_widgets/common_textstyles.dart';
 import '../../web_modules/common/common_widgets_web.dart';
 
 class ViewFeedbackForms extends StatefulWidget {
@@ -352,7 +353,25 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
       key: _scaffoldKeyFeedback,
       backgroundColor: AppColors.scaffoldBg,
       drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
-      appBar: CommonWebAppBar(
+
+      appBar: !isDesktop?AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: true,
+        backgroundColor: AppColors.primary,
+
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+
+        title: Text(
+          'Feedback Forms',
+          style: AppTextStyles.subtitle(
+            context,
+            color: Colors.white,
+          ),
+        ),
+      ):
+     CommonWebAppBar(
         height: isMobile ? 60 : 80,
         title: "LOCATE YOUR DENTIST",
         onLogout: () {},
@@ -425,7 +444,7 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                                     padding: const EdgeInsets.all(20),
                                     child: GridView.builder(
                                       shrinkWrap: true,
-                                    //  physics: const NeverScrollableScrollPhysics(),
+                                     physics: const ScrollPhysics(),
                                       itemCount: controller.publicContactFormLists.length,
                                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: crossAxisCount,

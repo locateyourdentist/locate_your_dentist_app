@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/auth/password_page/change_password.dart';
-import 'package:locate_your_dentist/modules/auth/password_page/forgot_password_page.dart';
 import 'package:locate_your_dentist/modules/auth/password_page/verify_otp_page.dart';
 import 'package:locate_your_dentist/modules/auth/register_page/add_branches.dart';
 import 'package:locate_your_dentist/modules/auth/register_page/add_logoImage.dart';
@@ -100,6 +99,7 @@ import 'package:locate_your_dentist/web_modules/superAdmin/view_plan_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/view_report_web.dart';
 import '../modules/auth/login_screen/login_screen.dart';
 import '../modules/auth/password_page/forgot_change_password.dart';
+import '../modules/auth/password_page/forgot_password_page.dart';
 import '../modules/contact_form/view_feedback_forms.dart';
 import '../modules/plans/create_plan.dart';
 import '../modules/profiles/clinic_web_view.dart';
@@ -123,7 +123,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.forgotPasswordEmailWeb,
-      page: () => const ForgotPasswordPage(),
+      page: () => const ForgotPassword(),
     ),
     GetPage(
       name: AppRoutes.changePasswordWeb,
@@ -497,7 +497,8 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.forgotPasswordPage,
-        page: ()=>  const ForgotPassword()
+                page: ()=>  const ForgotPassword()
+       // page: ()=>  const ForgotPasswordPageWeb()
     ),
     GetPage(
         name: AppRoutes.verifyPasswordPage,

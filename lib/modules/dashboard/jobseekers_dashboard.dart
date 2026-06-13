@@ -16,6 +16,7 @@ import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
+import '../../common_widgets/common_sidebar_mobile.dart';
 import '../../web_modules/common/common_side_bar.dart';
 
 
@@ -66,7 +67,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
     return Scaffold(
       key: _scaffoldKeyJobs,
       backgroundColor: Colors.grey.shade100,
-      drawer: !isDesktop ? Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: !isDesktop ? Drawer(width: 250, child: SettingsSidebarDrawer()) : null,
       appBar: AppBar(
           centerTitle: false,elevation: 0,
           automaticallyImplyLeading: false,

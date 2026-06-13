@@ -7,14 +7,14 @@ import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 
 
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+class ForgotPasswordPageWeb extends StatefulWidget {
+  const ForgotPasswordPageWeb({super.key});
 
   @override
-  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+  State<ForgotPasswordPageWeb> createState() => _ForgotPasswordPageWebState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
   final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
@@ -132,15 +132,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SizedBox(
-                            width: size*0.05,
-                            height: size*0.05,
+                            width: size*0.3,
+                            height: size*0.3,
                             child: ClipOval(
                               child: loginController.appLogoUrl != null
                                   ? Image.network(
                                 loginController.appLogoUrl!,
                                 fit: BoxFit.cover,
-                                width: size*0.15,
-                                height: size*0.12,
+                                width: size*0.3,
+                                height: size*0.3,
                               )
                                   : Container(
                                 color: Colors.white.withOpacity(0.3),

@@ -185,8 +185,10 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
 
   void _confirmDelete(String id) {
     showDialog(context: context, builder: (c) => AlertDialog(title: const Text("Delete"), content: const Text("Are you sure?"), actions: [
-      TextButton(onPressed: () => Get.back(), child: const Text("No")),
-      TextButton(onPressed: () async { await serviceController.deactivateService(id, context); Get.back(); _refresh(); }, child: const Text("Yes")),
+      TextButton(onPressed: () => Get.back(), child:  Text("No",style: AppTextStyles.caption(context),)),
+      TextButton(onPressed: () async { 
+        await serviceController.deactivateService(id, context); Get.back(); _refresh();
+        }, child:  Text("Yes",style: AppTextStyles.caption(context),)),
     ]));
   }
 

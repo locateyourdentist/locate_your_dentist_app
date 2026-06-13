@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Primary brand colors
 //  static const Color primary = Color(0xFF004958);
   static const Color primaryLight = Color(0xFFE0F2F4);
 
   static const Color primaryLight2 = Color(0xFFB3D7DD);
   static  Color backGroundColor = Colors.white;
   //static const Color backGroundColor = Color(0xFFF8F9FB);
-  //static const Color backGroundColor = Color(0xFFF2F6FF);//light blue tint
+  //static const Color backGroundColor = Color(0xFFF2F6FF);
   static const Color background1 = Color(0xFFF6F4FF);//lavender
   static const Color backgroundDark = Color(0xFF121212);
 
   // Secondary / accent colors
-  // static const Color secondary = Color(0xFFee8b60); // Amber
+  // static const Color secondary = Color(0xFFee8b60);
   static const Color secondaryLight = Color(0xFFFFD149);
   static const Color secondaryDark = Color(0xFFC67100);
  // static const Color secondary = Color(0xFF00BFA5);
@@ -45,7 +44,7 @@ class AppColors {
   static const Color grey = Color(0xFF9E9E9E);
   static const Color greyDark = Color(0xFF424242);
 
-  // 💡 Transparent and overlay
+  // Transparent and overlay
   static const Color transparent = Colors.transparent;
   static const Color overlay = Color(0x88000000);
 

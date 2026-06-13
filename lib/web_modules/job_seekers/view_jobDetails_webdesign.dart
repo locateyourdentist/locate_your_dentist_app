@@ -564,7 +564,6 @@ class JobSeekerAppliedCard extends StatelessWidget {
                 ],
               ),
             ),
-
           ],
         ),
       ),

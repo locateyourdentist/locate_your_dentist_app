@@ -124,8 +124,6 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                                         ),
 
                                       const SizedBox(height: 10),
-
-                                      // Dynamic list handling both Table Rows and Mobile Cards
                                       Expanded(
                                         child: ListView.builder(
                                           itemCount: planController.invoiceList.length,
@@ -134,13 +132,32 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                                             final isEven = index % 2 == 0;
                                             final rowColor = isEven ? Colors.grey.shade100 : Colors.white;
 
-                                            // Action Logic executed upon click
                                             Future<void> onDownloadPressed() async {
                                               String name = Api.userInfo.read('name') ?? "";
-                                              await planController.getInvoiceById("${invoice.invoiceId}", context);
-                                              final invoiceId = planController.invoiceDetails[0];
+                                            //  await planController.getInvoiceById("${invoice.invoiceId}", context);
+                                              //final invoiceId = planController.invoiceDetails[0];
+                                              // final selectedInvoice = planController.invoiceList[index];
+                                              //
+                                              // await planController.getInvoiceById(
+                                              //     "${selectedInvoice.invoiceId}", context);
+                                              // final invoiceId = planController.invoiceDetails[0];
+                                              //
+                                              // await PdfGenerator.generateInvoicePdf(
+                                              //   userName: name,
+                                              //   planName: invoiceId.planName,
+                                              //   planType: invoiceId.planType,
+                                              //   startDate: invoiceId.startDate,
+                                              //   endDate: invoiceId.endDate,
+                                              //   taxSummary: invoiceId.taxSummary,
+                                              //   company: invoiceId.company,
+                                              //   invoiceId: invoiceId.invoiceId,
+                                              //
+                                              // );
+                                              await planController.getInvoiceById("${invoice.invoiceId.toString()}",context);
+                                              await planController.getInvoiceDetails(context);
 
-                                              await PdfGenerator.generateInvoicePdf(
+                                              final invoiceId = planController.invoiceDetails[index];
+                                              final pdfFile = await PdfGenerator.generateInvoicePdf(
                                                 userName: name,
                                                 planName: invoiceId.planName,
                                                 planType: invoiceId.planType,
@@ -151,8 +168,6 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                                                 invoiceId: invoiceId.invoiceId,
                                               );
                                             }
-
-                                            // 📱 MOBILE RESPONSIVE LAYOUT
                                             if (isMobileLayout) {
                                               return Card(
                                                 margin: const EdgeInsets.only(bottom: 12),
@@ -245,8 +260,6 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
       ),
     );
   }
-
-  // Helper Widget for structuring mobile metadata fields cleanly
   Widget _buildMobileRow(String label, String value, {Color? customColor, bool isBold = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),

@@ -110,8 +110,6 @@ class _UploadImagesState extends State<UploadImages> {
           lastError = "Plan ID missing";
           continue;
         }
-
-        // SAFE VALUES
         final String imageId = img.id ?? "0";
         final String planId = img.planId ?? "0";
         final String startDate = img.startDate ?? "";
@@ -443,6 +441,37 @@ class _UploadImagesState extends State<UploadImages> {
         if (img.url != null && img.url!.isNotEmpty) {
           Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
           await loginController.deleteAwsFile(img.url!, 'postImage', context);
+          String userType = Api.userInfo.read('userType') ?? "";
+          String targetUserType = controller.selectedUserType ?? userType;
+          String currentUserId = Api.userInfo.read('userId') ?? "";
+
+          Get.dialog(
+            const Center(child: CircularProgressIndicator()),
+            barrierDismissible: false,
+          );
+             final String imageId = img.id ?? "0";
+              final String planId = img.planId ?? "0";
+              final String startDate = img.startDate ?? "";
+              final String endDate = img.endDate ?? "";
+              final String isActiveStr = (img.isActive ?? false).toString();
+
+              debugPrint("========== IMAGE SAVE ==========");
+              debugPrint("ID: $imageId");
+              debugPrint("PLAN ID: $planId");
+              debugPrint("START DATE: $startDate");
+              debugPrint("END DATE: $endDate");
+              debugPrint("ACTIVE: $isActiveStr");
+              debugPrint("BYTES NULL: ${img.bytes == null}");
+          await controller.api.uploadImagesUserType(
+            currentUserId,
+            targetUserType,
+            imageId,
+            //planId,
+            '',
+            '',
+            false.toString(),
+            img.bytes != null ? [img.bytes!] : [],
+          );
           Get.back();
         }
         controller.editUploadImage1.removeAt(index);

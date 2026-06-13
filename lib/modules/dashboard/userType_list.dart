@@ -173,9 +173,18 @@ class _userTypeListState extends State<userTypeList> {
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
-              onTap: () {
-                Get.back();
-                //Navigator.pop(context);
+              onTap: () async{
+                Get.toNamed('/${pageUserType(Api.userInfo.read('userType') ?? "")}');
+                if( Api.userInfo.read('userType')=="superAdmin") {
+                  await   loginController.getProfileDetails('', '', '', '', '','','','','',  context);
+                }
+                else if( Api.userInfo.read('userType')=="admin") {
+                  await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
+                }
+                else {
+                  await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
+                }
+                //return true;
               },
               child: Container(
                 decoration: const BoxDecoration(

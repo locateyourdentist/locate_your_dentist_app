@@ -101,14 +101,19 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: AppColors.white,
+        automaticallyImplyLeading: true,
+        backgroundColor: AppColors.primary,
+
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+
         title: Text(
           'Change App Logo',
-          style: AppTextStyles.subtitle(context, color: AppColors.black),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.black),
-          onPressed: () => Get.back(),
+          style: AppTextStyles.subtitle(
+            context,
+            color: Colors.white,
+          ),
         ),
       ),
       body: GetBuilder<LoginController>(
@@ -213,9 +218,7 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
                     ],
                   ),
                 ),
-
-                const Spacer(),
-
+                 SizedBox(height: 50,),
                 /// Save Button
                 SizedBox(
                   width: double.infinity,
@@ -238,8 +241,7 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [
-                            Color(0xff004958),
-                            Color(0xff00A8A8),
+                           AppColors.primary,AppColors.primary
                           ],
                         ),
                         borderRadius: BorderRadius.circular(15),

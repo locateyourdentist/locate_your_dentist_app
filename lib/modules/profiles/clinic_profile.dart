@@ -137,66 +137,13 @@ class Media {
     }
     return Scaffold(
       backgroundColor: AppColors.white,
-        // appBar: AppBar(
-        //   centerTitle: true,automaticallyImplyLeading: true,
-        //   iconTheme:IconThemeData(color: AppColors.white),
-        //   title: Text('Profile',style: AppTextStyles.subtitle(context,color: AppColors.white),
-        //   ),
-        //   actions: [
-        //     // CircleAvatar(
-        //     //   backgroundColor: Colors.black.withOpacity(0.4),
-        //     //   child: IconButton(
-        //     //     icon: const Icon(Icons.arrow_back,
-        //     //         color: Colors.white),
-        //     //     onPressed: () {
-        //     //       Get.back();
-        //     //     },
-        //     //   ),
-        //     // ),
-        //
-        //     if (userType == 'admin' ||
-        //         userType == 'superAdmin' ||
-        //         userId == editUserId)
-        //       Positioned(
-        //         top: 10,
-        //         right: 10,
-        //         child: GestureDetector(
-        //           onTap: () {
-        //             Get.toNamed('/clinicEditProfile');
-        //           },
-        //           child: Container(
-        //             padding: const EdgeInsets.symmetric(
-        //                 horizontal: 12, vertical: 6),
-        //             decoration: BoxDecoration(
-        //               color: Colors.black.withOpacity(0.4),
-        //               borderRadius: BorderRadius.circular(20),
-        //             ),
-        //             child: Row(
-        //               children: const [
-        //                 Icon(Icons.edit,
-        //                     color: Colors.white, size: 18),
-        //                 SizedBox(width: 5),
-        //                 Text(
-        //                   "Edit",
-        //                   style: TextStyle(
-        //                     color: Colors.white,
-        //                     fontWeight: FontWeight.bold,
-        //                   ),
-        //                 ),
-        //               ],
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //   ],
-        //   backgroundColor: AppColors.primary,),
       appBar: AppBar(
         centerTitle: true,
         automaticallyImplyLeading: true,
         backgroundColor: AppColors.primary,
 
         iconTheme: const IconThemeData(
-          color: Colors.white, // Back button color
+          color: Colors.white,
         ),
 
         title: Text(

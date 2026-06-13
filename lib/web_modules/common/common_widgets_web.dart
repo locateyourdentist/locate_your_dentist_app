@@ -678,8 +678,8 @@ class _CommonHeaderState extends State<CommonHeader> {
                 elevation: 0,
                 backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 22,
-                  vertical: 16,
+                  horizontal: 12,
+                  vertical: 12,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),

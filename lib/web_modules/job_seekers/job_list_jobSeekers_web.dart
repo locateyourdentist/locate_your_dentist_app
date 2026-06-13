@@ -305,6 +305,8 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
 
   Widget _buildJobCard(dynamic job, bool isMobile) {
     final logoUrl = (job.logoImage != null && job.logoImage!.isNotEmpty) ? job.logoImage!.first : null;
+    final double width = MediaQuery.of(context).size.width;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
 
     return GestureDetector(
       onTap: () {
@@ -411,6 +413,23 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ),
+    if(!isLoggedIn)
+    SizedBox(
+    width: width * 0.19,
+    child: ElevatedButton(
+    onPressed: () async {
+    Get.toNamed('/webLoginPage');
+    },
+    style: ElevatedButton.styleFrom(
+    backgroundColor: AppColors.primary,
+    padding: const EdgeInsets.symmetric(vertical: 16),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+    elevation: 5,
+    ),
+    child: Text( "Apply Now", style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: AppColors.white )),
+    ),
+    ),
+                if(isLoggedIn)
                 Text(
                   '${job.totalApplicants} Applied',
                   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.primary),

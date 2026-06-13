@@ -206,13 +206,17 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
                           ),
                         ),
                       ),
+
                     ),
                   ),
                 ),
+                SizedBox(height: 60,),
+
+                if (!isLoggedIn) const CommonFooter(),
               ],
             ),
           ),
-          SizedBox(height: 60,)
+
         ],
       ),
     );

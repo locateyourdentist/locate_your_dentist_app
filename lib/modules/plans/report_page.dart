@@ -11,6 +11,8 @@ import 'package:excel/excel.dart';
 import 'dart:typed_data';
 import 'package:file_saver/file_saver.dart';
 
+import '../auth/login_screen/login_controller.dart';
+
 class ReportsDashboardPage extends StatefulWidget {
   const ReportsDashboardPage({super.key});
 
@@ -19,6 +21,7 @@ class ReportsDashboardPage extends StatefulWidget {
 }
 class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
   final PlanController controller = Get.put(PlanController());
+  final loginController = Get.put(LoginController());
   String selectedYear = DateTime.now().year.toString();
   Future<void> exportExcelWeb({
     required IncomeDashboardModel incomeModel,
@@ -237,6 +240,7 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
   Future<void> _refresh() async {
    await controller.getIncomeDetailsByPlan(context: context);
    await controller.getExpense(month: "", year: selectedYear);
+   await loginController.getProfileDetails('', '', '', '', false.toString(),'','','','', context);
   }
   @override
   Widget build(BuildContext context) {
@@ -343,8 +347,8 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
                     const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 0.9,
+                      crossAxisCount: 1,
+                      childAspectRatio: 2.5,
                       crossAxisSpacing: 15,
                       mainAxisSpacing: 15,
                     ),
@@ -362,12 +366,16 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
                         color: Colors.red,
                         onTap: () => Get.toNamed('/viewExpensePage'),
                       ),
-                      _metricCard(
-                        title: "New Users",
-                        value: "30",
-                         //controller.newUsers,
-                        color: Colors.blue,
-                        onTap: () => Get.toNamed('/usersPage'),
+                      GetBuilder<LoginController>(
+                          builder: (controller) {
+                            return _metricCard(
+                            title: "Total Users",
+                            value: loginController.profileList.length.toString(),
+                            color: Colors.blue,
+                              onTap: (){}
+                            //onTap: () => Get.toNamed('/usersPage'),
+                          );
+                        }
                       ),
                     ],
                   ),
@@ -418,6 +426,10 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
               style: AppTextStyles.caption(
                   Get.context!, color: color, fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: 8),
+
+            CircleAvatar(child: IconButton(onPressed: onTap, icon: Icon(Icons.arrow_forward,color: color,),)
+            )
           ],
         ),
       ),

@@ -19,7 +19,7 @@ class AppTextStyles {
 
   static TextStyle headline1(BuildContext context, {Color? color}) {
     return GoogleFonts.poppins(
-      fontSize: _scaleText(context, 30),
+      fontSize: _scaleText(context, 25),
       fontWeight: FontWeight.w700,
       letterSpacing: -0.5,
       height: 1.2,

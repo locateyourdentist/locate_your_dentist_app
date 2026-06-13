@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
+import 'package:locate_your_dentist/common_widgets/common_sidebar_mobile.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
@@ -46,7 +47,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
     return Scaffold(
       backgroundColor: AppColors.backGroundColor,
       key: _scaffoldKey,
-      drawer: !isDesktop ? Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: !isDesktop ? Drawer(width: 250, child: SettingsSidebarDrawer()) : null,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         automaticallyImplyLeading: true,

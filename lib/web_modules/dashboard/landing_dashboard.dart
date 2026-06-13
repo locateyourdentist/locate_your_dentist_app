@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,14 +8,21 @@ import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/model/profile_model.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
+import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/clinic_image_caurosel.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:locate_your_dentist/web_modules/dashboard/dental_problems.dart';
+import 'package:locate_your_dentist/web_modules/dashboard/jobseekers_joblist_home.dart';
+import 'package:locate_your_dentist/web_modules/dashboard/webinar_dashboard_web.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../common_widgets/common_widget_all.dart';
+import '../../common_widgets/custom_toast.dart';
+
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -27,9 +35,91 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
   String? selectedDistrict;
   final loginController = Get.put(LoginController());
   final planController = Get.put(PlanController());
- // final notificationController = Get.put(NotificationController());
+  final jobController = Get.put(JobController());
+  // final notificationController = Get.put(NotificationController());
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
+  final TextEditingController searchController = TextEditingController();
+  final dentalProblems = [
+    {
+      "title": "Tooth Decay",
+      "icon": Icons.coronavirus_outlined,
+      "color": Colors.red,
+      "desc":
+      "Caused by plaque and bacteria that damage tooth enamel.",
+      "points": [
+        "Persistent tooth pain",
+        "Visible holes in teeth",
+        "Sensitivity to sweets",
+        "Bad breath"
+      ]
+    },
+    {
+      "title": "Gum Disease",
+      "icon": Icons.health_and_safety,
+      "color": Colors.pink,
+      "desc":
+      "Infection of the gums caused by poor oral hygiene.",
+      "points": [
+        "Bleeding gums",
+        "Swollen gums",
+        "Bad breath",
+        "Loose teeth"
+      ]
+    },
+    {
+      "title": "Tooth Sensitivity",
+      "icon": Icons.bolt,
+      "color": Colors.orange,
+      "desc":
+      "Pain or discomfort when consuming hot or cold foods.",
+      "points": [
+        "Cold sensitivity",
+        "Hot sensitivity",
+        "Sharp tooth pain",
+        "Enamel wear"
+      ]
+    },
+    {
+      "title": "Bad Breath",
+      "icon": Icons.masks,
+      "color": Colors.green,
+      "desc":
+      "Persistent unpleasant odor from the mouth.",
+      "points": [
+        "Dry mouth",
+        "Gum infection",
+        "Poor brushing habits",
+        "Food debris"
+      ]
+    },
+    {
+      "title": "Tooth Erosion",
+      "icon": Icons.shield_outlined,
+      "color": Colors.deepPurple,
+      "desc":
+      "Loss of tooth enamel due to acidic foods and drinks.",
+      "points": [
+        "Yellow teeth",
+        "Sensitivity",
+        "Rounded edges",
+        "Weak enamel"
+      ]
+    },
+    {
+      "title": "Wisdom Tooth Issues",
+      "icon": Icons.medical_services,
+      "color": Colors.blue,
+      "desc":
+      "Impacted or partially erupted wisdom teeth.",
+      "points": [
+        "Jaw pain",
+        "Swelling",
+        "Difficulty chewing",
+        "Infection risk"
+      ]
+    },
+  ];
   //VideoPlayerController? _controller;
   @override
   void initState() {
@@ -58,55 +148,44 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
     await loginController.fetchStates();
     await loginController.getAppLogoImage(context);
     await planController.getUploadImages(userType: "Dental Clinic", context: context);
+    await jobController.getWebinarListJobSeekers('','',context);
+    await jobController.getJobListJobSeekers(
+      search: searchController.text.trim(),
+      state: null,
+      district: null,
+      city: null,
+      salary: null,
+      jobType: null,
+      jobCategory: [],
+      context: context,
+    );
   }
     Future<void> getLocation() async {
-
     try {
-
       bool serviceEnabled;
       LocationPermission permission;
 
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
       if (!serviceEnabled) {
-
-        Get.snackbar(
-          'Location',
-          'Location services are disabled',
-        );
-
+        Get.snackbar('Location', 'Location services are disabled',);
         return;
       }
-
       /// Check permission
       permission = await Geolocator.checkPermission();
-
       if (permission == LocationPermission.denied) {
-
         permission = await Geolocator.requestPermission();
-
         if (permission == LocationPermission.denied) {
-
-          Get.snackbar(
-            'Location',
-            'Location permission denied',
-          );
-
+          Get.snackbar('Location', 'Location permission denied',);
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-
-        Get.snackbar(
-          'Location',
-          'Location permission permanently denied',
-        );
+        Get.snackbar('Location', 'Location permission permanently denied',);
 
         return;
       }
-
-      /// Get current position
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
@@ -134,7 +213,6 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
       );
     }
   }
-
   Future<String> getAddressFromLatLng(
       double lat,
       double lng,
@@ -168,7 +246,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
     //String firstImage = clinic.logoImages.firstWhere((img) => img.toLowerCase().endsWith('.jpg') || img.toLowerCase().endsWith('.png'), orElse: () => "");
    // String firstImage = clinic.images.firstWhere((img) => img.toLowerCase().endsWith('.jpg') || img.toLowerCase().endsWith('.png'), orElse: () => "");
     String addOnsPlanStatus = clinic.details?["plan"]?["addonsPlan"]?["isActive"]?.toString() ?? "";
-    // 💡 Cleanly identify the first valid image string inside this item's specific data arrays
+    //  Cleanly identify the first valid image string inside this item's specific data arrays
     String firstImage = clinic.logoImages.firstWhere(
           (img) => img.toLowerCase().endsWith('.jpg') ||
           img.toLowerCase().endsWith('.png') ||
@@ -257,7 +335,10 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                             ),
-                            onPressed: () {},
+                            onPressed: () async{
+                              await   launchCallWeb("tel:${clinic.mobileNumber}");
+
+                            },
                             child: Text(
                               "Call",
                               style: AppTextStyles.caption(context, color: AppColors.white),
@@ -311,7 +392,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                     Center(
                       child: Container(
                        // constraints: const BoxConstraints(maxWidth: 1300),
-                        padding: const EdgeInsets.all(0),
+                       // padding: const EdgeInsets.all(10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -337,7 +418,96 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                             ),
 
                             const SizedBox(height: 40),
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 40,
+                                vertical: 80,
+                              ),
+                              color: const Color(0xffF6FBFB),
+                              child: Column(
+                                children: [
 
+                                  WhyChooseUsSection(),
+
+                                  const SizedBox(height: 30),
+                                  AboutUsSection(),
+                                  SizedBox(height: size*0.01,),
+                                  platformOverviewSection(context),
+                                ],
+                              ),
+                            ),
+                            //DentalProblemCard(),
+
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                        child: Center(
+                          child: Container(
+                            constraints: const BoxConstraints(maxWidth: 1500),
+                            padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      children: [
+
+                                        Text(
+                                          "Popular Dental Treatments",
+                                          style: TextStyle(
+                                            fontSize: 26,
+                                            fontWeight: FontWeight.bold,color: AppColors.primary
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 15),
+
+                                        Text(
+                                          "Explore advanced dental solutions offered by verified clinics",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.grey.shade600,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                       // const SizedBox(height: 15),
+
+                                        // GumDiseaseCard(),
+                                        // BruxismCard(),
+                                        // SensitivityCard(),
+                                        // WisdomTeethCard(),
+                                        // AbscessCard(),
+
+                                        TreatmentCard(
+                                          treatment: treatments[0],
+                                          reverse: false,
+                                        ),
+
+                                        TreatmentCard(
+                                          treatment: treatments[1],
+                                          reverse: true,
+                                        ),
+
+                                        TreatmentCard(
+                                          treatment: treatments[2],
+                                          reverse: false,
+                                        ),
+                                        TreatmentCard(
+                                          treatment: treatments[3],
+                                          reverse: true,
+                                        ),
+
+                                        TreatmentCard(
+                                          treatment: treatments[4],
+                                          reverse: false,
+                                        ),
+                                        SizedBox(height: size*0.01,),
+
+                                        BrushingTechniqueCard(),
+                                        SizedBox(height: size*0.01,),
+
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            ),
                             Center(child: Text("Featured Clinics", style: AppTextStyles.headline1(context,color: AppColors.primary))),
                             const SizedBox(height: 20),
                             if (loginController.profileList.isEmpty)
@@ -384,7 +554,11 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                     alignment: WrapAlignment.center,
                                     children: [
                                       SizedBox(
-                                        width: size*0.15,
+                                        width: size > 1100
+                                            ? 250
+                                            : size > 800
+                                            ? 200
+                                            : double.infinity,
                                         child: GetBuilder<LoginController>(
                                           builder: (controller) {
                                             return CustomDropdown<String>.search(
@@ -418,7 +592,11 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                         ),
                                       ),
                                       SizedBox(
-                                        width: size*0.15,
+                                        width: size > 1100
+                                            ? 250
+                                            : size > 800
+                                            ? 200
+                                            : double.infinity,
                                         child: GetBuilder<LoginController>(
                                           builder: (controller) {
                                             return CustomDropdown<String>.search(
@@ -464,8 +642,9 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                             '',
                                             context,
                                           );
+                                          Get.toNamed('/userTypeListWeb');
                                         },
-                                        icon: Icon(Icons.search, color: AppColors.white, size: size * 0.008),
+                                        icon: Icon(Icons.search, color: AppColors.white, size:22),
                                         label: Text("Search", style: AppTextStyles.caption(context, color: AppColors.white)),
                                       ),
                                     ],
@@ -539,23 +718,89 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                               ),
                             ),
                             const SizedBox(height: 60),
-                           // heroSection(size),
+                            // heroSection(size),
                           //  featuresSection (),
-                            AboutUsSection(),
-                            SizedBox(height: size*0.01,),
-                            platformOverviewSection(context),
+
                             SizedBox(height: size*0.01,),
 
+
+                            // Row(
+                            //   crossAxisAlignment: CrossAxisAlignment.start,
+                            //   children: [
+                            //
+                            //     Expanded(
+                            //       flex: 4,
+                            //       child: clinicSearchWidget(),
+                            //     ),
+                            //
+                            //     SizedBox(width: 30),
+                            //
+                            //
+                            //     Expanded(
+                            //       flex: 3,
+                            //       child: dentalTreatmentWidget(),
+                            //     ),
+                            //   ],
+                            // ),
 
                            // howItWorks(),
+                            const SizedBox(height: 40),
+                            Center(child: Text("Latest Career Openings", style: AppTextStyles.subtitle(context, color: AppColors.primary,
+                            ))),
+                            const SizedBox(height: 20),
+
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: GetBuilder<JobController>(
+                                builder: (jController) {
+                                  return JobSeekersDashboardGrid(
+                                    jobList: jController.jobListJobSeekers,
+                                    isLoading: jController.isLoading,
+                                  );
+                                },
+                              ),
+                            ),
+                            Column(
+                              children: [
+
+                                const SizedBox(height: 20),
+
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  child: Text(
+                                    "Upcoming Webinars",
+                                    style: AppTextStyles.subtitle(
+                                      context,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 20),
+
+                                GetBuilder<JobController>(
+                                    builder: (jController) {
+                                      return  SizedBox(
+                                        height: 850,
+                                        child: WebinarDashboardGrid(
+                                        webinarList:
+                                        jobController.webinarListJobSeekers.take(6).toList(),
+                                        controller: jobController,
+                                                                            ),
+                                      );
+                                  }
+                                ),
+                              ],
+                            ),
+                            //const SizedBox(height: 40),
                             jobsWebinarSection(),
                             const SizedBox(height: 60),
 
                             userTypesSection(),
-                            SizedBox(height: size*0.01,),
                             const SizedBox(height: 60),
-
-                            // Footer
                           ],
                         ),
                       ),
@@ -606,10 +851,10 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor: AppColors.primary,
                       foregroundColor: Colors.blue,
                     ),
-                    child:  Text("Get Started",style: AppTextStyles.caption(context,color: AppColors.white),),
+                    child:  Text("Get Started",style: AppTextStyles.caption(context,color: Colors.white),),
                   )
                 ],
               ),
@@ -804,7 +1049,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                 ),
                 child: Container(
                   width: double.infinity,
-                  height: s*0.1,
+                  height: s*0.13,
                   decoration: BoxDecoration(
                     color: AppColors.white.withOpacity(0.1),
                   ),
@@ -900,7 +1145,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
 
     return Column(
       children: [
-        const Text("How It Works", style: TextStyle(fontSize: 24)),
+         Text("How It Works", style: AppTextStyles.subtitle(context)),
         const SizedBox(height: 30),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -911,7 +1156,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                 children: [
                   CircleAvatar(radius: 25, child: Text("${steps.indexOf(e)+1}")),
                   const SizedBox(height: 10),
-                  Text(e),
+                  Text(e, style: AppTextStyles.caption(context)),
                 ],
               ),
             );
@@ -1064,7 +1309,6 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
     return Stack(
       alignment: Alignment.center,
       children: [
-        /// Background Glow
         Container(
           height: size*0.15,
           decoration: BoxDecoration(
@@ -1146,7 +1390,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
           children: [
             Icon(Icons.search_off_outlined, size: 80, color: Colors.grey[300]),
             const SizedBox(height: 15),
-            Text('No clinics found matching your location', 
+            Text('No clinics found matching your location',
               style: AppTextStyles.subtitle(context, color: Colors.grey)),
           ],
         ),
@@ -1254,9 +1498,12 @@ class _HeroBannerState extends State<HeroBanner>
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final bool isMobile = width < 700;
-
+    final bool isDesktop = width >= 1000;
     return SizedBox(
-      height: isMobile ? 300 : width * 0.4,
+    //  height: isMobile ? 300 : width * 0.4,
+      height: isMobile
+          ? 450
+          : MediaQuery.of(context).size.height * 0.75,
       width: double.infinity,
       child: Stack(
         children: [
@@ -1298,72 +1545,293 @@ class _HeroBannerState extends State<HeroBanner>
             },
           ),
 
-          /// 🔹 Dark overlay
           Container(
             color: Colors.black.withOpacity(0.4),
           ),
-
-          /// 🔹 Animated Text Content
           Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 600),
-                transitionBuilder: (child, animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0, 0.3),
-                        end: Offset.zero,
-                      ).animate(animation),
-                      child: child,
-                    ),
-                  );
-                },
-                child: Column(
-                  key: ValueKey(currentPage),
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-  
-                    AnimatedText(
-                      banners[currentPage]["title"]!,
-                      width,
-                    ),
-                    const SizedBox(height: 20),
-  
-                    ElevatedButton(
-                      onPressed: () {
-                        final route = banners[currentPage]["route"];
-                        if (route != null) {
-                          Get.toNamed(route);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isMobile ? 20 : 25,
-                          vertical: isMobile ? 12 : 15,
-                        ),
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 1400),
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: isDesktop
+                  ? Row(
+                children: [
+
+                  /// LEFT CONTENT
+                  Expanded(
+                    flex: 5,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 600),
+                      child: Column(
+                        key: ValueKey(currentPage),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AnimatedText(
+                            banners[currentPage]["title"]!,
+                            width,
+                          ),
+
+                          const SizedBox(height: 25),
+
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                final route =
+                                banners[currentPage]["route"];
+                                if (route != null) {
+                                  Get.toNamed(route);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 30,
+                                  vertical: 16,
+                                ),
+                              ),
+                              child: Text(
+                                banners[currentPage]["button"]!,
+                                style: AppTextStyles.body(
+                                  context,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      child: Text(
-                        banners[currentPage]["button"]!,
-                        style: AppTextStyles.body(
-                          context,
-                          color: AppColors.white,
-                        ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 30),
+
+                  /// RIGHT LOGIN CARD
+                  Expanded(
+                    flex: 3,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: SingleChildScrollView(
+                        child: _buildTransparentLoginCard(context),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              )
+
+              /// MOBILE VIEW
+                  : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AnimatedText(
+                    banners[currentPage]["title"]!,
+                    width,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      final route =
+                      banners[currentPage]["route"];
+                      if (route != null) {
+                        Get.toNamed(route);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                    ),
+                    child: Text(
+                      banners[currentPage]["button"]!,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
+          )
         ],
+
       ),
     );
   }
 
+}
+
+Widget _buildTransparentLoginCard(BuildContext context) {
+  final loginController=Get.put(LoginController());
+  final _formKeyLoginFront = GlobalKey<FormState>();
+  String platform = kIsWeb
+      ? "Web"
+      : Platform.isAndroid
+      ? "Android"
+      : Platform.isIOS
+      ? "iOS"
+      : "Unknown";
+  return Container(
+    width: 400,
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.white.withOpacity(0.12),
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(
+        color: Colors.white.withOpacity(0.25),
+        width: 1.5,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.2),
+          blurRadius: 25,
+          offset: const Offset(0, 10),
+        )
+      ],
+    ),
+    child: SingleChildScrollView(
+      child: Form(
+        key: _formKeyLoginFront,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+          const Text(
+          "Welcome Back",
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          "Login to your account",
+          style: TextStyle(color: Colors.white70, fontSize: 16),
+        ),
+        const SizedBox(height: 30),
+      
+      
+        TextField(
+          controller: loginController.emailController,
+          style:  const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: "Email",
+            hintStyle: AppTextStyles.caption(context,color: AppColors.white),
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.1),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: BorderSide.none),
+            prefixIcon:  const Icon(Icons.email, color: Colors.white),
+          ),
+        ),
+        const SizedBox(height: 20),
+      
+        // Password field
+        TextField(
+          controller: loginController.passwordController,
+          obscureText: true,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: "Password",
+            hintStyle: AppTextStyles.caption(context,color: AppColors.white),
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.1),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: BorderSide.none),
+            prefixIcon: const Icon(Icons.lock, color: Colors.white),
+          ),
+        ),
+        const SizedBox(height: 10),
+      
+        // Forgot password
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+              onPressed: () {
+                Get.toNamed('/forgotPasswordEmailWeb');
+              },
+              child:  Text("Forgot Password?",
+                  style: AppTextStyles.caption(context,color: AppColors.white))),
+        ),
+        const SizedBox(height: 20),
+      
+        // Login button
+        SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: () async{
+      
+              if (_formKeyLoginFront.currentState!.validate()) {
+                String email = loginController.emailController.text.trim();
+                String password = loginController.passwordController.text;
+      
+                if (email.isEmpty || password.isEmpty) {
+                  showCustomToast(context, "Please enter email and password",backgroundColor: AppColors.secondary);
+      
+                  // ScaffoldMessenger
+                  //     .of(context)
+                  //     .showSnackBar(
+                  //   const SnackBar(
+                  //       content: Text(
+                  //           "Please enter email and password")),
+                  // );
+                  return;
+                }
+                await loginController.login(
+                    loginController.emailController.text.toString(),
+                    loginController.passwordController.text.toString(),platform,context);
+                loginController.emailController.clear();
+                loginController.passwordController.clear();
+              } else {
+                showCustomToast(context,  "Invalid email or password",backgroundColor: AppColors.secondary);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+            child:  Text(
+              "Login",
+              style:
+              AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      
+        // Divider
+        Row(
+          children: [
+            Expanded(
+                child: Divider(color: Colors.white.withOpacity(0.4))),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text("OR",
+                style: AppTextStyles.caption(context,color: AppColors.white),
+              ),),
+            Expanded(
+                child: Divider(color: Colors.white.withOpacity(0.4))),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Don't have an account? ",
+              style: AppTextStyles.caption(context,color: AppColors.white),
+            ),
+            TextButton(
+              onPressed: () {
+                Get.toNamed('/registerPageWeb');
+              },
+              child:  Text("Sign Up", style: AppTextStyles.body(context,fontWeight:FontWeight.bold,color: AppColors.white),
+              ),)
+          ],
+        ),
+      ])),
+    ),
+  );
 }
 Widget platformOverviewSection(context) {
   final size = MediaQuery.of(context).size.width;
@@ -1522,8 +1990,8 @@ Widget platformOverviewSection(context) {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.transparent,
-                    AppColors.transparent,
+                    Colors.grey.shade100,
+                    Colors.grey.shade100,
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
@@ -1603,7 +2071,7 @@ class AnimatedText extends StatelessWidget {
               child: Opacity(
                 opacity: (1 - (value.abs() / 50)).clamp(0, 1),
                 child: Transform.rotate(
-                  angle: value * 0.02, // slight tilt while falling
+                  angle: value * 0.02,
                   child: child,
                 ),
               ),
@@ -1611,9 +2079,10 @@ class AnimatedText extends StatelessWidget {
           },
           child: Text(
             char,
-            style: GoogleFonts.poppins( // change font here
+
+            style: GoogleFonts.poppins(
               color: AppColors.white,
-              fontSize: isMobile ? 22 : width * 0.03,
+              fontSize: isMobile ? 22 : width * 0.022,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -1691,7 +2160,7 @@ class AboutUsSection extends StatelessWidget {
               "across the entire dental industry.",
           style: TextStyle(
             height: 1.6,
-            fontSize: Responsive.width(context, 14),
+            fontSize: Responsive.width(context, 16),
             color: Colors.grey[700],
           ),
         ),

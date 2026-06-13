@@ -23,7 +23,6 @@ class _BlinkingTextState extends State<BlinkingText>
   @override
   void initState() {
     super.initState();
-    // Toggle visibility repeatedly
     Future.delayed(Duration.zero, _blinkText);
   }
 
