@@ -105,8 +105,6 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                                           style: AppTextStyles.subtitle(color: Colors.black, context),
                                         ),
                                       ),
-
-                                      // 💡 Only show table header row if NOT on mobile view
                                       if (!isMobileLayout)
                                         Container(
                                           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),

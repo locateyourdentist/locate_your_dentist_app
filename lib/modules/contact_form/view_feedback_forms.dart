@@ -370,73 +370,79 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
               if (isLoggedIn && isDesktop) const AdminSideBar(),
 
               Expanded(
-                child: Stack(
-              children: [
-                if (isLoggedIn && !isDesktop)
-
-                  Padding(
-                        padding: const EdgeInsets.only(top: 10, left: 10),
-                        child: IconButton(
-                          icon: const Icon(Icons.menu,color: AppColors.black,),
-                          onPressed: () => _scaffoldKeyFeedback.currentState?.openDrawer(),
-                        ),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                      if (isLoggedIn && !isDesktop)
+                        Padding(
+                              padding: const EdgeInsets.only(top: 10, left: 10),
+                              child: IconButton(
+                                icon: const Icon(Icons.menu,color: AppColors.black,),
+                                onPressed: () => _scaffoldKeyFeedback.currentState?.openDrawer(),
+                              ),
+                            ),
+                      
+                      if (controller.isLoading)
+                       const Center(child: CircularProgressIndicator(strokeWidth: 3)),
+                      
+                      
+                      if (controller.publicContactFormLists.isEmpty)
+                       Center(
+                      child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                      Icon(Icons.inbox_rounded, size: 64, color: Colors.grey.shade300),
+                      const SizedBox(height: 16),
+                      Text(
+                      "No Requests Found",
+                      style: TextStyle(fontSize: 16, color: Colors.grey.shade500, fontWeight: FontWeight.w600),
                       ),
-
-                if (controller.isLoading)
-                 const Center(child: CircularProgressIndicator(strokeWidth: 3)),
-
-
-                if (controller.publicContactFormLists.isEmpty)
-                 Center(
-                child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                Icon(Icons.inbox_rounded, size: 64, color: Colors.grey.shade300),
-                const SizedBox(height: 16),
-                Text(
-                "No Requests Found",
-                style: TextStyle(fontSize: 16, color: Colors.grey.shade500, fontWeight: FontWeight.w600),
-                ),
-                ],
-                ),
-                ),
-                    Center(
-                      child: Text(
-                        "View Feedback Forms",
-                        style: TextStyle(fontSize: 16, color: Colors.grey.shade500, fontWeight: FontWeight.w600),
+                      ],
                       ),
-                    ),
-                   // showFilterSheet(context)
-                    if (controller.publicContactFormLists.isNotEmpty)
-
-                      Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 1200),
-                          child: Container(
-                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))]),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: GridView.builder(
-                                shrinkWrap: true,
-                              //  physics: const NeverScrollableScrollPhysics(),
-                                itemCount: controller.publicContactFormLists.length,
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: crossAxisCount,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                  mainAxisExtent: 310,
-                                ),
-                                itemBuilder: (context, index) {
-                                  return feedbackCard(
-                                    controller.publicContactFormLists[index],
-                                  );
-                                },
-                              )
+                      ),
+                          Center(
+                            child: Text(
+                              "View Feedback Forms",
+                              style: TextStyle(fontSize: 16, color: Colors.grey.shade500, fontWeight: FontWeight.w600),
                             ),
                           ),
-                        ),
+                         // showFilterSheet(context)
+                          if (controller.publicContactFormLists.isNotEmpty)
+                      
+                            Center(
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(maxWidth: 1200),
+                                child: Container(
+                                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))]),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                    //  physics: const NeverScrollableScrollPhysics(),
+                                      itemCount: controller.publicContactFormLists.length,
+                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: crossAxisCount,
+                                        crossAxisSpacing: 16,
+                                        mainAxisSpacing: 16,
+                                        mainAxisExtent: 310,
+                                      ),
+                                      itemBuilder: (context, index) {
+                                        return feedbackCard(
+                                          controller.publicContactFormLists[index],
+                                        );
+                                      },
+                                    )
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
-                  ],
+                    ),
+                  ),
                 ),
               ),
             ],
