@@ -165,7 +165,7 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(icon: const Icon(Icons.edit, size: 20), onPressed: () async { await serviceController.getServiceDetailAdmin(service.serviceId.toString(), context); Get.toNamed('/addServicesListWebPage'); }),
-                                  IconButton(icon: const Icon(Icons.delete, color: Colors.red, size: 20), onPressed: () => _confirmDelete(service.serviceId.toString())),
+                                  IconButton(icon: const Icon(Icons.delete, color: Colors.red, size: 20), onPressed: () => _confirmDelete(service.serviceId.toString(),imgUrl)),
                                 ],
                               ),
                             ],
@@ -183,11 +183,13 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
     );
   }
 
-  void _confirmDelete(String id) {
+  void _confirmDelete(String id,String url) {
     showDialog(context: context, builder: (c) => AlertDialog(title: const Text("Delete"), content: const Text("Are you sure?"), actions: [
       TextButton(onPressed: () => Get.back(), child:  Text("No",style: AppTextStyles.caption(context),)),
-      TextButton(onPressed: () async { 
-        await serviceController.deactivateService(id, context); Get.back(); _refresh();
+      TextButton(onPressed: () async {
+        await serviceController.deactivateService(id, context);
+        await loginController.deleteAwsFile(url, 'serviceImage', context);
+        Get.back(); _refresh();
         }, child:  Text("Yes",style: AppTextStyles.caption(context),)),
     ]));
   }

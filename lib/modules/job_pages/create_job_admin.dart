@@ -169,7 +169,8 @@ class _CreateJobPostState extends State<CreateJobPost> {
               loginController.webinarImages.clear();
               loginController.webinarFileImages.clear();
               loginController.update();
-              await loginController.deleteAwsFile(url.toString(),'user', context);
+              if(url.toString() != null && url.toString().isNotEmpty)
+                loginController.deleteAwsFile(url.toString(), '', context);
               },
             child: const Icon(Icons.cancel, color: Colors.black,),
           ),

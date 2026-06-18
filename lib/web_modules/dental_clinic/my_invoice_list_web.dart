@@ -157,7 +157,7 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                                               await planController.getInvoiceDetails(context);
 
                                               final invoiceId = planController.invoiceDetails[index];
-                                              final pdfFile = await PdfGenerator.generateInvoicePdf(
+                                              await PdfGenerator.generateInvoicePdf(
                                                 userName: name,
                                                 planName: invoiceId.planName,
                                                 planType: invoiceId.planType,
@@ -165,8 +165,7 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                                                 endDate: invoiceId.endDate,
                                                 taxSummary: invoiceId.taxSummary,
                                                 company: invoiceId.company,
-                                                invoiceId: invoiceId.invoiceId,
-                                              );
+                                                invoiceId: invoiceId.invoiceId);
                                             }
                                             if (isMobileLayout) {
                                               return Card(
@@ -188,7 +187,6 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                                                       _buildMobileRow("Date:", formatDate(invoice.createdAt.toString())),
                                                       const Divider(height: 20),
 
-                                                      // Responsive Button spans full horizontal space comfortably
                                                       SizedBox(
                                                         width: double.infinity,
                                                         child: ElevatedButton.icon(

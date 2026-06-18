@@ -202,11 +202,14 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
             top: 5,
             right: 5,
             child: GestureDetector(
-              onTap: () {
+              onTap: () async{
                 loginController.jobFileImages.clear();
                 loginController.jobImages.clear();
                 loginController.webinarImages.clear();
                 loginController.update();
+                if(image.url != null && image.url!.isNotEmpty)
+                loginController.deleteAwsFile(image.url!, '', context);
+
               },
               child: const Icon(Icons.cancel, color: Colors.red),
             ),

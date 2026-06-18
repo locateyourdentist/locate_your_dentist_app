@@ -440,6 +440,7 @@ class _UploadImagesState extends State<UploadImages> {
       onConfirm: () async {
         if (img.url != null && img.url!.isNotEmpty) {
           Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
+          print('jkdfsf${img.url}');
           await loginController.deleteAwsFile(img.url!, 'postImage', context);
           String userType = Api.userInfo.read('userType') ?? "";
           String targetUserType = controller.selectedUserType ?? userType;

@@ -439,75 +439,65 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                             ),
                             //DentalProblemCard(),
 
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-                        child: Center(
-                          child: Container(
-                            constraints: const BoxConstraints(maxWidth: 1500),
-                            padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      children: [
+                      Column(
+                        children: [
 
-                                        Text(
-                                          "Popular Dental Treatments",
-                                          style: TextStyle(
-                                            fontSize: 26,
-                                            fontWeight: FontWeight.bold,color: AppColors.primary
-                                          ),
-                                        ),
-
-                                        const SizedBox(height: 15),
-
-                                        Text(
-                                          "Explore advanced dental solutions offered by verified clinics",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.grey.shade600,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                       // const SizedBox(height: 15),
-
-                                        // GumDiseaseCard(),
-                                        // BruxismCard(),
-                                        // SensitivityCard(),
-                                        // WisdomTeethCard(),
-                                        // AbscessCard(),
-
-                                        TreatmentCard(
-                                          treatment: treatments[0],
-                                          reverse: false,
-                                        ),
-
-                                        TreatmentCard(
-                                          treatment: treatments[1],
-                                          reverse: true,
-                                        ),
-
-                                        TreatmentCard(
-                                          treatment: treatments[2],
-                                          reverse: false,
-                                        ),
-                                        TreatmentCard(
-                                          treatment: treatments[3],
-                                          reverse: true,
-                                        ),
-
-                                        TreatmentCard(
-                                          treatment: treatments[4],
-                                          reverse: false,
-                                        ),
-                                        SizedBox(height: size*0.01,),
-
-                                        BrushingTechniqueCard(),
-                                        SizedBox(height: size*0.01,),
-
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                          Text(
+                            "Popular Dental Treatments",
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,color: AppColors.primary
                             ),
+                          ),
+
+                          const SizedBox(height: 15),
+
+                          Text(
+                            "Explore advanced dental solutions offered by verified clinics",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 16,
+                            ),
+                          ),
+                         // const SizedBox(height: 15),
+
+                          // GumDiseaseCard(),
+                          // BruxismCard(),
+                          // SensitivityCard(),
+                          // WisdomTeethCard(),
+                          // AbscessCard(),
+
+                          TreatmentCard(
+                            treatment: treatments[0],
+                            reverse: false,
+                          ),
+
+                          TreatmentCard(
+                            treatment: treatments[1],
+                            reverse: true,
+                          ),
+
+                          TreatmentCard(
+                            treatment: treatments[2],
+                            reverse: false,
+                          ),
+                          TreatmentCard(
+                            treatment: treatments[3],
+                            reverse: true,
+                          ),
+
+                          TreatmentCard(
+                            treatment: treatments[4],
+                            reverse: false,
+                          ),
+                          SizedBox(height: size*0.01,),
+
+                          BrushingTechniqueCard(),
+                          SizedBox(height: size*0.01,),
+
+                        ],
+                      ),
                             Center(child: Text("Featured Clinics", style: AppTextStyles.headline1(context,color: AppColors.primary))),
                             const SizedBox(height: 20),
                             if (loginController.profileList.isEmpty)
@@ -535,119 +525,123 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
 
                             const SizedBox(height: 40),
 
-                            Center(
-                              child: TweenAnimationBuilder(
-                                duration: const Duration(milliseconds: 800),
-                                tween: Tween<double>(begin: 0.0, end: 1.0),
-                                builder: (context, double scale, child) {
-                                  return Transform.scale(scale: scale, child: child);
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(25),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)]),
-                                  child: Wrap(
-                                    spacing: 20,
-                                    runSpacing: 15,
-                                    alignment: WrapAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: size > 1100
-                                            ? 250
-                                            : size > 800
-                                            ? 200
-                                            : double.infinity,
-                                        child: GetBuilder<LoginController>(
-                                          builder: (controller) {
-                                            return CustomDropdown<String>.search(
-                                              hintText: "Select State",
-                                              decoration: CustomDropdownDecoration(
-                                                closedFillColor: Colors.grey[100],
-                                                expandedFillColor: Colors.white,
-                                                closedBorder: Border.all(color: AppColors.white, width: 1.5),
-                                                expandedBorder: Border.all(color: AppColors.primary, width: 1.5),
-                                                closedBorderRadius: BorderRadius.circular(10),
-                                                expandedBorderRadius: BorderRadius.circular(10),
-                                                hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                                headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                                listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                                              ),
-                                              items: controller.states.map((s) => s.toString()).toList(),
-                                             // initialItem: controller.selectedState,
-                                              onChanged: (val) {
-                                                if (val != null) {
-                                                  controller.selectedState = val;
-                                                  controller.districts.clear();
-                                                  controller.selectedDistrict = null;
-                                                  controller.selectedTaluka = null;
-                                                  controller.selectedVillage = null;
-                                                  controller.fetchDistricts(val.toString());
-                                                  controller.update();
-                                                }
-                                              },
-                                            );
-                                          },
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Center(
+                                child: TweenAnimationBuilder(
+                                  duration: const Duration(milliseconds: 800),
+                                  tween: Tween<double>(begin: 0.0, end: 1.0),
+                                  builder: (context, double scale, child) {
+                                    return Transform.scale(scale: scale, child: child);
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(25),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)]),
+                                    child: Wrap(
+                                      spacing: 20,
+                                      runSpacing: 15,
+                                      alignment: WrapAlignment.center,
+                                      children: [
+                                        Text('Filer Dental Clinics',style: AppTextStyles.caption(context),),
+                                        SizedBox(
+                                          width: size > 1100
+                                              ? 250
+                                              : size > 800
+                                              ? 200
+                                              : double.infinity,
+                                          child: GetBuilder<LoginController>(
+                                            builder: (controller) {
+                                              return CustomDropdown<String>.search(
+                                                hintText: "Select State",
+                                                decoration: CustomDropdownDecoration(
+                                                  closedFillColor: Colors.grey[100],
+                                                  expandedFillColor: Colors.white,
+                                                  closedBorder: Border.all(color: AppColors.white, width: 1.5),
+                                                  expandedBorder: Border.all(color: AppColors.primary, width: 1.5),
+                                                  closedBorderRadius: BorderRadius.circular(10),
+                                                  expandedBorderRadius: BorderRadius.circular(10),
+                                                  hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                                                  headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                  listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                ),
+                                                items: controller.states.map((s) => s.toString()).toList(),
+                                               // initialItem: controller.selectedState,
+                                                onChanged: (val) {
+                                                  if (val != null) {
+                                                    controller.selectedState = val;
+                                                    controller.districts.clear();
+                                                    controller.selectedDistrict = null;
+                                                    controller.selectedTaluka = null;
+                                                    controller.selectedVillage = null;
+                                                    controller.fetchDistricts(val.toString());
+                                                    controller.update();
+                                                  }
+                                                },
+                                              );
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: size > 1100
-                                            ? 250
-                                            : size > 800
-                                            ? 200
-                                            : double.infinity,
-                                        child: GetBuilder<LoginController>(
-                                          builder: (controller) {
-                                            return CustomDropdown<String>.search(
-                                              hintText: "Select District",
-                                              items: controller.districts.map((d) => d.toString()).toList(),
-                                              //initialItem: controller.selectedDistrict,
-                                              decoration: CustomDropdownDecoration(
-                                                hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                                headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                                listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                                                closedFillColor: Colors.grey[100],
-                                                expandedFillColor: Colors.white,
-                                                closedBorder: Border.all(color: AppColors.white, width: 1.5),
-                                                expandedBorder: Border.all(color: AppColors.primary, width: 1.5),
-                                              ),
-                                              onChanged: (val) {
-                                                if (val != null) {
-                                                  controller.selectedDistrict = val;
-                                                  controller.talukas.clear();
-                                                  controller.selectedTaluka = null;
-                                                  controller.selectedVillage = null;
-                                                  controller.fetchTalukas(val.toString());
-                                                  controller.update();
-                                                }
-                                              },
-                                            );
-                                          },
+                                        SizedBox(
+                                          width: size > 1100
+                                              ? 250
+                                              : size > 800
+                                              ? 200
+                                              : double.infinity,
+                                          child: GetBuilder<LoginController>(
+                                            builder: (controller) {
+                                              return CustomDropdown<String>.search(
+                                                hintText: "Select District",
+                                                items: controller.districts.map((d) => d.toString()).toList(),
+                                                //initialItem: controller.selectedDistrict,
+                                                decoration: CustomDropdownDecoration(
+                                                  hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                                                  headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                  listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                  closedFillColor: Colors.grey[100],
+                                                  expandedFillColor: Colors.white,
+                                                  closedBorder: Border.all(color: AppColors.white, width: 1.5),
+                                                  expandedBorder: Border.all(color: AppColors.primary, width: 1.5),
+                                                ),
+                                                onChanged: (val) {
+                                                  if (val != null) {
+                                                    controller.selectedDistrict = val;
+                                                    controller.talukas.clear();
+                                                    controller.selectedTaluka = null;
+                                                    controller.selectedVillage = null;
+                                                    controller.fetchTalukas(val.toString());
+                                                    controller.update();
+                                                  }
+                                                },
+                                              );
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                      ElevatedButton.icon(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppColors.primary, padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18)),
-                                        onPressed: () async {
-                                          await loginController.getProfileDetails(
-                                            "Dental Clinic",
-                                            loginController.selectedState,
-                                            loginController.selectedDistrict,
-                                            loginController.selectedTaluka,
-                                            "true",
-                                            '',
-                                            '',
-                                            loginController.selectedDistance.toString(),
-                                            '',
-                                            context,
-                                          );
-                                          Get.toNamed('/userTypeListWeb');
-                                        },
-                                        icon: Icon(Icons.search, color: AppColors.white, size:22),
-                                        label: Text("Search", style: AppTextStyles.caption(context, color: AppColors.white)),
-                                      ),
-                                    ],
+                                        ElevatedButton.icon(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: AppColors.primary, padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18)),
+                                          onPressed: () async {
+                                            await loginController.getProfileDetails(
+                                              "Dental Clinic",
+                                              loginController.selectedState,
+                                              loginController.selectedDistrict,
+                                              loginController.selectedTaluka,
+                                              "true",
+                                              '',
+                                              '',
+                                              loginController.selectedDistance.toString(),
+                                              '',
+                                              context,
+                                            );
+                                            Get.toNamed('/userTypeListWeb');
+                                          },
+                                          icon: Icon(Icons.search, color: AppColors.white, size:22),
+                                          label: Text("Search", style: AppTextStyles.caption(context, color: AppColors.white)),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -779,7 +773,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                   ),
                                 ),
 
-                                const SizedBox(height: 20),
+                                //const SizedBox(height: 20),
 
                                 GetBuilder<JobController>(
                                     builder: (jController) {

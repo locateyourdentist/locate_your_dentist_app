@@ -1606,21 +1606,37 @@ class BrushingTechniqueCard extends StatelessWidget {
     final isDesktop = MediaQuery.of(context).size.width > 900;
     final loginController = Get.put(LoginController());
     return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 40,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(.05),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+        // decoration: const BoxDecoration(
+        //   gradient: LinearGradient(
+        //     colors: [
+        //       AppColors.primary,
+        //       AppColors.secondary,
+        //     ],
+        //     begin: Alignment.topLeft,
+        //     end: Alignment.bottomRight,
+        //   ),
+        // ),
+        child: Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 1500),
+              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 20,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(.05),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
       child: isDesktop
           ? Row(
         children: [
@@ -1659,7 +1675,7 @@ class BrushingTechniqueCard extends StatelessWidget {
           ),
           _content(context),
         ],
-      ),
+      ),))
     );
   }
 
@@ -1980,58 +1996,74 @@ class TreatmentCard extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isDesktop = screenWidth > 768;
 
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 20,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(.05),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: isDesktop
-            ? IntrinsicHeight(
-          child: Row(
-            children: reverse
-                ? [
-              Expanded(
-                flex: 6,
-                child: _buildDetailsSection(context),
-              ),
-              Expanded(
-                flex: 5,
-                child: _buildImageSection(),
-              ),
-            ]
-                : [
-              Expanded(
-                flex: 5,
-                child: _buildImageSection(),
-              ),
-              Expanded(
-                flex: 6,
-                child: _buildDetailsSection(context),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+      // decoration: const BoxDecoration(
+      //   gradient: LinearGradient(
+      //     colors: [
+      //       AppColors.primary,
+      //       AppColors.secondary,
+      //     ],
+      //     begin: Alignment.topLeft,
+      //     end: Alignment.bottomRight,
+      //   ),
+      // ),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1500),
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 20,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(.05),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
             ],
           ),
-        )
-            : Column(
-          children: [
-            SizedBox(
-              height: 280,
-              child: _buildImageSection(),
+          clipBehavior: Clip.antiAlias,
+          child: isDesktop
+              ? IntrinsicHeight(
+            child: Row(
+              children: reverse
+                  ? [
+                Expanded(
+                  flex: 6,
+                  child: _buildDetailsSection(context),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: _buildImageSection(),
+                ),
+              ]
+                  : [
+                Expanded(
+                  flex: 5,
+                  child: _buildImageSection(),
+                ),
+                Expanded(
+                  flex: 6,
+                  child: _buildDetailsSection(context),
+                ),
+              ],
             ),
-            _buildDetailsSection(context),
-          ],
+          )
+              : Column(
+            children: [
+              SizedBox(
+                height: 280,
+                child: _buildImageSection(),
+              ),
+              _buildDetailsSection(context),
+            ],
+          ),
         ),
       ),
     );

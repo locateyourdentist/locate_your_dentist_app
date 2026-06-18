@@ -208,7 +208,8 @@ Future<void> _refresh() async {
                                                     onPressed: ()async {
                                                       confirmRemoveImage(context, index, () async{
                                                        await serviceController.deactivateService(service.serviceId.toString()??"",context);
-                                                        serviceController.update();
+                                                       await loginController.deleteAwsFile(imgUrl, 'serviceImage', context);
+                                                       serviceController.update();
                                                        await serviceController.getServiceListAdmin(Api.userInfo.read('userId')??"", context);
                                                         Navigator.of(context).pop();
                                                         //Get.back();
