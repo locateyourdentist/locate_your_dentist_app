@@ -169,50 +169,40 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: Center(
-                      child: Container(
-                        constraints: const BoxConstraints(maxWidth: 1100),
-                        margin: const EdgeInsets.all(20),
-                        padding: const EdgeInsets.all(30),
-                        // decoration: BoxDecoration(
-                        //   color: Colors.white,
-                        //   borderRadius:
-                        //   BorderRadius.circular(12),
-                        //   boxShadow: const [
-                        //     BoxShadow(
-                        //       blurRadius: 10,
-                        //       color: Colors.black12,
-                        //     )
-                        //   ],
-                        // ),
-                        child: SingleChildScrollView(
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: KeyedSubtree(
-                              key: ValueKey(selectedTitle),
-                              child: IgnorePointer(
-                                child: QuillEditor(
-                                  controller: controller,
-                                  scrollController:
-                                  _scrollController,
-                                  focusNode: focusNode,
-                                  config:
-                                  const QuillEditorConfig(
-                                    showCursor: false,
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Container(
+                            constraints: const BoxConstraints(maxWidth: 1100),
+                            margin: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(30),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: KeyedSubtree(
+                                key: ValueKey(selectedTitle),
+                                child: IgnorePointer(
+                                  child: QuillEditor(
+                                    controller: controller,
+                                    scrollController: _scrollController,
+                                    focusNode: focusNode,
+                                    config: const QuillEditorConfig(
+                                      showCursor: false,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
 
+                        const SizedBox(height: 60),
+
+                        if (!isLoggedIn)
+                          const CommonFooter(),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(height: 60,),
-
-                if (!isLoggedIn) const CommonFooter(),
               ],
             ),
           ),

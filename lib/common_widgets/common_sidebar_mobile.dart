@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
+import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 
@@ -196,6 +197,41 @@ class SettingsSidebarDrawer extends StatelessWidget {
         return [];
     }
   }
+  bool isMobile(BuildContext context) =>
+      MediaQuery
+          .of(context)
+          .size
+          .width < 600;
+
+  bool isTablet(BuildContext context) =>
+      MediaQuery
+          .of(context)
+          .size
+          .width >= 600 &&
+          MediaQuery
+              .of(context)
+              .size
+              .width < 1024;
+  double getSidebarWidth(BuildContext context) {
+    double w = MediaQuery
+        .of(context)
+        .size
+        .width;
+    if (isMobile(context)) return w * 0.3;
+    if (isTablet(context)) return w * 0.25;
+    return w * 0.15;
+  }
+  double getAvatarSize(BuildContext context) {
+    if (isMobile(context)) return 50;
+    if (isTablet(context)) return 60;
+    return 70;
+  }
+
+  double getIconSize(BuildContext context) {
+    if (isMobile(context)) return 18;
+    if (isTablet(context)) return 20;
+    return 22;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,79 +239,117 @@ class SettingsSidebarDrawer extends StatelessWidget {
     final String userId = Api.userInfo.read('userId') ?? "";
     Api.userInfo.write('selectUId',userId);
     final menuItems = _getSettingsForUser(userType);
+    double sidebarWidth = getSidebarWidth(context);
+    double avatarSize = getAvatarSize(context);
+    double iconSize = getIconSize(context);
 
     return Drawer(
-      child: Column(
-        children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
+      child:  SafeArea(
+        child: Container(
+          width: sidebarWidth,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.primary, AppColors.secondary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            child: Center(
-              child: Text(
-                userType,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+          ),
+         
+            child: Column(
+              children: [
+                ClipOval(
+                  child: Image.network(
+                    Api.userInfo.read("profileImage") ?? "",
+                    width: avatarSize,
+                    height: avatarSize,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        Container(
+                          width: avatarSize,
+                          height: avatarSize,
+                          color: Colors.grey,
+                          child: const Icon(Icons.person, color: Colors.white),
+                        ),
+                  ),
                 ),
+            
+                const SizedBox(height: 8),
+            
+                Text(
+                  Api.userInfo.read("orgName") ?? "",
+                  style: AppTextStyles.body(
+                    context,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+            
+                // Center(
+                //   child: Text(
+                //     userType,
+                //     style: const TextStyle(
+                //       color: Colors.white,
+                //       fontSize: 22,
+                //       fontWeight: FontWeight.bold,
+                //     ),
+                //   ),
+                // ),
+             
+            Expanded(
+              child: ListView.builder(
+                itemCount: menuItems.length,
+                itemBuilder: (context, index) {
+                  final item = menuItems[index];
+        
+                  return ListTile(
+                    leading: Icon(
+                      _getIcon(item['title']!),
+                      color: AppColors.white,
+                    ),
+                    title: Text(item['title']!,style: AppTextStyles.caption(context,color: AppColors.white),),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () async {
+                      final String title = item['title'] ?? '';
+        
+                      if (title == "Logout") {
+                        showLogoutDialog(context);
+                      } else if (title == "Jobs") {
+                        await jobController.getJobListJobSeekers(search: '',context: context);
+                        Get.toNamed(item['page']??"");
+                      }
+                      else if (title == "Webinars") {
+                        await jobController.getWebinarListJobSeekers('','',context);
+                        Get.toNamed(item['page']??"");
+                      }
+                      else if (title == "User List") {
+                        if( Api.userInfo.read('userType')=="superAdmin") {
+                          await   loginController.getProfileDetails('', '', '', '',[], '','','','','',  context);
+                        }
+                        if( Api.userInfo.read('userType')=="admin") {
+                          await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '',[], '','','','','', context);
+                        }
+                        Get.toNamed('/userTypeListPage');
+                      }
+                      else if (title == "Profile") {
+                        Api.userInfo.write('selectUId',userId);
+                        Get.toNamed(item['page']??"");
+                      }
+                      if (title == "Delete Account") {
+                        _showDeleteDialog(context);
+                      }
+                      else {
+                        Get.toNamed(item['page']??"");
+                      }
+                    },
+        
+                  );
+                },
               ),
             ),
-          ),
-
-          Expanded(
-            child: ListView.builder(
-              itemCount: menuItems.length,
-              itemBuilder: (context, index) {
-                final item = menuItems[index];
-
-                return ListTile(
-                  leading: Icon(
-                    _getIcon(item['title']!),
-                    color: AppColors.primary,
-                  ),
-                  title: Text(item['title']!),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () async {
-                    final String title = item['title'] ?? '';
-
-                    if (title == "Logout") {
-                      showLogoutDialog(context);
-                    } else if (title == "Jobs") {
-                      await jobController.getJobListJobSeekers(search: '',context: context);
-                      Get.toNamed(item['page']??"");
-                    }
-                    else if (title == "Webinars") {
-                      await jobController.getWebinarListJobSeekers('','',context);
-                      Get.toNamed(item['page']??"");
-                    }
-                    else if (title == "User List") {
-                      if( Api.userInfo.read('userType')=="superAdmin") {
-                        await   loginController.getProfileDetails('', '', '', '', '','','','','',  context);
-                      }
-                      if( Api.userInfo.read('userType')=="admin") {
-                        await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
-                      }
-                      Get.toNamed('/userTypeListPage');
-                    }
-                    else if (title == "Profile") {
-                      Api.userInfo.write('selectUId',userId);
-                      Get.toNamed(item['page']??"");
-                    }
-                    if (title == "Delete Account") {
-                      _showDeleteDialog(context);
-                    }
-                    else {
-                      Get.toNamed(item['page']??"");
-                    }
-                  },
-
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+            ]  ),
+        ),
+      )
     );
   }
 }

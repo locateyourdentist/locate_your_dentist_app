@@ -306,16 +306,25 @@ import 'package:flutter_quill/flutter_quill.dart';
                                 )
                               ],
                             ),
+                            Expanded(
+                              child: Text(
+                                loginController.userData.isNotEmpty && user?.address != null
+                                    ? "${user?.address['addressLine1'] ?? ''}, ${user?.address['addressLine2'] ?? ''},"
+                                    : "", maxLines: 2,
+                                overflow: TextOverflow.ellipsis, style: AppTextStyles.caption(context,color: AppColors.grey),
+                              ),
+                            ),
+                            SizedBox(height: size*0.01,),
                             const SizedBox(height: 5),
                                     Center(
                                     child: Text(
                                     loginController.userData.isNotEmpty && loginController.userData.first.address != null
                                     ? "${loginController.userData.first.address['state'] ?? ''}, ${loginController.userData.first.address['district'] ?? ''},${loginController.userData.first.address['city'] ?? ''}"
-                                        : "",  style: const TextStyle(color: Colors.grey),
+                                        : "",   style: AppTextStyles.caption(context,color: AppColors.grey),
                                     ),
                                     ),
 
-                       SizedBox(height: size*0.02,),
+                                  SizedBox(height: size*0.02,),
                             if( loginController.userData.first.name.isNotEmpty)
                               Center(
                                 child: Text(
@@ -346,7 +355,7 @@ import 'package:flutter_quill/flutter_quill.dart';
                                           builder: (controller) {
                                             return Switch(
                                               value: loginController.userData.first.isActive,
-                                              activeColor: loginController.userData.first.isActive ? AppColors.primary : Colors.red,
+                                              activeColor: loginController.userData.first.isActive ? Colors.green : Colors.red,
                                               activeTrackColor: AppColors.primary.withOpacity(0.5),
                                               inactiveThumbColor: Colors.red,
                                               inactiveTrackColor: Colors.grey.shade400,

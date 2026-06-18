@@ -357,6 +357,8 @@ class Api {
       String mobile,
       String email,
       String? confirmPassword,
+       String? addressLine1,
+       String? addressLine2,
       String taluk,
       String district,
       String city,
@@ -396,6 +398,8 @@ class Api {
     request.fields['isAdmin'] = isAdmin ?? 'false';
 
     request.fields['address'] = jsonEncode({
+      "addressLine1":addressLine1 ??"",
+      "addressLine2":addressLine2 ??"",
       "state": taluk ?? "",
       "district": district ?? "",
       "city": city ?? "",
@@ -488,7 +492,7 @@ class Api {
   Future<http.Response> getUserDetails({String? userType,
     String? state,
     String? district,
-    String? city, String? latitude, String? longitude, String? distance, String? isActive, String? searchText}) async {
+    String? city,List<String>? area, String? latitude, String? longitude, String? distance, String? isActive, String? searchText}) async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants
         .getProfileListUrl}";
@@ -503,11 +507,12 @@ class Api {
       //   headers['Authorization'] = 'Bearer $token';
       // }
 
-      Map<String, String?> filters = {
+      Map<String, dynamic?> filters = {
         'userType': userType,
         'state': state,
         'district': district,
         'city': city,
+        'area':area,
         'latitude': latitude,
         'longitude': longitude,
         'distance': distance,

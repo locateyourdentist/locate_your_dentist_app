@@ -95,28 +95,21 @@ class ProfileModel {
       mobileNumber: json['mobileNumber']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
       location: json['location']?.toString() ?? '',
-
       images: parseStringList(json['image']),
       logoImages: parseStringList(json['logoImage']),
       certificates: parseStringList(json['certificates']),
-
       address: Map<String, dynamic>.from(json['address'] ?? {}),
       details: detailsMap,
-
       isActive: json['isActive'] ?? false,
-
       createdDate: json['createdDate'] != null
           ? DateTime.tryParse(json['createdDate'])
           : null,
-
       updatedDate: json['updatedDate'] != null
           ? DateTime.tryParse(json['updatedDate'])
           : null,
-
       experienceDetails:
       (detailsMap['experienceDetails'] as List<dynamic>? ?? [])
-          .map((e) => ExperienceFieldModel.fromJson(e))
-          .toList(),
+          .map((e) => ExperienceFieldModel.fromJson(e)).toList(),
     );
   }
 }

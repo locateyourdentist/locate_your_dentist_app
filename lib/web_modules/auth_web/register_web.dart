@@ -459,7 +459,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     final logoBytes = await _convertAppImage2s(loginController.logoImages1);
     final certBytes = await _convertAppImage2s(loginController.certificates1);
 
-    // URL-only items in images1 = existing server files to preserve
     final oldImageUrls = loginController.images1
         .where((e) => e.url != null && e.bytes == null && e.file == null)
         .map((e) => e.url!)
@@ -468,17 +467,37 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         .where((e) => e.url != null && e.bytes == null && e.file == null)
         .map((e) => e.url!)
         .toList();
+    final location = await loginController.getLatLng(
+      state: loginController.selectedState ?? '',
+      district: loginController.selectedDistrict ?? '',
+      taluka:  loginController.selectedTaluka ?? '',
+      area: loginController.selectedVillage ?? '',
+      pincode:loginController.pinCodeController.text,
+    );
 
+    print(location);
+    if (location != null) {
+      loginController.latitude = location['latitude'];
+      loginController.longitude = location['longitude'];
+      print('lat${loginController.latitude}');
+    } else {
+      loginController.latitude = null;
+      loginController.longitude = null;
+    }
     await loginController.registerUser(
       userId: (Api.userInfo.read('token') == null || Get.arguments?['userId'] == "0")
           ? "0"
-          : loginController.userData.first.userId ?? "",
+          :(loginController.userData.isNotEmpty
+          ? loginController.userData.first.userId ?? ""
+          : ""),
       userType: loginController.selectedUserType!,
       fullName: loginController.fullNameController.text,
       dob: loginController.dobController.text,
       mobile: loginController.mobileController.text,
       email: loginController.emailController.text,
       confirmPassword: loginController.confirmPasswordController.text,
+      addressLine1: loginController.addressLine1Controller.text ?? '',
+      addressLine2:  loginController.addressLine2Controller.text ?? '',
       taluk: loginController.selectedState ?? '',
       district: loginController.selectedDistrict ?? '',
       city: loginController.selectedTaluka ?? '',
@@ -559,6 +578,24 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             CustomTextField(hint: "Confirm Password", controller: loginController.confirmPasswordController, isPassword: true),
           ),
         ],
+        const SizedBox(height: 15),
+        _responsiveRow(
+    isMobile,
+        CustomTextField(
+          hint: "Google map Link",
+          icon: Icons.location_on,
+          controller: loginController.locationController,
+          // fillColor: AppColors.white,
+          // borderColor: AppColors.grey,
+        ),
+       // const SizedBox(height: 15),
+        CustomTextField(
+          hint: "Website Link",
+          icon: Icons.web,
+          controller: loginController.websiteController,
+          // fillColor: AppColors.white,
+          // borderColor: AppColors.grey,
+        ),)
       ],
     );
   }
@@ -579,12 +616,30 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
           Padding(
             padding: const EdgeInsets.only(top: 15,bottom: 15),
             child:   CustomTextField(
-              hint: loginController.selectedUserType == 'Dental Shop'? "College Name":"${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
+              hint: loginController.selectedUserType == 'Dental Shop'? "Shop Name":"${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
               icon: Icons.store,
               controller: loginController.typeNameController,
             ),
           ),
        // const SizedBox(height: 15),
+        _responsiveRow(
+          isMobile,
+          CustomTextField(
+            hint: "Address Line1",
+            icon: Icons.location_on,
+            controller: loginController.locationController,
+            // fillColor: AppColors.white,
+            // borderColor: AppColors.grey,
+          ),
+          // const SizedBox(height: 15),
+          CustomTextField(
+            hint: "Address Line2",
+            icon: Icons.web,
+            controller: loginController.websiteController,
+            // fillColor: AppColors.white,
+            // borderColor: AppColors.grey,
+          ),),
+        const SizedBox(height: 15),
         _responsiveRow(isMobile, _buildStateDropdown(), _buildDistrictDropdown()),
         const SizedBox(height: 15),
         _responsiveRow(isMobile, _buildTalukaDropdown(), _buildAreaDropdown()),

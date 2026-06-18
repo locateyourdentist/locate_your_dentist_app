@@ -37,7 +37,7 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
     await loginController.getAppLogoImage(context);
     await notificationController.getNotificationListAdmin(context);
     Api.userInfo.read('userType')=="superAdmin"?
-    await loginController.getProfileDetails('', '', '', '', '','','','','', context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", '', '', '','','','', '',context);
+    await loginController.getProfileDetails('', '', '', '',[], '','','','','', context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", '','', [], '','','','', '',context);
     //await planController.getIncomeDetailsByPlan(context: context);
   }
   @override
@@ -175,7 +175,8 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                       // SizedBox(height: size*0.005,),
                       drawerTitle('Dashboard', Icons.dashboard, '/superAdminDashboard', context),
                       SizedBox(height: size * 0.005),
-          
+                      drawerTitle('User Lists', Icons.workspace_premium, '/userTypeListPage', context),
+                      SizedBox(height: size * 0.005),
                       drawerTitle('Plans', Icons.workspace_premium, '/viewPlanPage', context),
                       SizedBox(height: size * 0.005),
                      if(Api.userInfo.read('userType')=='superAdmin')
@@ -278,8 +279,8 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                             child: SuperAdminProfileCard(
                             profile: profile,
                             size: size,
-                            onCall: () {
-                            launchCall(profile.mobileNumber);
+                            onCall: ()async {
+                            await launchCall(profile.mobileNumber);
                             },
                             ),
                             ),
@@ -355,6 +356,7 @@ class SuperAdminProfileCard extends StatelessWidget {
     if ((profile.address["district"] ?? "").isNotEmpty) parts.add(profile.address["district"]);
     if ((profile.address["city"] ?? "").isNotEmpty) parts.add(profile.address["city"]);
     String address = parts.join(", ");
+    final loginController=Get.put(LoginController());
 
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -368,94 +370,162 @@ class SuperAdminProfileCard extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: Row(children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                // (firstImage.isNotEmpty&&(planActive==true&&profile.details["plan"]?["basePlan"]?["details"]?["images"] == true||
-                //     isAdminUser)) ? firstImage : "",
-                (firstImage.isNotEmpty && isAdminUser||
-                    ((planActive == true &&
-                        profile.details["plan"]?["basePlan"]?["details"]?["images"] == true)))
-                    ? firstImage
-                    : "",
-                width: size * 0.25,
-                height: size * 0.25,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
+          child: Column(
+            children: [
+              Row(children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    // (firstImage.isNotEmpty&&(planActive==true&&profile.details["plan"]?["basePlan"]?["details"]?["images"] == true||
+                    //     isAdminUser)) ? firstImage : "",
+                    (firstImage.isNotEmpty && isAdminUser||
+                        ((planActive == true &&
+                            profile.details["plan"]?["basePlan"]?["details"]?["images"] == true)))
+                        ? firstImage
+                        : "",
                     width: size * 0.25,
                     height: size * 0.25,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF1F3F6),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(
-                      Icons.image_outlined,
-                      color: Colors.grey.shade400,
-                      size: size * 0.08,
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: size * 0.25,
+                        height: size * 0.25,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1F3F6),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Icon(
+                          Icons.image_outlined,
+                          color: Colors.grey.shade400,
+                          size: size * 0.08,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          (profile.userType == "Dental Clinic" ||
-                              profile.userType == "Dental Consultant")
-                              ? "Dr. ${profile.name}"
-                              : profile.name,softWrap: true,
-                          style: AppTextStyles.caption(
-                            context,
-                            fontWeight: FontWeight.bold,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              (profile.userType == "Dental Clinic" ||
+                                  profile.userType == "Dental Consultant")
+                                  ? "Dr. ${profile.name}"
+                                  : profile.name,softWrap: true,
+                              style: AppTextStyles.caption(
+                                context,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
+                          Container(
+                            decoration: BoxDecoration(color:profile.isActive
+                                ? Colors.green
+                                : Colors.redAccent,borderRadius: BorderRadius.circular(10) ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: Text(
+                                "•${profile.isActive ? 'Active' : 'Inactive'}",
+                                style: TextStyle(
+                                  color: AppColors.white,fontWeight: FontWeight.bold,fontSize: size*0.025),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                      Container(
-                        decoration: BoxDecoration(color:profile.isActive
-                            ? Colors.green
-                            : Colors.redAccent,borderRadius: BorderRadius.circular(10) ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Text(
-                            "•${profile.isActive ? 'Active' : 'Inactive'}",
-                            style: TextStyle(
-                              color: AppColors.white,fontWeight: FontWeight.bold,fontSize: size*0.025),
-                          ),
+                      Text("UserId: ${profile.userId}",
+                          style: AppTextStyles.caption(context)),
+                      Text("UserType: ${profile.userType}",
+                          style: AppTextStyles.caption(context)),
+                      Text("Address: $address",
+                          style: AppTextStyles.caption(context,
+                              color: Colors.grey)),
+                      // if((planActive==true&&profile.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true)||
+                      //     isAdminUser)
+                      // Row(children: [
+                      //   IconButton(
+                      //       icon: Icon(Icons.call,
+                      //           size: size * 0.05, color: AppColors.primary),
+                      //       onPressed: onCall),
+                      //   Flexible(child: Text(profile.mobileNumber,
+                      //       overflow: TextOverflow.ellipsis,
+                      //       style: AppTextStyles.caption(context))),
+                      // ])
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if ((planActive == true &&
+                                profile.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
+                                isAdminUser)
+                            Text(
+                              "Mobile Number: ${profile.mobileNumber}",
+                              style: AppTextStyles.caption(context),
+                            ),
+                          ],
                         ),
-                      )
                     ],
                   ),
-                  Text("UserId: ${profile.userId}",
-                      style: AppTextStyles.caption(context)),
-                  Text("UserType: ${profile.userType}",
-                      style: AppTextStyles.caption(context)),
-                  Text("Address: $address",
-                      style: AppTextStyles.caption(context,
-                          color: Colors.grey)),
-                  if((planActive==true&&profile.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true)||
+                )
+              ]),
+              const SizedBox(height: 8),
+
+              Row(
+                children: [
+
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: ()async {
+                        Api.userInfo.write('selectUId',profile.userId ?? '');
+
+                        print('ids${profile.userId}');
+
+                        await loginController.getProfileByUserId(
+                            profile.userId ?? '', context);
+                        if (PlatformHelper.platform != "Web") {
+                          Get.toNamed('/${profilePage(profile.userType)}');
+                        }
+                      },
+                      child:  Text(
+                        "View Profile",
+                        style: AppTextStyles.caption(color: Colors.white,context,fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+                  if ((planActive == true &&
+                      profile.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
                       isAdminUser)
-                  Row(children: [
-                    IconButton(
-                        icon: Icon(Icons.call,
-                            size: size * 0.05, color: AppColors.primary),
-                        onPressed: onCall),
-                    Flexible(child: Text(profile.mobileNumber,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.caption(context))),
-                  ])
+                    Expanded(
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color:Colors.green),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: onCall,
+                        child: Text(
+                          "Call Now",
+                          style: TextStyle(color: Colors.green),
+                        ),
+                      ),
+                    ),
                 ],
               ),
-            )
-          ]),
+            ],
+          ),
         ),
       ),
     );
@@ -522,8 +592,8 @@ class AdminDashboardWidget extends StatelessWidget {
               Api.userInfo.read('selectedUserType'),
               '',
               '',
-              '','',
-              '','','','',
+              '',[],
+              '','','','','',
                 context,
               );
 

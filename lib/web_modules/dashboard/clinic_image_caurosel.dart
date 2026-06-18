@@ -21,6 +21,7 @@ class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
 
     if (widget.imageUrls.isEmpty) {
       return const SizedBox();
@@ -30,10 +31,10 @@ class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-            height: size * 0.35,
+            height:width>600? size * 0.35:size * 0.2,
             autoPlay: true,
             enlargeCenterPage: true,
-            viewportFraction: 0.33,
+            viewportFraction:width>600? 0.33:0.5,
             autoPlayInterval: const Duration(seconds: 3),
             onPageChanged: (index, reason) {
               setState(() {

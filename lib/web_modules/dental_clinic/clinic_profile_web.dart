@@ -121,18 +121,20 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
       drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       body: GetBuilder<LoginController>(
         builder: (controller) {
-          return Row(
-            children: [
-              if (isLoggedIn && isDesktop) const AdminSideBar(),
-              Expanded(
-                child: controller.isLoading 
-                  ? _buildShimmerProfile(width, isDesktop) 
-                  : RefreshIndicator(
-                      onRefresh: _refresh,
-                      child: _buildProfileContent(width, isDesktop, isMobile, isLoggedIn, controller),
-                    ),
-              ),
-            ],
+          return SafeArea(
+            child: Row(
+              children: [
+                if (isLoggedIn && isDesktop) const AdminSideBar(),
+                Expanded(
+                  child: controller.isLoading 
+                    ? _buildShimmerProfile(width, isDesktop) 
+                    : RefreshIndicator(
+                        onRefresh: _refresh,
+                        child: SafeArea(child: _buildProfileContent(width, isDesktop, isMobile, isLoggedIn, controller)),
+                      ),
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -145,34 +147,44 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
     final isSameUser = isLoggedIn && user != null && user.userId.toString() == (Api.userInfo.read('userId')?.toString() ?? "");
     final planActive = getPlanActive();
 
-    return Stack(
-      children: [
-        if (isLoggedIn && !isDesktop)
-          Positioned(
-            top: 10, left: 10,
-            child: IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () => _scaffoldKeyClinic.currentState?.openDrawer(),
-            ),
-          ),
-        SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(isMobile ? 10 : 30, isLoggedIn && !isDesktop ? 60 : 30, isMobile ? 10 : 30, 30),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1100),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildProfileHeaderCard(width, isMobile, user, planActive, isAdminUser, isSameUser, controller),
-                  const SizedBox(height: 24),
-                  _buildTabsSection(width, isMobile, isAdminUser, user, planActive, isSameUser),
-                ],
+    return GetBuilder<LoginController>(
+        builder: (controller) {
+          return Stack(
+          children: [
+            if (isLoggedIn && !isDesktop)
+              Positioned(
+                top: 10, left: 10,
+                child: IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => _scaffoldKeyClinic.currentState?.openDrawer(),
+                ),
+              ),
+            SafeArea(
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.fromLTRB(isMobile ? 10 : 30, isLoggedIn && !isDesktop ? 60 : 30, isMobile ? 10 : 30, 30),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1100),
+                    child:GetBuilder<LoginController>(
+                        builder: (controller) {
+                          return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildProfileHeaderCard(width, isMobile, user, planActive, isAdminUser, isSameUser, controller),
+                            const SizedBox(height: 24),
+                            _buildTabsSection(width, isMobile, isAdminUser, user, planActive, isSameUser),
+                          ],
+                        );
+                      }
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      }
     );
   }
 
@@ -358,34 +370,43 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: _cardDecoration(),
-      child: loginController.editCertificates.isEmpty 
-        ? Center(child: Text('No data found', style: AppTextStyles.caption(context)))
-        : ListView.builder(
-            itemCount: loginController.editCertificates.length,
-            itemBuilder: (context, index) {
-              final cert = loginController.editCertificates[index];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 15),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Text("${user?.userType} Certificate", style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
-                    ),
-                    if (cert.url?.toLowerCase().endsWith(".pdf") ?? false)
-                      ElevatedButton.icon(
-                        icon: const Icon(Icons.picture_as_pdf, color: Colors.red),
-                        label: const Text("Open PDF"),
-                        onPressed: () => launchUrl(Uri.parse(cert.url!)),
-                      )
-                    else if (cert.url != null)
-                      Image.network(cert.url!, height: 200, fit: BoxFit.contain),
-                    const SizedBox(height: 10),
-                  ],
+      child: SingleChildScrollView(
+        child: Column(
+            children: [
+              if(loginController.editCertificates.isEmpty)
+                   Center(child: Text('No data found', style: AppTextStyles.caption(context))),
+              if(loginController.editCertificates.isNotEmpty)
+              ListView.builder(
+                  itemCount: loginController.editCertificates.length,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final cert = loginController.editCertificates[index];
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 15),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Text("${user?.userType} Certificate", style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
+                          ),
+                          if (cert.url?.toLowerCase().endsWith(".pdf") ?? false)
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                              label: const Text("Open PDF"),
+                              onPressed: () => launchUrl(Uri.parse(cert.url!)),
+                            )
+                          else if (cert.url != null)
+                            Image.network(cert.url!, height: 200, fit: BoxFit.contain),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
+            ],
           ),
+      ),
     );
   }
 
@@ -413,20 +434,43 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
   }
 
   Widget _buildMobileHeaderInfo(double width, dynamic user, LoginController controller) {
-    return Row(
-      children: [
-        _buildLogo(width, controller),
-        const SizedBox(width: 15),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(user?.details["name"] ?? "", style: AppTextStyles.body(context, fontWeight: FontWeight.bold)),
-              Text("${user?.address['city'] ?? ''}, ${user?.address['district'] ?? ''}", style: const TextStyle(color: Colors.grey, fontSize: 12)),
-            ],
-          ),
-        ),
-      ],
+    print('gharea${user?.address['area'] ?? ''}');
+    print("Address => ${user?.address}");
+    print("Area => ${user?.address['area']}");
+    print("City => ${user?.address['city']}");
+    print("District => ${user?.address['district']}");
+    print("State => ${user?.address['state']}");
+    return GetBuilder<LoginController>(
+        builder: (controller) {
+          return Row(
+          children: [
+            _buildLogo(width, controller),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(user?.details["name"] ?? "", style: AppTextStyles.body(context, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 10,),
+                  Text(
+                    user != null && user.address.isNotEmpty
+                        ? "${user.address['addressLine1'] ?? ''}, ${user.address['addressLine2'] ?? ''}"
+                        : "", maxLines: 2,
+                    overflow: TextOverflow.ellipsis,   style: AppTextStyles.caption(context,color: AppColors.grey),
+                  ),
+                  SizedBox(height: 5,),
+                  Text(
+                    user.isNotEmpty && user?.address != null
+                        ? "${user?.address['area'] ?? ''},${user?.address['city'] ?? ''},${user?.address['district'] ?? ''}, ${user?.address['state'] ?? ''}"
+                        : "", maxLines: 2,
+                    overflow: TextOverflow.ellipsis,   style: AppTextStyles.caption(context,color: AppColors.grey),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }
     );
   }
 
@@ -487,7 +531,10 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
           }
         }, context),
         _actionButton(Icons.chat, "WhatsApp", () async {
-          if (planActive || isAdminUser) {
+
+          if ((planActive == true &&
+              user?.details["plan"]?["basePlan"]?["details"]?["location"] == true) ||
+              isAdminUser) {
             await WhatsAppUtils.openWhatsApp(phoneNumber: user?.mobileNumber?.toString() ?? '', message: "Hi Message From ${user?.details?["name"] ?? ''}");
           }
         }, context),
@@ -513,7 +560,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
         borderRadius: BorderRadius.circular(10),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-          decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(10)),
+          decoration: BoxDecoration(border: Border.all(color: AppColors.primary), borderRadius: BorderRadius.circular(10)),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: [

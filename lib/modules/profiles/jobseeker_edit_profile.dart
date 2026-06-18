@@ -906,6 +906,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         dob: loginController.dobController.text??"",
                         mobile: loginController.mobileController.text ?? "",
                         email: loginController.emailController.text ?? "",
+                        addressLine1: loginController.addressLine1Controller.text ?? '',
+                        addressLine2:  loginController.addressLine2Controller.text ?? '',
                         taluk: loginController.selectedState ?? '',
                         district: loginController.selectedDistrict ?? '',
                         city: loginController.selectedTaluka ?? '',

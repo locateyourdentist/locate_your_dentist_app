@@ -981,6 +981,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                                   mobile: loginController.mobileController.text,
                                                   email: loginController.emailController.text,
                                                   confirmPassword: loginController.confirmPasswordController.text,
+                                                  addressLine1: loginController.addressLine1Controller.text ?? '',
+                                                  addressLine2:  loginController.addressLine2Controller.text ?? '',
                                                   taluk: loginController.selectedState ?? '',
                                                   district: loginController.selectedDistrict ?? '',
                                                   city: loginController.selectedTaluka ?? '',

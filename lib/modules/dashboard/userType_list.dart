@@ -135,13 +135,13 @@ class _userTypeListState extends State<userTypeList> {
    loginController.selectedTaluka=null;
    loginController.update();
     if( Api.userInfo.read('userType')=="superAdmin") {
-    await   loginController.getProfileDetails('', '', '', '', '','','','','',  context);
+    await   loginController.getProfileDetails('', '', '', '', [],'','','','','',  context);
     }
     else if( Api.userInfo.read('userType')=="admin") {
-     await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
+     await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '',[],'','','','','', context);
     }
     else {
-      await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
+      await loginController.getProfileDetails(Api.userInfo.read('token')!=null?Api.userInfo.read('sUserType')??"":"",  "", '', '', [],'true','','','','', context);
     }
   }
   @override
@@ -154,13 +154,13 @@ class _userTypeListState extends State<userTypeList> {
       onWillPop: () async {
         Get.toNamed('/${pageUserType(Api.userInfo.read('userType') ?? "")}');
         if( Api.userInfo.read('userType')=="superAdmin") {
-          await   loginController.getProfileDetails('', '', '', '', '','','','','',  context);
+          await   loginController.getProfileDetails('', '', '', '', [],'','','','','',  context);
         }
         else if( Api.userInfo.read('userType')=="admin") {
-          await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
+          await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', [],'','','','','', context);
         }
         else {
-          await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
+          await loginController.getProfileDetails('', '', '', '', [],'true','','','','', context);
         }
         return true;
         },
@@ -176,13 +176,13 @@ class _userTypeListState extends State<userTypeList> {
               onTap: () async{
                 Get.toNamed('/${pageUserType(Api.userInfo.read('userType') ?? "")}');
                 if( Api.userInfo.read('userType')=="superAdmin") {
-                  await   loginController.getProfileDetails('', '', '', '', '','','','','',  context);
+                  await   loginController.getProfileDetails('', '', '', '', [],'','','','','',  context);
                 }
                 else if( Api.userInfo.read('userType')=="admin") {
-                  await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
+                  await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', [],'','','','','', context);
                 }
                 else {
-                  await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','','', context);
+                  await loginController.getProfileDetails('', '', '', '', [],'true','','','','', context);
                 }
                 //return true;
               },
@@ -208,12 +208,6 @@ class _userTypeListState extends State<userTypeList> {
         backgroundColor: AppColors.scaffoldBg,
         body: GetBuilder<LoginController>(
           builder: (controller) {
-            // final filteredProfiles = (userType == null || userType!.isEmpty)
-            //     ? controller.profileList
-            //     : controller.profileList
-            //     .where((p) => p.userType.toLowerCase() == userType!.toLowerCase())
-            //     .toList();
-           // print("Filtered profiles length: ${filteredProfiles.length}");
             return RefreshIndicator(
               onRefresh: _refresh,
               child: SingleChildScrollView(
@@ -265,28 +259,42 @@ class _userTypeListState extends State<userTypeList> {
                                   onSubmitted: (value)async {
                                     String userType=  Api.userInfo.read('sUserType');
                                     print("ssuser$userType");
-                                    //filteredProfiles.map((e) => searchController.text.toString());
-                                    // loginController.getProfileDetails(
-                                    //   userType ?? "",
-                                    //   '',
-                                    //   '',
-                                    //   '','true','','', '', searchController.text.toString(),
-                                    //   context,
-                                    // );
+                                    String distance =
+                                    (loginController.selectedDistance1 ?? 0).toString();
+
+                                    bool useLocation =
+                                        distance.isNotEmpty &&
+                                            distance != "0" &&
+                                            distance != "0.0";
+                                    if (useLocation) {
+                                      await getLocation();
+                                    } else {
+                                      loginController.latitude = null;
+                                      loginController.longitude = null;
+                                    }
+                                    String safeLat =
+                                    useLocation ? (loginController.latitude?.toString() ?? "") : "";
+
+                                    String safeLng =
+                                    useLocation ? (loginController.longitude?.toString() ?? "") : "";
+                                    filteredProfiles.map((e) => searchController.text.toString());
                                     if( Api.userInfo.read('userType')=="superAdmin") {
-                                      await   loginController.getProfileDetails('', '', '', '', '','','',loginController.selectedDistance.toString(),searchController.text.toString(),  context);
+                                      await   loginController.getProfileDetails('',  '',
+                                          '',
+                                          '',[], '','',
+                                          '','',searchController.text.toString(),  context);
                                     }
-                                    if( Api.userInfo.read('userType')=="admin") {
-                                      await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','',loginController.selectedDistance.toString(),searchController.text.toString(), context);
+                                    else if( Api.userInfo.read('userType')=="admin") {
+                                      await   loginController.getProfileDetails('',  Api.userInfo.read('state') ?? "",
+                                          '',
+                                          '',[], '','',
+                                          '','',searchController.text.toString(),  context);
                                     }
-                                   else{
-                                      await  loginController.getProfileDetails(
-                                        userType ?? "",
-                                        '',
-                                        '',
-                                        '','true','','', loginController.selectedDistance.toString(), searchController.text.toString(),
-                                        context,
-                                      );
+                                    else{
+                                      await   loginController.getProfileDetails(userType, "",
+                                          '',
+                                          '',[], '','',
+                                          '','',searchController.text.toString(),  context);
                                     }
                                     print("Search text: $value");
                                   },
@@ -316,6 +324,7 @@ class _userTypeListState extends State<userTypeList> {
                                             print("Selected State: ${loginController.selectedState}");
                                             print("Selected District: ${loginController.selectedDistrict}");
                                             print("Selected Area: ${loginController.selectedTaluka}");
+                                            print('distance${loginController.selectedDistance}');
 
                                             String userType=  Api.userInfo.read('sUserType');
                                             print("ssuser$userType");
@@ -340,18 +349,34 @@ class _userTypeListState extends State<userTypeList> {
                                               print("LAT: ${loginController.latitude}");
                                               print("LNG: ${loginController.longitude}");
                                             }
-                                            String distance = loginController.selectedDistance ?? "";
-                                            String safeLat = (loginController.latitude == null) ? "" : loginController.latitude.toString();
-                                            String safeLng = (loginController.longitude == null) ? "" : loginController.longitude.toString();
+                                            String distance =
+                                            (loginController.selectedDistance1 ?? 0).toString();
+
+                                            bool useLocation =
+                                                distance.isNotEmpty &&
+                                                    distance != "0" &&
+                                                    distance != "0.0";
+                                            if (useLocation) {
+                                              await getLocation();
+                                            } else {
+                                              loginController.latitude = null;
+                                              loginController.longitude = null;
+                                            }
+                                            String safeLat =
+                                            useLocation ? (loginController.latitude?.toString() ?? "") : "";
+
+                                            String safeLng =
+                                            useLocation ? (loginController.longitude?.toString() ?? "") : "";
+                                            filteredProfiles.map((e) => searchController.text.toString());
                                             if( Api.userInfo.read('userType')=="superAdmin") {
                                               await   loginController.getProfileDetails('',  loginController.selectedState,
                                                   loginController.selectedDistrict,
-                                                  loginController.selectedTaluka, '',safeLat,
+                                                  loginController.selectedTaluka,[], '',safeLat,
                                                   safeLng,distance,searchController.text.toString(),  context);
                                             }
                                            else if( Api.userInfo.read('userType')=="admin") {
                                               await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict,
-                                                  loginController.selectedTaluka, '',safeLat,
+                                                  loginController.selectedTaluka,loginController.selectedVillages, '',safeLat,
                                                   safeLng,distance,searchController.text.toString(), context);
                                             }
                                             else{
@@ -359,8 +384,8 @@ class _userTypeListState extends State<userTypeList> {
                                                 userType,
                                                 loginController.selectedState,
                                                 loginController.selectedDistrict,
-                                                loginController.selectedTaluka,'true',safeLat,
-                                                  safeLng,distance, searchController.text.toString(),
+                                                loginController.selectedTaluka,loginController.selectedVillages,'true',safeLat,
+                                                safeLng,distance, searchController.text.toString(),
                                                 context,
                                               );
                                             }
@@ -373,6 +398,7 @@ class _userTypeListState extends State<userTypeList> {
                                               loginController.selectedDistrict = null;
                                               loginController.selectedArea = null;
                                               loginController.selectedUserType=null;
+                                               loginController.selectedTaluka=null;
                                               loginController.selectedState=null;
                                             });
                                           },
@@ -395,7 +421,7 @@ class _userTypeListState extends State<userTypeList> {
                         GetBuilder<LoginController>(
                             builder: (_) {
                               return  Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                 child: Wrap(
                                   spacing: 3,
                                   runSpacing: 4,
@@ -416,6 +442,14 @@ class _userTypeListState extends State<userTypeList> {
                                           loginController.update();
                                         },
                                       ),
+                                    ...loginController.selectedVillages.map(
+                                            (village) => InputChip(
+                                          label: Text(village),
+                                          onDeleted: () {
+                                            loginController.selectedVillages.remove(village);
+                                            loginController.update();
+                                          },
+                                        ),),
                                     if (loginController.selectedTaluka != null)
                                       InputChip(
                                         label: Text(loginController.selectedTaluka!),
@@ -457,14 +491,16 @@ class _userTypeListState extends State<userTypeList> {
                                         loginController.selectedDistrict = null;
                                         loginController.selectedDistance = null;
                                         loginController.selectedTaluka = null;
+                                        loginController.selectedArea = null;
                                         loginController.selectedJobType = null;
                                         loginController.selectedSalary = null;
+                                        loginController.selectedVillages.clear();
                                         loginController.update();
                                         await loginController.getProfileDetails(
                                           "",
                                           "",
-                                          "",
-                                          "",
+                                          "",'',
+                                          [],
                                           "",
                                           "",
                                           "",
@@ -537,6 +573,13 @@ class _userTypeListState extends State<userTypeList> {
                         ),
                       ),
                       SizedBox(height: 10,),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Total Profiles : ${loginController.profileList.length}",
+                          style: AppTextStyles.body(context),
+                        ),
+                      ),
                       if (loginController.profileList.isEmpty)
                         buildShimmerEmptyWidget(size),
                       //  Center(child: Text('No data found', style: AppTextStyles.caption(context))),

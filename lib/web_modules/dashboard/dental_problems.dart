@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../../modules/auth/login_screen/login_controller.dart';
 
 class GumDiseaseCard extends StatelessWidget {
@@ -165,7 +165,7 @@ class GumDiseaseCard extends StatelessWidget {
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,
+                    loginController.selectedTaluka,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -220,6 +220,67 @@ class GumDiseaseCard extends StatelessWidget {
 }
 
 
+
+
+class DentalServiceCard extends StatelessWidget {
+  final String title;
+  final String image;
+  final String url;
+
+  const DentalServiceCard({
+    super.key,
+    required this.title,
+    required this.image,
+    required this.url,
+  });
+
+  Future<void> _launchUrl() async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: _launchUrl,
+      borderRadius: BorderRadius.circular(15),
+      child: Container(
+        width: 150,
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              image,
+              height: 120,
+              width: 90,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class BruxismCard extends StatelessWidget {
   const BruxismCard({super.key});
@@ -383,7 +444,7 @@ class BruxismCard extends StatelessWidget {
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,
+                    loginController.selectedTaluka,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -603,7 +664,7 @@ class SensitivityCard extends StatelessWidget {
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,
+                    loginController.selectedTaluka,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -820,7 +881,7 @@ class WisdomTeethCard extends StatelessWidget {
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,
+                    loginController.selectedTaluka,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -1044,7 +1105,7 @@ class AbscessCard extends StatelessWidget {
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,
+                    loginController.selectedTaluka,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -1189,7 +1250,7 @@ class WhyChooseUsSection extends StatelessWidget {
         Text(
           "WHY CHOOSE US",
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.primary,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -1198,7 +1259,7 @@ class WhyChooseUsSection extends StatelessWidget {
 
         Text(
           "Committed To Excellent Dental Care",
-          style: AppTextStyles.subtitle(context,color: AppColors.white)
+          style: AppTextStyles.subtitle(context,color: AppColors.black)
         ),
 
         SizedBox(height: 20),
@@ -1207,7 +1268,7 @@ class WhyChooseUsSection extends StatelessWidget {
           "Connect with trusted dentists, dental clinics, and specialists. Book appointments, compare services, and receive quality dental care effortlessly.",
           style: TextStyle(
             height: 1.8,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
 
@@ -1789,7 +1850,7 @@ class BrushingTechniqueCard extends StatelessWidget {
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,
+                    loginController.selectedTaluka,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -2281,7 +2342,7 @@ class TreatmentCard extends StatelessWidget {
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,
+                    loginController.selectedTaluka,loginController.selectedVillages,
                     "true",
                     '',
                     '',

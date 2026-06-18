@@ -169,7 +169,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                           hintText: "Search dental clinic",
                           onSubmitted: (value) {
                             print("Search text: $value");
-                            loginController.getProfileDetails('' '', '','',"true", searchController.text.toString(),'','','', value,context);
+                            loginController.getProfileDetails('','', '','',[],"true", '','','', value,context);
                             Get.toNamed('/filterResultPage');
                           },
                         )
@@ -217,7 +217,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                                       title[index],
                                       '',
                                       '',
-                                      '',
+                                      '',[],
                                       'true',
                                       '',
                                       '',

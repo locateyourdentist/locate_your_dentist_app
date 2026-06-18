@@ -16,94 +16,123 @@ class WebinarDashboardGrid extends StatelessWidget {
     required this.webinarList,
     required this.controller,
   });
-
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(color: Color(0xFFF1F5F9), shape: BoxShape.circle),
+              child: const Icon(Icons.web, size: 40, color: Color(0xFF94A3B8)),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              "No Webinars Found",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF334155)),
+            ),
+            // const SizedBox(height: 4),
+            // const Text(
+            //   "Check back soon for freshly updated career options.",
+            //   style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
-    return  Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 1500),
-          padding: const EdgeInsets.all(20),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  GridView.builder(
-                    padding: const EdgeInsets.all(20),
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: webinarList.length,
-                    shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 420,
-                      crossAxisSpacing: 24,
-                      mainAxisSpacing: 24,
-                        childAspectRatio:
-                      MediaQuery.of(context).size.width > 1000
-                          ? 0.70
-                          : 0.65,
-                    ),
-                    itemBuilder: (context, index) {
-                      final webinar = webinarList[index];
-                      return WebinarDashboardCard(
-                        webinar: webinar,
-                        controller: controller,
-                      );
-                    },
-                  ),
-                  Column(
+    return  GetBuilder<JobController>(
+        builder: (jController) {
+          if (webinarList.isEmpty) {
+            return _buildEmptyState();
+          }
+          return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 1500),
+              padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-              
-                      InkWell(
-                        borderRadius: BorderRadius.circular(50),
-                        onTap: () {
-                          Get.toNamed('/webinarListWebPage');
+                      GridView.builder(
+                        padding: const EdgeInsets.all(20),
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: webinarList.length,
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 420,
+                          crossAxisSpacing: 24,
+                          mainAxisSpacing: 24,
+                          childAspectRatio: MediaQuery.of(context).size.width > 1000
+                              ? 0.70 : 0.85,
+                        ),
+                        itemBuilder: (context, index) {
+                          final webinar = webinarList[index];
+                          return WebinarDashboardCard(
+                            webinar: webinar,
+                            controller: controller,
+                          );
                         },
-                        child: Container(
-                          height: 70,
-                          width: 70,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColors.primary,
-                                AppColors.secondary,
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primary.withOpacity(.3),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              )
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.arrow_forward_rounded,
-                            color: Colors.white,
-                            size: 32,
-                          ),
-                        ),
                       ),
-              
-                      const SizedBox(height: 12),
-              
-                      const Text(
-                        "View All Webinars",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xff334155),
-                        ),
+                      if(webinarList.isNotEmpty)
+                      Column(
+                        children: [
+                          InkWell(
+                            borderRadius: BorderRadius.circular(50),
+                            onTap: () {
+                              Get.toNamed('/webinarListWebPage');
+                            },
+                            child: Container(
+                              height: 70,
+                              width: 70,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColors.primary,
+                                    AppColors.secondary,
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primary.withOpacity(.3),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 10),
+                                  )
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.arrow_forward_rounded,
+                                color: Colors.white,
+                                size: 32,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+                          const Text(
+                            "View All Webinars",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xff334155),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      );
+          );
+      }
+    );
   }
 }
 
@@ -162,8 +191,8 @@ class _WebinarDashboardCardState
               "true",
               context,
             );
-
-            Get.toNamed('/viewWebinarListJobseekersPage');
+            Get.toNamed('/webLoginPage');
+            //Get.toNamed('/viewWebinarDetailWebPage');
           },
           child: Column(
             crossAxisAlignment:
@@ -201,7 +230,7 @@ class _WebinarDashboardCardState
               Expanded(
                 child: Padding(
                   padding:
-                  const EdgeInsets.all(10),
+                  const EdgeInsets.all(7),
                   child: Column(
                     crossAxisAlignment:
                     CrossAxisAlignment.start,
@@ -326,18 +355,13 @@ class _WebinarDashboardCardState
                             Colors.white,
                             elevation: 0,
                             shape:
-                            RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius
-                                  .circular(12),
-                            ),
+                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12),),
                           ),
                           onPressed: ()async {
                            await widget.controller.getWebinarById(
                               webinar.webinarId.toString(), "true", context,);
-
-                            Get.toNamed(
-                                '/viewWebinarListJobseekersPage');
+                           Get.toNamed('/webLoginPage');
+                          // Get.toNamed('/viewWebinarDetailWebPage');
                           },
                         ),
                       )

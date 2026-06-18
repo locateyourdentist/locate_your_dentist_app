@@ -233,20 +233,24 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
       );
     }
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: controller.editUploadImage1.length,
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 450,
-        mainAxisSpacing: 20,
-        crossAxisSpacing: 20,
-        mainAxisExtent: 420,
-      ),
-      itemBuilder: (_, index) {
-        final image = controller.editUploadImage1[index];
-        return _buildImageCard(controller, image, index, userType);
-      },
+    return GetBuilder<PlanController>(
+        builder: (controller) {
+          return  GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: controller.editUploadImage1.length,
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 450,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 20,
+            mainAxisExtent: 420,
+          ),
+          itemBuilder: (_, index) {
+            final image = controller.editUploadImage1[index];
+            return _buildImageCard(controller, image, index, userType);
+          },
+        );
+      }
     );
   }
 
@@ -306,7 +310,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                   items: controller.postImagePlanList.map((plan) {
                     return DropdownMenuItem<String>(
                       value: plan.id,
-                      child: Text("${plan.postPlanName} (${plan.duration} days)", 
+                      child: Text("${plan.postPlanName} (${plan.duration} days)",
                         style: AppTextStyles.caption(context),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -336,7 +340,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                             onChanged: (val) => _handleStatusChange(controller, image, index, userType, val),
                           ),
                         ),
-                        Text(image.isActive == true ? "Active" : "Inactive", 
+                        Text(image.isActive == true ? "Active" : "Inactive",
                           style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
                       ],
                     ),

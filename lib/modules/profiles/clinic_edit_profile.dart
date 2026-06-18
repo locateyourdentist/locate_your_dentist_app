@@ -496,7 +496,6 @@ import 'package:geocoding/geocoding.dart';
 
                   GetBuilder<LoginController>(
                     builder: (controller) {
-                      final items = controller.districts.map((v) => v.toString()).toList();
                       return CustomDropdown<String>.search(
                         hintText: "Select District",
                         items: controller.districts.map((d) => d.toString()).toList(),
@@ -539,7 +538,6 @@ import 'package:geocoding/geocoding.dart';
 
                   GetBuilder<LoginController>(
                       builder: (controller) {
-                        final items = controller.talukas.map((v) => v.toString()).toList();
                         return  DefaultTextStyle(
                           style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
                           child: CustomDropdown<String>.search(
@@ -938,8 +936,9 @@ import 'package:geocoding/geocoding.dart';
                               dob:loginController.dobController.text,
                               mobile: loginController.mobileController.text,
                               email:branchId=="0"?Api.userInfo.read('email'): loginController.emailController.text,
-                              // address: loginController.addressController.text,
                               confirmPassword: branchId=="0"?Api.userInfo.read('password'):loginController.confirmPasswordController.text,
+                              addressLine1: loginController.addressLine1Controller.text,
+                              addressLine2:  loginController.addressLine2Controller.text,
                               taluk: loginController.selectedState ?? '',
                               district: loginController.selectedDistrict ?? '',
                               city: loginController.selectedTaluka ?? '',
@@ -1032,7 +1031,7 @@ import 'package:geocoding/geocoding.dart';
     Future<void> pickMedia(String source,BuildContext context) async {
       try {
 
-        if (source == null) return;
+        //if (source == null) return;
         final imageCount =
             loginController.editImages.where((e) => !e.isVideo).length;
         final videoCount =

@@ -3,11 +3,247 @@ import 'package:flutter/rendering.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/platform_helper.dart';
+import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
+import '../modules/auth/login_screen/login_controller.dart';
 import 'color_code.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:get/get.dart';
 
+
+class DoctorCardWidget extends StatelessWidget {
+  final dynamic doctor;
+  final double size;
+  final bool planActive;
+  final bool isAdminUser;
+  final String addOnsPlanStatus;
+
+  const DoctorCardWidget({
+    super.key,
+    required this.doctor,
+    required this.size,
+    required this.planActive,
+    required this.isAdminUser,
+    required this.addOnsPlanStatus,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(.12),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            )
+          ],
+        ),
+        child: Column(
+          children: [
+
+            /// Top Section
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: doctor.logoImages.isNotEmpty
+                      ? Image.network(
+                    doctor.logoImages.first,
+                    width: size * 0.25,
+                    height: size * 0.25,
+                    fit: BoxFit.cover,
+                  )
+                      : Container(
+                    width: size * 0.25,
+                    height: size * 0.25,
+                    color: Colors.grey.shade200,
+                    child: const Icon(
+                      Icons.person,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                      /// Doctor Name
+                      Text(
+                        "Dr. ${doctor.name}",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      /// Clinic Name
+                      Text(
+                        doctor.details["name"] ?? "",
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      /// Address
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                           IconButton(
+                           icon:Icon( Icons.location_on,
+                            color: Colors.red,
+                            size: 18,),
+                            onPressed: (){
+                              if(doctor.location.toString().isNotEmpty&&(planActive==true
+                                  &&doctor?.details["plan"]?["basePlan"]?["details"]?["location"]==true|| isAdminUser)) {
+                                if (PlatformHelper.platform == 'Android' ||
+                                    PlatformHelper.platform == 'iOS') {
+                                  Get.toNamed(
+                                      '/webViewProfilePage', arguments: {
+                                    "url": doctor
+                                        .location
+                                        .toString() ?? "",
+                                    "clinicName": doctor
+                                        .details["name"].toString() ?? ""
+                                  });
+                                }
+                              }
+                            },
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Text(
+                              "${doctor.address['area'] ?? ''}, "
+                                  "${doctor.address['city'] ?? ''}, "
+                                  "${doctor.address['district'] ?? ''}, "
+                                  "${doctor.address['state'] ?? ''}",
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 15),
+
+            /// Buttons
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Api.userInfo.write(
+                        'selectUId',
+                        doctor.userId,
+                      );
+
+                      Get.toNamed('/clinicProfilePage');
+                    },
+                    icon: const Icon(
+                      Icons.person,
+                      color: AppColors.primary,
+                      size: 20,
+                    ),
+                    label: const Text(
+                      "View Profile",
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(
+                        color: AppColors.primary,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                  ),
+                ),
+
+                if ((planActive &&
+                    doctor.details["plan"]?["basePlan"]?["details"]
+                    ?["mobileNumber"] ==
+                        true) ||
+                    isAdminUser) ...[
+                  const SizedBox(width: 10),
+
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        await launchUrl(
+                          Uri.parse("tel:${doctor.mobileNumber}"),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.call,
+                        color: Colors.green,
+                        size: 20,
+                      ),
+                      label: const Text(
+                        "Call Now",
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                          color: Colors.green,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
+              ],
+            ),
+
+            if (addOnsPlanStatus == "true")
+              const Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "* Sponsored",
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class ProfileImageWidget extends StatelessWidget {
   final double size;
@@ -370,6 +606,35 @@ String imgUserType(String userType) {
   }
   return page;
 }
+String imgUserTypeNew(String userType) {
+  String page;
+  switch (userType) {
+    case "Dental Clinic":
+      page = "assets/images/dental_clinic_img.png";
+      break;
+    case "Dental Shop":
+      page = "assets/images/dental-shop_img.png";
+      break;
+    case "Dental Mechanic":
+      page = "assets/images/dental_mechanic_img.png";
+      break;
+    case "Dental Lab":
+      page = "assets/images/dental_lab_img.png";
+      break;
+    case "Dental Consultant":
+      page = "assets/images/prof_img.png";
+      break;
+    case "Dental Consultant":
+      page = "assets/images/prof_img.png";
+      break;
+    case "Dental Consultant":
+      page = "assets/images/prof_img.png";
+      break;
+    default:
+      page = "assets/images/dental_job_img.png";
+  }
+  return page;
+}
 Future<void> launchCallWeb(String phone) async {
   final Uri uri = Uri.parse('tel:$phone');
 
@@ -377,6 +642,20 @@ Future<void> launchCallWeb(String phone) async {
     uri,
     mode: LaunchMode.externalApplication,
   );
+}
+Future<void> getLocation() async {
+  final position = await LocationService.getCurrentLocation();
+  final loginController=Get.put(LoginController());
+
+  if (position != null) {
+    loginController.latitude = position.latitude;
+    loginController.longitude = position.longitude;
+    print('latitude ${loginController.latitude}');
+    print('longitude ${loginController.longitude}');
+
+  } else {
+    Get.snackbar('Location', 'Unable to get location');
+  }
 }
 Future<void> launchCall(String input) async {
   Uri uri;

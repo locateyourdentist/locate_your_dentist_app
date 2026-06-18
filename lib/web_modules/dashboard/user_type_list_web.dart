@@ -30,7 +30,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
   @override
   void initState() {
     super.initState();
-    _refresh();
+   // _refresh();
   }
 
   @override
@@ -42,8 +42,9 @@ class _ModernUserTableState extends State<ModernUserTable> {
 
   Future<void> _refresh() async {
     await loginController.getProfileDetails(
-      Api.userInfo.read('sUserType1'), '', '', '', 'true', '', '', '', '', context,
-    );
+      Api.userInfo.read('sUserType1')??"",  loginController.selectedState,
+      loginController.selectedDistrict,
+      loginController.selectedTaluka,loginController.selectedVillages,Api.userInfo.read('token')==null? 'true':"", '', '', '', '', context,);
     await loginController.fetchStates();
     loginController.selectedState = null;
     loginController.selectedDistrict = null;
@@ -105,10 +106,10 @@ class _ModernUserTableState extends State<ModernUserTable> {
       onWillPop: () async {
         Get.toNamed('/${pageUserTypeWeb(Api.userInfo.read('userType') ?? "")}');
         if (Api.userInfo.read('userType') == "superAdmin") {
-          loginController.getProfileDetails('', '', '', '', '', '', '', '', '', context);
+          loginController.getProfileDetails('', '', '', '', [], '','', '', '', '', context);
         }
         if (Api.userInfo.read('userType') == "admin") {
-          loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '', '', '', '', '', context);
+          loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', [], '', '', '', '', '',context);
         }
         return true;
       },
@@ -218,23 +219,38 @@ class _ModernUserTableState extends State<ModernUserTable> {
         loginController.longitude = position.longitude;
       }
     }
-    String distance = loginController.selectedDistance ?? "";
-    String safeLat = loginController.latitude?.toString() ?? "";
-    String safeLng = loginController.longitude?.toString() ?? "";
+    String distance = loginController.selectedDistance1.toString() ?? "0";
+    if (distance != "0") {
+      await getLocation();
+    } else {
+      loginController.latitude = null;
+      loginController.longitude = null;
+    }
+
+    String safeLat =
+    (distance != "0" && loginController.latitude != null)
+        ? loginController.latitude.toString()
+        : "";
+
+    String safeLng =
+    (distance != "0" && loginController.longitude != null)
+        ? loginController.longitude.toString()
+        : "";
     
     if (Api.userInfo.read('userType') == "superAdmin") {
-      await loginController.getProfileDetails('', loginController.selectedState, loginController.selectedDistrict, loginController.selectedTaluka, '', safeLat, safeLng, distance, searchController.text, context);
+      loginController.getProfileDetails('', '', '', '', [], '','', '', '', searchController.text.toString(), context);
     } else if (Api.userInfo.read('userType') == "admin") {
-      await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict, loginController.selectedTaluka, '', safeLat, safeLng, distance, searchController.text, context);
+      loginController.getProfileDetails('',Api.userInfo.read('state') ?? "",  '', '', [], '','', '', '', searchController.text.toString(), context);
+      // await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict, loginController.selectedTaluka, loginController.selectedArea,'',safeLat, safeLng, distance,  searchController.text, context);
     } else {
-      await loginController.getProfileDetails(userType, loginController.selectedState, loginController.selectedDistrict, loginController.selectedTaluka, 'true', safeLat, safeLng, distance, searchController.text, context);
+      loginController.getProfileDetails(
+          "Dental Clinic", '', '', '',[], 'true','', '', '', searchController.text.toString(), context);
+      //await loginController.getProfileDetails(userType, loginController.selectedState, loginController.selectedDistrict, loginController.selectedTaluka,loginController.selectedArea, 'true',safeLat, safeLng, distance, searchController.text, context);
     }
   }
-
   Widget _buildActiveFilters(bool isMobile) {
     bool hasFilters = loginController.selectedDistance != null || loginController.selectedState != null || loginController.selectedDistrict != null || loginController.selectedTaluka != null || loginController.selectedJobType != null || loginController.selectedSalary != null || loginController.selectedCategories.isNotEmpty;
     if (!hasFilters) return const SizedBox.shrink();
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Wrap(
@@ -243,7 +259,15 @@ class _ModernUserTableState extends State<ModernUserTable> {
           if (loginController.selectedState != null) InputChip(label: Text(loginController.selectedState!), onDeleted: () { loginController.selectedState = null; loginController.update(); }),
           if (loginController.selectedDistrict != null) InputChip(label: Text(loginController.selectedDistrict!), onDeleted: () { loginController.selectedDistrict = null; loginController.update(); }),
           if (loginController.selectedTaluka != null) InputChip(label: Text(loginController.selectedTaluka!), onDeleted: () { loginController.selectedTaluka = null; loginController.update(); }),
-          TextButton(onPressed: () => _clearAllFilters(), child: const Text("Clear All", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
+          ...loginController.selectedVillages.map(
+                (village) => InputChip(
+              label: Text(village),
+              onDeleted: () {
+                loginController.selectedVillages.remove(village);
+                loginController.update();
+              },
+            ),
+          ),          TextButton(onPressed: () => _clearAllFilters(), child: const Text("Clear All", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
         ],
       ),
     );
@@ -251,9 +275,10 @@ class _ModernUserTableState extends State<ModernUserTable> {
 
   void _clearAllFilters() async {
     loginController.selectedCategories.clear();
-    loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedArea = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
+    loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedVillage = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
+    loginController.selectedVillages.clear();
     loginController.update();
-    await loginController.getProfileDetails("", "", "", "", "", "", "", "", "", context);
+    await loginController.getProfileDetails("", "", "", "",[] ,"", "", "", "", "", context);
   }
 
   Widget _buildExportButton(List filteredProfiles) {
@@ -279,6 +304,20 @@ class _ModernUserTableState extends State<ModernUserTable> {
       bool isMobile,
       bool isTablet,
       ) {
+    bool isBasePlanActive(ProfileModel profile) {
+      final isActive =
+      profile.details?["plan"]?["basePlan"]?["isActive"];
+      return isActive == true || isActive == "true";
+    }
+    final firstProfile =
+    profiles.isNotEmpty ? profiles.first : null;
+
+    final planActive = firstProfile != null
+        ? isBasePlanActive(firstProfile)
+        : false;
+    //final planActive = isBasePlanActive(clinic);
+    final userType = Api.userInfo.read('userType')?.toString() ?? "";
+    final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
     return Scrollbar(
       controller: _horizontalScrollController,
       thumbVisibility: true,
@@ -344,6 +383,14 @@ class _ModernUserTableState extends State<ModernUserTable> {
 
   Widget _buildDataRow(ProfileModel user, int index) {
     final isEven = index % 2 == 0;
+    bool isBasePlanActive(ProfileModel profile) {
+      final isActive =
+      profile.details?["plan"]?["basePlan"]?["isActive"];
+      return isActive == true || isActive == "true";
+    }
+    final planActive = isBasePlanActive(user);
+    final userType = Api.userInfo.read('userType')?.toString() ?? "";
+    final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
     return Container(
       color: isEven ? Colors.grey[50] : Colors.white,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -353,6 +400,9 @@ class _ModernUserTableState extends State<ModernUserTable> {
           Expanded(flex: 2, child: Center(child: Text(user.name, style: const TextStyle(fontSize: 12)))),
           Expanded(flex: 2, child: Center(child: Text(user.userId, style: const TextStyle(fontSize: 12)))),
           Expanded(flex: 2, child: Center(child: Text(user.userType, style: const TextStyle(fontSize: 12)))),
+          if ((planActive == true &&
+              user.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
+              isAdminUser)
           Expanded(flex: 2, child: Center(child: Text(user.mobileNumber, style: const TextStyle(fontSize: 12)))),
           Expanded(flex: 1, child: Center(child: IconButton(icon: const Icon(Icons.remove_red_eye, color: Colors.grey, size: 18), onPressed: () async {
             Api.userInfo.write('selectUId', user.userId.toString());
@@ -372,7 +422,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
       context: context, title: "Toggle User Status?", message: "Do you want to change this user's active status?",
       onConfirm: () async {
         await loginController.deactivateUserAdmin(user.userId, !user.isActive, context);
-        await loginController.getProfileDetails('', '', '', '', "", '', '', '', '', context);
+        await loginController.getProfileDetails('', '', '', '', [], '', '', '', '', '',context);
         loginController.update();
       },
     );

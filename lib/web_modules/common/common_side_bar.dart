@@ -321,7 +321,8 @@ class _AdminSideBarState extends State<AdminSideBar> {
                         }
                         if (setting['title'] == "User List") {
                           Api.userInfo.write('sUserType1','');
-                          _showDeleteDialog();
+                          Get.offAllNamed("/userTypeListWeb");
+                          // _showDeleteDialog();
                           return;
                         }
                         if (setting['title'] == "Edit Profile") {

@@ -125,7 +125,7 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                                           hintText: "Search by userType, name, userId, Mobile number",
                                           onSubmitted: (value) async {
                                             await loginController.getProfileDetails(
-                                              '', '', '', 'true', '', '', '', searchController.text, value, context,
+                                              '', '', '', '',[],'true', '', '', '', value, context,
                                             );
                                             WidgetsBinding.instance.addPostFrameCallback((_) {
                                               Get.toNamed('/userTypeListWeb');
@@ -165,7 +165,7 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                                                 } else {
                                                   Api.userInfo.write('sUserType1', title[index]);
                                                   await loginController.getProfileDetails(
-                                                    title[index], '', '', '', 'true', '', '', '', '', context,
+                                                    title[index], '', '', '',[],'true', '', '', '', '', context,
                                                   );
                                                   WidgetsBinding.instance.addPostFrameCallback((_) {
                                                     Get.toNamed('/userTypeListWeb');

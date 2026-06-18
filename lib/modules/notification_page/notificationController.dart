@@ -51,7 +51,7 @@ import 'package:path_provider/path_provider.dart';
       final response = await api.createNotification( userId, userType,isAdmin, title, message, state, district, city, area,notificationImage1);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context, title:"Success",message :"Created Successfully ${data["status"]}", onOkPressed: () {});
+        showSuccessDialog(context, title:"Success",message :"Created Successfully ${data["message"]}", onOkPressed: () {});
         titleController.clear();
         messageController.clear();
         notificationImage.clear();

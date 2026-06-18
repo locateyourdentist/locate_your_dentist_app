@@ -33,7 +33,7 @@ class _WebinarListWebPageState extends State<WebinarListWebPage> {
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-print('dflog$isLoggedIn');
+     print('dflog$isLoggedIn');
     return Scaffold(
       key: _scaffoldKeyWebinarList,
       backgroundColor: AppColors.scaffoldBg,
@@ -110,7 +110,8 @@ print('dflog$isLoggedIn');
                                                       onTap: () async {
                                                         Api.userInfo.write('webinarId', appliersList.webinarId.toString());
                                                         Api.userInfo.write('activeStatus1', appliersList.isActive.toString());
-                                                        Get.toNamed('/viewWebinarDetailWebPage');
+                                                       // Get.toNamed('/viewWebinarDetailWebPage');
+                                                        Get.toNamed('/webLoginPage');
                                                       },
                                                       child: MouseRegion(
                                                         cursor: SystemMouseCursors.click,

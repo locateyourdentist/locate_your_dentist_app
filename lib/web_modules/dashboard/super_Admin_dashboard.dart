@@ -38,7 +38,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     await loginController.getAppLogoImage(context);
     await notificationController.getNotificationListAdmin(context);
     Api.userInfo.read('userType')=="superAdmin"?
-    await loginController.getProfileDetails('', '', '', '', '','','','','', context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", '', '', '','','','', '',context);
+    await loginController.getProfileDetails('', '', '', '', [],'','','','', '',context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", '', '', [],'','','', '','',context);
     await planController.getIncomeDetailsByPlan(context: context);
   }
   @override
@@ -169,18 +169,22 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                     ),
                                                   ],
                                                 )
-                                              : Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Expanded(child: StatCard(title: "Total Users", value: total.toString(), icon: Icons.people, color: Colors.blue)),
-                                                    const SizedBox(width: 15),
-                                                    Expanded(child: StatCard(title: "Active Users", value: active.toString(), icon: Icons.verified_user, color: Colors.green)),
-                                                    const SizedBox(width: 15),
-                                                    Expanded(child: StatCard(title: "Total Revenue", value: "\₹ ${planController.income?.total.toStringAsFixed(2)}", icon: Icons.currency_rupee, color: Colors.orange)),
-                                                    const SizedBox(width: 15),
-                                                    Expanded(child: StatCard(title: "Total Expenses", value: "\₹ ${planController.total.toStringAsFixed(2)}", icon: Icons.money_off, color: Colors.red)),
-                                                  ],
-                                                ),
+                                              : GetBuilder<LoginController>(
+                                                builder: (controller) {
+                                                  return Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Expanded(child: StatCard(title: "Total Users", value: total.toString(), icon: Icons.people, color: Colors.blue)),
+                                                        const SizedBox(width: 15),
+                                                        Expanded(child: StatCard(title: "Active Users", value: active.toString(), icon: Icons.verified_user, color: Colors.green)),
+                                                        const SizedBox(width: 15),
+                                                        Expanded(child: StatCard(title: "Total Revenue", value: "\₹ ${planController.income?.total.toStringAsFixed(2)}", icon: Icons.currency_rupee, color: Colors.orange)),
+                                                        const SizedBox(width: 15),
+                                                        Expanded(child: StatCard(title: "Total Expenses", value: "\₹ ${planController.total.toStringAsFixed(2)}", icon: Icons.money_off, color: Colors.red)),
+                                                      ],
+                                                    );
+                                                }
+                                              ),
                                           ),
                                         ],
                                       ),
@@ -201,10 +205,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                       child: TextField(
                                         onChanged: (value)async {
                                           if( Api.userInfo.read('userType')=="superAdmin") {
-                                            await   loginController.getProfileDetails('', '', '', '', '','','','',searchController.text.toString(),  context);
+                                            await   loginController.getProfileDetails('', '', '', '', [],'','','','',searchController.text.toString(),  context);
                                           }
                                           if( Api.userInfo.read('userType')=="admin") {
-                                            await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', '','','','',searchController.text.toString(), context);
+                                            await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', [],'','','','',searchController.text.toString(), context);
                                           }                                    },
                                         controller:searchController,
                                         decoration:  const InputDecoration(
@@ -502,7 +506,7 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
                     onTap:()async{
                       Api.userInfo.write('selectedUserType1', typeKey);
                       Api.userInfo.write('sUserType1', typeKey);
-                      await loginController.getProfileDetails(typeKey, '', '', '', '', '', '', '', '', context);
+                      await loginController.getProfileDetails(typeKey, '', '', '', [], '', '', '', '', '',context);
                       Get.toNamed('/userTypeListWeb');
                       },
                   child: Stack(

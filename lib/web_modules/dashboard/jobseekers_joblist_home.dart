@@ -78,7 +78,8 @@ class JobSeekersDashboardGrid extends StatelessWidget {
                         InkWell(
                           borderRadius: BorderRadius.circular(50),
                           onTap: () {
-                            Get.toNamed('/jobListJobSeekersWebPage');
+                            Get.toNamed('/webLoginPage');
+                            //Get.toNamed('/jobListJobSeekersWebPage');
                           },
                           child: Container(
                             height: 70,
@@ -239,7 +240,8 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
         onTap: () {
           Api.userInfo.write('selectJobId', job.jobId.toString());
           Api.userInfo.write('activeStatus', job.isActive.toString());
-          Get.toNamed('/viewJobDetailWebPage');
+        //  Get.toNamed('/viewJobDetailWebPage');
+          Get.toNamed('/webLoginPage');
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),

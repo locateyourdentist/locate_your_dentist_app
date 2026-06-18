@@ -130,6 +130,43 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
 
                 _talukaDropdown(),
                 const SizedBox(height: 20),
+                MultiSelectDialogField<String>(
+                  checkColor: AppColors.primary,
+                  items: loginController.villages
+                      .toSet()
+                      .map((e) => MultiSelectItem<String>(
+                    e.toString(),
+                    e.toString(),
+                  ))
+                      .toList(),
+
+                  title:  Center(child: Text("Select Areas",style: AppTextStyles.body(context),)),
+                  buttonText:  Text("Area",style: AppTextStyles.caption(context),),
+                  searchable: true,
+                  dialogHeight: 200,
+                  dialogWidth: 100,
+
+                  initialValue: loginController.selectedVillages,
+
+                  onConfirm: (values) {
+                    loginController.selectedVillages =
+                        values.map((e) => e.toString()).toList();
+
+                    print(loginController.selectedVillage);
+
+                    loginController.update();
+                  },
+
+                  chipDisplay: MultiSelectChipDisplay(
+                    height: 130,
+                    chipWidth: 100,textStyle: AppTextStyles.caption(context),
+                    onTap: (value) {
+                      loginController.selectedVillages.remove(value);
+                      loginController.update();
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
 
                 if ((userType == 'Job Seekers') ||(userType == null))...[
                   _sectionTitle("Job Categories"),
@@ -363,6 +400,44 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
           ),
         );
       },
+    );
+  }
+  Widget _areaDropdown() {
+    return MultiSelectDialogField<String>(
+
+      items: loginController.villages
+          .toSet()
+          .map((e) => MultiSelectItem<String>(
+        e.toString(),
+        e.toString(),
+      ))
+          .toList(),
+
+      title:  Text("Select Areas",style: AppTextStyles.caption(context),),
+      buttonText:  Text("Area",style: AppTextStyles.caption(context),),
+      searchable: true,
+      dialogHeight: 200,
+      dialogWidth: 100,
+
+      initialValue: loginController.selectedVillages,
+
+      onConfirm: (values) {
+        loginController.selectedVillages =
+            values.map((e) => e.toString()).toList();
+
+        print(loginController.selectedVillage);
+
+        loginController.update();
+      },
+
+      chipDisplay: MultiSelectChipDisplay(
+        height: 130,
+        chipWidth: 100,
+        onTap: (value) {
+          loginController.selectedVillages.remove(value);
+          loginController.update();
+        },
+      ),
     );
   }
   Widget _jobCategoriesMultiSelect() {

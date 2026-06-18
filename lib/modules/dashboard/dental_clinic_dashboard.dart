@@ -204,10 +204,10 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                 Expanded(
                                   child:CommonSearchTextField(
                                     controller: searchController,
-                                    hintText: "Search user list by name,mobileNumber...",
+                                    hintText: "Search lab,shop,etc., by name,mobileNumber,email...",
                                     onSubmitted: (value)async {
                                       print("Search text: $value");
-                                      await  loginController.getProfileDetails('' ,'', '', 'true','','','',searchController.text.toString(), value,context);
+                                      await  loginController.getProfileDetails('' ,'', '','', [],'true','','','',value,context);
                                       Get.toNamed('/filterResultPage');
                                     },
                                   )
@@ -233,11 +233,28 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                                   String userType=  Api.userInfo.read('sUserType');
                                                   print("ssuser$userType");
                                                   filteredProfiles.map((e) => searchController.text.toString());
+                                                  String distance = loginController.selectedDistance1.toString() ?? "0";
+                                                  if (distance != "0") {
+                                                    await getLocation();
+                                                  } else {
+                                                    loginController.latitude = null;
+                                                    loginController.longitude = null;
+                                                  }
+
+                                                  String safeLat =
+                                                  (distance != "0" && loginController.latitude != null)
+                                                      ? loginController.latitude.toString()
+                                                      : "";
+
+                                                  String safeLng =
+                                                  (distance != "0" && loginController.longitude != null)
+                                                      ? loginController.longitude.toString()
+                                                      : "";
                                                   await loginController.getProfileDetails(
                                                     userType ?? "",
                                                     loginController.selectedState,
                                                     loginController.selectedDistrict,
-                                                    loginController.selectedTaluka,"true",'','','','',
+                                                    loginController.selectedTaluka,loginController.selectedVillages,"true",safeLat,safeLng, distance,'',
                                                     context,
                                                   );
                                                   Get.back();
@@ -274,118 +291,227 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        Text('What you Want?',style: AppTextStyles.subtitle(context,color: AppColors.black),),
-                        SizedBox(height: size*0.02,),
-                        SizedBox(
-                          height: size * 0.45,
-                          child: AnimationLimiter(
-                            child: ListView.builder(
-                              itemCount: title.length,
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              physics: const BouncingScrollPhysics(),
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              itemBuilder: (context, index) {
-                                return AnimationConfiguration.staggeredList(
-                                  position: index,
-                                  duration: const Duration(milliseconds: 500),
-                                  child: SlideAnimation(
-                                    horizontalOffset: 50,
-                                    child: FadeInAnimation(
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        // Text('What you Want?',style: AppTextStyles.subtitle(context,color: AppColors.black),),
+                        // SizedBox(height: size*0.02,),
+                        // SizedBox(
+                        //   height: size * 0.45,
+                        //   child: AnimationLimiter(
+                        //     child: ListView.builder(
+                        //       itemCount: title.length,
+                        //       scrollDirection: Axis.horizontal,
+                        //       shrinkWrap: true,
+                        //       physics: const BouncingScrollPhysics(),
+                        //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                        //       itemBuilder: (context, index) {
+                        //         return AnimationConfiguration.staggeredList(
+                        //           position: index,
+                        //           duration: const Duration(milliseconds: 500),
+                        //           child: SlideAnimation(
+                        //             horizontalOffset: 50,
+                        //             child: FadeInAnimation(
+                        //               child: GestureDetector(
+                        //                 onTap: () async {
+                        //                   WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        //
+                        //                     if (title[index] == "Job Posts/Webinars") {
+                        //
+                        //                       Get.toNamed('/viewJobWebinarPage');
+                        //
+                        //                     } else {
+                        //
+                        //                       Api.userInfo.write(
+                        //                         'sUserType',
+                        //                         title[index].toString(),
+                        //                       );
+                        //
+                        //                       print('cvv ${title[index]}');
+                        //
+                        //                       await loginController.getProfileDetails(
+                        //                         title[index],
+                        //                         '',
+                        //                         '',
+                        //                         '',
+                        //                         'true',
+                        //                         '',
+                        //                         '',
+                        //                         '',
+                        //                         '',
+                        //                         context,
+                        //                       );
+                        //
+                        //                       if (Get.currentRoute != '/userTypeListPage') {
+                        //                         Get.toNamed('/userTypeListPage');
+                        //                       }
+                        //                     }
+                        //                   });
+                        //                 },
+                        //                 child: Container(
+                        //                   width: 150,
+                        //                   margin: const EdgeInsets.only(right: 12),
+                        //                   decoration: BoxDecoration(
+                        //                     color: Colors.white,
+                        //                     borderRadius: BorderRadius.circular(16),
+                        //                     boxShadow: [
+                        //                       BoxShadow(
+                        //                         color: Colors.black.withOpacity(0.08),
+                        //                         blurRadius: 8,
+                        //                         offset: const Offset(0, 3),
+                        //                       ),
+                        //                     ],
+                        //                   ),
+                        //                   child: Column(
+                        //                     crossAxisAlignment: CrossAxisAlignment.stretch,
+                        //                     children: [
+                        //
+                        //                       ClipRRect(
+                        //                         borderRadius: const BorderRadius.vertical(
+                        //                           top: Radius.circular(16),
+                        //                         ),
+                        //                         child: Image.asset(
+                        //                           imgUserType(title[index]),
+                        //                           height: size * 0.28,
+                        //                           fit: BoxFit.cover,
+                        //                         ),
+                        //                       ),
+                        //
+                        //                       Expanded(
+                        //                         child: Container(
+                        //                           alignment: Alignment.center,
+                        //                           padding: const EdgeInsets.symmetric(
+                        //                             horizontal: 8,
+                        //                            // vertical: 5,
+                        //                           ),
+                        //                           child: Text(
+                        //                             title[index].toString(),
+                        //                             textAlign: TextAlign.center,
+                        //                             maxLines: 2,
+                        //                             overflow: TextOverflow.ellipsis,
+                        //                             style: AppTextStyles.caption(
+                        //                               context,
+                        //                               color: AppColors.black,
+                        //                               fontWeight: FontWeight.bold,
+                        //                             ),
+                        //                           ),
+                        //                         ),
+                        //                       ),
+                        //                     ],
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         );
+                        //       },
+                        //     ),
+                        //   ),
+                        // ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                'What you Want?',
+                                style: AppTextStyles.subtitle(
+                                  context,
+                                  color: AppColors.black,
+                                ),
+                              ),
+                              SizedBox(height: size * 0.02),
 
-                                            if (title[index] == "Job Posts/Webinars") {
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: title.length,
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3, // 3 items per row
+                                  crossAxisSpacing: 15,
+                                  mainAxisSpacing: 15,
+                                  childAspectRatio: 1.2,
+                                ),
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      if (title[index] == "Job Posts/Webinars") {
+                                        Get.toNamed('/viewJobWebinarPage');
+                                      } else {
+                                        Api.userInfo.write(
+                                          'sUserType',
+                                          title[index].toString(),
+                                        );
 
-                                              Get.toNamed('/viewJobWebinarPage');
+                                        await loginController.getProfileDetails(
+                                          title[index],
+                                          '',
+                                          '',
+                                          '',[],
+                                          'true',
+                                          '',
+                                          '',
+                                          '',
+                                          '',
+                                          context,
+                                        );
 
-                                            } else {
+                                        if (Get.currentRoute != '/userTypeListPage') {
+                                          Get.toNamed('/userTypeListPage');
+                                        }
+                                      }
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(18),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.08),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        children: [
 
-                                              Api.userInfo.write(
-                                                'sUserType',
-                                                title[index].toString(),
-                                              );
+                                          /// IMAGE
+                                          Expanded(
+                                            flex: 2,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(12),
+                                              child: Image.asset(
+                                               // imgUserType(title[index]),
+                                                imgUserTypeNew(title[index]),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
 
-                                              print('cvv ${title[index]}');
-
-                                              await loginController.getProfileDetails(
+                                          /// TITLE
+                                          Expanded(
+                                            flex: 1,
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                horizontal: 8,
+                                              ),
+                                              child: Text(
                                                 title[index],
-                                                '',
-                                                '',
-                                                '',
-                                                'true',
-                                                '',
-                                                '',
-                                                '',
-                                                '',
-                                                context,
-                                              );
-
-                                              if (Get.currentRoute != '/userTypeListPage') {
-                                                Get.toNamed('/userTypeListPage');
-                                              }
-                                            }
-                                          });
-                                        },
-                                        child: Container(
-                                          width: 150,
-                                          margin: const EdgeInsets.only(right: 12),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(16),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black.withOpacity(0.08),
-                                                blurRadius: 8,
-                                                offset: const Offset(0, 3),
+                                                textAlign: TextAlign.center,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: AppTextStyles.caption(
+                                                  context,
+                                                  color: AppColors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                            ],
+                                            ),
                                           ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                                            children: [
-
-                                              ClipRRect(
-                                                borderRadius: const BorderRadius.vertical(
-                                                  top: Radius.circular(16),
-                                                ),
-                                                child: Image.asset(
-                                                  imgUserType(title[index]),
-                                                  height: size * 0.28,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-
-                                              Expanded(
-                                                child: Container(
-                                                  alignment: Alignment.center,
-                                                  padding: const EdgeInsets.symmetric(
-                                                    horizontal: 8,
-                                                   // vertical: 5,
-                                                  ),
-                                                  child: Text(
-                                                    title[index].toString(),
-                                                    textAlign: TextAlign.center,
-                                                    maxLines: 2,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: AppTextStyles.caption(
-                                                      context,
-                                                      color: AppColors.black,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ),
                         SizedBox(height: size * 0.03),

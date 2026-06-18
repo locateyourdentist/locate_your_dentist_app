@@ -80,26 +80,20 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
     final width = MediaQuery.of(context).size.width;
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
-
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
       key: _scaffoldKeyWebinar,
       backgroundColor: AppColors.scaffoldBg,
       drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
-      appBar: CommonWebAppBar(
-        height: isMobile ? 60 : 80,
-        title: "LOCATE YOUR DENTIST",
-        onLogout: () {},
-        onNotification: () {},
-      ),
+      appBar: buildAppBar(context),
       body: GetBuilder<JobController>(
         builder: (controller) {
           if (controller.isLoading) return const Center(child: CircularProgressIndicator());
           if (controller.webinar.isEmpty) return Center(child: Text("No data found", style: AppTextStyles.caption(context)));
           final webinar = controller.webinar.first;
-          
           return Row(
             children: [
-              if (isDesktop) const AdminSideBar(),
+              if (isLoggedIn && isDesktop) const AdminSideBar(),
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: _refresh,
@@ -196,7 +190,7 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                                           tabs: [
                                             const Tab(text: 'Webinar Description'),
                                             Tab(
-                                              text: Api.userInfo.read('userType').toString() == 'Job Seekers'
+                                              text: Api.userInfo.read('userType')!=null && Api.userInfo.read('userType').toString() == 'Job Seekers'
                                                   ? 'Clinic Description'
                                                   : "Applicants List",
                                             ),
@@ -242,7 +236,7 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                                       ],
                                     ),
                                   ),
-                                  Api.userInfo.read('userType') != 'Job Seekers'
+                                  Api.userInfo.read('token') !=null &&Api.userInfo.read('userType') != 'Job Seekers'
                                       ? _buildApplicationsTab(
                                           jobController.appliedWebinarList,
                                           width,
@@ -263,7 +257,7 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                                                 ),
                                               ),
                                             )
-                                          : const Center(child: Text("No Description")),
+                                          :  Center(child: Text("No Description",style: AppTextStyles.caption(context),)),
                                 ],
                               ),
                             ),

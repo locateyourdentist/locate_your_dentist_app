@@ -4,7 +4,11 @@ import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
+import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 class FilterSidebar extends StatefulWidget {
   const FilterSidebar({super.key});
@@ -110,15 +114,63 @@ class _FilterSidebarState extends State<FilterSidebar> {
                           loginController.selectedTaluka,
                               (val) {
                             loginController.selectedTaluka = val;
+                            loginController.fetchVillages(val ?? "");
+                            loginController.selectedVillage = null;
                             loginController.update();
                           },
                         ),
+                        const SizedBox(height: 10),
 
+                        // _dropdown(
+                        //   "Area",
+                        //   loginController.villages.map((e) => e.toString()).toList(),
+                        //   loginController.selectedVillage,
+                        //       (val) {
+                        //     loginController.selectedVillage = val;
+                        //     loginController.update();
+                        //   },
+                        // ),
+                        MultiSelectDialogField<String>(
+                        checkColor: AppColors.primary,
+                          items: loginController.villages
+                              .toSet()
+                              .map((e) => MultiSelectItem<String>(
+                            e.toString(),
+                            e.toString(),
+                          ))
+                              .toList(),
+
+                          title:  Center(child: Text("Select Areas",style: AppTextStyles.body(context),)),
+                          buttonText:  Text("Area",style: AppTextStyles.caption(context),),
+                          searchable: true,
+                          dialogHeight: 200,
+                          dialogWidth: 100,
+
+                          initialValue: loginController.selectedVillages,
+
+                          onConfirm: (values) {
+                            loginController.selectedVillages =
+                                values.map((e) => e.toString()).toList();
+
+                            print(loginController.selectedVillage);
+
+                            loginController.update();
+                          },
+
+                          chipDisplay: MultiSelectChipDisplay(
+                            height: 130,
+                            chipWidth: 100,textStyle: AppTextStyles.caption(context),
+                            onTap: (value) {
+                              loginController.selectedVillages.remove(value);
+                              loginController.update();
+                            },
+                          ),
+                        ),
                         const Divider(),
-
-                        if (token == null ||
-                            token.toString().isEmpty ||
-                            Api.userInfo.read('userType') == 'Job Seekers')
+                        if (Api.userInfo.read('userType') == 'Job Seekers')
+                        // if (token == null ||
+                        //     token.toString().isEmpty ||
+                        //     Api.userInfo.read('userType') == 'Job Seekers')
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -206,7 +258,19 @@ class _FilterSidebarState extends State<FilterSidebar> {
       child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
+  Future<void> getLocation() async {
+    final position = await LocationService.getCurrentLocation();
 
+    if (position != null) {
+      loginController.latitude = position.latitude;
+      loginController.longitude = position.longitude;
+      print('latitude ${loginController.latitude}');
+      print('longitude ${loginController.longitude}');
+
+    } else {
+      Get.snackbar('Location', 'Unable to get location');
+    }
+  }
   Widget _checkboxList(
       List<String> options,
       String? selected,
@@ -247,7 +311,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 }
                 loginController.update();
               },
-              title: Text(name),
+              title: Text(name,style: AppTextStyles.caption(context),),
             );
           }).toList(),
         );
@@ -269,18 +333,18 @@ class _FilterSidebarState extends State<FilterSidebar> {
         isExpanded: true,
         value: (selectedValue != null && uniqueList.contains(selectedValue))
             ? selectedValue
-            : null, // 👈 THIS MAKES RESET WORK
+            : null,
 
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           border: OutlineInputBorder(),
         ),
-        hint: Text(hint),
+        hint: Text(hint,style: AppTextStyles.caption(context),),
 
         items: uniqueList.map((e) {
           return DropdownMenuItem<String>(
             value: e,
-            child: Text(e),
+            child: Text(e,style: AppTextStyles.caption(context),),
           );
         }).toList(),
 
@@ -301,6 +365,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 backgroundColor: AppColors.primary,
               ),
               onPressed: () async {
+
                 await jobController.getJobListJobSeekers(
                   search: "",
                   state: loginController.selectedState,
@@ -312,22 +377,38 @@ class _FilterSidebarState extends State<FilterSidebar> {
                   context: context,
                 );
                 String userType=  Api.userInfo.read('sUserType')??"";
+                String distance = loginController.selectedDistance1.toString() ?? "0";
+                if (distance != "0") {
+                  await getLocation();
+                } else {
+                  loginController.latitude = null;
+                  loginController.longitude = null;
+                }
 
+                String safeLat =
+                (distance != "0" && loginController.latitude != null)
+                    ? loginController.latitude.toString()
+                    : "";
+
+                String safeLng =
+                (distance != "0" && loginController.longitude != null)
+                    ? loginController.longitude.toString()
+                    : "";
                 if( Api.userInfo.read('userType')=="superAdmin") {
                   await   loginController.getProfileDetails('',  loginController.selectedState,
                       loginController.selectedDistrict,
-                      loginController.selectedTaluka, '',loginController.latitude.toString(),loginController.longitude.toString(),loginController.selectedDistance.toString(),searchController.text.toString(),  context);
+                      loginController.selectedTaluka, loginController.selectedVillages,'',safeLat,safeLng, distance,searchController.text.toString(),  context);
                 }
                 else if( Api.userInfo.read('userType')=="admin") {
                   await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict,
-                      loginController.selectedTaluka, '',loginController.latitude.toString(),loginController.longitude.toString(),loginController.selectedDistance.toString(),searchController.text.toString(), context);
+                      loginController.selectedTaluka,  loginController.selectedVillages,'',safeLat,safeLng, distance,searchController.text.toString(), context);
                 }
                 else{
-                  await  loginController.getProfileDetails("",
-                   // userType,
+                  await  loginController.getProfileDetails(
+                    userType,
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,'true',loginController.latitude.toString(),loginController.longitude.toString(), loginController.selectedDistance.toString(), searchController.text.toString(),
+                    loginController.selectedTaluka,loginController.selectedVillages,'true',safeLat,safeLng, distance, searchController.text.toString(),
                     context,
                   );
                 }
@@ -359,7 +440,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 loginController.selectedDistance1 = 0.0;
                 loginController.latitude = null;
                 loginController.longitude = null;
-
+                  loginController.selectedVillages.clear();
                 loginController.update();
               },
               child: Text(

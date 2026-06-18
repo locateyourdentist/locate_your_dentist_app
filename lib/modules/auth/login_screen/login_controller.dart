@@ -174,6 +174,8 @@ class LoginController extends GetxController {
   final TextEditingController servicesOfferedController= TextEditingController();
   final TextEditingController locationController= TextEditingController();
   final TextEditingController websiteController= TextEditingController();
+  final TextEditingController addressLine1Controller= TextEditingController();
+  final TextEditingController addressLine2Controller= TextEditingController();
   final TextEditingController jobTitleController= TextEditingController();
   final TextEditingController jobDescController= TextEditingController();
   final TextEditingController qualificationJobController= TextEditingController();
@@ -379,11 +381,107 @@ class LoginController extends GetxController {
   String? selectedDistrict;
   String? selectedTaluka;
   String? selectedVillage;
+  List<String> selectedVillages = [];
   void setAppLogo(File file) {
     appLogoFile = file;
     update();
   }
 
+  // Future<Map<String, double>?> getLatLng({
+  //   required String state,
+  //   required String district,
+  //   required String taluka,
+  //   required String area,
+  //   required String pincode,
+  // }) async {
+  //   List<String> searchQueries = [
+  //     "$area, $taluka, $district, $state, India",
+  //     "$taluka, $district, $state, India",
+  //     "$district, $state, India",
+  //     "$pincode, India",
+  //   ];
+  //
+  //   for (String address in searchQueries) {
+  //     final url =
+  //         "https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(address)}&format=json&limit=1";
+  //
+  //     print("Trying: $address");
+  //
+  //     final response = await http.get(
+  //       Uri.parse(url),
+  //       headers: {"User-Agent": "FlutterApp"},
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //
+  //       if (data is List && data.isNotEmpty) {
+  //         return {
+  //           "latitude": double.parse(data[0]["lat"]),
+  //           "longitude": double.parse(data[0]["lon"]),
+  //         };
+  //       }
+  //      latitude=double.parse(data[0]["lat"]);
+  //       longitude=double.parse(data[0]["lon"]);
+  //     }
+  //   }
+  //
+  //   return null;
+  // }
+  Future<Map<String, double>?> getLatLng({
+    required String state,
+    required String district,
+    required String taluka,
+    required String area,
+    required String pincode,
+  }) async {
+    try {
+      final List<String> addresses = [
+        "$area, $taluka, $district, $state, India",
+        "$taluka, $district, $state, India",
+        "$district, $state, India",
+        "$pincode, India",
+      ];
+
+      for (String address in addresses) {
+        final url =
+            "https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(address)}&format=json&limit=1";
+
+        print("Trying Address: $address");
+
+        final response = await http.get(
+          Uri.parse(url),
+          headers: {
+            "User-Agent": "LYD-App",
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+
+          if (data is List && data.isNotEmpty) {
+            final lat = double.parse(data[0]["lat"].toString());
+            final lon = double.parse(data[0]["lon"].toString());
+
+            print("Found Location:");
+            print("Latitude: $lat");
+            print("Longitude: $lon");
+
+            return {
+              "latitude": lat,
+              "longitude": lon,
+            };
+          }
+        }
+      }
+
+      print("No location found");
+      return null;
+    } catch (e) {
+      print("Geocoding Error: $e");
+      return null;
+    }
+  }
   Future<void> fetchStates() async {
     try {
       const url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}${AppConstants.stateUrl}';
@@ -679,7 +777,7 @@ class LoginController extends GetxController {
   Future<void> getProfileDetails(String? userType,
       String? state,
       String? district,
-      String? city,String? isActive,String?latitude,String? longitude,String distance,String? searchText, dynamic context) async {
+      String? city,List<String>? area,String? isActive,String?latitude,String? longitude,String distance,String? searchText, dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
@@ -688,7 +786,7 @@ class LoginController extends GetxController {
     isLoading=true;
     try {
       _profileList=[];
-      final response = await api.getUserDetails(userType: userType,state:state,district:district,city:city,latitude:latitude, longitude:longitude, distance:distance,searchText:searchText,isActive:isActive,);
+      final response = await api.getUserDetails(userType: userType,state:state,district:district,city:city,area:area,latitude:latitude, longitude:longitude, distance:distance,searchText:searchText,isActive:isActive,);
       var data = jsonDecode(response.body);
       if ( data["status"] == "Success") {
         List<dynamic> users = data["data"];
@@ -793,7 +891,8 @@ class LoginController extends GetxController {
         typeNameController.text = user.details["name"] ?? "";
         selectedState = user.address["state"] ?? "";
         print('state $selectedDistrict');
-
+        addressLine1Controller.text = user.address["addressLine1"] ?? "";
+        addressLine2Controller.text = user.address["addressLine2"] ?? "";
         selectedDistrict = user.address["district"] ?? "";
         print('district $selectedDistrict');
         selectedTaluka = user.address["city"] ?? "";
@@ -945,6 +1044,8 @@ class LoginController extends GetxController {
     required String mobile,
     required String email,
     String? confirmPassword,
+    required String addressLine1,
+    required String addressLine2,
     required String taluk,
     required String district,
     required String city,
@@ -1011,6 +1112,8 @@ class LoginController extends GetxController {
         mobile,
         email,
         confirmPassword,
+          addressLine1,
+          addressLine2,
         taluk,
         district,
         city,

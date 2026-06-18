@@ -108,219 +108,229 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
         onLogout: () {},
         onNotification: () {},
       ),
-      body: Row(
-        children: [
-          if (isDesktop && isLoggedIn) const AdminSideBar(),
+      body: GetBuilder<LoginController>(
+          builder: (controller) {
+            return Row(
+            children: [
+              if (isDesktop && isLoggedIn) const AdminSideBar(),
 
-          Expanded(
-            child: Container(
-              color: AppColors.scaffoldBg,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1200),
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(vertical: isMobile ? 15 : 30, horizontal: isMobile ? 10 : 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (!isDesktop)
-                          IconButton(
-                            icon: const Icon(Icons.menu,color: AppColors.black,),
-                            onPressed: () => _scaffoldKeyProfile.currentState?.openDrawer(),
-                          ),
-
-                        _headerHero(user, width, context),
-
-                         const SizedBox(height: 50),
-
-                        if (isMobile) ...[
-                           _card(
+              Expanded(
+                child:GetBuilder<LoginController>(
+                    builder: (controller) {
+                      return Container(
+                      color: AppColors.scaffoldBg,
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1200),
+                          child: SingleChildScrollView(
+                            padding: EdgeInsets.symmetric(vertical: isMobile ? 15 : 30, horizontal: isMobile ? 10 : 20),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _sectionTitle("About", width, context),
-                                Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child:  IgnorePointer(
-                                      child: QuillEditor(
-                                        controller: _controller,
-                                        scrollController: _quillScrollController,
-                                        focusNode: _focusNode,
-                                        config: const QuillEditorConfig(
-                                          showCursor: false,
-                                          expands: false,
+                                if (!isDesktop)
+                                  IconButton(
+                                    icon: const Icon(Icons.menu,color: AppColors.black,),
+                                    onPressed: () => _scaffoldKeyProfile.currentState?.openDrawer(),
+                                  ),
+
+                                _headerHero(user, width, context),
+
+                                 const SizedBox(height: 50),
+
+                                if (isMobile) ...[
+                                   _card(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _sectionTitle("About", width, context),
+                                        Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child:  IgnorePointer(
+                                              child: QuillEditor(
+                                                controller: _controller,
+                                                scrollController: _quillScrollController,
+                                                focusNode: _focusNode,
+                                                config: const QuillEditorConfig(
+                                                  showCursor: false,
+                                                  expands: false,
+                                                ),
+                                              ),
+                                            )
+                                        ),
+                                        if(Api.userInfo.read('userType')=='Job Seekers')
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              _sectionTitle("Resume", width, context),
+                                              const SizedBox(height: 10),
+                                              _resumeTile(user, width, context),
+                                            ],
+                                          )
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  _card(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _sectionTitle("Contact Info", width, context),
+                                        const SizedBox(height: 10),
+                                        _contactTile(Icons.email, "Email", user?.email ?? "", width, context),
+                                        _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
+                                        _contactTile(Icons.cake, "DOB", user?.dob ?? "", width, context),
+                                        _contactTile(Icons.location_on, "Location",
+                                            "${user?.address['area'] ?? ''},${user?.address['city'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['state'] ?? ''}", width, context),
+                                      ],
+                                    ),
+                                  ),
+                                ] else
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      flex: 2,
+                                      child: _card(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            _sectionTitle("About", width, context),
+                                            Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child:  IgnorePointer(
+                                                  child: QuillEditor(
+                                                    controller: _controller,
+                                                    scrollController: _scrollController,
+                                                    focusNode: FocusNode(),
+                                                    config: const QuillEditorConfig(
+                                                      showCursor: false,
+                                                      expands: false,
+                                                    ),
+                                                  ),
+                                                )
+                                            ),
+
+                                            const SizedBox(height: 10),
+                                            if(Api.userInfo.read('userType')=='Job Seekers')
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                              _sectionTitle("Resume", width, context),
+                                            const SizedBox(height: 10),
+                                            _resumeTile(user, width, context),
+                          ])
+                                          ],
                                         ),
                                       ),
-                                    )
+                                    ),
+                                    const SizedBox(width: 20),
+                                    Expanded(
+                                      flex: 1,
+                                      child: _card(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            _sectionTitle("Contact Info", width, context),
+                                            const SizedBox(height: 10),
+                                            _contactTile(Icons.email, "Email", user?.email ?? "", width, context),
+                                            _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
+                                            _contactTile(Icons.cake, "DOB", user?.dob ?? "", width, context),
+                                            _contactTile(Icons.location_on, "Location",
+                                                loginController.userData.isNotEmpty && user?.address != null
+                                                    ? "${user?.address['area'] ?? ''},${user?.address['city'] ?? ''},${user?.address['district'] ?? ''}, ${user?.address['state'] ?? ''}"
+                                                    : "", width, context),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                if(Api.userInfo.read('userType')=='Job Seekers')
-                                  Column(
+
+                                const SizedBox(height: 20),
+
+                                if (isMobile) ...[
+                                  if (ug.isNotEmpty)
+                                    _card(
+                                      child: _infoPanel(
+                                        icon: Icons.school,
+                                        title: "UG Degree",
+                                        desc: "${ug['degree']} - ${ug['name']}\n${ug['percentage']}%",
+                                        size: width, context: context
+                                      ),
+                                    ),
+                                  const SizedBox(height: 20),
+                                  if (pg.isNotEmpty)
+                                    _card(
+                                      child: _infoPanel(
+                                        icon: Icons.school,
+                                        title: "PG Degree",
+                                        desc: "${pg['degree']} - ${pg['name']}\n${pg['percentage']}",
+                                        size: width, context: context
+                                      ),
+                                    ),
+                                ] else
+                                Row(
+                                  children: [
+                                    if (ug.isNotEmpty)
+                                      Expanded(
+                                        child: _card(
+                                          child: _infoPanel(
+                                            icon: Icons.school,
+                                            title: "UG Degree",
+                                            desc: "${ug['degree']} - ${ug['name']}\n${ug['percentage']}%",
+                                            size: width, context: context
+                                          ),
+                                        ),
+                                      ),
+                                    const SizedBox(width: 20),
+                                    if (pg.isNotEmpty)
+                                      Expanded(
+                                        child: _card(
+                                          child: _infoPanel(
+                                            icon: Icons.school,
+                                            title: "PG Degree",
+                                            desc: "${pg['degree']} - ${pg['name']}\n${pg['percentage']}",
+                                            size: width, context: context
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 20),
+                              if(experiences.isNotEmpty)
+                                _card(
+                                  child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      _sectionTitle("Resume", width, context),
+                                      _sectionTitle("Experience", width, context),
                                       const SizedBox(height: 10),
-                                      _resumeTile(user, width, context),
+                                      if (experiences.isNotEmpty)
+                                        ...experiences.map((exp) => _infoPanel(
+                                          icon: Icons.work_outline,
+                                          title: "Company Name: ${exp['companyName'] ?? ""}",
+                                          desc: "Experience(year): ${exp['experience']}\n\nJob Role:${exp['jobDescription']}",
+                                          size: width, context: context
+                                        ))
+                                      else
+                                        const Text("No experience available"),
                                     ],
-                                  )
+                                  ),
+                                ),
+
                               ],
                             ),
                           ),
-                          const SizedBox(height: 20),
-                          _card(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _sectionTitle("Contact Info", width, context),
-                                const SizedBox(height: 10),
-                                _contactTile(Icons.email, "Email", user?.email ?? "", width, context),
-                                _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
-                                _contactTile(Icons.cake, "DOB", user?.dob ?? "", width, context),
-                                _contactTile(Icons.location_on, "Location",
-                                    "${user?.address['city'] ?? ''}, ${user?.address['state'] ?? ''}", width, context),
-                              ],
-                            ),
-                          ),
-                        ] else
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              flex: 2,
-                              child: _card(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _sectionTitle("About", width, context),
-                                    Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child:  IgnorePointer(
-                                          child: QuillEditor(
-                                            controller: _controller,
-                                            scrollController: _scrollController,
-                                            focusNode: FocusNode(),
-                                            config: const QuillEditorConfig(
-                                              showCursor: false,
-                                              expands: false,
-                                            ),
-                                          ),
-                                        )
-                                    ),
-
-                                    const SizedBox(height: 10),
-                                    if(Api.userInfo.read('userType')=='Job Seekers')
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                      _sectionTitle("Resume", width, context),
-                                    const SizedBox(height: 10),
-                                    _resumeTile(user, width, context),
-                  ])
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            Expanded(
-                              flex: 1,
-                              child: _card(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _sectionTitle("Contact Info", width, context),
-                                    const SizedBox(height: 10),
-                                    _contactTile(Icons.email, "Email", user?.email ?? "", width, context),
-                                    _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
-                                    _contactTile(Icons.cake, "DOB", user?.dob ?? "", width, context),
-                                    _contactTile(Icons.location_on, "Location",
-                                        "${user?.address['city'] ?? ''}, ${user?.address['state'] ?? ''}", width, context),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
                         ),
-
-                        const SizedBox(height: 20),
-
-                        if (isMobile) ...[
-                          if (ug.isNotEmpty)
-                            _card(
-                              child: _infoPanel(
-                                icon: Icons.school,
-                                title: "UG Degree",
-                                desc: "${ug['degree']} - ${ug['name']}\n${ug['percentage']}%",
-                                size: width, context: context
-                              ),
-                            ),
-                          const SizedBox(height: 20),
-                          if (pg.isNotEmpty)
-                            _card(
-                              child: _infoPanel(
-                                icon: Icons.school,
-                                title: "PG Degree",
-                                desc: "${pg['degree']} - ${pg['name']}\n${pg['percentage']}",
-                                size: width, context: context
-                              ),
-                            ),
-                        ] else
-                        Row(
-                          children: [
-                            if (ug.isNotEmpty)
-                              Expanded(
-                                child: _card(
-                                  child: _infoPanel(
-                                    icon: Icons.school,
-                                    title: "UG Degree",
-                                    desc: "${ug['degree']} - ${ug['name']}\n${ug['percentage']}%",
-                                    size: width, context: context
-                                  ),
-                                ),
-                              ),
-                            const SizedBox(width: 20),
-                            if (pg.isNotEmpty)
-                              Expanded(
-                                child: _card(
-                                  child: _infoPanel(
-                                    icon: Icons.school,
-                                    title: "PG Degree",
-                                    desc: "${pg['degree']} - ${pg['name']}\n${pg['percentage']}",
-                                    size: width, context: context
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 20),
-                      if(experiences.isNotEmpty)
-                        _card(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _sectionTitle("Experience", width, context),
-                              const SizedBox(height: 10),
-                              if (experiences.isNotEmpty)
-                                ...experiences.map((exp) => _infoPanel(
-                                  icon: Icons.work_outline,
-                                  title: "Company Name: ${exp['companyName'] ?? ""}",
-                                  desc: "Experience(year): ${exp['experience']}\n\nJob Role:${exp['jobDescription']}",
-                                  size: width, context: context
-                                ))
-                              else
-                                const Text("No experience available"),
-                            ],
-                          ),
-                        ),
-
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }
                 ),
-              ),
-            ),
-          )
-        ],
+              )
+            ],
+          );
+        }
       ),
     );
   }

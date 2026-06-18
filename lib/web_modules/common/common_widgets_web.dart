@@ -14,6 +14,7 @@ import '../../common_widgets/color_code.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common_widgets/common_widget_all.dart';
+import '../../modules/auth/login_screen/service_locations.dart';
 
 
 PreferredSizeWidget buildAppBar(dynamic context) {
@@ -114,12 +115,27 @@ class _CommonFooterState extends State<CommonFooter> {
                 children: [
                   _buildLogoSection(context),
                   const SizedBox(height: 20),
+                  VerticalDivider(
+                    color: Colors.white,
+                    thickness: 1,
+                    width: 20,
+                  ),
 
                   _buildCompanySection(context),
                   const SizedBox(height: 20),
+                  VerticalDivider(
+                    color: Colors.white,
+                    thickness: 1,
+                    width: 20,
+                  ),
 
                   _buildContactSection(context),
                   const SizedBox(height: 20),
+                  VerticalDivider(
+                    color: Colors.white,
+                    thickness: 1,
+                    width: 20,
+                  ),
 
                   _buildLegalSection(context),
                 ],
@@ -129,13 +145,25 @@ class _CommonFooterState extends State<CommonFooter> {
                 children: [
                   Expanded(flex: 2, child: _buildLogoSection(context)),
                   const SizedBox(width: 20),
-
+                  VerticalDivider(
+                    color: Colors.white,
+                    thickness: 1,
+                    width: 20,
+                  ),
                   Expanded(flex: 2, child: _buildContactSection(context)),
                   const SizedBox(width: 20),
-
+                  VerticalDivider(
+                    color: Colors.white,
+                    thickness: 1,
+                    width: 20,
+                  ),
                   Expanded(flex: 1, child: _buildLegalSection(context)),
                   const SizedBox(width: 20),
-
+                  VerticalDivider(
+                    color: Colors.white,
+                    thickness: 1,
+                    width: 20,
+                  ),
                   Expanded(flex: 1, child: _buildCompanySection(context)),
                   // const SizedBox(width: 20),
 
@@ -258,8 +286,34 @@ class _CommonFooterState extends State<CommonFooter> {
           ),
         ),
 
-        const SizedBox(height: 15),
+      ],
+    );
+  }
 
+  Widget _buildCompanySection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _footerTitle(context, "Company"),
+        const SizedBox(height: 10),
+        _footerLink(context, "Home", () {
+          Get.toNamed('/landingPage',);
+        }),
+        _footerLink(context, "About Us", () {
+          Get.toNamed('/aboutUsWebPage',);
+        }),
+        _footerLink(context, "Contact Us", () {
+          Get.toNamed('/contactWebPage');
+        }),
+        const SizedBox(height: 15),
+        Text(
+          "Follow Us On",
+          style: AppTextStyles.caption(
+            context,
+            color: AppColors.white.withOpacity(0.9),
+          ),
+        ),
+        const SizedBox(height: 10),
         Wrap(
           spacing: 10,
           children: [
@@ -273,22 +327,6 @@ class _CommonFooterState extends State<CommonFooter> {
                     () => launchWebsite("https://linkedin.com")),
           ],
         ),
-      ],
-    );
-  }
-
-  Widget _buildCompanySection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _footerTitle(context, "Company"),
-        const SizedBox(height: 10),
-        _footerLink(context, "About Us", () {
-          Get.toNamed('/aboutUsWebPage',);
-        }),
-        _footerLink(context, "Contact Us", () {
-          Get.toNamed('/contactWebPage');
-        }),
       ],
     );
   }
@@ -524,7 +562,7 @@ class _CommonHeaderState extends State<CommonHeader> {
       color: Colors.white,
       child: Container(
         height: 85,
-        padding: const EdgeInsets.symmetric(horizontal: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Row(
           children: [
 
@@ -619,7 +657,7 @@ class _CommonHeaderState extends State<CommonHeader> {
 
                         Text(
                           planController.emailController.text,
-                          style: const TextStyle(fontSize: 12),
+                          style: AppTextStyles.caption(context),
                         ),
                       ],
                     ),
@@ -648,7 +686,7 @@ class _CommonHeaderState extends State<CommonHeader> {
 
                         Text(
                           planController.phoneController.text,
-                          style: const TextStyle(fontSize: 12),
+                          style: AppTextStyles.caption(context),
                         ),
                       ],
                     ),
@@ -773,16 +811,18 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
 
     return GetBuilder<LoginController>(
       builder: (_) {
-        return Container(
-          height: safeHeight,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.primary,AppColors.secondary],
+        return SafeArea(
+          child: Container(
+            height: safeHeight,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.primary,AppColors.secondary],
+              ),
             ),
+            child: isMobile
+                ? _mobileLayout()
+                : _desktopLayout(isTablet),
           ),
-          child: isMobile
-              ? _mobileLayout()
-              : _desktopLayout(isTablet),
         );
       },
     );
@@ -913,7 +953,19 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
       ),
     );
   }
+  Future<void> getLocation() async {
+    final position = await LocationService.getCurrentLocation();
 
+    if (position != null) {
+      loginController.latitude = position.latitude;
+      loginController.longitude = position.longitude;
+      print('latitude ${loginController.latitude}');
+      print('longitude ${loginController.longitude}');
+
+    } else {
+      Get.snackbar('Location', 'Unable to get location');
+    }
+  }
   Widget _notificationModern() {
     return GetBuilder<NotificationController>(
       builder: (_) {
@@ -930,11 +982,8 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
               child: IconButton(
                 icon: const Icon(Icons.notifications, color: Colors.white),
                 onPressed: () async {
-                  await notificationController
-                      .getNotificationListAdmin(context);
-                  await notificationController
-                      .updateNotificationListAdmin(context);
-
+                  await notificationController.getNotificationListAdmin(context);
+                  await notificationController.updateNotificationListAdmin(context);
                   Get.toNamed('/viewNotificationWebPage');
                 },
               ),

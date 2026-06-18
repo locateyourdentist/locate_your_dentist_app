@@ -332,7 +332,7 @@ class Media {
                             builder: (controller) {
                               return Switch(
                             value: user?.isActive==true,
-                                activeColor: user?.isActive==true ? AppColors.primary : Colors.red,
+                                activeColor: user?.isActive==true ? Colors.green : Colors.red,
                                 activeTrackColor: AppColors.primary.withOpacity(0.5),
                             inactiveThumbColor: Colors.red,
                               inactiveTrackColor: Colors.grey.shade400,
@@ -382,7 +382,15 @@ class Media {
                                   }
                               }
                             }, icon: Icon(Icons.place,color: AppColors.primary,size: size*0.05,)),
-                
+                              Expanded(
+                                child: Text(
+                                  loginController.userData.isNotEmpty && user?.address != null
+                                      ? "${user?.address['addressLine1'] ?? ''}, ${user?.address['addressLine2'] ?? ''},"
+                                      : "", maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,  style: const TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                              SizedBox(height: size*0.01,),
                               Expanded(
                                 child: Text(
                                   loginController.userData.isNotEmpty && user?.address != null
@@ -406,74 +414,6 @@ class Media {
                             ),
                           ),
                           SizedBox(height: size*0.02,),
-                
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //   children: [
-                          //     AnimatedIconButton(
-                          //       iconPath: 'assets/images/watsapp.png',
-                          //       text: 'WhatsApp',
-                          //       onTap: () async {
-                          //       final userData = loginController.userData.isNotEmpty
-                          //       ? loginController.userData.first : null;
-                          //
-                          //       if (userData == null) return;
-                          //
-                          //       final bool isMobileAllowed =
-                          //       userData.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true;
-                          //
-                          //       final bool isAdminUser =
-                          //       userType == 'admin' || userType == 'superAdmin';
-                          //
-                          //       final bool isMobilePlatform =
-                          //       PlatformHelper.platform == 'Android' ||
-                          //       PlatformHelper.platform == 'iOS';
-                          //
-                          //       // Exit early if conditions fail
-                          //       if (!isMobilePlatform) return;
-                          //       if (!planActive) return;
-                          //       if (!isMobileAllowed && !isAdminUser) return;
-                          //
-                          //       WhatsAppUtils.openWhatsApp(
-                          //       phoneNumber: userData.mobileNumber?.toString() ?? '',
-                          //       message: "Hi Message From ${userData.details?["name"] ?? ''}",
-                          //       );
-                          //       },
-                          //     ),
-                          //     AnimatedIconButton(
-                          //       iconPath: 'assets/images/web.png',
-                          //       text: 'Website',
-                          //       onTap: () async {
-                          //         if((planActive==true&&user?.details["plan"]?["basePlan"]?["details"]?["location"]==true)||
-                          //             isAdminUser) {
-                          //           if (PlatformHelper.platform == 'Android' ||
-                          //               PlatformHelper.platform == 'iOS') {
-                          //             Get.toNamed('/webViewProfilePage', arguments: {
-                          //               "url": user?.details["website"] ?? "".toString() ?? "",
-                          //               "clinicName": user?.details["name"] ?? "".toString()
-                          //             });
-                          //             if (user?.details["website"] ?? ""
-                          //                 .toString()
-                          //                 .isEmpty || user?.details["website"] ??
-                          //                 "".toString() == null) {
-                          //               showCustomToast(context, "Website error",
-                          //                   backgroundColor: AppColors.secondary);
-                          //             }
-                          //           }
-                          //         }
-                          //       },
-                          //     ),
-                          //     AnimatedIconButton(
-                          //       iconPath: 'assets/images/call.png',
-                          //       text: 'Call',
-                          //       onTap: () async {
-                          //  if((planActive==true&&user?.details["plan"]?["basePlan"]?["details"]?["mobileNumber"]==true)|| isAdminUser) {
-                          //          launchCall(user?.mobileNumber.toString() ?? "");
-                          //                     }
-                          //                      },
-                          //     ),
-                          //   ],
-                          // ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [

@@ -4,6 +4,7 @@ import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
+import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
 import 'common-alertdialog.dart';
 
 class CommonBottomNavigation extends StatefulWidget {
@@ -20,6 +21,7 @@ class CommonBottomNavigation extends StatefulWidget {
 class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
   late int selectedIndex;
   final loginController = Get.put(LoginController());
+  final notificationController=Get.put(NotificationController());
 
   @override
   void initState() {
@@ -66,7 +68,11 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
       Get.toNamed('/settingPageMobile');
       return;
     }
-
+    if (item.label == 'Notification') {
+      await  notificationController.getNotificationListAdmin(context);
+      Get.toNamed('/notificationPage');
+      return;
+    }
     if (item.label == 'Profile' || item.label == 'Register') {
       if (token != null) {
         Api.userInfo.write('selectUId', userId);
@@ -92,6 +98,8 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
           icon: Icons.person,
           label: token != null ? 'Profile' : 'Register',
         ),
+      if (token != null)
+      NavigationItem(icon: Icons.notifications, label: 'Notification'),
 
       if (token != null)
         NavigationItem(icon: Icons.settings, label: 'Menu'),

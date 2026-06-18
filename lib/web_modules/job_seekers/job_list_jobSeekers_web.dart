@@ -312,7 +312,9 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
       onTap: () {
         Api.userInfo.write('selectJobId', job.jobId.toString());
         Api.userInfo.write('activeStatus', job.isActive.toString());
-        Get.toNamed('/viewJobDetailWebPage');
+      //  Get.toNamed('/viewJobDetailWebPage');
+        Get.toNamed('/webLoginPage');
+
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),

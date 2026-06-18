@@ -375,7 +375,8 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                                                     if (seekers.status.toString().toLowerCase() == 'applied') {
                                                                       await jobController.updateJobStatusAdmin(seekers.jobSeekerId.toString(), seekers.jobId.toString(), "Viewed", job.orgName ?? "", context);
                                                                     }
-                                                                    await loginController.getProfileByUserId(seekers.jobSeekerId ?? "", context);
+                                                                    Api.userInfo.write('selectUId',seekers.jobSeekerId ?? "");
+                                                                    //await loginController.getProfileByUserId(seekers.jobSeekerId ?? "", context);
                                                                     Get.toNamed('/viewProfilePageWeb');
                                                                   },
                                                                   child: SizedBox(
@@ -499,7 +500,7 @@ class JobSeekerAppliedCard extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            ClipRRect(borderRadius: BorderRadius.circular(10), child: _buildNetworkImageSafe(imageUrl, width * 0.05, width * 0.04)),
+            ClipRRect(borderRadius: BorderRadius.circular(10), child: _buildNetworkImageSafe(imageUrl, width * 0.15, width * 0.15)),
             SizedBox(width: width * 0.01),
             Expanded(
               child: Column(
@@ -511,10 +512,7 @@ class JobSeekerAppliedCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           seeker.name,softWrap: true,
-                          style: TextStyle(
-                            fontSize: width * 0.035,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold)
                         ),
                       ),
                       PopupMenuButton<String>(

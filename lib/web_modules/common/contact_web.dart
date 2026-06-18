@@ -187,14 +187,11 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
   }
   Widget _buildContactList(LoginController controller) {
     final double width = MediaQuery.of(context).size.width;
-    final bool isDesktop = width >= 1100;
-    final bool isMobile = width < 700;
     int crossAxisCount = 3;
     if (width < 1000) crossAxisCount = 2;
     if (width < 600) crossAxisCount = 1;
-
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -203,7 +200,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: width < 600 ? 1.5 : 1.8,        ),
+          childAspectRatio: width < 600 ? 1.5 : 1.6,        ),
         itemBuilder: (context, index) {
           return _modernContactCard(controller.contactListApi[index]);
         },
@@ -212,7 +209,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
   }  Widget contactForm() {
     final size = MediaQuery.of(context).size.width;
     return Container(
-      padding: const EdgeInsets.all(25),
+      padding: const EdgeInsets.all(15),
       margin: const EdgeInsets.only(bottom: 30),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -306,7 +303,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
     final size = MediaQuery.of(context).size.width;
     return Container(
       //width: size*0.13,
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.white,
