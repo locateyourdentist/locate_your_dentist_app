@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
@@ -86,6 +87,7 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
   void _handleExternalWallet(response) {
     print("WALLET: ${response.walletName}");
   }
+  final GlobalKey<ScaffoldState> _scaffoldKeyPayment = GlobalKey<ScaffoldState>();
 
   String formatDate(String date) {
     if (date.isEmpty) return '';
@@ -101,18 +103,23 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-
+    final double width = MediaQuery.of(context).size.width;
+    final bool isDesktop = width >= 1100;
+    final bool isMobileLayout = width < 760;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
+      key: _scaffoldKeyPayment,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
-        height: size * 0.03,
-        title: "LYD",
+        height: width * 0.03 > 60 ? width * 0.03 : 60,
+        title: "LOCATE YOUR DENTIST",
         onLogout: () {},
         onNotification: () {},
       ),
       body: Row(
         children: [
-          const AdminSideBar(),
+          if (isLoggedIn && isDesktop) const AdminSideBar(),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(24),
@@ -133,6 +140,14 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            if (isLoggedIn && !isDesktop)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10, left: 10),
+                                child: IconButton(
+                                  icon:  Icon(Icons.menu,color: AppColors.black,size: 16,),
+                                  onPressed: () => _scaffoldKeyPayment.currentState?.openDrawer(),
+                                ),
+                              ),
 
                             Text(
                               "Order Summary",

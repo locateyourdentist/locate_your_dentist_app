@@ -163,43 +163,81 @@ class AnimatedBottomNavigation extends StatelessWidget {
           final item = entry.value;
           final isSelected = currentIndex == index;
 
-          return GestureDetector(
+          // return GestureDetector(
+          //   onTap: () => onTap(index),
+          //   child: AnimatedContainer(
+          //     duration: const Duration(milliseconds: 300),
+          //     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          //     decoration: BoxDecoration(
+          //       color: isSelected
+          //           ? AppColors.primary.withOpacity(0.1)
+          //           : Colors.transparent,
+          //       borderRadius: BorderRadius.circular(10),
+          //     ),
+          //     child: Column(
+          //       mainAxisSize: MainAxisSize.min,
+          //       children: [
+          //         AnimatedScale(
+          //           scale: isSelected ? 1.2 : 1.0,
+          //           duration: const Duration(milliseconds: 250),
+          //           child: Icon(
+          //             item.icon,
+          //             size: 26,
+          //             color: isSelected
+          //                 ? AppColors.primary
+          //                 : Colors.grey.shade400,
+          //           ),
+          //         ),
+          //         const SizedBox(height: 4),
+          //         AnimatedSwitcher(
+          //           duration: const Duration(milliseconds: 300),
+          //           child: Text(
+          //             item.label,
+          //             key: ValueKey(item.label),
+          //             style: TextStyle(
+          //               fontSize: 11,
+          //               color: isSelected
+          //                   ? AppColors.primary
+          //                   : Colors.grey.shade400,
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // );
+          return InkWell(
+            borderRadius: BorderRadius.circular(12),
             onTap: () => onTap(index),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              duration: const Duration(milliseconds: 250),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.primary.withOpacity(0.1)
+                    ? AppColors.primary.withOpacity(0.12)
                     : Colors.transparent,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  AnimatedScale(
-                    scale: isSelected ? 1.2 : 1.0,
-                    duration: const Duration(milliseconds: 250),
-                    child: Icon(
-                      item.icon,
-                      size: 26,
-                      color: isSelected
-                          ? AppColors.primary
-                          : Colors.grey.shade400,
-                    ),
+                  Icon(
+                    item.icon,
+                    color: isSelected
+                        ? AppColors.primary
+                        : Colors.grey,
+                    size: isSelected ? 30 : 24,
                   ),
                   const SizedBox(height: 4),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: Text(
-                      item.label,
-                      key: ValueKey(item.label),
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: isSelected
-                            ? AppColors.primary
-                            : Colors.grey.shade400,
-                      ),
+                  Text(
+                    item.label,
+                    style: TextStyle(
+                      color: isSelected
+                          ? AppColors.primary
+                          : Colors.grey,
+                      fontWeight:
+                      isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontSize: 11,
                     ),
                   ),
                 ],

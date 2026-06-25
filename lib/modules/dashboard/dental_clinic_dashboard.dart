@@ -57,6 +57,9 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(
+  color: Colors.white,
+),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -275,7 +278,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                         );
                                        // _scaffoldKeyUser.currentState!.openDrawer();
                                       },
-                                      icon:  Icon(Icons.filter_list, color: Colors.black, size: size*0.06),
+                                      icon:  Icon(Icons.location_on_outlined, color: Colors.black, size: size*0.06),
                                       splashRadius: 22,
                                     ),
                                   ),

@@ -418,7 +418,7 @@ class _ViewJobPageState extends State<ViewJobPage> {
                             ),
 
                             SizedBox(
-                              height:Api.userInfo.read('userType').toString()=='Job Seekers'? size * 300 :800,
+                              height:Api.userInfo.read('userType').toString()=='Job Seekers'? size * 1 :800,
                               child: TabBarView(
                                 children: [
                                   Padding(

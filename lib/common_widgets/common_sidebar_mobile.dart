@@ -222,7 +222,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
     return w * 0.15;
   }
   double getAvatarSize(BuildContext context) {
-    if (isMobile(context)) return 50;
+    if (isMobile(context)) return 80;
     if (isTablet(context)) return 60;
     return 70;
   }
@@ -258,6 +258,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
          
             child: Column(
               children: [
+                SizedBox(height: 10,),
                 ClipOval(
                   child: Image.network(
                     Api.userInfo.read("profileImage") ?? "",

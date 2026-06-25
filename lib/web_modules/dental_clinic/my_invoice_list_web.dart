@@ -156,7 +156,7 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                                               await planController.getInvoiceById("${invoice.invoiceId.toString()}",context);
                                               await planController.getInvoiceDetails(context);
 
-                                              final invoiceId = planController.invoiceDetails[index];
+                                              final invoiceId = planController.invoiceDetails.first;
                                               await PdfGenerator.generateInvoicePdf(
                                                 userName: name,
                                                 planName: invoiceId.planName,

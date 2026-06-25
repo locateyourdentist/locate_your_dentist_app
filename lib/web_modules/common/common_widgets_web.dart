@@ -1064,8 +1064,8 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
          PopupMenuItem(
           value: "profile",
           child: ListTile(
-            leading: Icon(Icons.person_outline),
-            title: Text("My Profile",style: AppTextStyles.caption(context,color: Colors.red),),
+            leading: Icon(Icons.person_outline,color:AppColors.black,size: 18,),
+            title: Text("My Profile",style: AppTextStyles.caption(context,color: Colors.black),),
             contentPadding: EdgeInsets.zero,
           ),
         ),

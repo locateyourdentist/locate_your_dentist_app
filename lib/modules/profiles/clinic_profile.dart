@@ -382,20 +382,20 @@ class Media {
                                   }
                               }
                             }, icon: Icon(Icons.place,color: AppColors.primary,size: size*0.05,)),
+                              // Expanded(
+                              //   child: Text(
+                              //     loginController.userData.isNotEmpty && user?.address != null
+                              //         ? "${user?.address['addressLine1'] ?? ''}, ${user?.address['addressLine2'] ?? ''},"
+                              //         : "", maxLines: 2,
+                              //     overflow: TextOverflow.ellipsis,  style: const TextStyle(color: Colors.grey),
+                              //   ),
+                              // ),
+                              //SizedBox(height: size*0.01,),
                               Expanded(
                                 child: Text(
                                   loginController.userData.isNotEmpty && user?.address != null
-                                      ? "${user?.address['addressLine1'] ?? ''}, ${user?.address['addressLine2'] ?? ''},"
-                                      : "", maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,  style: const TextStyle(color: Colors.grey),
-                                ),
-                              ),
-                              SizedBox(height: size*0.01,),
-                              Expanded(
-                                child: Text(
-                                  loginController.userData.isNotEmpty && user?.address != null
-                                      ? "${user?.address['state'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['city'] ?? ''}"
-                                      : "", maxLines: 2,
+                                      ?"${user?.address['addressLine1'] ?? ''}, ${user?.address['addressLine2'] ?? ''}," "${user?.address['state'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['city'] ?? ''}"
+                                      : "", maxLines: 4,
                                   overflow: TextOverflow.ellipsis,  style: const TextStyle(color: Colors.grey),
                                 ),
                               ),

@@ -65,15 +65,6 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                   onRefresh: _refresh,
                   child: Stack(
                     children: [
-                      if (!isDesktop)
-                        Positioned(
-                          top: 10,
-                          left: 10,
-                          child: IconButton(
-                            icon: const Icon(Icons.menu,color: AppColors.black,),
-                            onPressed: () => _scaffoldKeyContact.currentState?.openDrawer(),
-                          ),
-                        ),
                       SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.fromLTRB(isMobile ? 15 : 30, isDesktop ? 30 : 60, isMobile ? 15 : 30, 30),
@@ -83,6 +74,15 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                if (!isDesktop)
+                                  Positioned(
+                                    top: 10,
+                                    left: 10,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.menu,color: AppColors.black,),
+                                      onPressed: () => _scaffoldKeyContact.currentState?.openDrawer(),
+                                    ),
+                                  ),
                                 _buildHeader(context, width, isMobile),
                                 const SizedBox(height: 20),
                                 Container(

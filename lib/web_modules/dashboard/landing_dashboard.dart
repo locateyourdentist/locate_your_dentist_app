@@ -745,7 +745,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                     Container(
                                      // width: double.infinity,
                                       constraints: const BoxConstraints(maxWidth: 1500),
-                                      padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 40),
+                                      padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
                                       color: const Color(0xffF8FAFC),
                                       child: Center(
                                         child: AnimatedContainer(
@@ -916,11 +916,13 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                         itemCount: loginController.profileList.length > 10
                                                             ? 10
                                                             : loginController.profileList.length,
-                                                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                        gridDelegate:  SliverGridDelegateWithMaxCrossAxisExtent(
                                                           maxCrossAxisExtent: 280,
                                                           mainAxisSpacing: 20,
                                                           crossAxisSpacing: 20,
-                                                          childAspectRatio: 0.9,
+                                                          childAspectRatio: size < 700 ? 1.5 : 0.8,
+
+                                                          //childAspectRatio: 0.9,
                                                         ),
                                                         itemBuilder: (context, index) {
                                                           return AnimationConfiguration.staggeredList(

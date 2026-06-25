@@ -89,11 +89,10 @@ import 'package:flutter_quill/flutter_quill.dart';
     super.dispose();
   }
   bool getPlanActive() {
-   // loginController.getProfileByUserId(Api.userInfo.read('selectUserId')??"", context);
-    final userData =  loginController.userData;
+    final userData = loginController.userData;
     if (userData.isEmpty) return false;
-    final raw = userData.first.details["plan"]?["basePlan"]?["isActive"];
-    print('raw$raw');
+    final raw = userData.first.details["plan"]?["basePlan"]?["isActive"]??"";
+
     return raw == true || raw == "true";
   }
   @override
@@ -112,6 +111,12 @@ import 'package:flutter_quill/flutter_quill.dart';
     String userId=Api.userInfo.read('userId')??"";
     String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
     print('edit id$editUserId');
+    final validImages = loginController.editImages
+        .where((img) =>
+    img.url != null &&
+        img.url!.isNotEmpty &&
+        img.url!.startsWith("http"))
+        .toList();
     return Scaffold(
       body: GetBuilder<LoginController>(
         builder: (controller) {
@@ -173,15 +178,25 @@ import 'package:flutter_quill/flutter_quill.dart';
                   children: [
                     Stack(
                       children: [
-
-                        MediaCarousel(
-                          images: loginController.editImages
-                              .where((img) =>
-                          img.url != null &&
-                              img.url!.startsWith('http') &&
-                              !img.url!.contains('undefined'))
-                              .toList(),
-                        ),
+                        if (validImages.isEmpty)
+                          Container(
+                            height: 250,
+                            width: double.infinity,
+                            color: Colors.grey.shade200,
+                            child: const Center(
+                              child: Icon(Icons.image, size: 60),
+                            ),
+                          )
+                        else
+                          MediaCarousel(images: validImages),
+                        // MediaCarousel(
+                        //   images: loginController.editImages
+                        //       .where((img) =>
+                        //   img.url != null &&
+                        //       img.url!.startsWith('http') &&
+                        //       !img.url!.contains('undefined'))
+                        //       .toList(),
+                        // ),
 
                         Positioned(
                           top: 10,
@@ -259,7 +274,7 @@ import 'package:flutter_quill/flutter_quill.dart';
                               children: [
                                 Expanded(
                                   child: Text(
-                                   loginController.userData.first.details["name"],
+                                   loginController.userData.first.details["name"]??"",
                                     softWrap: true,
                                     style: TextStyle(
                                       fontSize: size * 0.04,
@@ -649,7 +664,7 @@ import 'package:flutter_quill/flutter_quill.dart';
                                                                           child: Column(
                                                                             children: [
                                                                               Text(
-                                                                                  "${loginController.userData.first.userType} Certificate",
+                                                                                  "${loginController.userData?.first.userType} Certificate",
                                                                                   //labProfile['address'].toString(),
                                                                                   // "Catchy Dental Clinic",
                                                                                   textAlign: TextAlign.center,

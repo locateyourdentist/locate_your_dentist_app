@@ -127,15 +127,16 @@ class DoctorCardWidget extends StatelessWidget {
                               }
                             },
                           ),
-                          const SizedBox(width: 5),
+                          const SizedBox(width: 1),
                           Expanded(
                             child: Text(
-                              "${doctor.address['area'] ?? ''}, "
+                              "${doctor.address['addressLine1'] ?? ''}, "
+                                  "${doctor.address['addressLine2'] ?? ''}, " "${doctor.address['area'] ?? ''}, "
                                   "${doctor.address['city'] ?? ''}, "
-                                  "${doctor.address['district'] ?? ''}, "
-                                  "${doctor.address['state'] ?? ''}",
+                                  "${doctor.address['district'] ?? ''}, ",
+                                 // "${doctor.address['state'] ?? ''}",
                               maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
+                              overflow: TextOverflow.ellipsis,style: AppTextStyles.caption(context,color: AppColors.grey),
                             ),
                           ),
                         ],

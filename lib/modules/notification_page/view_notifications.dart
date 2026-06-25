@@ -20,22 +20,6 @@ class _ViewNotificationState extends State<ViewNotification> {
   final notificationController = Get.put(NotificationController());
   String selectedTab = "All";
   final ImagePicker _picker = ImagePicker();
-
-  // IconData changeIcon(String title) {
-  //   final t = title.trim().toLowerCase();
-  //   if (t.contains("new")) return Icons.person;
-  //   switch (t) {
-  //     case "view":
-  //       return Icons.visibility;
-  //     case "plan":
-  //       return Icons.next_plan_outlined;
-  //     case "renewal":
-  //       return Icons.autorenew;
-  //     default:
-  //       return Icons.message;
-  //   }
-  // }
-
   IconData changeIcon(String title) {
     final t = title.trim().toLowerCase();
 

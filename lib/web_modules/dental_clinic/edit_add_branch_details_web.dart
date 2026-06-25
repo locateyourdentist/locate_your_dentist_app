@@ -70,6 +70,7 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
     final bool isTablet = width >= 700 && width < 1100;
     final bool isMobile = width < 700;
     return  Scaffold(
+      key: _scaffoldKeyBranch,
       appBar: CommonWebAppBar(
         height: isMobile ? 60 : (isTablet ? 70 : 80),
         title: "LOCATE YOUR DENTIST",
@@ -102,18 +103,22 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                   boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(20.0),
+                                  padding: const EdgeInsets.all(10.0),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       SizedBox(height: size*0.01,),
                                       if (!isDesktop)
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: IconButton(
-                                            icon: const Icon(Icons.menu, color: AppColors.black),
-                                            onPressed: () => _scaffoldKeyBranch.currentState?.openDrawer(),
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 15.0),
+                                          child: Row(
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(Icons.menu, color: AppColors.black),
+                                                onPressed: () => _scaffoldKeyBranch.currentState?.openDrawer(),
+                                              ),
+                                            ],
                                           ),
                                         ),
 
@@ -129,51 +134,58 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                                 children: [
                                                   for (int i = 0; i < loginController.branchList.length; i++)
                                                     _branchListFields(i,size),
-                                                  Container(
-                                                    //height:size * 0.018,
-                                                  width:size*0.12,
-                                                    decoration: BoxDecoration(
-                                                      gradient: const LinearGradient(
-                                                        colors: [AppColors.primary, AppColors.secondary],
-                                                        begin: Alignment.topLeft,
-                                                        end: Alignment.bottomRight,
-                                                      ),
-                                                      borderRadius: BorderRadius.circular(12),
-                                                    ),
-                                                    child: ElevatedButton(
-                                                      onPressed: ()async {
-                                                        loginController.userData.clear();
-                                                        loginController.clearProfileData();
-                                                        // loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-                                                        Get.toNamed('/registerPageWeb',arguments: {'branchId':'0'});
-                                                      },
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor: Colors.transparent,
-                                                        shadowColor:Colors.transparent,
-                                                        elevation: 4,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(12),
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                                                    child: Container(
+                                                      //height:size * 0.018,
+                                                                                                     // width:size*0.12,
+                                                      decoration: BoxDecoration(
+                                                        gradient: const LinearGradient(
+                                                          colors: [AppColors.primary, AppColors.secondary],
+                                                          begin: Alignment.topLeft,
+                                                          end: Alignment.bottomRight,
                                                         ),
-                                                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                                                        borderRadius: BorderRadius.circular(12),
                                                       ),
-                                                      child: Center(
-                                                        child: Row(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: [
-                                                            Icon(Icons.add, size: size * 0.012, color: AppColors.white),
-                                                            const SizedBox(width: 8),
-                                                            Flexible(
-                                                              child: Text(
-                                                                "Add Branches",
-                                                                style: AppTextStyles.caption(context, color: AppColors.white),
-                                                                overflow: TextOverflow.ellipsis,
+                                                      child: ElevatedButton(
+                                                        onPressed: ()async {
+                                                          loginController.userData.clear();
+                                                          loginController.clearProfileData();
+                                                          // loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
+                                                          Get.toNamed('/registerPageWeb',arguments: {'branchId':'0'});
+                                                        },
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: Colors.transparent,
+                                                          shadowColor:Colors.transparent,
+                                                          elevation: 4,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(12),
+                                                          ),
+                                                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                                                        ),
+                                                        child: Center(
+                                                          child: Row(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              Icon(Icons.add, size: 13, color: AppColors.white),
+                                                              const SizedBox(width: 8),
+                                                              Flexible(
+                                                                child: Text(
+                                                                  "Add Branches",
+                                                                  style: AppTextStyles.caption(context, color: AppColors.white),
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ), ]);
+
+                                                  ),
+                                                  SizedBox(height: 25),
+
+                                                ]);
                                           }
                                       ),
                                       SizedBox(height: size*0.02,),
