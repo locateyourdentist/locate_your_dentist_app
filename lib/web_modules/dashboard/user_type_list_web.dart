@@ -347,6 +347,9 @@ class _ModernUserTableState extends State<ModernUserTable> {
                     _headerCell("Name", 2),
                     _headerCell("User ID", 2),
                     _headerCell("User Type", 2),
+                    // if ((planActive == true &&
+                    //     firstProfile?.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
+                    //     isAdminUser)
                     _headerCell("Mobile", 2),
                     _headerCell("View", 1),
                     if (Api.userInfo.read('userType') == "superAdmin")
@@ -400,9 +403,9 @@ class _ModernUserTableState extends State<ModernUserTable> {
           Expanded(flex: 2, child: Center(child: Text(user.name, style: const TextStyle(fontSize: 12)))),
           Expanded(flex: 2, child: Center(child: Text(user.userId, style: const TextStyle(fontSize: 12)))),
           Expanded(flex: 2, child: Center(child: Text(user.userType, style: const TextStyle(fontSize: 12)))),
-          if ((planActive == true &&
-              user.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-              isAdminUser)
+          // if ((planActive == true &&
+          //     user.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
+          //     isAdminUser)
           Expanded(flex: 2, child: Center(child: Text(user.mobileNumber, style: const TextStyle(fontSize: 12)))),
           Expanded(flex: 1, child: Center(child: IconButton(icon: const Icon(Icons.remove_red_eye, color: Colors.grey, size: 18), onPressed: () async {
             Api.userInfo.write('selectUId', user.userId.toString());

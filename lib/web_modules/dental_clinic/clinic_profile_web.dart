@@ -306,7 +306,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: isMobile ? 1 : 2,
                   crossAxisSpacing: 16, mainAxisSpacing: 16,
-                  childAspectRatio: isMobile ? 3 : 4,
+                  childAspectRatio: isMobile ? 4.5 : 4,
                 ),
                 itemBuilder: (_, index) {
                   final service = serviceController.serviceList[index];
@@ -460,7 +460,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                   ),
                   SizedBox(height: 5,),
                   Text(
-                    user.isNotEmpty && user?.address != null
+                    user != null && user.address.isNotEmpty
                         ? "${user?.address['area'] ?? ''},${user?.address['city'] ?? ''},${user?.address['district'] ?? ''}, ${user?.address['state'] ?? ''}"
                         : "", maxLines: 2,
                     overflow: TextOverflow.ellipsis,   style: AppTextStyles.caption(context,color: AppColors.grey),
@@ -533,7 +533,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
         _actionButton(Icons.chat, "WhatsApp", () async {
 
           if ((planActive == true &&
-              user?.details["plan"]?["basePlan"]?["details"]?["location"] == true) ||
+              user?.details["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
               isAdminUser) {
             await WhatsAppUtils.openWhatsApp(phoneNumber: user?.mobileNumber?.toString() ?? '', message: "Hi Message From ${user?.details?["name"] ?? ''}");
           }

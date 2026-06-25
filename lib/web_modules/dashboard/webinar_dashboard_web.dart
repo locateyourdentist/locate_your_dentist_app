@@ -60,7 +60,7 @@ class WebinarDashboardGrid extends StatelessWidget {
                   child: Column(
                     children: [
                       GridView.builder(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(15),
                         physics: const BouncingScrollPhysics(),
                         itemCount: webinarList.length,
                         shrinkWrap: true,
@@ -69,7 +69,7 @@ class WebinarDashboardGrid extends StatelessWidget {
                           crossAxisSpacing: 24,
                           mainAxisSpacing: 24,
                           childAspectRatio: MediaQuery.of(context).size.width > 1000
-                              ? 0.70 : 0.85,
+                              ? 0.70 : 0.65,
                         ),
                         itemBuilder: (context, index) {
                           final webinar = webinarList[index];
@@ -79,7 +79,7 @@ class WebinarDashboardGrid extends StatelessWidget {
                           );
                         },
                       ),
-                      if(webinarList.isNotEmpty)
+                      if(webinarList.length>3)
                       Column(
                         children: [
                           InkWell(
@@ -235,8 +235,6 @@ class _WebinarDashboardCardState
                     crossAxisAlignment:
                     CrossAxisAlignment.start,
                     children: [
-
-                      /// LOCATION
                       Container(
                         padding:
                         const EdgeInsets.symmetric(

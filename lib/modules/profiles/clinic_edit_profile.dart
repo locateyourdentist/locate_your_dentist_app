@@ -439,18 +439,24 @@ import 'package:geocoding/geocoding.dart';
                   crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                  // SizedBox(
-                  //   width: double.infinity,
-                  //   child: CountryStateCityPicker(
-                  //       country: countryCont,
-                  //       state: stateCont,
-                  //       city: cityCont,
-                  //       dialogColor: Colors.grey.shade200,
-                  //       textFieldDecoration: const InputDecoration(
-                  //           suffixIcon: Icon(Icons.arrow_drop_down_outlined),
-                  //           border: OutlineInputBorder())),
-                  // ),
-                  GetBuilder<LoginController>(
+                      CustomTextField(
+                        hint: "Address Line 1 (House No, Street Name)",
+                        icon: Icons.location_on,
+                        controller: loginController.addressLine1Controller,
+                        // fillColor: AppColors.white,
+                        // borderColor: AppColors.grey,
+                      ),
+                      SizedBox(height: size * 0.03),
+                      CustomTextField(
+                        hint: "Address Line 2 (Landmark, Area, Building)",
+                        icon: Icons.location_on,
+                        controller: loginController.addressLine2Controller,
+                        // fillColor: AppColors.white,
+                        // borderColor: AppColors.grey,
+                      ),
+                      SizedBox(height: size * 0.03),
+
+                      GetBuilder<LoginController>(
                     builder: (controller) {
                       final items = controller.states.map((v) => v.toString()).toList();
                       return CustomDropdown<String>.search(
@@ -862,14 +868,24 @@ import 'package:geocoding/geocoding.dart';
                             onPressed: ()async
                         {
                           if (_formKeyEditProfile.currentState!.validate()) {
-                            final position = await LocationService.getCurrentLocation();
-                            if (position == null) {
-                              showCustomToast(context,"Please enable location");
-                              return;
+                            final location = await loginController.getLatLng(
+                              state: loginController.selectedState ?? '',
+                              district: loginController.selectedDistrict ?? '',
+                              taluka:  loginController.selectedTaluka ?? '',
+                              area: loginController.selectedVillage ?? '',
+                              pincode:loginController.pinCodeController.text,
+                            );
+
+                            print(location);
+                            if (location != null) {
+                              loginController.latitude = location['latitude'];
+                              loginController.longitude = location['longitude'];
+                              print('lat${loginController.latitude}');
+                            } else {
+                              loginController.latitude = null;
+                              loginController.longitude = null;
                             }
-                            loginController.latitude = position.latitude;
-                            loginController.longitude = position.longitude;
-                            print('lat:${position.latitude} lon:${position.longitude}');
+                            //print('lat:${position.latitude} lon:${position.longitude}');
                             print("FULL NAME = ${loginController.fullNameController.text}");
                             print("type NAME = ${loginController.typeNameController.text}");
                             print("MOBILE = ${loginController.mobileController.text}");

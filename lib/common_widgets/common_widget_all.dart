@@ -610,28 +610,28 @@ String imgUserTypeNew(String userType) {
   String page;
   switch (userType) {
     case "Dental Clinic":
-      page = "assets/images/dental_clinic_img.png";
+      page = "assets/images/dental_clinic1.png";
       break;
     case "Dental Shop":
-      page = "assets/images/dental-shop_img.png";
+      page = "assets/images/dental_shop1.png";
       break;
     case "Dental Mechanic":
-      page = "assets/images/dental_mechanic_img.png";
+      page = "assets/images/dental_mechanic1.png";
       break;
     case "Dental Lab":
-      page = "assets/images/dental_lab_img.png";
+      page = "assets/images/dental_lab1.png";
       break;
     case "Dental Consultant":
-      page = "assets/images/prof_img.png";
+      page = "assets/images/dental_Prof1.png";
       break;
-    case "Dental Consultant":
-      page = "assets/images/prof_img.png";
-      break;
-    case "Dental Consultant":
-      page = "assets/images/prof_img.png";
-      break;
+    // case "Dental Consultant":
+    //   page = "assets/images/dental_prof1.png";
+    //   break;
+    // case "Dental Consultant":
+    //   page = "assets/images/dental_prof1.png";
+    //   break;
     default:
-      page = "assets/images/dental_job_img.png";
+      page = "assets/images/job_seeker1.png";
   }
   return page;
 }

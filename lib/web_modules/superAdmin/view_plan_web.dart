@@ -264,7 +264,10 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                                       return _buildPlanShimmer(width);
                                     }
                                     if (selectedString == "Active Plans") {
-                                      return SingleChildScrollView(child: PlanDetailsWidget(planList: controller.checkPlanList));
+                                      return SingleChildScrollView(child: Container(
+                                          constraints: const BoxConstraints(maxWidth: 700),
+
+                                          child: PlanDetailsWidget(planList: controller.checkPlanList)));
                                     } else {
                                       return _buildBuyPlans(userType, context, width, controller, isMobile);
                                     }
@@ -728,7 +731,7 @@ class PlanDetailsWidget extends StatelessWidget {
     }
 
     return Card(
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ExpansionTile(
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),

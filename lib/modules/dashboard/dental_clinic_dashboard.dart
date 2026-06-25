@@ -426,7 +426,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                   crossAxisCount: 3, // 3 items per row
                                   crossAxisSpacing: 15,
                                   mainAxisSpacing: 15,
-                                  childAspectRatio: 1.2,
+                                  childAspectRatio: 1.1,
                                 ),
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
@@ -474,9 +474,9 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
 
                                           /// IMAGE
                                           Expanded(
-                                            flex: 2,
+                                            flex: 3,
                                             child: Padding(
-                                              padding: const EdgeInsets.all(12),
+                                              padding: const EdgeInsets.all(5),
                                               child: Image.asset(
                                                // imgUserType(title[index]),
                                                 imgUserTypeNew(title[index]),
@@ -505,6 +505,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                               ),
                                             ),
                                           ),
+                                          SizedBox(height: size * 0.02),
                                         ],
                                       ),
                                     ),

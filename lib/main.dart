@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -84,23 +85,8 @@ Future<void> setupFCM() async {
   );
 
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    // String? token = await messaging.getToken(
-    //  vapidKey: kIsWeb ? AppConstants.webFireBaseVAPID_KEY : null,
-    // );
-    //
-    // print('kkftoken$token');
-    // if (token != null) Api.userInfo.write('fcmToken', token);
-    // print("FCM Token: $token");
     String? token;
-
-    // if (kIsWeb) {
-    //   token = await messaging.getToken(
-    //     vapidKey: AppConstants.webFireBaseVAPID_KEY,
-    //   );
-    // } else {
-      token = await messaging.getToken();
-    //}
-
+    token = await messaging.getToken();
     print("FCM Token: $token");
 
     if (token != null) {
@@ -250,6 +236,10 @@ Future<void> main() async {
   bool isShowOnboard = prefs.getBool('isShowOnboard') ?? false;
   //setUrlStrategy(PathUrlStrategy()); // removes #
   configureUrlStrategy();
+  // await SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.landscapeLeft,
+  //   DeviceOrientation.landscapeRight,
+  // ]);
   runApp(MyApp(isShowOnboard: isShowOnboard));
 }
 

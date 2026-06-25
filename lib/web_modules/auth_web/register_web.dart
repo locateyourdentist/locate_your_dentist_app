@@ -625,17 +625,17 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         _responsiveRow(
           isMobile,
           CustomTextField(
-            hint: "Address Line1",
+            hint: "Address Line 1 (House No, Street Name)",
             icon: Icons.location_on,
-            controller: loginController.locationController,
+            controller: loginController.addressLine1Controller,
             // fillColor: AppColors.white,
             // borderColor: AppColors.grey,
           ),
           // const SizedBox(height: 15),
           CustomTextField(
-            hint: "Address Line2",
-            icon: Icons.web,
-            controller: loginController.websiteController,
+            hint: "Address Line 2 (Landmark, Area, Building)",
+            icon: Icons.location_on,
+            controller: loginController.addressLine2Controller,
             // fillColor: AppColors.white,
             // borderColor: AppColors.grey,
           ),),

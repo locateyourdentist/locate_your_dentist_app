@@ -885,17 +885,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       final descriptionAbout =
                       jsonEncode(_controller.document.toDelta().toJson());
                       print('dgdesc$descriptionAbout');
-                      final position = await LocationService.getCurrentLocation();
-                      if (position == null) {
-                        print("POSITION IS NULL");
-                        return;
+                      final location = await loginController.getLatLng(
+                        state: loginController.selectedState ?? '',
+                        district: loginController.selectedDistrict ?? '',
+                        taluka:  loginController.selectedTaluka ?? '',
+                        area: loginController.selectedVillage ?? '',
+                        pincode:loginController.pinCodeController.text,
+                      );
+
+                      print(location);
+                      if (location != null) {
+                        loginController.latitude = location['latitude'];
+                        loginController.longitude = location['longitude'];
+                        print('lat${loginController.latitude}');
+                      } else {
+                        loginController.latitude = null;
+                        loginController.longitude = null;
                       }
-
-                      print("LATITUDE = ${position.latitude}");
-                      print("LONGITUDE = ${position.longitude}");
-
-                      loginController.latitude = position.latitude;
-                      loginController.longitude = position.longitude;
                       print("Controller LAT = ${loginController.latitude}");
                       print("Controller LNG = ${loginController.longitude}");
                       await loginController.registerUser(

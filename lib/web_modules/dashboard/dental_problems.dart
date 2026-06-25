@@ -1203,13 +1203,31 @@ class WhyChooseUsSection extends StatelessWidget {
               ),
             ),
           )
-        : Row(
-      children: [
-        Expanded(flex: 5, child: _image()),
-        const SizedBox(width: 60),
-        Expanded(flex: 5, child: _content(context)),
-      ],
-    );
+        :  Center(
+          child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                constraints: const BoxConstraints(maxWidth: 1500),
+                decoration:  BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primary,
+              AppColors.secondary,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+                ),
+            child: Row(
+                  children: [
+            Expanded(flex: 5, child: _image()),
+            const SizedBox(width: 60),
+            Expanded(flex: 5, child: _content(context)),
+                  ],
+                ),
+          ),
+        );
   }
 
   Widget _image() {
@@ -1232,8 +1250,8 @@ class WhyChooseUsSection extends StatelessWidget {
         ClipRRect(
         borderRadius: BorderRadius.circular(16),
           child: Image.asset(
-             // height: 450,
-        "assets/images/4p.jpg",
+             height: 300,
+        "assets/images/welcomePage.png",
             fit: BoxFit.cover,
             ),
       ),
@@ -1250,7 +1268,7 @@ class WhyChooseUsSection extends StatelessWidget {
         Text(
           "WHY CHOOSE US",
           style: TextStyle(
-            color: AppColors.primary,
+            color: AppColors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -1259,7 +1277,7 @@ class WhyChooseUsSection extends StatelessWidget {
 
         Text(
           "Committed To Excellent Dental Care",
-          style: AppTextStyles.subtitle(context,color: AppColors.black)
+          style: AppTextStyles.subtitle(context,color: AppColors.white)
         ),
 
         SizedBox(height: 20),
@@ -1268,7 +1286,7 @@ class WhyChooseUsSection extends StatelessWidget {
           "Connect with trusted dentists, dental clinics, and specialists. Book appointments, compare services, and receive quality dental care effortlessly.",
           style: TextStyle(
             height: 1.8,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
 

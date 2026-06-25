@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/web_modules/common/filter_side_bar.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import '../../common_widgets/color_code.dart';
-import '../../common_widgets/platform_helper.dart';
-import '../../model/profile_model.dart';
-import '../../modules/auth/login_screen/login_controller.dart';
-
-import 'package:get/get.dart';
+import 'package:locate_your_dentist/common_widgets/color_code.dart';
+import 'package:locate_your_dentist/common_widgets/platform_helper.dart';
+import 'package:locate_your_dentist/model/profile_model.dart';
+import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 
 class ViewClinicPatients extends StatefulWidget {
   const ViewClinicPatients({super.key});
@@ -24,16 +23,17 @@ class ViewClinicPatients extends StatefulWidget {
 class _ViewClinicPatientsState extends State<ViewClinicPatients> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width;
-    final bool isDesktop = size >= 1100;
-    final bool isTablet = size >= 700 && size < 1100;
-    final bool isMobile = size < 700;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isDesktop = screenWidth >= 1100;
+    final bool isTablet = screenWidth >= 700 && screenWidth < 1100;
+    final bool isMobile = screenWidth < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
 
     PreferredSizeWidget buildAppBar() {
-      if (Api.userInfo.read('token') != null) {
+      if (isLoggedIn) {
         return CommonWebAppBar(
           height: isMobile ? 60 : (isTablet ? 70 : 80),
           title: "LYD",
@@ -44,301 +44,317 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
         return const CommonHeader();
       }
     }
+
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Colors.white,
-      drawer:( !isDesktop&&isLoggedIn) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      backgroundColor: const Color(0xFFF8FAFC), // Modern soft background grey
+      drawer: (!isDesktop && isLoggedIn) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       endDrawer: isMobile ? const Drawer(width: 300, child: FilterSidebar()) : null,
       appBar: buildAppBar(),
       body: GetBuilder<LoginController>(
-          builder: (controller) {
-            return Row(
+        builder: (controller) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (isDesktop && isLoggedIn) const AdminSideBar(),
-            Expanded(
-            child: Padding(
-            padding: EdgeInsets.all(isMobile ? 15.0 : 40.0),
-            child: Align(
-            alignment: Alignment.topCenter,
-            child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1300),
-            child: Container(
-            decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)
-            )],
-            ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (!isMobile)
-                    SizedBox(width: isDesktop ? size * 0.15 : 250, child: const FilterSidebar()),
-                  //if(loginController.profileList.isNotEmpty)
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                        "Total Profiles : ${loginController.profileList.length}",
-                        style:AppTextStyles.body(context,)
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(isMobile ? 16.0 : 32.0),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 1400),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Upper Metadata Header Row
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0, left: 4.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Total Profiles (${controller.profileList.length})",
+                                  style: AppTextStyles.body(context, color: const Color(0xFF0F172A)).copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                if (isMobile)
+                                  IconButton(
+                                    icon: const Icon(Icons.filter_list_rounded, color: AppColors.primary),
+                                    onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
+                                  ),
+                              ],
+                            ),
+                          ),
+
+                          // Main Body split grid layout
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (!isMobile)
+                                Container(
+                                  width: isDesktop ? 280 : 240,
+                                  margin: const EdgeInsets.only(right: 24),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                  ),
+                                  child:  ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: FilterSidebar(),
+                                  ),
+                                ),
+
+                              Expanded(
+                                child: controller.profileList.isEmpty
+                                    ? _buildEmptyState()
+                                    : ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: controller.profileList.length,
+                                  itemBuilder: (context, index) {
+                                    return _ClinicDashboardListCard(
+                                      clinic: controller.profileList[index],
+                                      loginController: controller,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  Expanded(child: ListView.builder(
-                    shrinkWrap: true,
-                    //physics: NeverScrollableScrollPhysics(),
-                    itemCount: loginController.profileList.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: clinicCard(
-                          loginController.profileList[index],context,
-                        ),
-                      );
-                    },
-                  )),
-                ],
+                ),
               ),
-              
-              )
-            )
-            )))
-          
             ],
           );
-        }
+        },
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(40),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.person_search_rounded, size: 48, color: Color(0xFF94A3B8)),
+          const SizedBox(height: 16),
+          Text("No Profiles Found", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+          const SizedBox(height: 4),
+          Text("Try adjusting your dashboard filter criteria options.", style: const TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+        ],
       ),
     );
   }
 }
-Widget clinicCard(ProfileModel clinic,dynamic context) {
-  String firstImage = clinic.logoImages.isNotEmpty
-      ? clinic.logoImages.first
-      : (clinic.images.isNotEmpty ? clinic.images.first : "");
-  final loginController = Get.put(LoginController());
-  bool isBasePlanActive(ProfileModel profile) {
-    final isActive =
-    profile.details?["plan"]?["basePlan"]?["isActive"];
+
+class _ClinicDashboardListCard extends StatefulWidget {
+  final ProfileModel clinic;
+  final LoginController loginController;
+
+  const _ClinicDashboardListCard({
+    required this.clinic,
+    required this.loginController,
+  });
+
+  @override
+  State<_ClinicDashboardListCard> createState() => _ClinicDashboardListCardState();
+}
+
+class _ClinicDashboardListCardState extends State<_ClinicDashboardListCard> {
+  bool _isHovered = false;
+
+  bool get isBasePlanActive {
+    final isActive = widget.clinic.details?["plan"]?["basePlan"]?["isActive"];
     return isActive == true || isActive == "true";
   }
-  final planActive = isBasePlanActive(clinic);
-  final userType = Api.userInfo.read('userType')?.toString() ?? "";
-  final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
-  return GetBuilder<LoginController>(
-      builder: (controller) {
-      return GestureDetector(
-        onTap: () async {
-          Api.userInfo.write('selectUId', clinic.userId);
 
-          await loginController.getProfileByUserId(
-            clinic.userId,
-            context,
-          );
+  @override
+  Widget build(BuildContext context) {
+    final String userType = Api.userInfo.read('userType')?.toString() ?? "";
+    final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
+    final bool showPrivateInfo = isBasePlanActive || isAdminUser;
 
-          Get.toNamed('/clinicProfileWebPage');
-        },
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(.15),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              )
-            ],
+    String firstImage = widget.clinic.logoImages.isNotEmpty
+        ? widget.clinic.logoImages.first
+        : (widget.clinic.images.isNotEmpty ? widget.clinic.images.first : "");
+
+    return MouseRegion(
+      onEnter: (_) => WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => _isHovered = true)),
+      onExit: (_) => WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => _isHovered = false)),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: _isHovered ? AppColors.primary.withOpacity(0.4) : const Color(0xFFE2E8F0),
+            width: _isHovered ? 1.5 : 1.0,
           ),
-          child: Column(
-            children: [
-              Row(
-                children: [
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0F172A).withOpacity(_isHovered ? 0.05 : 0.01),
+              blurRadius: _isHovered ? 16 : 8,
+              offset: _isHovered ? const Offset(0, 8) : const Offset(0, 2),
+            )
+          ],
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final bool compactMode = constraints.maxWidth < 620;
 
-                  /// IMAGE
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: firstImage.isNotEmpty
-                        ? Image.network(
-                      firstImage,
-                      width: 90,
-                      height: 90,
-                      fit: BoxFit.cover,
-                    )
-                        : Container(
-                      width: 90,
-                      height: 90,
-                      color: Colors.grey.shade200,
-                      child: const Icon(
-                        Icons.image,
-                        size: 50,color: AppColors.grey,
-                      ),
+            final Widget imageNode = Container(
+              width: compactMode ? 70 : 100,
+              height: compactMode ? 70 : 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: const Color(0xFFF1F5F9),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(11),
+                child: firstImage.isNotEmpty
+                    ? Image.network(firstImage, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.image_rounded, size: 32, color: Color(0xFF94A3B8)))
+                    : const Icon(Icons.image_rounded, size: 32, color: Color(0xFF94A3B8)),
+              ),
+            );
+
+            final Widget infoDetailsNode = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.clinic.details["name"] ?? "Clinic Center",
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 2.0),
+                      child: Icon(Icons.location_on_rounded, size: 15, color: Color(0xFFEF4444)),
                     ),
-                  ),
-
-                  const SizedBox(width: 20),
-
-                  /// DETAILS
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        Text(
-                          clinic.details["name"] ?? "",
-                            style:AppTextStyles.body(context,fontWeight: FontWeight.bold,color: AppColors.primary)
-                        ),
-
-                        const SizedBox(height: 8),
-                        Text(
-                          "Dr. ${clinic.name}",
-                          style:AppTextStyles.caption(context,fontWeight: FontWeight.bold)
-                        ),
-                        // Text(
-                        //   clinic.userType,
-                        //   style: TextStyle(
-                        //     color: Colors.grey.shade600,
-                        //   ),
-                        // ),
-
-                        const SizedBox(height: 8),
-
-                        Row(
-                          children: [
-                             IconButton(
-                             icon: Icon( Icons.location_on,
-                              size: 18,
-                              color: Colors.red,),
-                               onPressed: (){
-                                 if(clinic.location.toString().isNotEmpty&&(planActive==true
-                                     &&clinic?.details["plan"]?["basePlan"]?["details"]?["location"]==true|| isAdminUser)){
-                                   if (PlatformHelper.platform == 'Android' ||
-                                       PlatformHelper.platform == 'iOS') {
-                                     Get.toNamed(
-                                         '/webViewProfilePage', arguments: {
-                                       "url": clinic
-                                           .location
-                                           .toString() ?? "",
-                                       "clinicName": clinic
-                                           .details["name"].toString() ?? ""
-                                     });
-                                   }
-
-                                 }
-                               },
-                            ),
-                            const SizedBox(width: 5),
-
-                            Expanded(
-                              child: Text(
-                                "${clinic.address['area'] ?? ''}, "
-                                    "${clinic.address['city'] ?? ''}, "
-                                    "${clinic.address['district'] ?? ''}",
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 7),
-                        if ((planActive == true &&
-                            clinic.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-                            isAdminUser)
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.phone,
-                              size: 18,
-                              color: AppColors.primary,
-                            ),
-
-                            const SizedBox(width: 5),
-
-                            Text(
-                              clinic.mobileNumber,
-                              style:AppTextStyles.caption(context)
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                  ),
-
-                 // const SizedBox(width: 20),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton.icon(
-                          onPressed: () async {
-                            Get.toNamed('/clinicProfileWebPage');
-
-                          },
-                          icon: const Icon(Icons.person,color: AppColors.primary,size: 17,),
-                          label:  Text("View Profile",style: AppTextStyles.caption(context,color: AppColors.primary),),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.white,
-                              foregroundColor: Colors.white,shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                            side: const BorderSide(
-                              color: AppColors.primary,
-                              width: 1,
-                            ),))
-                      ),
-                      const SizedBox(height: 20),
-                      if ((planActive == true &&
-                          clinic.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-                          isAdminUser)
-                      ElevatedButton.icon(
-                        onPressed: () async {
-                          await launchCallWeb(
-                            "tel:${clinic.mobileNumber}",
-                          );
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          if (widget.clinic.location.toString().isNotEmpty && (showPrivateInfo || (isBasePlanActive && widget.clinic.details["plan"]?["basePlan"]?["details"]?["location"] == true))) {
+                            if (PlatformHelper.platform == 'Android' || PlatformHelper.platform == 'iOS') {
+                              Get.toNamed('/webViewProfilePage', arguments: {
+                                "url": widget.clinic.location.toString(),
+                                "clinicName": widget.clinic.details["name"].toString()
+                              });
+                            }
+                          }
                         },
-                        icon: const Icon(Icons.call,color: AppColors.primary,size: 17,),
-                        label:  Text("Call",style: AppTextStyles.caption(context,color: AppColors.primary),),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.white,
-                          foregroundColor: Colors.white,shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                          side: const BorderSide(
-                            color: AppColors.primary,
-                            width: 1,
-                          ),
-                        ),
+                        child: Text(
+                          "${widget.clinic.address['area'] ?? ''} ${widget.clinic.address['city'] ?? ''}, ${widget.clinic.address['district'] ?? ''}",
+                          style: const TextStyle(fontSize: 13, color: Color(0xFF475569), height: 1.3),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-
-                      const SizedBox(width: 60),
-
-                      // OutlinedButton.icon(
-                      //   onPressed: () {
-                      //     if (clinic.location.isNotEmpty) {
-                      //       launchUrl(
-                      //         Uri.parse(clinic.location),
-                      //       );
-                      //     }
-                      //   },
-                      //   icon: const Icon(Icons.location_pin,color: AppColors.primary,size: 17,),
-                      //   label:  Text("Location",style: AppTextStyles.caption(context,color: AppColors.primary,),),
-                      //   style: OutlinedButton.styleFrom(
-                      //     side: const BorderSide(
-                      //       color: AppColors.primary,
-                      //     ),
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(6),
-                      //     ),
-                      //   ),
-                      // ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  "Dr. ${widget.clinic.name}",
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
+                ),
+                if (showPrivateInfo && widget.clinic.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ...[
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      const Icon(Icons.phone_rounded, size: 14, color: AppColors.primary),
+                      const SizedBox(width: 6),
+                      Text("Mobile: ${widget.clinic.mobileNumber}", style: const TextStyle(fontSize: 13, color: Color(0xFF475569))),
                     ],
                   ),
-
                 ],
-              ),
-            ],
-          ),
+              ],
+            );
+
+            final Widget actionButtonsNode = Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: compactMode ? CrossAxisAlignment.stretch : CrossAxisAlignment.end,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    Api.userInfo.write('selectUId', widget.clinic.userId);
+                    await widget.loginController.getProfileByUserId(widget.clinic.userId, context);
+                    Get.toNamed('/clinicProfileWebPage');
+                  },
+                  icon: const Icon(Icons.person_rounded, size: 16),
+                  label: const Text("View Profile", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+                if (showPrivateInfo && widget.clinic.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ...[
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: () async => await launchUrl(Uri.parse("tel:${widget.clinic.mobileNumber}")),
+                    icon: const Icon(Icons.call_rounded, size: 16),
+                    label: const Text("Call Now", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFF16A34A),
+                      side: const BorderSide(color: Color(0xFFBBF7D0), width: 1.5),
+                      backgroundColor: const Color(0xFFF0FDF4),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                ],
+              ],
+            );
+
+            // Conditional rendering layout based on width constraints
+            if (compactMode) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      imageNode,
+                      const SizedBox(width: 14),
+                      Expanded(child: infoDetailsNode),
+                    ],
+                  ),
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Divider(color: Color(0xFFF1F5F9))),
+                  actionButtonsNode,
+                ],
+              );
+            }
+
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                imageNode,
+                const SizedBox(width: 18),
+                Expanded(child: infoDetailsNode),
+                const SizedBox(width: 16),
+                actionButtonsNode,
+              ],
+            );
+          },
         ),
-      );
-    }
-  );
+      ),
+    );
+  }
 }

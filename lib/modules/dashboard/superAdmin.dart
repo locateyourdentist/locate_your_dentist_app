@@ -357,7 +357,6 @@ class SuperAdminProfileCard extends StatelessWidget {
     if ((profile.address["city"] ?? "").isNotEmpty) parts.add(profile.address["city"]);
     String address = parts.join(", ");
     final loginController=Get.put(LoginController());
-
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Container(

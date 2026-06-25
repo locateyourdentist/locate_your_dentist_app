@@ -372,7 +372,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     topLeft: Radius.circular(10),
                                                     topRight: Radius.circular(10),
                                                   ),),
-                                                height: size*0.05,
+                                                height: size > 600 ? size * 0.05 : size * 0.12,
                                                 width: double.infinity,
                                                 child: QuillSimpleToolbar(
                                                   controller: _controller,
@@ -830,17 +830,18 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                       topLeft: Radius.circular(10),
                                                       topRight: Radius.circular(10),
                                                     ),),
-                                                  height: size*0.05,
+                                                  height: size > 600 ? size * 0.07 : size * 0.12,
                                                   width: double.infinity,
                                                   child: QuillSimpleToolbar(
                                                     controller: _controller,
                                                     config: QuillSimpleToolbarConfig(
-                                                      embedButtons: FlutterQuillEmbeds.toolbarButtons(),
+                                                      embedButtons: [],
+                                                      showBackgroundColorButton: false,
                                                     ),
                                                   ),
                                                 ),
                                                 Container(
-                                                  height: size*0.1,
+                                                  height: size*0.3,
                                                   width: double.infinity,
                                                   decoration: BoxDecoration(
                                                     color: Colors.grey.shade100,
@@ -853,7 +854,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     scrollController: _scrollController,
                                                     focusNode: _focusNode,
                                                     config: QuillEditorConfig(
-                                                      placeholder: "Enter webinar description...",
+                                                      placeholder: "Job description...",
                                                       padding: const EdgeInsets.all(16),
                                                     ),
                                                   ),

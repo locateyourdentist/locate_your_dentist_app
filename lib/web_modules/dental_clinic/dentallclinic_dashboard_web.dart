@@ -244,7 +244,7 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
         builder: (context, constraints) {
           double w = constraints.maxWidth;
           int crossAxisCount = w < 600 ? 1 : (w < 900 ? 2 : (w < 1200 ? 3 : 4));
-          double aspectRatio = w < 600 ? 1.5 : (w < 900 ? 1.8 : (w < 1200 ? 2.0 : 2.2));
+          double aspectRatio = w < 600 ? 2.5 : (w < 900 ? 1.8 : (w < 1200 ? 2.0 : 2.2));
           return GridView.builder(
             padding: const EdgeInsets.all(20),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, crossAxisSpacing: 20, mainAxisSpacing: 20, childAspectRatio: aspectRatio),
@@ -295,7 +295,7 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
         builder: (context, constraints) {
           double w = constraints.maxWidth;
           int crossAxisCount = w < 600 ? 1 : (w < 900 ? 2 : (w < 1200 ? 3 : 4));
-          double aspectRatio = w < 600 ? 1.5 : (w < 900 ? 1.8 : (w < 1200 ? 2.0 : 2.2));
+          double aspectRatio = w < 600 ? 2.5 : (w < 900 ? 1.8 : (w < 1200 ? 2.0 : 2.2));
           return GridView.builder(
             padding: const EdgeInsets.all(20),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, crossAxisSpacing: 20, mainAxisSpacing: 20, childAspectRatio: aspectRatio),

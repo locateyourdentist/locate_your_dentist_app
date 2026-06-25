@@ -835,6 +835,8 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _logo(),
               const SizedBox(width: 8),
@@ -851,7 +853,7 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
             children: [
               _notificationModern(),
               const SizedBox(width: 8),
-              _profileModern(),
+              _profileSection(),
             ],
           ),
         ],
@@ -902,10 +904,10 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
               _notificationModern(),
 
               const SizedBox(width: 16),
-              _profileModern(),
+              _profileSection(),
 
-              const SizedBox(width: 16),
-              if (!isTablet) _logoutModern(),
+             // const SizedBox(width: 16),
+             // if (!isTablet) _profileSection(),
             ],
           ),
         ],
@@ -1012,12 +1014,72 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
     );
   }
 
-  Widget _profileModern() {
-    return GestureDetector(
-      onTap: () {
-        Get.toNamed('/clinicProfileWebPage');
+  // Widget _profileModern() {
+  //   return GestureDetector(
+  //     onTap: () {
+  //       Get.toNamed('/clinicProfileWebPage');
+  //     },
+  //     child: Row(
+  //       children: [
+  //         CircleAvatar(
+  //           radius: 18,
+  //           backgroundImage: NetworkImage(
+  //             Api.userInfo.read("profileImage") ?? "",
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _logoutModern() {
+  //   return TextButton(
+  //     style: TextButton.styleFrom(
+  //       backgroundColor: Colors.red.withOpacity(0.15),
+  //       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(20),
+  //       ),
+  //     ),
+  //     onPressed: () {
+  //       showLogoutDialog(context);
+  //     },
+  //     child:  Text(
+  //       "Logout",
+  //       style: AppTextStyles.caption(context,color: Colors.white),
+  //     ),
+  //   );
+  // }
+  Widget _profileSection() {
+    return PopupMenuButton<String>(
+      offset: const Offset(0, 60),
+      onSelected: (value) {
+        if (value == "profile") {
+          Get.toNamed('/clinicProfileWebPage');
+        } else if (value == "logout") {
+          showLogoutDialog(context);
+        }
       },
-      child: Row(
+      itemBuilder: (_) => [
+         PopupMenuItem(
+          value: "profile",
+          child: ListTile(
+            leading: Icon(Icons.person_outline),
+            title: Text("My Profile",style: AppTextStyles.caption(context,color: Colors.red),),
+            contentPadding: EdgeInsets.zero,
+          ),
+        ),
+         PopupMenuItem(
+          value: "logout",
+          child: ListTile(
+            leading: Icon(Icons.logout, color: Colors.red),
+            title: Text("Logout",style: AppTextStyles.caption(context,color: Colors.red),),
+            contentPadding: EdgeInsets.zero,
+          ),
+        ),
+      ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
             radius: 18,
@@ -1025,30 +1087,16 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
               Api.userInfo.read("profileImage") ?? "",
             ),
           ),
+          // const SizedBox(height: 4),
+          // Icon(
+          //   Icons.keyboard_arrow_down,
+          //   size: 18,
+          //   color: Colors.white,
+          // ),
         ],
       ),
     );
-  }
-
-  Widget _logoutModern() {
-    return TextButton(
-      style: TextButton.styleFrom(
-        backgroundColor: Colors.red.withOpacity(0.15),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-      onPressed: () {
-        showLogoutDialog(context);
-      },
-      child:  Text(
-        "Logout",
-        style: AppTextStyles.caption(context,color: Colors.white),
-      ),
-    );
-  }
-}
+  }}
 
 Widget gradientButton({
   required String text,

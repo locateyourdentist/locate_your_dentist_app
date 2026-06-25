@@ -130,40 +130,68 @@ class _FilterSidebarState extends State<FilterSidebar> {
                         //     loginController.update();
                         //   },
                         // ),
-                        MultiSelectDialogField<String>(
-                        checkColor: AppColors.primary,
-                          items: loginController.villages
-                              .toSet()
-                              .map((e) => MultiSelectItem<String>(
-                            e.toString(),
-                            e.toString(),
-                          ))
-                              .toList(),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: AppColors.grey,
+                              width: 1,
+                            ),
+                          ),
+                          child: MultiSelectDialogField<String>(
+                            checkColor: AppColors.primary,
+                            buttonIcon: const Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.white,
+                              size: 2,
+                            ),
+                            items: loginController.villages
+                                .toSet()
+                                .map(
+                                  (e) => MultiSelectItem<String>(
+                                e.toString(),
+                                e.toString(),
+                              ),
+                            )
+                                .toList(),
 
-                          title:  Center(child: Text("Select Areas",style: AppTextStyles.body(context),)),
-                          buttonText:  Text("Area",style: AppTextStyles.caption(context),),
-                          searchable: true,
-                          dialogHeight: 200,
-                          dialogWidth: 100,
+                            title: Center(
+                              child: Text(
+                                "Select Areas",
+                                style: AppTextStyles.body(context),
+                              ),
+                            ),
 
-                          initialValue: loginController.selectedVillages,
+                            buttonText: Text(
+                              "Area",
+                              style: AppTextStyles.caption(context),
+                            ),
 
-                          onConfirm: (values) {
-                            loginController.selectedVillages =
-                                values.map((e) => e.toString()).toList();
+                            searchable: true,
+                            dialogHeight: 400,
+                            dialogWidth:120,
+                            initialValue: loginController.selectedVillages,
 
-                            print(loginController.selectedVillage);
-
-                            loginController.update();
-                          },
-
-                          chipDisplay: MultiSelectChipDisplay(
-                            height: 130,
-                            chipWidth: 100,textStyle: AppTextStyles.caption(context),
-                            onTap: (value) {
-                              loginController.selectedVillages.remove(value);
+                            onConfirm: (values) {
+                              loginController.selectedVillages = values.map((e) => e.toString()).toList();
                               loginController.update();
                             },
+
+                            chipDisplay: MultiSelectChipDisplay(
+                              height: 130,
+                              chipWidth: 100,
+                              textStyle: AppTextStyles.caption(context),
+                              onTap: (value) {
+                                loginController.selectedVillages.remove(value);
+                                loginController.update();
+                              },
+                            ),
                           ),
                         ),
                         const Divider(),
