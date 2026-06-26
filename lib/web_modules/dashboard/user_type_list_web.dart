@@ -43,8 +43,8 @@ class _ModernUserTableState extends State<ModernUserTable> {
   Future<void> _refresh() async {
     await loginController.getProfileDetails(
       Api.userInfo.read('sUserType1')??"",  loginController.selectedState,
-      loginController.selectedDistrict,
-      loginController.selectedTaluka,loginController.selectedVillages,Api.userInfo.read('token')==null? 'true':"", '', '', '', '', context,);
+      loginController.selectedDistricts,
+      loginController.selectedTalukas,loginController.selectedVillages,Api.userInfo.read('token')==null? 'true':"", '', '', '', '', context,);
     await loginController.fetchStates();
     loginController.selectedState = null;
     loginController.selectedDistrict = null;
@@ -106,10 +106,10 @@ class _ModernUserTableState extends State<ModernUserTable> {
       onWillPop: () async {
         Get.toNamed('/${pageUserTypeWeb(Api.userInfo.read('userType') ?? "")}');
         if (Api.userInfo.read('userType') == "superAdmin") {
-          loginController.getProfileDetails('', '', '', '', [], '','', '', '', '', context);
+          loginController.getProfileDetails('', '', [], [], [], '','', '', '', '', context);
         }
         if (Api.userInfo.read('userType') == "admin") {
-          loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', [], '', '', '', '', '',context);
+          loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [], [], '', '', '', '', '',context);
         }
         return true;
       },
@@ -238,13 +238,13 @@ class _ModernUserTableState extends State<ModernUserTable> {
         : "";
     
     if (Api.userInfo.read('userType') == "superAdmin") {
-      loginController.getProfileDetails('', '', '', '', [], '','', '', '', searchController.text.toString(), context);
+      loginController.getProfileDetails('', '', [], [], [], '','', '', '', searchController.text.toString(), context);
     } else if (Api.userInfo.read('userType') == "admin") {
-      loginController.getProfileDetails('',Api.userInfo.read('state') ?? "",  '', '', [], '','', '', '', searchController.text.toString(), context);
+      loginController.getProfileDetails('',Api.userInfo.read('state') ?? "",  [], [], [], '','', '', '', searchController.text.toString(), context);
       // await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict, loginController.selectedTaluka, loginController.selectedArea,'',safeLat, safeLng, distance,  searchController.text, context);
     } else {
       loginController.getProfileDetails(
-          "Dental Clinic", '', '', '',[], 'true','', '', '', searchController.text.toString(), context);
+          "Dental Clinic", '', [], [],[], 'true','', '', '', searchController.text.toString(), context);
       //await loginController.getProfileDetails(userType, loginController.selectedState, loginController.selectedDistrict, loginController.selectedTaluka,loginController.selectedArea, 'true',safeLat, safeLng, distance, searchController.text, context);
     }
   }
@@ -278,7 +278,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
     loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedVillage = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
     loginController.selectedVillages.clear();
     loginController.update();
-    await loginController.getProfileDetails("", "", "", "",[] ,"", "", "", "", "", context);
+    await loginController.getProfileDetails("", "", [], [],[] ,"", "", "", "", "", context);
   }
 
   Widget _buildExportButton(List filteredProfiles) {
@@ -425,7 +425,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
       context: context, title: "Toggle User Status?", message: "Do you want to change this user's active status?",
       onConfirm: () async {
         await loginController.deactivateUserAdmin(user.userId, !user.isActive, context);
-        await loginController.getProfileDetails('', '', '', '', [], '', '', '', '', '',context);
+        await loginController.getProfileDetails('', '', [], [], [], '', '', '', '', '',context);
         loginController.update();
       },
     );

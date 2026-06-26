@@ -35,6 +35,7 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
   String district = '';
   String city = '';
   final ImagePicker _picker = ImagePicker();
+  final GlobalKey<ScaffoldState> _scaffoldKeyCreateContact = GlobalKey<ScaffoldState>();
 
   final int maxFiles = 3;
   String? selectName;
@@ -162,14 +163,18 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
         );
       }
     }
+    final bool isDesktop = size >= 1100;
+    final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
+      key: _scaffoldKeyCreateContact,
       backgroundColor: AppColors.white,
       appBar: buildAppBar(),
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       body: GetBuilder<LoginController>(
           builder: (controller) {
             return Row(
               children: [
-                const AdminSideBar(),
+                if (isLoggedIn && isDesktop) const AdminSideBar(),
 
                 Expanded(
                   child: Form(
@@ -195,6 +200,19 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    if (!isDesktop)
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.menu,
+                                            color: AppColors.black,
+                                          ),
+                                          onPressed: () {
+                                            _scaffoldKeyCreateContact.currentState?.openDrawer();
+                                          },
+                                        ),
+                                      ),
                                     Text('Contact Form',style: AppTextStyles.subtitle(context,),),
                                     SizedBox(height: size*0.02,),
                                     Wrap(
@@ -209,40 +227,56 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                             title: 'Call Us',),
 
                                           CommonContactContainer(icons: Icons.email,onTap: (){
-                                            //_launch('contact@catchytechnologies.com');
+                                           // _launch('contact@catchytechnologies.com');
                                           },title: 'Email Us',),
 
                                           CommonContactContainer(icons: Icons.search,onTap: (){},title: 'Search FAQs',),
                                         ]),
                                     SizedBox(height: size*0.04,),
-
+                                    Text(
+                                          "Doctor Name",
+                                        style: AppTextStyles.caption(context,  color: Colors.black,fontWeight: FontWeight.bold)
+                                    ),
+                                    SizedBox(height: size*0.01,),
                                     CustomTextField(
-                                      hint: "Doctor Name",
+                                      hint: "",
                                       controller: contactController.doctorNameController,
                                       borderColor:Colors.black12,
                                       fillColor: AppColors.white,readOnly: true,
                                     ),
                                     SizedBox(height: size*0.01,),
-
+                                    Text(
+                                        "Clinic Name",
+                                        style: AppTextStyles.caption(context,  color: Colors.black,fontWeight: FontWeight.bold)
+                                    ),
+                                    SizedBox(height: size*0.01,),
                                     CustomTextField(
-                                      hint: "Clinic Name",
+                                      hint: "",
                                       controller: contactController.contactClinicNameController,
                                       borderColor:Colors.black12,
                                       fillColor: AppColors.white,readOnly: true,
                                     ),
                                     SizedBox(height: size*0.01,),
-
+                                    Text(
+                                        "Clinic Address",
+                                        style: AppTextStyles.caption(context,  color: Colors.black,fontWeight: FontWeight.bold)
+                                    ),
+                                    SizedBox(height: size*0.01,),
                                     CustomTextField(
-                                      hint: "Clinic Address",
+                                      hint: "",
                                       controller:  contactController.clinicAddressController,
                                       borderColor:Colors.black12,
                                       readOnly: true,
                                       fillColor: AppColors.white,
                                     ),
                                     SizedBox(height: size*0.01,),
-
+                                    Text(
+                                        "Details on material requirement",
+                                        style: AppTextStyles.caption(context,  color: Colors.black,fontWeight: FontWeight.bold)
+                                    ),
+                                    SizedBox(height: size*0.01,),
                                     CustomTextField(
-                                      hint: "Details on material requirement",
+                                      hint: "",
                                       controller: contactController.contactDetailsController,
                                       borderColor:Colors.black12,
                                       fillColor: AppColors.white,maxLines: 4,
@@ -324,16 +358,16 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
                                           return GestureDetector(
                                             onTap: () => pickImages(),
                                             child: Container(
-                                              margin: const EdgeInsets.all(8),
-                                              width: size * 0.1,
-                                              height: size * 0.3,
+                                              margin:  EdgeInsets.all(8),
+                                              width:120,
+                                              height:150,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(10),
                                                 border: Border.all(color: Colors.grey.shade100),
                                                 color: Colors.black12,
                                               ),
                                               child:  Center(
-                                                child: Icon(Icons.add, size: size*0.012, color: Colors.grey),
+                                                child: Icon(Icons.add, size: 14, color: Colors.grey),
                                               ),
                                             ),
                                           );
@@ -346,7 +380,7 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
 
                                     Center(
                                       child: Container(
-                                        width: size*0.15,
+                                        width: 120,
                                         decoration: BoxDecoration(
                                           gradient: const LinearGradient(
                                             colors: [AppColors.primary, AppColors.secondary],

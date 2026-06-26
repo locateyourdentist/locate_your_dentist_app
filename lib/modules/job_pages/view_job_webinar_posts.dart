@@ -92,34 +92,10 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
     }
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,backgroundColor: AppColors.white,
+        centerTitle: true,backgroundColor: AppColors.primary,
         iconTheme: const IconThemeData(color: AppColors.white),
-        title: Text('Job Posts / Webinars',style: AppTextStyles.subtitle(context,color: AppColors.black),),
+        title: Text('Job Posts / Webinars',style: AppTextStyles.subtitle(context,color: AppColors.white),),
         automaticallyImplyLeading: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.secondary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
       body: GetBuilder<JobController>(
         builder: (controller) {
@@ -132,7 +108,7 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("My Posts",style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
+                    Text("My Lastest Job Posts",style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
                     Padding(
                       padding:  const EdgeInsets.all(10.0),
                       child: Container(

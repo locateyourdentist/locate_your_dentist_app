@@ -38,10 +38,10 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
       await loginController.fetchDistricts(loginController.selectedState!);
     }
     if (loginController.selectedDistrict != null && loginController.selectedDistrict!.isNotEmpty) {
-      await loginController.fetchTalukas(loginController.selectedDistrict!);
+      await loginController.fetchTalukas(loginController.selectedDistricts!);
     }
     if (loginController.selectedTaluka != null && loginController.selectedTaluka!.isNotEmpty) {
-      await loginController.fetchVillages(loginController.selectedTaluka!);
+      await loginController.fetchVillages(loginController.selectedTalukas!);
     }
 
     loginController.update();
@@ -110,15 +110,16 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                     children: [
                                       SizedBox(height: size*0.01,),
                                       if (!isDesktop)
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 15.0),
-                                          child: Row(
-                                            children: [
-                                              IconButton(
-                                                icon: const Icon(Icons.menu, color: AppColors.black),
-                                                onPressed: () => _scaffoldKeyBranch.currentState?.openDrawer(),
-                                              ),
-                                            ],
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.menu,
+                                              color: AppColors.black,
+                                            ),
+                                            onPressed: () {
+                                              _scaffoldKeyBranch.currentState?.openDrawer();
+                                            },
                                           ),
                                         ),
 
@@ -359,7 +360,7 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
 
               c.talukas.clear();
 
-              c.fetchTalukas(v);
+              c.fetchTalukas([v]);
               c.update();
             }
           },
@@ -394,7 +395,7 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
               c.villages.clear();
               c.selectedVillage = null;
 
-              c.fetchVillages(v);
+              c.fetchVillages([v]);
 
               c.update();
             }

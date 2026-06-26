@@ -75,12 +75,16 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 if (!isDesktop)
-                                  Positioned(
-                                    top: 10,
-                                    left: 10,
+                                  Align(
+                                    alignment: Alignment.centerLeft,
                                     child: IconButton(
-                                      icon: const Icon(Icons.menu,color: AppColors.black,),
-                                      onPressed: () => _scaffoldKeyContact.currentState?.openDrawer(),
+                                      icon: const Icon(
+                                        Icons.menu,
+                                        color: AppColors.black,
+                                      ),
+                                      onPressed: () {
+                                        _scaffoldKeyContact.currentState?.openDrawer();
+                                      },
                                     ),
                                   ),
                                 _buildHeader(context, width, isMobile),
@@ -247,7 +251,10 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                 duration: const Duration(milliseconds: 500),
                 child: FadeInAnimation(
                   child: isMobile 
-                    ? _buildMobileCard(context, contact, formattedDate)
+                    ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _buildMobileCard(context, contact, formattedDate),
+                    )
                     : _buildDataRow(context, contact, formattedDate, isTablet),
                 ),
               );

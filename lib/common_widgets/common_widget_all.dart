@@ -48,7 +48,6 @@ class DoctorCardWidget extends StatelessWidget {
         child: Column(
           children: [
 
-            /// Top Section
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -57,13 +56,13 @@ class DoctorCardWidget extends StatelessWidget {
                   child: doctor.logoImages.isNotEmpty
                       ? Image.network(
                     doctor.logoImages.first,
-                    width: size * 0.25,
-                    height: size * 0.25,
+                    width: size * 0.21,
+                    height: size * 0.21,
                     fit: BoxFit.cover,
                   )
                       : Container(
-                    width: size * 0.25,
-                    height: size * 0.25,
+                    width: size * 0.21,
+                    height: size * 0.21,
                     color: Colors.grey.shade200,
                     child: const Icon(
                       Icons.person,
@@ -610,6 +609,12 @@ String imgUserType(String userType) {
 String imgUserTypeNew(String userType) {
   String page;
   switch (userType) {
+    case "Admin":
+      page = "assets/images/dental_clinic1.png";
+      break;
+    case "Super Admin":
+      page = "assets/images/dental_clinic1.png";
+      break;
     case "Dental Clinic":
       page = "assets/images/dental_clinic1.png";
       break;

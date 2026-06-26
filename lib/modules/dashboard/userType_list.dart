@@ -135,13 +135,13 @@ class _userTypeListState extends State<userTypeList> {
    loginController.selectedTaluka=null;
    loginController.update();
     if( Api.userInfo.read('userType')=="superAdmin") {
-    await   loginController.getProfileDetails('', '', '', '', [],'','','','','',  context);
+    await   loginController.getProfileDetails('', '', [], [], [],'','','','','',  context);
     }
     else if( Api.userInfo.read('userType')=="admin") {
-     await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '',[],'','','','','', context);
+     await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [],[],'','','','','', context);
     }
     else {
-      await loginController.getProfileDetails(Api.userInfo.read('token')!=null?Api.userInfo.read('sUserType')??"":"",  "", '', '', [],'true','','','','', context);
+      await loginController.getProfileDetails(Api.userInfo.read('token')!=null?Api.userInfo.read('sUserType')??"":"",  "", [], [], [],'true','','','','', context);
     }
   }
   @override
@@ -157,13 +157,13 @@ class _userTypeListState extends State<userTypeList> {
       onWillPop: () async {
         Get.toNamed('/${pageUserType(Api.userInfo.read('userType') ?? "")}');
         if( Api.userInfo.read('userType')=="superAdmin") {
-          await   loginController.getProfileDetails('', '', '', '', [],'','','','','',  context);
+          await   loginController.getProfileDetails('', '', [], [], [],'','','','','',  context);
         }
         else if( Api.userInfo.read('userType')=="admin") {
-          await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', [],'','','','','', context);
+          await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [], [],'','','','','', context);
         }
         else {
-          await loginController.getProfileDetails('', '', '', '', [],'true','','','','', context);
+          await loginController.getProfileDetails('', '', [], [], [],'true','','','','', context);
         }
         return true;
         },
@@ -179,13 +179,13 @@ class _userTypeListState extends State<userTypeList> {
               onTap: () async{
                 Get.toNamed('/${pageUserType(Api.userInfo.read('userType') ?? "")}');
                 if( Api.userInfo.read('userType')=="superAdmin") {
-                  await   loginController.getProfileDetails('', '', '', '', [],'','','','','',  context);
+                  await   loginController.getProfileDetails('', '',[], [], [],'','','','','',  context);
                 }
                 else if( Api.userInfo.read('userType')=="admin") {
-                  await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', [],'','','','','', context);
+                  await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [], [],'','','','','', context);
                 }
                 else {
-                  await loginController.getProfileDetails('', '', '', '', [],'true','','','','', context);
+                  await loginController.getProfileDetails('', '', [], [], [],'true','','','','', context);
                 }
                 //return true;
               },
@@ -283,20 +283,17 @@ class _userTypeListState extends State<userTypeList> {
                                     filteredProfiles.map((e) => searchController.text.toString());
                                     if( Api.userInfo.read('userType')=="superAdmin") {
                                       await   loginController.getProfileDetails('',  '',
-                                          '',
-                                          '',[], '','',
+                                          [], [], [], '','',
                                           '','',searchController.text.toString(),  context);
                                     }
                                     else if( Api.userInfo.read('userType')=="admin") {
                                       await   loginController.getProfileDetails('',  Api.userInfo.read('state') ?? "",
-                                          '',
-                                          '',[], '','',
+                                          [], [], [], '','',
                                           '','',searchController.text.toString(),  context);
                                     }
                                     else{
                                       await   loginController.getProfileDetails(userType, "",
-                                          '',
-                                          '',[], '','',
+                                          [], [], [], '','',
                                           '','',searchController.text.toString(),  context);
                                     }
                                     print("Search text: $value");
@@ -373,21 +370,21 @@ class _userTypeListState extends State<userTypeList> {
                                             filteredProfiles.map((e) => searchController.text.toString());
                                             if( Api.userInfo.read('userType')=="superAdmin") {
                                               await   loginController.getProfileDetails('',  loginController.selectedState,
-                                                  loginController.selectedDistrict,
-                                                  loginController.selectedTaluka,[], '',safeLat,
+                                                  loginController.selectedDistricts,
+                                                  loginController.selectedTalukas,[], '',safeLat,
                                                   safeLng,distance,searchController.text.toString(),  context);
                                             }
                                            else if( Api.userInfo.read('userType')=="admin") {
-                                              await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict,
-                                                  loginController.selectedTaluka,loginController.selectedVillages, '',safeLat,
+                                              await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistricts,
+                                                  loginController.selectedTalukas,loginController.selectedVillages, '',safeLat,
                                                   safeLng,distance,searchController.text.toString(), context);
                                             }
                                             else{
                                               await  loginController.getProfileDetails(
                                                 userType,
                                                 loginController.selectedState,
-                                                loginController.selectedDistrict,
-                                                loginController.selectedTaluka,loginController.selectedVillages,'true',safeLat,
+                                                loginController.selectedDistricts,
+                                                loginController.selectedTalukas,loginController.selectedVillages,'true',safeLat,
                                                 safeLng,distance, searchController.text.toString(),
                                                 context,
                                               );
@@ -502,8 +499,7 @@ class _userTypeListState extends State<userTypeList> {
                                         await loginController.getProfileDetails(
                                           "",
                                           "",
-                                          "",'',
-                                          [],
+                                          [], [], [],
                                           "",
                                           "",
                                           "",

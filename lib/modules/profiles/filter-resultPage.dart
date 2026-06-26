@@ -36,8 +36,8 @@ class _FilterResultPageState extends State<FilterResultPage> {
     loginController.getProfileDetails(
       Api.userInfo.read('selectedUserType'),
       loginController.selectedState,
-      loginController.selectedDistrict,
-      loginController.selectedArea,[],"true",'','','','',
+      loginController.selectedDistricts,
+      loginController.selectedTalukas,[],"true",'','','','',
       context,
     );
   }
@@ -140,8 +140,8 @@ class _FilterResultPageState extends State<FilterResultPage> {
                                     loginController.getProfileDetails(
                                       "Dental Clinic",
                                       '',
-                                      '',
-                                      '',[],"true",
+                                      [],
+                                      [],[],"true",
                                       searchController.text.toString(),
                                       '','', '',context,
                                     );
@@ -195,15 +195,15 @@ class _FilterResultPageState extends State<FilterResultPage> {
                                                 await loginController.getProfileDetails(
                                                   "Dental Clinic",
                                                   loginController.selectedState,
-                                                  loginController.selectedDistrict,
-                                                  loginController.selectedTaluka,loginController.selectedVillages,"true",
+                                                  loginController.selectedDistricts,
+                                                  loginController.selectedTalukas,loginController.selectedVillages,"true",
                                                   safeLat,safeLng, distance,searchController.text.toString(),context,
                                                 ):
                                                 await loginController.getProfileDetails(
                                                   "",
                                                   loginController.selectedState,
-                                                  loginController.selectedDistrict,
-                                                  loginController.selectedTaluka,loginController.selectedVillages,"true",
+                                                  loginController.selectedDistricts,
+                                                  loginController.selectedTalukas,loginController.selectedVillages,"true",
                                                   safeLat,safeLng, distance,searchController.text.toString(),context,
                                                 )
 

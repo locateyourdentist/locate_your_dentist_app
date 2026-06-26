@@ -343,7 +343,7 @@ class _CreateNotificationAdminState extends State<CreateNotificationAdmin> {
                                 hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
                                 headerStyle: AppTextStyles.caption(context, color: Colors.black),
                                 listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
-                              onChanged: (val) {
+                              onChanged: (val)async {
                                 loginController.talukas.clear();
                                 loginController.villages.clear();
                                 loginController.selectedVillage=null;
@@ -352,11 +352,10 @@ class _CreateNotificationAdminState extends State<CreateNotificationAdmin> {
                                 if (val != null) {
                                   final district =
                                   loginController.districts.firstWhere((d) => d == val);
-                                  loginController.fetchTalukas(district.toString());
+                                 // loginController.fetchTalukas(district.toString());
+                                await  loginController.fetchTalukas(district);
                                   print('selectedDistrict${loginController.selectedDistrict}');
-
                                   loginController.update();
-
                                 }
                               },
                             );
@@ -395,7 +394,7 @@ class _CreateNotificationAdminState extends State<CreateNotificationAdmin> {
                                   if (val != null) {
                                     final taluka =
                                     loginController. talukas.firstWhere((t) => t == val);
-                                    loginController.fetchVillages(taluka.toString());
+                                    loginController.fetchVillages(taluka);
                                     loginController.update();
                                     print('taluka${loginController.selectedTaluka}');
                                   }

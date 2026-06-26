@@ -224,7 +224,7 @@ import 'package:flutter_quill/flutter_quill.dart';
                           Container(
                             color: Colors.grey[200],
                             width: double.infinity,
-                            height:120,
+                            height:250,
                             //s*0.015,
                             child: Icon(Icons.image, size: 15),
                           ),

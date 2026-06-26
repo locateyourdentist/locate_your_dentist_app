@@ -179,19 +179,15 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
 
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
-                                        child: SizedBox(
-                                          height: screenWidth * 0.15,
-                                          width: double.infinity,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              if (url.isNotEmpty) {
-                                                try {
-                                                  Get.toNamed('/viewImagePage', arguments: {"url": url});
-                                                } catch (_) {}
-                                              }
-                                            },
-                                            child: _networkImageSafe(url, width: double.infinity, height:isDesktop? screenWidth * 0.15:screenWidth * 0.35, borderRadius: BorderRadius.circular(10)),
-                                          ),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            if (url.isNotEmpty) {
+                                              try {
+                                                Get.toNamed('/viewImagePage', arguments: {"url": url});
+                                              } catch (_) {}
+                                            }
+                                          },
+                                          child: _networkImageSafe(url, width: double.infinity, height:isDesktop? screenWidth * 0.15:screenWidth * 0.5, borderRadius: BorderRadius.circular(10)),
                                         ),
                                       ),
                                   
@@ -271,7 +267,6 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                                   builder: (controller) {
                                                     bool isUserActive = controller.userData.isNotEmpty &&
                                                         controller.userData.first.isActive;
-
                                                     return Switch(
                                                       value: job.isActive.toString() == 'true',
                                                       activeColor:

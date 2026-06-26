@@ -30,7 +30,7 @@ class AppColors {
   //  Background colors
   // static const Color background = Color(0xFFF5F5F5);
   static const Color background = Color(0xFFE5F0F2);
-  static const Color scaffoldBg = Color(0xFFF1F7F8);
+  static const Color scaffoldBg = Color(0xFFF5F7FB);
   static const Color surface = Colors.white;
   //static const Color scaffoldBg = Color(0xFFF5F6FA);
   //  Status colors

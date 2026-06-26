@@ -550,7 +550,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                             controller.selectedVillage = null;
                                             final district = controller.districts.firstWhere((d) => d == val);
                                             print('sub district selected$district');
-                                            controller.fetchTalukas(district.toString());
+                                            //controller.fetchTalukas(district.toString());
+                                            controller.fetchTalukas(district);
                                             controller.update();
                                           }
                                         },
@@ -586,12 +587,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 width: 1.5,
                                               ),
                                             ),
-                                            onChanged: (val) {
+                                            onChanged: (val)async {
                                               setState(() => loginController.selectedTaluka = val);
                                               if (val != null) {
                                                 final taluka = loginController.talukas.firstWhere((t) => t == val);
                                                 controller.villages.clear();
-                                                loginController.fetchVillages(taluka.toString());
+                                              await  loginController.fetchVillages(taluka);
                                                 loginController.update();
                                                 print('taluka${loginController.selectedTaluka}');
                                               }

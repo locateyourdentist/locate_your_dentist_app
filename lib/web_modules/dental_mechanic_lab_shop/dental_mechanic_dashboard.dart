@@ -134,7 +134,7 @@ class _DentalMechanicWebDashboardState extends State<DentalMechanicWebDashboard>
           onTap: () async {
           Api.userInfo.write('sUserType1', title[index]);
           await loginController.getProfileDetails(
-          title[index], '', '', '',[], 'true', '', '', '', '', context,
+          title[index], '', [], [],[], 'true', '', '', '', '', context,
           );
           Get.toNamed('/userTypeListWeb');
           },

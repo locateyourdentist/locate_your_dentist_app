@@ -273,7 +273,7 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
                             const SizedBox(height: 20),
                             if (!isMobile)
                               Container(
-                                height: width*0.4,
+                                height: isMobile?width*0.23:width*0.04,
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade100,
                                   borderRadius:

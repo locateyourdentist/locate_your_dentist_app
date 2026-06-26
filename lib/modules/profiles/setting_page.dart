@@ -495,7 +495,7 @@ List<Map<String, String>> _getSettingsForUser(String userType) {
 switch (userType) {
 case 'Dental Lab':
 return [
-{"title": "Lab Profile", "page": "/mechanicDashboard"},
+{"title": "Lab Profile", "page": "/labProfilePage"},
 {"title": "Edit Profile", "page": "/clinicEditProfile"},
 {"title": "My Subscription", "page": "/viewPlanPage"},
 {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
@@ -556,7 +556,7 @@ multipleBranches
 ];
 case 'Dental Shop':
 return [
-{"title": "Shop Profile", "page": "/mechanicDashboard"},
+{"title": "Shop Profile", "page": "/labProfilePage"},
 {"title": "My Subscription", "page": "/viewPlanPage"},
 {"title": "My Purchases", "page": "/viewInvoiceListPage"},
 {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
@@ -571,7 +571,7 @@ return [
 case 'Dental Mechanic':
 case 'Dental Consultant':
 return [
-{"title": "Profile", "page": "/mechanicDashboard"},
+{"title": "Profile", "page": "/labProfilePage"},
 {"title": "Edit Profile", "page": "/clinicEditProfile"},
 {"title": "My Subscription", "page": "/viewPlanPage"},
 {"title": "My Purchases", "page": "/viewInvoiceListPage"},
@@ -877,9 +877,9 @@ await jobController.getWebinarListJobSeekers('', '', context);
 Get.toNamed(item['page']);
 } else if (title == "User List") {
 if (Api.userInfo.read('userType') == "superAdmin") {
-await loginController.getProfileDetails('', '', '', '', [], '', '', '', '', '', context);
+await loginController.getProfileDetails('', '', [], [], [], '', '', '', '', '', context);
 } else if (Api.userInfo.read('userType') == "admin") {
-await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', [], '', '', '', '', '', context);
+await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [], [], '', '', '', '', '', context);
 }
 Get.toNamed('/userTypeListPage');
 } else if (title == "Profile") {

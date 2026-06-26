@@ -106,14 +106,15 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
                       onRefresh: _refresh,
                       child: Stack(
                         children: [
-                          if (isLoggedIn && !isDesktop)
-                            Positioned(
-                              top: 10,
-                              left: 10,
-                              child: IconButton(
-                                icon: const Icon(Icons.menu,color: AppColors.black,),
-                                onPressed: () => _scaffoldKeyJobs.currentState?.openDrawer(),
+                          if (!isDesktop)
+                            IconButton(
+                              icon: const Icon(
+                                Icons.menu,
+                                color: AppColors.black,
                               ),
+                              onPressed: () {
+                                _scaffoldKeyJobs.currentState?.openDrawer();
+                              },
                             ),
                           NestedScrollView(
                             headerSliverBuilder: (context, innerBoxIsScrolled) => [

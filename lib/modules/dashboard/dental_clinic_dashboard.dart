@@ -83,7 +83,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                 builder: (controller) {
                   return Row(
                     children: [
-                      Icon(Icons.place_outlined,color: AppColors.white,size: size*0.06,),
+                      Icon(Icons.place_outlined,color: AppColors.white,size: size*0.05,),
                       SizedBox(width: size*0.01,),
                       Expanded(child: Text(planController.currentLocation??"",overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.white),)),
                     ],
@@ -210,7 +210,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                     hintText: "Search lab,shop,etc., by name,mobileNumber,email...",
                                     onSubmitted: (value)async {
                                       print("Search text: $value");
-                                      await  loginController.getProfileDetails('' ,'', '','', [],'true','','','',value,context);
+                                      await  loginController.getProfileDetails('' ,'', [],[], [],'true','','','',value,context);
                                       Get.toNamed('/filterResultPage');
                                     },
                                   )
@@ -256,8 +256,8 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                                   await loginController.getProfileDetails(
                                                     userType ?? "",
                                                     loginController.selectedState,
-                                                    loginController.selectedDistrict,
-                                                    loginController.selectedTaluka,loginController.selectedVillages,"true",safeLat,safeLng, distance,'',
+                                                    loginController.selectedDistricts,
+                                                    loginController.selectedTalukas,loginController.selectedVillages,"true",safeLat,safeLng, distance,'',
                                                     context,
                                                   );
                                                   Get.back();
@@ -278,7 +278,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                         );
                                        // _scaffoldKeyUser.currentState!.openDrawer();
                                       },
-                                      icon:  Icon(Icons.location_on_outlined, color: Colors.black, size: size*0.06),
+                                      icon:  Icon(Icons.search, color: Colors.black, size: size*0.06),
                                       splashRadius: 22,
                                     ),
                                   ),
@@ -331,8 +331,8 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                         await loginController.getProfileDetails(
                                           title[index],
                                           '',
-                                          '',
-                                          '',[],
+                                          [],
+                                          [],[],
                                           'true',
                                           '',
                                           '',

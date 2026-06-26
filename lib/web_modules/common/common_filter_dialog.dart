@@ -125,7 +125,7 @@ class _FilterDialogContentState extends State<FilterDialogContent> {
                                 ),
                               )
                                   .toList(),
-                              onChanged: (val) {
+                              onChanged: (val) async{
                                 loginController.selectedDistrict = val;
                                 print('hghdist${loginController.selectedDistrict}');
                                 loginController.talukas.clear();
@@ -133,7 +133,7 @@ class _FilterDialogContentState extends State<FilterDialogContent> {
                                 loginController.selectedVillage = null;
                                 final districts = controller.districts.firstWhere((s) => s == val);
                                 print('state  selected$districts');
-                                controller.fetchTalukas(districts.toString());
+                               await controller.fetchTalukas(districts);
                                 loginController.update();
                               },
                               decoration: _dropdownDecoration(),

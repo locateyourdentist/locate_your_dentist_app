@@ -240,7 +240,7 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
   Future<void> _refresh() async {
    await controller.getIncomeDetailsByPlan(context: context);
    await controller.getExpense(month: "", year: selectedYear);
-   await loginController.getProfileDetails('', '', '', '',[], false.toString(),'','','','', context);
+   await loginController.getProfileDetails('', '', [], [],[], false.toString(),'','','','', context);
   }
   @override
   Widget build(BuildContext context) {

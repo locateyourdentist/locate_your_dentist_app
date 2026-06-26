@@ -166,10 +166,10 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                        // height: size*0.12,
                         child:CommonSearchTextField(
                           controller: searchController,
-                          hintText: "Search dental clinic",
+                          hintText: "Search dental clinic,shop,etc., by name,mobile number",
                           onSubmitted: (value) {
                             print("Search text: $value");
-                            loginController.getProfileDetails('','', '','',[],"true", '','','', value,context);
+                            loginController.getProfileDetails('','', [],[],[],"true", '','','', value,context);
                             Get.toNamed('/filterResultPage');
                           },
                         )
@@ -180,154 +180,302 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
             ),
                 ),
               const SizedBox(height: 30,),
-              SizedBox(
-                height: size * 0.45,
-                child: AnimationLimiter(
-                  child: ListView.builder(
-                    itemCount: title.length,
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    itemBuilder: (context, index) {
-                      return AnimationConfiguration.staggeredList(
-                        position: index,
-                        duration: const Duration(milliseconds: 500),
-                        child: SlideAnimation(
-                          horizontalOffset: 50,
-                          child: FadeInAnimation(
-                            child: GestureDetector(
-                              onTap: () async {
-                                WidgetsBinding.instance.addPostFrameCallback((_) async {
+              // SizedBox(
+              //   height: size * 0.45,
+              //   child: AnimationLimiter(
+              //     child: ListView.builder(
+              //       itemCount: title.length,
+              //       scrollDirection: Axis.horizontal,
+              //       shrinkWrap: true,
+              //       physics: const BouncingScrollPhysics(),
+              //       padding: const EdgeInsets.symmetric(horizontal: 10),
+              //       itemBuilder: (context, index) {
+              //         return AnimationConfiguration.staggeredList(
+              //           position: index,
+              //           duration: const Duration(milliseconds: 500),
+              //           child: SlideAnimation(
+              //             horizontalOffset: 50,
+              //             child: FadeInAnimation(
+              //               child: GestureDetector(
+              //                 onTap: () async {
+              //                   WidgetsBinding.instance.addPostFrameCallback((_) async {
+              //
+              //                     if (title[index] == "Job Posts/Webinars") {
+              //
+              //                       Get.toNamed('/viewJobWebinarPage');
+              //
+              //                     } else {
+              //
+              //                       Api.userInfo.write(
+              //                         'sUserType',
+              //                         title[index].toString(),
+              //                       );
+              //
+              //                       print('cvv ${title[index]}');
+              //
+              //                       await loginController.getProfileDetails(
+              //                         title[index],
+              //                         '',
+              //                         '',
+              //                         '',[],
+              //                         'true',
+              //                         '',
+              //                         '',
+              //                         '',
+              //                         '',
+              //                         context,
+              //                       );
+              //
+              //                       if (Get.currentRoute != '/userTypeListPage') {
+              //                         Get.toNamed('/userTypeListPage');
+              //                       }
+              //                     }
+              //                   });
+              //                 },
+              //                 child: Container(
+              //                   width: 150,
+              //                   margin: const EdgeInsets.only(right: 12),
+              //                   decoration: BoxDecoration(
+              //                     color: Colors.white,
+              //                     borderRadius: BorderRadius.circular(16),
+              //                     boxShadow: [
+              //                       BoxShadow(
+              //                         color: Colors.black.withOpacity(0.08),
+              //                         blurRadius: 8,
+              //                         offset: const Offset(0, 3),
+              //                       ),
+              //                     ],
+              //                   ),
+              //                   child: Column(
+              //                     crossAxisAlignment: CrossAxisAlignment.stretch,
+              //                     children: [
+              //
+              //                       ClipRRect(
+              //                         borderRadius: const BorderRadius.vertical(
+              //                           top: Radius.circular(16),
+              //                         ),
+              //                         child: Image.asset(
+              //                           imgUserType(title[index]),
+              //                           height: size * 0.28,
+              //                           fit: BoxFit.cover,
+              //                         ),
+              //                       ),
+              //
+              //                       Expanded(
+              //                         child: Container(
+              //                           alignment: Alignment.center,
+              //                           padding: const EdgeInsets.symmetric(
+              //                             horizontal: 8,
+              //                             // vertical: 5,
+              //                           ),
+              //                           child: Text(
+              //                             title[index].toString(),
+              //                             textAlign: TextAlign.center,
+              //                             maxLines: 2,
+              //                             overflow: TextOverflow.ellipsis,
+              //                             style: AppTextStyles.caption(
+              //                               context,
+              //                               color: AppColors.black,
+              //                               fontWeight: FontWeight.bold,
+              //                             ),
+              //                           ),
+              //                         ),
+              //                       ),
+              //                     ],
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'What you Want?',
+                      style: AppTextStyles.subtitle(
+                        context,
+                        color: AppColors.black,
+                      ),
+                    ),
+                    SizedBox(height: size * 0.02),
 
-                                  if (title[index] == "Job Posts/Webinars") {
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: title.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3, // 3 items per row
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 15,
+                        childAspectRatio: 1.1,
+                      ),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () async {
+                            if (title[index] == "Job Posts/Webinars") {
+                              Get.toNamed('/viewJobWebinarPage');
+                            } else {
+                              Api.userInfo.write(
+                                'sUserType',
+                                title[index].toString(),
+                              );
 
-                                    Get.toNamed('/viewJobWebinarPage');
+                              await loginController.getProfileDetails(
+                                title[index],
+                                '',
+                                [],
+                                [],[],
+                                'true',
+                                '',
+                                '',
+                                '',
+                                '',
+                                context,
+                              );
 
-                                  } else {
+                              if (Get.currentRoute != '/userTypeListPage') {
+                                Get.toNamed('/userTypeListPage');
+                              }
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
 
-                                    Api.userInfo.write(
-                                      'sUserType',
-                                      title[index].toString(),
-                                    );
+                                /// IMAGE
+                                Expanded(
+                                  flex: 3,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Image.asset(
+                                      // imgUserType(title[index]),
+                                      imgUserTypeNew(title[index]),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
 
-                                    print('cvv ${title[index]}');
-
-                                    await loginController.getProfileDetails(
+                                /// TITLE
+                                Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: Text(
                                       title[index],
-                                      '',
-                                      '',
-                                      '',[],
-                                      'true',
-                                      '',
-                                      '',
-                                      '',
-                                      '',
-                                      context,
-                                    );
-
-                                    if (Get.currentRoute != '/userTypeListPage') {
-                                      Get.toNamed('/userTypeListPage');
-                                    }
-                                  }
-                                });
-                              },
-                              child: Container(
-                                width: 150,
-                                margin: const EdgeInsets.only(right: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.08),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 3),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ],
+                                  ),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(16),
-                                      ),
-                                      child: Image.asset(
-                                        imgUserType(title[index]),
-                                        height: size * 0.28,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-
-                                    Expanded(
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          // vertical: 5,
-                                        ),
-                                        child: Text(
-                                          title[index].toString(),
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: AppTextStyles.caption(
-                                            context,
-                                            color: AppColors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                SizedBox(height: size * 0.02),
+                              ],
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  height: size*0.12,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.search, color: Colors.grey),
-                        const SizedBox(width: 8),
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        height: size * 0.12,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: searchController,
+                                style: AppTextStyles.caption(
+                                  context,
+                                  color: AppColors.black,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: "Search contacts by name, area,mobile number...",
+                                  hintStyle: AppTextStyles.caption(
+                                    context,
+                                    color: AppColors.grey,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.text_fields,
+                                    color: AppColors.grey,
+                                    size: size * 0.05,
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 14),
+                                ),
+                                onSubmitted: (value)async {
+                                  await contactController.getReceiverContactFormLists(Api.userInfo.read('userId')??"",'','',searchController1.text, context);
 
-                        Expanded(
-                          child: CommonSearchTextField(
-                            controller: searchController1,
-                            hintText: "Search by mobile, email, name",
-                            onSubmitted: (value) {
-                              contactController.getReceiverContactFormLists(Api.userInfo.read('userId')??"",'','',searchController1.text, context);
+                                  print("Search text: $value");
+                                },
+                              ),
+                            ),
+                            Container(
+                              height: size * 0.06,
+                              width: 1,
+                              color: Colors.grey.shade300,
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.filter_alt,
+                                color: AppColors.primary,
+                                size: size * 0.06,
+                              ),
+                              onPressed: () {
+                                _scaffoldKey.currentState?.openEndDrawer();
+
                               },
-                          ),
+                            ),
+                          ],
                         ),
-
-                        const SizedBox(width: 8),
-                        IconButton(
-                          icon:  Icon(Icons.filter_alt,color: AppColors.grey,size: size*0.06,),
-                          onPressed: () {
-                            _scaffoldKey.currentState?.openEndDrawer();
-                          },
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    SizedBox(height: size*0.02,),
+                  ],
                 ),
               ),
                 Padding(
@@ -348,11 +496,9 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
                               itemBuilder: ( context, index){
                                 final contact= contactController.senderContactLists[index];
                                 String createdAt = contact.createdAt.toString();
-                                // Parse the ISO string to DateTime
                                 DateTime dateTime = DateTime.parse(createdAt);
-                                // Format DateTime to "Dec 15, 2025"
                                 String formattedDate = DateFormat('MMM dd, yyyy').format(dateTime);
-                                print(formattedDate); // Output: Dec 15, 2025
+                                print(formattedDate);
                                 return
                                   AnimationConfiguration.staggeredList(
                                     position: index,

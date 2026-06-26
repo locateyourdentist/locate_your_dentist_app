@@ -241,10 +241,10 @@ import 'package:geocoding/geocoding.dart';
         await loginController.fetchDistricts(loginController.selectedState!);
       }
       if (loginController.selectedDistrict != null && loginController.selectedDistrict!.isNotEmpty) {
-        await loginController.fetchTalukas(loginController.selectedDistrict!);
+        await loginController.fetchTalukas(loginController.selectedDistricts!);
       }
       if (loginController.selectedTaluka != null && loginController.selectedTaluka!.isNotEmpty) {
-        await loginController.fetchVillages(loginController.selectedTaluka!);
+        await loginController.fetchVillages(loginController.selectedTalukas);
       }
 
       loginController.update();
@@ -532,7 +532,7 @@ import 'package:geocoding/geocoding.dart';
                             _villageCtrl.value = null;
                             final district = controller.districts.firstWhere((d) => d == val);
                             print('sub district selected$district');
-                            controller.fetchTalukas(district.toString());
+                            controller.fetchTalukas(district);
                             controller.update();
                           }
                         },
@@ -567,11 +567,12 @@ import 'package:geocoding/geocoding.dart';
                             controller: _talukaCtrl,
                             excludeSelected: false,
                             onChanged: (val) {
-                              setState(() => loginController.selectedTaluka = val);
+                             // setState(() => loginController.selectedTaluka = val);
+                              setState(() => loginController.selectedTalukas = [val!]);
                               if (val != null) {
                                 _villageCtrl.value = null;
                                 loginController.villages.clear();
-                                loginController.fetchVillages(val);
+                                loginController.fetchVillages(loginController.selectedTalukas);
                                 loginController.update();
                               }
                             },),

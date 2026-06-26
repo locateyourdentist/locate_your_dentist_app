@@ -491,8 +491,8 @@ class Api {
 
   Future<http.Response> getUserDetails({String? userType,
     String? state,
-    String? district,
-    String? city,List<String>? area, String? latitude, String? longitude, String? distance, String? isActive, String? searchText}) async {
+    List<String>? district,
+    List<String>? city,List<String>? area, String? latitude, String? longitude, String? distance, String? isActive, String? searchText}) async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants
         .getProfileListUrl}";

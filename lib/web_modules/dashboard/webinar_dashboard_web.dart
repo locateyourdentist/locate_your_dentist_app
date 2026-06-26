@@ -69,7 +69,7 @@ class WebinarDashboardGrid extends StatelessWidget {
                           crossAxisSpacing: 24,
                           mainAxisSpacing: 24,
                           childAspectRatio: MediaQuery.of(context).size.width > 1000
-                              ? 0.70 : 0.65,
+                              ? 0.70 : 0.9,
                         ),
                         itemBuilder: (context, index) {
                           final webinar = webinarList[index];

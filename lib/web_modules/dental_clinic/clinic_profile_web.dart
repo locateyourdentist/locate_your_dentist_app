@@ -39,10 +39,10 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
       await loginController.fetchDistricts(loginController.selectedState!);
     }
     if (loginController.selectedDistrict != null && loginController.selectedDistrict!.isNotEmpty) {
-      await loginController.fetchTalukas(loginController.selectedDistrict!);
+      await loginController.fetchTalukas(loginController.selectedDistricts!);
     }
     if (loginController.selectedTaluka != null && loginController.selectedTaluka!.isNotEmpty) {
-      await loginController.fetchVillages(loginController.selectedTaluka!);
+      await loginController.fetchVillages(loginController.selectedTalukas!);
     }
 
     loginController.update();
@@ -146,7 +146,6 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
       ),
     );
   }
-
   Widget _buildProfileContent(double width, bool isDesktop, bool isMobile, bool isLoggedIn, LoginController controller) {
     final user = controller.userData.isNotEmpty ? controller.userData.first : null;
     final bool isAdminUser = Api.userInfo.read('userType') == 'admin' || Api.userInfo.read('userType') == 'superAdmin';
@@ -155,21 +154,25 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
 
     return GetBuilder<LoginController>(
         builder: (controller) {
-          return Stack(
-          children: [
-            if (isLoggedIn && !isDesktop)
-              Positioned(
-                top: 10, left: 10,
-                child: IconButton(
-                  icon: const Icon(Icons.menu),
-                  onPressed: () => _scaffoldKeyClinic.currentState?.openDrawer(),
-                ),
-              ),
-            SafeArea(
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(isMobile ? 10 : 30, isLoggedIn && !isDesktop ? 60 : 30, isMobile ? 10 : 30, 30),
-                child: Center(
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+              children: [
+                if (isLoggedIn && !isDesktop)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.menu,
+                        color: AppColors.black,
+                      ),
+                      onPressed: () {
+                        _scaffoldKeyClinic.currentState?.openDrawer();
+                      },
+                    ),
+                  ),
+                Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 1100),
                     child:GetBuilder<LoginController>(
@@ -186,10 +189,10 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                     ),
                   ),
                 ),
-              ),
+              ],
+                      ),
             ),
-          ],
-        );
+          );
       }
     );
   }
@@ -499,7 +502,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                   SizedBox(height: 10,),
                   Text(
                     user != null && user.address.isNotEmpty
-                        ? "${user.address['addressLine1'] ?? ''}, ${user.address['addressLine2'] ?? ''}"
+                        ? "${user.address['addressLine1'] ?? ''} ${user.address['addressLine2'] ?? ''}"
                         : "", maxLines: 2,
                     overflow: TextOverflow.ellipsis,   style: AppTextStyles.caption(context,color: AppColors.grey),
                   ),
@@ -508,7 +511,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                     user != null && user.address.isNotEmpty
                         ? "${user?.address['area'] ?? ''},${user?.address['city'] ?? ''},${user?.address['district'] ?? ''}, ${user?.address['state'] ?? ''}"
                         : "", maxLines: 2,
-                    overflow: TextOverflow.ellipsis,   style: AppTextStyles.caption(context,color: AppColors.grey),
+                    overflow: TextOverflow.ellipsis, style: AppTextStyles.caption(context,color: AppColors.grey),
                   ),
                 ],
               ),

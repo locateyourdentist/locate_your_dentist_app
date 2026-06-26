@@ -72,7 +72,7 @@
 
                 <data
                     android:scheme="https"
-                    android:host="locateyourdentist.onrender.com" />
+                    android:host="locateyourdentist.com" />
 
             </intent-filter>
 

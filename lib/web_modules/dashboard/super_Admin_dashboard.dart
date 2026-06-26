@@ -38,7 +38,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     await loginController.getAppLogoImage(context);
     await notificationController.getNotificationListAdmin(context);
     Api.userInfo.read('userType')=="superAdmin"?
-    await loginController.getProfileDetails('', '', '', '', [],'','','','', '',context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", '', '', [],'','','', '','',context);
+    await loginController.getProfileDetails('', '', [], [], [],'','','','', '',context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", [], [], [],'','','', '','',context);
     await planController.getIncomeDetailsByPlan(context: context);
   }
   @override
@@ -205,10 +205,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                       child: TextField(
                                         onChanged: (value)async {
                                           if( Api.userInfo.read('userType')=="superAdmin") {
-                                            await   loginController.getProfileDetails('', '', '', '', [],'','','','',searchController.text.toString(),  context);
+                                            await   loginController.getProfileDetails('', '', [], [], [],'','','','',searchController.text.toString(),  context);
                                           }
                                           if( Api.userInfo.read('userType')=="admin") {
-                                            await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '', [],'','','','',searchController.text.toString(), context);
+                                            await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [], [],'','','','',searchController.text.toString(), context);
                                           }                                    },
                                         controller:searchController,
                                         decoration:  const InputDecoration(
@@ -506,7 +506,7 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
                     onTap:()async{
                       Api.userInfo.write('selectedUserType1', typeKey);
                       Api.userInfo.write('sUserType1', typeKey);
-                      await loginController.getProfileDetails(typeKey, '', '', '', [], '', '', '', '', '',context);
+                      await loginController.getProfileDetails(typeKey, '', [], [], [], '', '', '', '', '',context);
                       Get.toNamed('/userTypeListWeb');
                       },
                   child: Stack(

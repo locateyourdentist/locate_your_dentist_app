@@ -89,10 +89,10 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       await loginController.fetchDistricts(loginController.selectedState!);
     }
     if (loginController.selectedDistrict!.isNotEmpty) {
-      await loginController.fetchTalukas(loginController.selectedDistrict!);
+      await loginController.fetchTalukas(loginController.selectedDistricts!);
     }
     if (loginController.selectedTaluka!.isNotEmpty) {
-      await loginController.fetchVillages(loginController.selectedTaluka!);
+      await loginController.fetchVillages(loginController.selectedTalukas!);
     }
 
     loginController.update();
@@ -744,7 +744,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
               c.selectedDistrict = v;
               c.selectedTaluka = null;
               c.talukas.clear();
-              c.fetchTalukas(v);
+              c.fetchTalukas([v]);
               c.update();
             }
           },
@@ -778,7 +778,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
               c.selectedTaluka = v;
               c.villages.clear();
               c.selectedVillage = null;
-              c.fetchVillages(v);
+              c.fetchVillages([v]);
               c.update();
             }
           },

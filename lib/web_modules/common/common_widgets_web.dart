@@ -76,7 +76,10 @@ class _CommonFooterState extends State<CommonFooter> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery
+        .of(context)
+        .size
+        .width;
 
     bool isMobile = width < 768;
     bool isTablet = width >= 768 && width < 1024;
@@ -108,6 +111,7 @@ class _CommonFooterState extends State<CommonFooter> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
+
               /// 🔹 MAIN CONTENT
               isMobile
                   ? Column(
@@ -177,7 +181,9 @@ class _CommonFooterState extends State<CommonFooter> {
                   ? Column(
                 children: [
                   Text(
-                    "© ${DateTime.now().year} ${AppConstants.appName}. All rights reserved.",
+                    "© ${DateTime
+                        .now()
+                        .year} ${AppConstants.appName}. All rights reserved.",
                     textAlign: TextAlign.center,
                     style: AppTextStyles.caption(
                       context,
@@ -203,22 +209,27 @@ class _CommonFooterState extends State<CommonFooter> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "© ${DateTime.now().year} ${AppConstants.appName}. All rights reserved.",
+                    "© ${DateTime
+                        .now()
+                        .year} ${AppConstants.appName}. All rights reserved.",
                     style: AppTextStyles.caption(
                       context,
                       color: AppColors.white.withOpacity(0.9),
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      launchWebsite(
-                          AppConstants.developerCompanyUrl);
+                    onPressed: () async {
+                      await launchWebsite(AppConstants.developerCompanyUrl);
                     },
                     child: Text(
                       "Developed by @ ${AppConstants.developerCompanyName}",
                       style: AppTextStyles.caption(
                         context,
                         color: AppColors.white.withOpacity(0.9),
+                      ).copyWith(
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.white.withOpacity(0.9),
+                        decorationThickness: 1.5,
                       ),
                     ),
                   ),
@@ -339,6 +350,7 @@ class _CommonFooterState extends State<CommonFooter> {
       mode: LaunchMode.externalApplication,
     );
   }
+
   Widget _buildContactSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,18 +359,23 @@ class _CommonFooterState extends State<CommonFooter> {
         const SizedBox(height: 10),
 
         _infoRow(Icons.location_on,
-            "${planController.streetController.text}, ${planController.cityController.text}, ${planController.stateController.text}, ${planController.zipController.text}"),
+            "${planController.streetController.text}, ${planController
+                .cityController.text}, ${planController.stateController
+                .text}, ${planController.zipController.text}"),
 
-        _infoRow(Icons.phone,onTap: ()async {
-          await   launchCall1("tel:${planController.phoneController.text.toString()}");
+        _infoRow(Icons.phone, onTap: () async {
+          await launchCall1(
+              "tel:${planController.phoneController.text.toString()}");
         }, planController.phoneController.text),
 
-        _infoRow(Icons.email,   onTap: ()async {
-          await  sendEmail("mailto:${planController.emailController.text.toString()}");
+        _infoRow(Icons.email, onTap: () async {
+          await sendEmail(
+              "mailto:${planController.emailController.text.toString()}");
         }, planController.emailController.text),
       ],
     );
   }
+
   Widget _buildLegalSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,6 +392,7 @@ class _CommonFooterState extends State<CommonFooter> {
       ],
     );
   }
+
   Widget _footerTitle(BuildContext context, String title) {
     return Text(
       title,
@@ -386,8 +404,7 @@ class _CommonFooterState extends State<CommonFooter> {
     );
   }
 
-  Widget _footerLink(
-      BuildContext context, String title, VoidCallback onTap) {
+  Widget _footerLink(BuildContext context, String title, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: GestureDetector(
@@ -403,8 +420,7 @@ class _CommonFooterState extends State<CommonFooter> {
     );
   }
 
-  Widget _infoRow(
-      IconData icon,
+  Widget _infoRow(IconData icon,
       String text, {
         VoidCallback? onTap,
       }) {
@@ -430,14 +446,29 @@ class _CommonFooterState extends State<CommonFooter> {
       ),
     );
   }
+
   Widget _socialIcon(String path, VoidCallback onTap) {
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(25),
       onTap: onTap,
-      child: Image.asset(
-        path,
-        height: 22,
-        width: 22,
-        color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: Image.asset(
+              path,
+              height: 22,
+              width: 22,
+              color: AppColors.primary,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -557,186 +588,194 @@ class _CommonHeaderState extends State<CommonHeader> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    return Material(
-      elevation: 2,
-      color: Colors.white,
-      child: Container(
-        height: 85,
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Row(
-          children: [
-
-            /// LOGO
-            Row(
+    return GetBuilder<LoginController>(
+        builder: (controller) {
+          return Material(
+          elevation: 2,
+          color: Colors.white,
+          child: Container(
+            height: 85,
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
               children: [
-                Container(
-                  height: 55,
-                  width: 55,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: Colors.grey.shade100,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
-                    child: Image.network(
-                      loginController.appLogoUrl ?? "",
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) {
-                        return const Icon(Icons.image);
-                      },
-                    ),
-                  ),
-                ),
 
-                const SizedBox(width: 12),
-
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                /// LOGO
+                Row(
                   children: [
-                    Text(
-                      AppConstants.appName,
-                      style: const TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
+                    Container(
+                      height: 55,
+                      width: 55,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        color: Colors.grey.shade100,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Image.network(
+                          loginController.appLogoUrl ?? "",
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) {
+                            return const Icon(Icons.image);
+                          },
+                        ),
                       ),
                     ),
 
-                    const SizedBox(height: 3),
+                    const SizedBox(width: 12),
 
-                    Text(
-                      "Dental Services Platform",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade600,
-                      ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppConstants.appName,
+                          style: const TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        const SizedBox(height: 3),
+
+                        Text(
+                          "Dental Services Platform",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+
+                const Spacer(),
+
+                /// MENU
+                if (width > 900)
+                  Row(
+                    children: [
+                      navItem("Home", "/"),
+                      navItem("Jobs", "/jobListJobSeekersWebPage"),
+                      navItem("About Us", "/aboutUsWebPage"),
+                      navItem("Contact", "/contactWebPage"),
+                    ],
+                  ),
+
+                const Spacer(),
+
+                /// CONTACT
+                if (width > 1000)
+                  GetBuilder<LoginController>(
+                      builder: (controller) {
+                      return Row(
+                        children: [
+
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.email_outlined,
+                                  size: 16,
+                                  color: AppColors.primary,
+                                ),
+
+                                const SizedBox(width: 6),
+
+                                Text(
+                                  planController.emailController.text,
+                                  style: AppTextStyles.caption(context),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(width: 10),
+
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.call_outlined,
+                                  size: 16,
+                                  color: AppColors.primary,
+                                ),
+
+                                const SizedBox(width: 6),
+
+                                Text(
+                                  planController.phoneController.text,
+                                  style: AppTextStyles.caption(context),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(width: 15),
+                          socialIcon(Icons.facebook,
+                                  () => launchWebsite("https://facebook.com")),
+                          socialIcon(Icons.camera_alt_outlined,
+                                  () => launchWebsite("https://instagram.com")),
+                          socialIcon(Icons.alternate_email,
+                                  () => launchWebsite("https://youtube.com")),
+                          // socialIcon("assets/images/linkein.png",
+                          //         () => launchWebsite("https://linkedin.com")),
+
+                        //  socialIcon(Icons.facebook),
+                          //socialIcon(Icons.camera_alt_outlined),
+                         // socialIcon(Icons.alternate_email),
+                        ],
+                      );
+                    }
+                  ),
+
+                const SizedBox(width: 20),
+
+                /// LOGIN BUTTON
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.to(() => WebLoginPage());
+                  },
+                  child: Text(
+                    "Login/Register",
+                    style: AppTextStyles.caption(
+                      context,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ],
             ),
-
-            const Spacer(),
-
-            /// MENU
-            if (width > 900)
-              Row(
-                children: [
-                  navItem("Home", "/"),
-                  navItem("Jobs", "/jobListJobSeekersWebPage"),
-                  navItem("About Us", "/aboutUsWebPage"),
-                  navItem("Contact", "/contactWebPage"),
-                ],
-              ),
-
-            const Spacer(),
-
-            /// CONTACT
-            if (width > 1000)
-              Row(
-                children: [
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.email_outlined,
-                          size: 16,
-                          color: AppColors.primary,
-                        ),
-
-                        const SizedBox(width: 6),
-
-                        Text(
-                          planController.emailController.text,
-                          style: AppTextStyles.caption(context),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.call_outlined,
-                          size: 16,
-                          color: AppColors.primary,
-                        ),
-
-                        const SizedBox(width: 6),
-
-                        Text(
-                          planController.phoneController.text,
-                          style: AppTextStyles.caption(context),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(width: 15),
-                  socialIcon(Icons.facebook,
-                          () => launchWebsite("https://facebook.com")),
-                  socialIcon(Icons.camera_alt_outlined,
-                          () => launchWebsite("https://instagram.com")),
-                  socialIcon(Icons.alternate_email,
-                          () => launchWebsite("https://youtube.com")),
-                  // socialIcon("assets/images/linkein.png",
-                  //         () => launchWebsite("https://linkedin.com")),
-
-                //  socialIcon(Icons.facebook),
-                  //socialIcon(Icons.camera_alt_outlined),
-                 // socialIcon(Icons.alternate_email),
-                ],
-              ),
-
-            const SizedBox(width: 20),
-
-            /// LOGIN BUTTON
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-              onPressed: () {
-                Get.to(() => WebLoginPage());
-              },
-              child: Text(
-                "Login/Register",
-                style: AppTextStyles.caption(
-                  context,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      }
     );
   }
 }

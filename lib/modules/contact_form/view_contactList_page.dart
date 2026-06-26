@@ -12,6 +12,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:locate_your_dentist/modules/dashboard/date_filter_drawer.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 
+import '../../common_widgets/common_sidebar_mobile.dart';
+
 
   class ViewContactList extends StatefulWidget {
   const ViewContactList({super.key});
@@ -38,7 +40,8 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
     final bool isDesktop = size >= 1100;
     return Scaffold(
       key: _scaffoldKeyContacts,
-      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      //drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: !isDesktop ? Drawer(width: 250, child: SettingsSidebarDrawer()) : null,
       backgroundColor: AppColors.scaffoldBg,
        // static const Color scaffoldBg = Color(0xFFF1F7F8);
       appBar: AppBar(centerTitle: true,backgroundColor: AppColors.white,

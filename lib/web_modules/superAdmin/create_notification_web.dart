@@ -360,7 +360,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                                         if (val != null) {
                                                           final district =
                                                           loginController.districts.firstWhere((d) => d == val);
-                                                          loginController.fetchTalukas(district.toString());
+                                                          loginController.fetchTalukas(district);
                                                           print('selectedDistrict${loginController.selectedDistrict}');
 
                                                           loginController.update();
@@ -412,7 +412,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
                                                               if (val != null) {
                                                                 final taluka =
                                                                 loginController. talukas.firstWhere((t) => t == val);
-                                                                loginController.fetchVillages(taluka.toString());
+                                                                loginController.fetchVillages(taluka);
                                                                 loginController.update();
                                                                 print('taluka${loginController.selectedTaluka}');
                                                               }
@@ -505,7 +505,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
 
                                           Center(
                                             child: Container(
-                                              width: 130,
+                                              width: 180,
                                               height: 50,
                                               decoration: BoxDecoration(
                                                 gradient: const LinearGradient(

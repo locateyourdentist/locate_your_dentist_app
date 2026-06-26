@@ -381,6 +381,9 @@ class LoginController extends GetxController {
   String? selectedDistrict;
   String? selectedTaluka;
   String? selectedVillage;
+  List<String> selectedTalukas = [];
+  List<String> selectedDistricts = [];
+
   List<String> selectedVillages = [];
   void setAppLogo(File file) {
     appLogoFile = file;
@@ -462,11 +465,9 @@ class LoginController extends GetxController {
           if (data is List && data.isNotEmpty) {
             final lat = double.parse(data[0]["lat"].toString());
             final lon = double.parse(data[0]["lon"].toString());
-
             print("Found Location:");
             print("Latitude: $lat");
             print("Longitude: $lon");
-
             return {
               "latitude": lat,
               "longitude": lon,
@@ -474,7 +475,6 @@ class LoginController extends GetxController {
           }
         }
       }
-
       print("No location found");
       return null;
     } catch (e) {
@@ -505,58 +505,138 @@ class LoginController extends GetxController {
   }
   Future<void> fetchDistricts(String state) async {
     try {
-      final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}districts/$state';
-      print('dist url$url');
-      final res = await http.get(Uri.parse(url));
-      if (res.statusCode == 200) {
-        final decoded = jsonDecode(res.body);
-        districts = List<String>.from(
-          decoded is List ? decoded : decoded["districts"] ?? decoded["data"] ?? [],
-        );
-        print('Districts: $districts');
-        update();
-        selectedDistrict = null;
-        selectedTaluka = null;
-        talukas = [];
-        villages = [];
-        selectedVillage = null;
-      }
-    } catch (e) {
-      print("Error fetching districts: $e");
-    }
-  }
-  Future<void> fetchTalukas(String district) async {
-    try {
-      final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}subdistricts/$district';
-      final res = await http.get(Uri.parse(url));
-      if (res.statusCode == 200) {
-        final decoded = jsonDecode(res.body);
-        talukas = List<String>.from(
-          decoded is List ? decoded : decoded["subDistricts"] ?? decoded["data"] ?? [],
-        );
-        print('talukas: $talukas');
-        update();
-      }
-    } catch (e) {
-      print("Error fetching talukas: $e");
-    }
-  }
+      final res = await http.post(
+        Uri.parse(
+            '${AppConstants.baseUrl}${AppConstants.notificationUrl}districts'),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "state": state,
+        }),
+      );
 
-  Future<void> fetchVillages(String subDistrict) async {
-    try {
-      final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}villages/$subDistrict';
-      final res = await http.get(Uri.parse(url));
       if (res.statusCode == 200) {
         final decoded = jsonDecode(res.body);
-        villages = List<String>.from(
-          decoded is List ? decoded : decoded["villages"] ?? decoded["data"] ?? [],);
-        print('villages: $villages');
+
+        districts = List<String>.from(decoded["districts"] ?? []);
+
+        selectedDistrict = null;
+        selectedTalukas.clear();
+        selectedVillages.clear();
+
+        talukas.clear();
+        villages.clear();
+
+        update();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+  // Future<void> fetchDistricts(String state) async {
+  //   try {
+  //     final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}districts/$state';
+  //     print('dist url$url');
+  //     final res = await http.get(Uri.parse(url));
+  //     if (res.statusCode == 200) {
+  //       final decoded = jsonDecode(res.body);
+  //       districts = List<String>.from(
+  //         decoded is List ? decoded : decoded["districts"] ?? decoded["data"] ?? [],
+  //       );
+  //       print('Districts: $districts');
+  //       update();
+  //       selectedDistrict = null;
+  //       selectedTaluka = null;
+  //       talukas = [];
+  //       villages = [];
+  //       selectedVillage = null;
+  //     }
+  //   } catch (e) {
+  //     print("Error fetching districts: $e");
+  //   }
+  // }
+  // Future<void> fetchTalukas(String district) async {
+  //   try {
+  //     final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}subdistricts/$district';
+  //     final res = await http.get(Uri.parse(url));
+  //     if (res.statusCode == 200) {
+  //       final decoded = jsonDecode(res.body);
+  //       talukas = List<String>.from(
+  //         decoded is List ? decoded : decoded["subDistricts"] ?? decoded["data"] ?? [],
+  //       );
+  //       print('talukas: $talukas');
+  //       update();
+  //     }
+  //   } catch (e) {
+  //     print("Error fetching talukas: $e");
+  //   }
+  // }
+  Future<void> fetchTalukas(List<String> districts) async {
+    try {
+      final res = await http.post(
+        Uri.parse(
+            '${AppConstants.baseUrl}${AppConstants.notificationUrl}subdistricts'),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "district": districts,
+        }),
+      );
+
+      if (res.statusCode == 200) {
+        final decoded = jsonDecode(res.body);
+
+        talukas = List<String>.from(decoded["subDistricts"] ?? []);
+
+        selectedTalukas.clear();
+        villages.clear();
+        selectedVillages.clear();
+
+        update();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+  Future<void> fetchVillages(List<String> subDistrict) async {
+    try {
+      final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}villages';
+      final res = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "subDistrict": subDistrict,
+        }),
+      );
+      if (res.statusCode == 200) {
+        final decoded = jsonDecode(res.body);
+        villages = List<String>.from(decoded is List ? decoded : decoded["villages"] ?? decoded["data"] ?? [],);
+        selectedVillage = null;
         update();
       }
     } catch (e) {
       print("Error fetching villages: $e");
     }
   }
+  // Future<void> fetchVillages(String subDistrict) async {
+  //   try {
+  //     final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}villages/$subDistrict';
+  //     final res = await http.get(Uri.parse(url));
+  //     if (res.statusCode == 200) {
+  //       final decoded = jsonDecode(res.body);
+  //       villages = List<String>.from(
+  //         decoded is List ? decoded : decoded["villages"] ?? decoded["data"] ?? [],);
+  //       print('villages: $villages');
+  //       update();
+  //     }
+  //   } catch (e) {
+  //     print("Error fetching villages: $e");
+  //   }
+  // }
   Future<void> login(String email,String password,String platform,context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
@@ -776,8 +856,8 @@ class LoginController extends GetxController {
   }
   Future<void> getProfileDetails(String? userType,
       String? state,
-      String? district,
-      String? city,List<String>? area,String? isActive,String?latitude,String? longitude,String distance,String? searchText, dynamic context) async {
+      List<String>? district,
+      List<String>? city,List<String>? area,String? isActive,String?latitude,String? longitude,String distance,String? searchText, dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
@@ -912,11 +992,11 @@ class LoginController extends GetxController {
           selectedDistrict = user.address["district"] ?? "";
         }
         if (selectedDistrict != null && selectedDistrict!.isNotEmpty) {
-          await fetchTalukas(selectedDistrict!);
+          await fetchTalukas(selectedDistricts!);
           selectedTaluka = user.address["city"] ?? "";
         }
         if (selectedTaluka != null && selectedTaluka!.isNotEmpty) {
-          await fetchVillages(selectedTaluka!);
+          await fetchVillages(selectedTalukas);
           selectedVillage = user.address["area"] ?? "";
         }
         String normalize(String value) => value.trim().toLowerCase();

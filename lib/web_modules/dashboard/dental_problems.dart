@@ -164,8 +164,8 @@ class GumDiseaseCard extends StatelessWidget {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
-                    loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedDistricts,
+                    loginController.selectedTalukas,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -243,11 +243,12 @@ class DentalServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: _launchUrl,
       borderRadius: BorderRadius.circular(15),
       child: Container(
-        width: 150,
+        width:screenWidth>700? 150:80,
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -264,16 +265,14 @@ class DentalServiceCard extends StatelessWidget {
           children: [
             Image.asset(
               image,
-              height: 120,
-              width: 90,
+              height:screenWidth>700? 120:60,
+              width: screenWidth>700?90:60,
             ),
             const SizedBox(height: 10),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style:AppTextStyles.caption(context,fontWeight: FontWeight.w500)
             ),
           ],
         ),
@@ -443,8 +442,8 @@ class BruxismCard extends StatelessWidget {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
-                    loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedDistricts,
+                    loginController.selectedTalukas,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -663,8 +662,8 @@ class SensitivityCard extends StatelessWidget {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
-                    loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedDistricts,
+                    loginController.selectedTalukas,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -880,8 +879,8 @@ class WisdomTeethCard extends StatelessWidget {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
-                    loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedDistricts,
+                    loginController.selectedTalukas,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -1104,8 +1103,8 @@ class AbscessCard extends StatelessWidget {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
-                    loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedDistricts,
+                    loginController.selectedTalukas,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -1867,8 +1866,8 @@ class BrushingTechniqueCard extends StatelessWidget {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
-                    loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedDistricts,
+                    loginController.selectedTalukas,loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -2359,8 +2358,8 @@ class TreatmentCard extends StatelessWidget {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
-                    loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedDistricts,
+                    loginController.selectedTalukas,loginController.selectedVillages,
                     "true",
                     '',
                     '',

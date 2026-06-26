@@ -26,35 +26,36 @@ class _AddGstDetailsState extends State<AddGstDetails> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        centerTitle: true,backgroundColor: AppColors.white,
+        centerTitle: true,backgroundColor: AppColors.primary,
         iconTheme: const IconThemeData(color: AppColors.white),
-        title: Text('Add GST Details',style: AppTextStyles.subtitle(context,color: AppColors.black),),
+        title: Text('Add GST Details',style: AppTextStyles.subtitle(context,color: AppColors.white),),
         automaticallyImplyLeading: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.secondary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
-              ),
-            ),
-          ),
-        ),
+        // leading: Padding(
+        //   padding: const EdgeInsets.all(8.0),
+        //   child: GestureDetector(
+        //     onTap: () {
+        //       Navigator.pop(context);
+        //     },
+        //     child: Container(
+        //       decoration: const BoxDecoration(
+        //         shape: BoxShape.circle,
+        //         gradient: LinearGradient(
+        //           colors: [AppColors.primary, AppColors.secondary],
+        //           begin: Alignment.topLeft,
+        //           end: Alignment.bottomRight,
+        //         ),
+        //       ),
+        //       child: const Center(
+        //         child: Icon(
+        //           Icons.arrow_back,
+        //           color: AppColors.white,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ),
       body: Form(
         key: _formKeyGst,
@@ -76,7 +77,8 @@ class _AddGstDetailsState extends State<AddGstDetails> {
                   hint: "SGST",
                   icon: Icons.receipt_long,
                   controller: planController.cgstController,
-                  //fillColor: Colors.white,
+                  fillColor: Colors.white,
+                  borderColor: Colors.grey.shade100,
                   maxLength: 2,
                   keyboardType: TextInputType.number,
                   //borderColor: Colors.grey,
@@ -88,8 +90,8 @@ class _AddGstDetailsState extends State<AddGstDetails> {
                   controller: planController.sgstController,
                   maxLength: 2,
                   keyboardType: TextInputType.number,
-                  // fillColor: Colors.white,
-                  // borderColor: Colors.grey,
+                  fillColor: Colors.white,
+                  borderColor: Colors.grey.shade100,
                 ),
                 SizedBox(height: size * 0.03),
                 CustomTextField(
@@ -98,8 +100,8 @@ class _AddGstDetailsState extends State<AddGstDetails> {
                   controller: planController.igstController,
                   maxLength: 2,
                   keyboardType: TextInputType.number,
-                  // fillColor: Colors.white,
-                  // borderColor: Colors.grey,
+                  fillColor: Colors.white,
+                  borderColor: Colors.grey.shade100,
                 ),
                 SizedBox(height: size * 0.03),
                 Container(
