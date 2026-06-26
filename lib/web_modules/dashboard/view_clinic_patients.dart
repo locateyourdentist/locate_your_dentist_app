@@ -21,7 +21,7 @@ class ViewClinicPatients extends StatefulWidget {
 }
 
 class _ViewClinicPatientsState extends State<ViewClinicPatients> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyPatients = GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
 
   @override
@@ -46,10 +46,10 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
     }
 
     return Scaffold(
-      key: _scaffoldKey,
+      key: _scaffoldKeyPatients,
       backgroundColor: const Color(0xFFF8FAFC), // Modern soft background grey
-      drawer: (!isDesktop && isLoggedIn) ? const Drawer(width: 250, child: AdminSideBar()) : null,
-      endDrawer: isMobile ? const Drawer(width: 300, child: FilterSidebar()) : null,
+      drawer: (!isDesktop && isLoggedIn) ? const Drawer(width: 250, child: FilterSidebar()) : null,
+      //endDrawer: isMobile ? const Drawer(width: 300, child: FilterSidebar()) : null,
       appBar: buildAppBar(),
       body: GetBuilder<LoginController>(
         builder: (controller) {
@@ -72,20 +72,31 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  "Total Profiles (${controller.profileList.length})",
-                                  style: AppTextStyles.body(context, color: const Color(0xFF0F172A)).copyWith(fontWeight: FontWeight.bold),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    "Total Profiles (${controller.profileList.length})",
+                                    style: AppTextStyles.body(context, color: const Color(0xFF0F172A)).copyWith(fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                                if (isMobile)
-                                  IconButton(
-                                    icon: const Icon(Icons.filter_list_rounded, color: AppColors.primary),
-                                    onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
+                                // if (isMobile)
+                                //   IconButton(
+                                //     icon: const Icon(Icons.filter_list_rounded, color: AppColors.primary),
+                                //     onPressed: () => _scaffoldKeyPatients.currentState?.openEndDrawer(),
+                                //   ),
+                                if (!isDesktop)
+                                  Positioned(
+                                    top: 10,
+                                    left: 10,
+                                    child: IconButton(
+                                      icon:  Icon(Icons.menu,color: AppColors.black,size: 17,),
+                                      onPressed: () => _scaffoldKeyPatients.currentState?.openDrawer(),
+                                    ),
                                   ),
                               ],
                             ),
                           ),
 
-                          // Main Body split grid layout
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -103,7 +114,15 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
                                     child: FilterSidebar(),
                                   ),
                                 ),
-
+                              // if (isLoggedIn && !isDesktop)
+                              //   Positioned(
+                              //     top: 10,
+                              //     left: 10,
+                              //     child: IconButton(
+                              //       icon: const Icon(Icons.menu,color: AppColors.black,),
+                              //       onPressed: () => _scaffoldKeyPatients.currentState?.openDrawer(),
+                              //     ),
+                              //   ),
                               Expanded(
                                 child: controller.profileList.isEmpty
                                     ? _buildEmptyState()

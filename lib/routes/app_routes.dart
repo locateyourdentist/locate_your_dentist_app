@@ -104,6 +104,7 @@ import '../modules/contact_form/view_feedback_forms.dart';
 import '../modules/plans/create_plan.dart';
 import '../modules/profiles/clinic_web_view.dart';
 import '../web_modules/common/aboutus_web.dart';
+import '../web_modules/dashboard/view_clinic_patients.dart';
 import '../web_modules/dental_mechanic_lab_shop/create_contact_web_page.dart';
 import '../web_modules/dental_mechanic_lab_shop/dental_mechanic_dashboard.dart';
 
@@ -136,6 +137,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.addGSTPageWeb,
       page: () => const AddGstDetailsWeb(),
+    ),
+    GetPage(
+      name: AppRoutes.viewPatientsListWeb,
+      page: () =>  ViewClinicPatients(),
     ),
     GetPage(
       name: AppRoutes.addLogoWeb,

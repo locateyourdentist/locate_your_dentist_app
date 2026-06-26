@@ -143,7 +143,7 @@ class _DentalClinicDashboardWebPageState extends State<DentalClinicDashboardWebP
                                       builder: (context, constraints) {
                                         double w = constraints.maxWidth;
                                         int crossAxisCount = w < 500 ? 2 : (w < 800 ? 3 : (w < 1200 ? 4 : 5));
-                                        double childAspectRatio = w < 500 ? 0.75 : (w < 800 ? 0.85 : (w < 1200 ? 0.95 : 1.0));
+                                        double childAspectRatio = w < 500 ? 1 : (w < 800 ? 0.85 : (w < 1200 ? 0.95 : 1.0));
                                         return GridView.builder(
                                           shrinkWrap: true,
                                           physics: const NeverScrollableScrollPhysics(),
@@ -437,6 +437,7 @@ Widget _shimmerGrid(BuildContext context) {
 }
 
 Widget _dashboardTile({required String title, required String image, required VoidCallback onTap, required BuildContext context}) {
+  final double size = MediaQuery.of(context).size.width;
   return InkWell(
     onTap: onTap,
     borderRadius: BorderRadius.circular(16),
@@ -444,8 +445,11 @@ Widget _dashboardTile({required String title, required String image, required Vo
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))]),
       child: Column(
         children: [
-          Expanded(child: ClipRRect(borderRadius: const BorderRadius.vertical(top: Radius.circular(16)), child: Image.asset(image, fit: BoxFit.cover, width: double.infinity))),
+          Expanded(child: ClipRRect(borderRadius: const BorderRadius.vertical(top: Radius.circular(16)), child: Image.asset(image,   height:size < 700 ? (size * 0.65) : 300.0, fit: BoxFit.cover, width: double.infinity))),
+          SizedBox(height: 10,),
           Padding(padding: const EdgeInsets.all(10), child: Text(title, textAlign: TextAlign.center, style: AppTextStyles.caption(context, fontWeight: FontWeight.w600))),
+          SizedBox(height: 10,),
+
         ],
       ),
     ),

@@ -12,6 +12,8 @@ class AppRoutes {
   static const changePasswordWeb='/changePasswordWeb';
   static const notificationWebPage='/notificationWebPage';
   static const addGSTPageWeb='/addGSTPageWeb';
+  static const viewPatientsListWeb='/viewPatientsListWeb';
+
   static const addLogoWeb='/addLogoWeb';
   static const addCompanyDetailsWeb='/addCompanyDetailsWeb';
   static const jobCategoryWeb='/jobCategoryWeb';

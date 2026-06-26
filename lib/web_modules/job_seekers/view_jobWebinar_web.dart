@@ -86,7 +86,7 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
     return Scaffold(
       key: _scaffoldKeyJobs,
       backgroundColor: AppColors.backGroundColor,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer:( !isDesktop&&isLoggedIn) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       appBar: CommonWebAppBar(
         height: isMobile ? 60 : 80,
         title: "Job Posts / Webinars",

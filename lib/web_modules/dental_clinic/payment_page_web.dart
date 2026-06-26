@@ -137,127 +137,129 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (isLoggedIn && !isDesktop)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10, left: 10),
-                                child: IconButton(
-                                  icon:  Icon(Icons.menu,color: AppColors.black,size: 16,),
-                                  onPressed: () => _scaffoldKeyPayment.currentState?.openDrawer(),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (isLoggedIn && !isDesktop)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10, left: 10),
+                                  child: IconButton(
+                                    icon:  Icon(Icons.menu,color: AppColors.black,size: 16,),
+                                    onPressed: () => _scaffoldKeyPayment.currentState?.openDrawer(),
+                                  ),
+                                ),
+                          
+                              Text(
+                                "Order Summary",
+                                style: AppTextStyles.caption(
+                                  context,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-
-                            Text(
-                              "Order Summary",
-                              style: AppTextStyles.caption(
-                                context,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-
-                            const SizedBox(height: 20),
-                            _infoTile("PlanType", planType),
-                            _infoTile("Plan", planName),
-                            _infoTile("Start Date", formatDate(startDate)),
-                            _infoTile("End Date", formatDate(endDate)),
-                            _infoTile("User ID", userId),
-                            _infoTile("Mobile", mobileNumber),
-                            _infoTile("Email", email),
-
-                            const Divider(height: 40),
-
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.08),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    "Total Amount",
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  Text(
-                                    "₹ ${amount.toStringAsFixed(2)}",
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 20,),
-                            Center(
-                              child: Container(
-                                width: size*0.3,
-                                padding: const EdgeInsets.all(24),
+                          
+                              const SizedBox(height: 20),
+                              _infoTile("PlanType", planType),
+                              _infoTile("Plan", planName),
+                              _infoTile("Start Date", formatDate(startDate)),
+                              _infoTile("End Date", formatDate(endDate)),
+                              _infoTile("User ID", userId),
+                              _infoTile("Mobile", mobileNumber),
+                              _infoTile("Email", email),
+                          
+                              const Divider(height: 40),
+                          
+                              Container(
+                                padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 10,
-                                    )
-                                  ],
+                                  color: AppColors.primary.withOpacity(0.08),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-
-                                    const Icon(Icons.payment,
-                                        size: 60, color: AppColors.primary),
-
-                                    const SizedBox(height: 20),
-
-                                    Text(
-                                      "Secure Payment",
-                                      style: AppTextStyles.subtitle(
-                                        context,
-                                      ),
-                                    ),
-
-                                    const SizedBox(height: 10),
-
                                     const Text(
-                                      "You will be redirected to a secure payment gateway.",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: Colors.grey),
+                                      "Total Amount",
+                                      style: TextStyle(fontSize: 16),
                                     ),
-
-                                    const SizedBox(height: 30),
-
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                        onPressed: startPayment,
-                                        style: ElevatedButton.styleFrom(
-                                          padding: const EdgeInsets.symmetric(vertical: 16),
-                                          backgroundColor: AppColors.primary,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          "Pay Now",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                          ),
-                                        ),
+                                    Text(
+                                      "₹ ${amount.toStringAsFixed(2)}",
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.primary,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ),
-                          ],
+                              SizedBox(height: 20,),
+                              Center(
+                                child: Container(
+                                  width: size,
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 10,
+                                      )
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                          
+                                      const Icon(Icons.payment,
+                                          size: 60, color: AppColors.primary),
+                          
+                                      const SizedBox(height: 20),
+                          
+                                      Text(
+                                        "Secure Payment",
+                                        style: AppTextStyles.subtitle(
+                                          context,
+                                        ),
+                                      ),
+                          
+                                      const SizedBox(height: 10),
+                          
+                                      const Text(
+                                        "You will be redirected to a secure payment gateway.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                          
+                                      const SizedBox(height: 30),
+                          
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          onPressed: startPayment,
+                                          style: ElevatedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(vertical: 16),
+                                            backgroundColor: AppColors.primary,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "Pay Now",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

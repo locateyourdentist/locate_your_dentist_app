@@ -277,6 +277,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
     }
     return GetBuilder<LoginController>(
         builder: (controller) {
+          final double size = MediaQuery.of(context).size.width;
           return GestureDetector(
           onTap: ()async{
             Api.userInfo.write('selectUId',clinic.userId.toString());
@@ -306,9 +307,10 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                       children: [
                         Expanded(
                           child: ClipRRect(
-                              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+                              borderRadius:  BorderRadius.vertical(top: Radius.circular(15)),
                               child: firstImage.isNotEmpty
                                   ? Image.network(
+                                  height:size < 700 ? (size * 0.65) : 300.0,
                                   (firstImage.isNotEmpty && isAdminUser||
                                       ((planActive == true &&
                                           clinic.details["plan"]?["basePlan"]?["details"]?["images"] == true)))
@@ -336,13 +338,13 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                               Text(
                                 clinic.details['name']?.toString() ?? "",
                                 textAlign: TextAlign.center,
-                                style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
+                                style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.primary),
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                clinic.name?.toString() ?? "",
+                                "Dr.${clinic.name?.toString() ?? ""}",
                                 textAlign: TextAlign.center,
-                                style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
+                                style: AppTextStyles.caption(context,fontWeight: FontWeight.w500),
                               ),
                               const SizedBox(height: 5),
 
@@ -381,7 +383,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                   const SizedBox(width: 5),
                                   Expanded(
                                     child: Text(
-                                      "${clinic.address['area'] ?? ''}, "
+                                      "${clinic.address['addressLine1'] ?? ''}, ${clinic.address['addressLine2'] ?? ''}, ${clinic.address['area'] ?? ''}, "
                                           "${clinic.address['city'] ?? ''}, "
                                           "${clinic.address['district'] ?? ''}, "
                                           "${clinic.address['state'] ?? ''}",
@@ -724,7 +726,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                   '',
                                                   context,
                                                 );
-                                                Get.to(() => ViewClinicPatients());
+                                                Get.toNamed('/viewPatientsListWeb');
                                               },
                                             )
 
@@ -868,8 +870,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                         //
                         //   ],
                         // ),
-                              const SizedBox(height: 20),
-              
+
                               Padding(
                                 padding: const EdgeInsets.all(15.0),
                                 child: Center(
@@ -920,7 +921,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                           maxCrossAxisExtent: 280,
                                                           mainAxisSpacing: 20,
                                                           crossAxisSpacing: 20,
-                                                          childAspectRatio: size < 700 ? 1.5 : 0.8,
+                                                          childAspectRatio: size < 700 ? 0.8 : 0.8,
 
                                                           //childAspectRatio: 0.9,
                                                         ),
@@ -2367,20 +2368,14 @@ class AboutUsSection extends StatelessWidget {
       children: [
         Text(
           "ABOUT OUR PLATFORM",
-          style: TextStyle(
-            color: AppColors.primary,
-            fontWeight: FontWeight.bold,
-            fontSize: Responsive.width(context, 18),
-          ),
+          style: AppTextStyles.body(context,color: AppColors.primary)
         ),
         const SizedBox(height: 10),
 
         Text(
           "A Complete Dental Ecosystem in One Platform",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,color: AppColors.black,
-            fontSize: Responsive.width(context, 22),
-          ),
+            style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold)
+
         ),
 
         const SizedBox(height: 15),
@@ -2396,11 +2391,7 @@ class AboutUsSection extends StatelessWidget {
               "they can explore opportunities, enhance skills, and build their careers.\n\n"
               "This platform is built to strengthen the dental network by improving visibility, collaboration, and accessibility "
               "across the entire dental industry.",
-          style: TextStyle(
-            height: 1.6,
-            fontSize: Responsive.width(context, 16),
-            color: Colors.grey[700],
-          ),
+          style: AppTextStyles.caption(context,color: Colors.grey)
         ),
       ],
     );
