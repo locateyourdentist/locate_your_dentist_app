@@ -382,7 +382,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
   }
   Widget _bottomButtons() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: Row(
         children: [
 

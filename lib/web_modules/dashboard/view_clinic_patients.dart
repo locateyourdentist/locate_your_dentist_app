@@ -48,7 +48,7 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
     return Scaffold(
       key: _scaffoldKeyPatients,
       backgroundColor: const Color(0xFFF8FAFC), // Modern soft background grey
-      drawer: (!isDesktop && isLoggedIn) ? const Drawer(width: 250, child: FilterSidebar()) : null,
+      drawer: (!isDesktop) ? const Drawer(width: 250, child: FilterSidebar()) : null,
       //endDrawer: isMobile ? const Drawer(width: 300, child: FilterSidebar()) : null,
       appBar: buildAppBar(),
       body: GetBuilder<LoginController>(
@@ -89,7 +89,7 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
                                     top: 10,
                                     left: 10,
                                     child: IconButton(
-                                      icon:  Icon(Icons.menu,color: AppColors.black,size: 17,),
+                                      icon:  Icon(Icons.filter_alt,color: AppColors.black,size: 17,),
                                       onPressed: () => _scaffoldKeyPatients.currentState?.openDrawer(),
                                     ),
                                   ),
