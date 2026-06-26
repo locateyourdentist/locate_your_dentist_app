@@ -231,6 +231,7 @@ import '../../common_widgets/platform_helper.dart';
                                             loginController.latitude = null;
                                             loginController.longitude = null;
                                           }
+
                                           String safeLat =
                                           useLocation ? (loginController.latitude?.toString() ?? "") : "";
 

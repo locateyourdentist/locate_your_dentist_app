@@ -130,40 +130,61 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
 
                 _talukaDropdown(),
                 const SizedBox(height: 20),
-                MultiSelectDialogField<String>(
-                  checkColor: AppColors.primary,
-                  items: loginController.villages
-                      .toSet()
-                      .map((e) => MultiSelectItem<String>(
-                    e.toString(),
-                    e.toString(),
-                  ))
-                      .toList(),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                     color:  Colors.grey.shade300,
+                      width: 1,
+                    ),
+                  ),
+                  child: MultiSelectDialogField<String>(
+                    checkColor: AppColors.primary,buttonIcon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: AppColors.white,
+                    size: 2,
+                  ),
+                    items: loginController.villages
+                        .toSet()
+                        .map((e) => MultiSelectItem<String>(
+                      e.toString(),
+                      e.toString(),
+                    ))
+                        .toList(),
 
-                  title:  Center(child: Text("Select Areas",style: AppTextStyles.body(context),)),
-                  buttonText:  Text("Area",style: AppTextStyles.caption(context),),
-                  searchable: true,
-                  dialogHeight: 200,
-                  dialogWidth: 100,
+                    title:  Center(child: Text("Select Areas",style: AppTextStyles.body(context),)),
+                    decoration: const BoxDecoration(),
 
-                  initialValue: loginController.selectedVillages,
+                    buttonText:  Text("Select Areas",textAlign:TextAlign.center,style: AppTextStyles.caption(context,color: AppColors.grey),),
+                    searchable: true,
+                    dialogHeight: 200,
+                    dialogWidth: 100,
 
-                  onConfirm: (values) {
-                    loginController.selectedVillages =
-                        values.map((e) => e.toString()).toList();
+                    initialValue: loginController.selectedVillages,
 
-                    print(loginController.selectedVillage);
+                    onConfirm: (values) {
+                      loginController.selectedVillages =
+                          values.map((e) => e.toString()).toList();
 
-                    loginController.update();
-                  },
+                      print(loginController.selectedVillage);
 
-                  chipDisplay: MultiSelectChipDisplay(
-                    height: 130,
-                    chipWidth: 100,textStyle: AppTextStyles.caption(context),
-                    onTap: (value) {
-                      loginController.selectedVillages.remove(value);
                       loginController.update();
                     },
+
+                    chipDisplay: MultiSelectChipDisplay(
+                      height: 130,
+                      chipWidth: 100,textStyle: AppTextStyles.caption(context),
+                      onTap: (value) {
+                        loginController.selectedVillages.remove(value);
+                        loginController.update();
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),

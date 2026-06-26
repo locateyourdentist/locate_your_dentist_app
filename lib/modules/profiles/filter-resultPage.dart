@@ -11,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
+import '../auth/login_screen/service_locations.dart';
+
 class FilterResultPage extends StatefulWidget {
   const FilterResultPage({super.key});
   @override
@@ -67,60 +69,15 @@ class _FilterResultPageState extends State<FilterResultPage> {
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.white,AppColors.white],
+                colors: [AppColors.primary,AppColors.primary],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
           ),
-          title: Text('LYD',style: AppTextStyles.headline1(context,color: AppColors.primary),),
-        backgroundColor: AppColors.primary,iconTheme: const IconThemeData(color: AppColors.black),
+          title: Text('Search Dental Clinics',style: AppTextStyles.subtitle(context,color: AppColors.white),),
+        backgroundColor: AppColors.primary,iconTheme: const IconThemeData(color: AppColors.white),
         ),
-        // drawer: FilterDrawer(
-        //   onApply: () async{
-        //     print("Selected State: ${loginController.selectedState}");
-        //     print("Selected District: ${loginController.selectedDistrict}");
-        //     print("Selected Area: ${loginController.selectedArea}");
-        //
-        //     //String userType=  Api.userInfo.read('sUserType');
-        //     //print("ssuser$userType");
-        //     String distance =
-        //     (loginController.selectedDistance1 ?? 0).toString();
-        //
-        //     bool useLocation =
-        //         distance.isNotEmpty &&
-        //             distance != "0" &&
-        //             distance != "0.0";
-        //     if (useLocation) {
-        //       await getLocation();
-        //     } else {
-        //       loginController.latitude = null;
-        //       loginController.longitude = null;
-        //     }
-        //     String safeLat =
-        //     useLocation ? (loginController.latitude?.toString() ?? "") : "";
-        //
-        //     String safeLng =
-        //     useLocation ? (loginController.longitude?.toString() ?? "") : "";
-        //     filteredProfiles.map((e) => searchController.text.toString());
-        //     await loginController.getProfileDetails(
-        //       "Dental Clinic",
-        //       loginController.selectedState,
-        //       loginController.selectedDistrict,
-        //       loginController.selectedTaluka,[],"true",safeLat,safeLng, distance,'',context,
-        //     );
-        //   },
-        //   onReset: () {
-        //     setState(() {
-        //       // loginController.selectedPlace = null;
-        //       // loginController.selectedDistrict = null;
-        //       loginController.selectedArea = null;
-        //       loginController.selectedUserType=null;
-        //       loginController.selectedState=null;
-        //       loginController.selectedDistrict=null;
-        //     });
-        //   },
-        // ),
         body: GetBuilder<LoginController>(
             init: loginController,
             builder: (controller) {
@@ -129,15 +86,15 @@ class _FilterResultPageState extends State<FilterResultPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Text('Find Best Dental',style: AppTextStyles.headline(context,color: AppColors.primary),),
-                    Text('Services Near You',style: AppTextStyles.headline(context,color: AppColors.secondary1),),
+                    // Text('Find Best Dental',style: AppTextStyles.headline(context,color: AppColors.primary),),
+                    // Text('Services Near You',style: AppTextStyles.headline(context,color: AppColors.secondary1),),
                     Container(
                       //margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                       //padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                           gradient: const LinearGradient(
-                            colors: [AppColors.white,AppColors.white],
+                            colors: [AppColors.primary,AppColors.secondary],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -329,16 +286,13 @@ class _FilterResultPageState extends State<FilterResultPage> {
                                     verticalOffset: 120.0,
                                     curve: Curves.easeOutBack,
                                     child: FadeInAnimation(
-                                      child:Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: DoctorCardWidget(
-                                        doctor: profile,
-                                        size: size,
-                                        planActive: planActive,
-                                        isAdminUser: isAdminUser,
-                                        addOnsPlanStatus: addOnsPlanStatus,
-                                                                            ),
-                                      ),
+                                      child:DoctorCardWidget(
+                                      doctor: profile,
+                                      size: size,
+                                      planActive: planActive,
+                                      isAdminUser: isAdminUser,
+                                      addOnsPlanStatus: addOnsPlanStatus,
+                                                                          ),
                                     ),
                                   ),
                                 );

@@ -172,6 +172,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                               "Area",
                               style: AppTextStyles.caption(context),
                             ),
+                            decoration: const BoxDecoration(),
 
                             searchable: true,
                             dialogHeight: 400,

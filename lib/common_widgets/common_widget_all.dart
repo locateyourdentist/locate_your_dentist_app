@@ -100,7 +100,7 @@ class DoctorCardWidget extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 4),
 
                       /// Address
                       Row(
@@ -147,7 +147,7 @@ class DoctorCardWidget extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
 
             /// Buttons
             Row(

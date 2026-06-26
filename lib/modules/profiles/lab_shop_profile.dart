@@ -31,20 +31,32 @@ import 'package:flutter_quill/flutter_quill.dart';
   final userType = Api.userInfo.read('userType')?.toString() ?? "";
   final ScrollController _scrollController = ScrollController();
   late QuillController _controller;
-  void loadJobDescription(dynamic data) {
+   void loadJobDescription(dynamic data) {
     try {
       List<Map<String, dynamic>> delta = [];
 
-      if (data == null) {
-        delta = [{"insert": "\n"}];
-      }
+      if (data == null ||
+          data.toString().trim().isEmpty ||
+          data.toString() == "[]") {
+        delta = [
+          {"insert": "\n"}
+        ];
+      } else if (data is List) {
+        delta = data.isEmpty
+            ? [
+          {"insert": "\n"}
+        ]
+            : List<Map<String, dynamic>>.from(data);
+      } else if (data is String) {
+        final decoded = jsonDecode(data);
 
-      else if (data is List) {
-        delta = List<Map<String, dynamic>>.from(data);
-      }
-
-      else if (data is String) {
-        delta = List<Map<String, dynamic>>.from(jsonDecode(data));
+        if (decoded is List && decoded.isNotEmpty) {
+          delta = List<Map<String, dynamic>>.from(decoded);
+        } else {
+          delta = [
+            {"insert": "\n"}
+          ];
+        }
       }
 
       _controller = QuillController(
@@ -52,12 +64,18 @@ import 'package:flutter_quill/flutter_quill.dart';
         selection: const TextSelection.collapsed(offset: 0),
       );
 
-      setState(() {});
+      if (mounted) setState(() {});
     } catch (e) {
       print("Quill load error: $e");
 
-      _controller = QuillController.basic();
-      setState(() {});
+      _controller = QuillController(
+        document: Document.fromJson([
+          {"insert": "\n"}
+        ]),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      if (mounted) setState(() {});
     }
   }
   @override
@@ -82,7 +100,9 @@ import 'package:flutter_quill/flutter_quill.dart';
   Future<void> _refresh() async {
     _loadPlanStatus();
     await serviceController.getServiceListAdmin(Api.userInfo.read('selectUId')??"", context);
-    await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);  }
+    await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context); 
+        loadJobDescription(loginController.descriptionData);
+     }
   @override
   void dispose() {
     _tabController.dispose();
@@ -178,25 +198,36 @@ import 'package:flutter_quill/flutter_quill.dart';
                   children: [
                     Stack(
                       children: [
-                        if (validImages.isEmpty)
-                          Container(
-                            height: 250,
-                            width: double.infinity,
-                            color: Colors.grey.shade200,
-                            child: const Center(
-                              child: Icon(Icons.image, size: 60),
-                            ),
+                        // if (validImages.isEmpty)
+                        //   Container(
+                        //     height: 250,
+                        //     width: double.infinity,
+                        //     color: Colors.grey.shade200,
+                        //     child: const Center(
+                        //       child: Icon(Icons.image, size: 60),
+                        //     ),
+                        //   )
+                        // else
+                        if ((planActive == true &&
+                            user?.details["plan"]?["basePlan"]?["details"]?["images"] == true) ||
+                            isAdminUser ||
+                            userId == editUserId)
+                          MediaCarousel(
+                            images: loginController.editImages
+                                .where((img) =>
+                            img.url != null &&
+                                img.url!.startsWith('http') &&
+                                !img.url!.contains('undefined'))
+                                .toList(),
                           )
                         else
-                          MediaCarousel(images: validImages),
-                        // MediaCarousel(
-                        //   images: loginController.editImages
-                        //       .where((img) =>
-                        //   img.url != null &&
-                        //       img.url!.startsWith('http') &&
-                        //       !img.url!.contains('undefined'))
-                        //       .toList(),
-                        // ),
+                          Container(
+                            color: Colors.grey[200],
+                            width: double.infinity,
+                            height:120,
+                            //s*0.015,
+                            child: Icon(Icons.image, size: 15),
+                          ),
 
                         Positioned(
                           top: 10,
@@ -219,7 +250,6 @@ import 'package:flutter_quill/flutter_quill.dart';
                           GetBuilder<LoginController>(
                               init: LoginController(),
                               builder: (controller) {
-                                print("Final images list: ${loginController.editImages}");
                                 return Positioned(
                                 top: 10,
                                 right: 10,
@@ -321,13 +351,11 @@ import 'package:flutter_quill/flutter_quill.dart';
                                 )
                               ],
                             ),
-                            Expanded(
-                              child: Text(
-                                loginController.userData.isNotEmpty && user?.address != null
-                                    ? "${user?.address['addressLine1'] ?? ''}, ${user?.address['addressLine2'] ?? ''},"
-                                    : "", maxLines: 2,
-                                overflow: TextOverflow.ellipsis, style: AppTextStyles.caption(context,color: AppColors.grey),
-                              ),
+                            Text(
+                              loginController.userData.isNotEmpty && user?.address != null
+                                  ? "${user?.address['addressLine1'] ?? ''}, ${user?.address['addressLine2'] ?? ''},"
+                                  : "", maxLines: 3,
+                              overflow: TextOverflow.ellipsis, style: AppTextStyles.caption(context,color: AppColors.grey),
                             ),
                             SizedBox(height: size*0.01,),
                             const SizedBox(height: 5),
@@ -410,7 +438,7 @@ import 'package:flutter_quill/flutter_quill.dart';
                                           userData.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true;
 
                                       final bool isAdminUser =
-                                          userType == 'admin' || userType == 'superAdmin';
+                                          userType == 'admin' || userType == 'superAdmin'|| userId == editUserId;
 
                                       final bool isMobilePlatform =
                                           PlatformHelper.platform == 'Android' ||
@@ -434,7 +462,7 @@ import 'package:flutter_quill/flutter_quill.dart';
                                     onTap: () async {
                                       if ((planActive == true &&
                                           user?.details["plan"]?["basePlan"]?["details"]?["location"] == true) ||
-                                          isAdminUser) {
+                                          isAdminUser|| userId == editUserId) {
                                         final website =
                                             user?.details["website"]?.toString() ?? "";
 
@@ -456,17 +484,15 @@ import 'package:flutter_quill/flutter_quill.dart';
                                           },
                                         );
                                       }
-                                    },context: context
-                                ),
+                                    },context: context),
 
-                                /// Call
                                 buildActionButton(
                                     icon: Icons.call_rounded,
                                     label: "Call",
                                     onTap: () {
                                       if ((planActive == true &&
                                           user?.details["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-                                          isAdminUser) {
+                                          isAdminUser|| userId == editUserId) {
                                         launchCall(user?.mobileNumber?.toString() ?? "");
                                       }
                                     },context: context

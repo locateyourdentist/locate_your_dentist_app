@@ -668,9 +668,10 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                               child: buildFilterBox(
                                                 icon: Icons.place,
                                                 child: MultiSelectDialogField<String>(
+                                                  decoration: const BoxDecoration(),
                                                   buttonText: Text(
                                                     "Area",
-                                                    style: AppTextStyles.caption(context),
+                                                    style: AppTextStyles.caption(context,color: AppColors.grey),
                                                   ),
                                                   items: loginController.villages
                                                       .toSet()

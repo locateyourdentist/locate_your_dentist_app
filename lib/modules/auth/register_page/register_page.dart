@@ -463,6 +463,22 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                   ]),
                                   SizedBox(height: size * 0.03),
+                                  CustomTextField(
+                                    hint: "Address Line 1 (House No, Street Name)",
+                                    icon: Icons.location_on,
+                                    controller: loginController.addressLine1Controller,
+                                    // fillColor: AppColors.white,
+                                    // borderColor: AppColors.grey,
+                                  ),
+                                  SizedBox(height: size * 0.03),
+                                  CustomTextField(
+                                    hint: "Address Line 2 (Landmark, Area, Building)",
+                                    icon: Icons.location_on,
+                                    controller: loginController.addressLine2Controller,
+                                    // fillColor: AppColors.white,
+                                    // borderColor: AppColors.grey,
+                                  ),
+                                  SizedBox(height: size * 0.03),
 
                                   GetBuilder<LoginController>(
                                     builder: (controller) {
@@ -675,7 +691,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                     icon: Icons.pin,
                                     controller: loginController.locationController,
                                   ),
+                                  SizedBox(height: size * 0.03),
+                                  CustomTextField(
+                                    hint: "Website Link",
+                                    icon: Icons.web,
+                                    controller: loginController.websiteController,
+                                    // fillColor: AppColors.white,
+                                    // borderColor: AppColors.grey,
+                                  ),
                                   SizedBox(height: size * 0.01),
+
                                   if (loginController.selectedUserType!=null&&loginController.selectedUserType != "Dental Mechanic") ...[
                                    SizedBox(height: size * 0.02),
                                     ElevatedButton(

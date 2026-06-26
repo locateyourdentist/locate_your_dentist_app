@@ -83,7 +83,12 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     _controller.dispose();
     super.dispose();
   }
-
+  bool getPlanActive() {
+    final userData = loginController.userData;
+    if (userData.isEmpty) return false;
+    final raw = userData.first.details["plan"]?["basePlan"]?["isActive"]??"";
+    return raw == true || raw == "true";
+  }
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -97,7 +102,12 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     final pg = collegeDetails['pgDegree'] ?? {};
     final experiences = (hasData) ? user!.details['experienceDetails'] ?? [] : [];
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-
+    final planActive = getPlanActive();
+    String userType=Api.userInfo.read('userType')??"";
+    String userId=Api.userInfo.read('userId')??"";
+    String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
+    print('userIdfds$editUserId');
+    final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
     return Scaffold(
       key: _scaffoldKeyProfile,
       drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
@@ -177,7 +187,19 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                                         _sectionTitle("Contact Info", width, context),
                                         const SizedBox(height: 10),
                                         _contactTile(Icons.email, "Email", user?.email ?? "", width, context),
-                                        _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
+                                        _contactTile(
+                                          Icons.call,
+                                          "Mobile",
+                                          ((planActive == true &&
+                                              user?.details["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
+                                              isAdminUser ||
+                                              userId == editUserId)
+                                              ? (user?.mobileNumber ?? "-")
+                                              : "-",
+                                          width,
+                                          context,
+                                        ),
+                                       // _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
                                         _contactTile(Icons.cake, "DOB", user?.dob ?? "", width, context),
                                         _contactTile(Icons.location_on, "Location",
                                             "${user?.address['area'] ?? ''},${user?.address['city'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['state'] ?? ''}", width, context),

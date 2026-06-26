@@ -271,14 +271,34 @@ class Media {
                         children: [
                           Stack(
                             children: [
-                              MediaCarousel(
-                                images: loginController.editImages
-                                    .where((img) =>
-                                img.url != null &&
-                                    img.url!.startsWith('http') &&
-                                    !img.url!.contains('undefined'))
-                                    .toList(),
-                              ),
+                              // MediaCarousel(
+                              //   images: loginController.editImages
+                              //       .where((img) =>
+                              //   img.url != null &&
+                              //       img.url!.startsWith('http') &&
+                              //       !img.url!.contains('undefined'))
+                              //       .toList(),
+                              // ),
+                              if ((planActive == true &&
+                                      user?.details["plan"]?["basePlan"]?["details"]?["images"] == true) ||
+                                      isAdminUser ||
+                                      userId == editUserId)
+                                MediaCarousel(
+                                  images: loginController.editImages
+                                      .where((img) =>
+                                  img.url != null &&
+                                      img.url!.startsWith('http') &&
+                                      !img.url!.contains('undefined'))
+                                      .toList(),
+                                )
+                              else
+                                 Container(
+                                color: Colors.grey[200],
+                              width: double.infinity,
+                              height:120,
+                              //s*0.015,
+                              child: Icon(Icons.image, size: 15),
+                              )
                             ],
                           ),
                           SizedBox(height: size*0.02,),
@@ -370,7 +390,7 @@ class Media {
                             children: [
                               IconButton(onPressed: (){
                                 if(loginController.userData.first.location.toString().isNotEmpty&&(planActive==true
-                                    &&user?.details["plan"]?["basePlan"]?["details"]?["location"]==true|| isAdminUser)){
+                                    &&user?.details["plan"]?["basePlan"]?["details"]?["location"]==true|| isAdminUser||userId == editUserId)){
                 
                                   if(PlatformHelper.platform=='Android'||PlatformHelper.platform=='iOS') {
                                     Get.toNamed('/webViewProfilePage', arguments: {
@@ -431,7 +451,7 @@ class Media {
                                       userData.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true;
 
                                   final bool isAdminUser =
-                                      userType == 'admin' || userType == 'superAdmin';
+                                      userType == 'admin' || userType == 'superAdmin'||userId == editUserId;
 
                                   final bool isMobilePlatform =
                                       PlatformHelper.platform == 'Android' ||
@@ -455,7 +475,7 @@ class Media {
                                 onTap: () async {
                                   if ((planActive == true &&
                                       user?.details["plan"]?["basePlan"]?["details"]?["location"] == true) ||
-                                      isAdminUser) {
+                                      isAdminUser||userId == editUserId) {
                                     final website =
                                         user?.details["website"]?.toString() ?? "";
 
@@ -487,7 +507,7 @@ class Media {
                                 onTap: () {
                                   if ((planActive == true &&
                                       user?.details["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-                                      isAdminUser) {
+                                      isAdminUser||userId == editUserId) {
                                     launchCall(user?.mobileNumber?.toString() ?? "");
                                   }
                                 },context: context

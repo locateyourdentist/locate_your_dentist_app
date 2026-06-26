@@ -403,10 +403,10 @@ class _ModernUserTableState extends State<ModernUserTable> {
           Expanded(flex: 2, child: Center(child: Text(user.name, style: const TextStyle(fontSize: 12)))),
           Expanded(flex: 2, child: Center(child: Text(user.userId, style: const TextStyle(fontSize: 12)))),
           Expanded(flex: 2, child: Center(child: Text(user.userType, style: const TextStyle(fontSize: 12)))),
-          // if ((planActive == true &&
-          //     user.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-          //     isAdminUser)
-          Expanded(flex: 2, child: Center(child: Text(user.mobileNumber, style: const TextStyle(fontSize: 12)))),
+
+          Expanded(flex: 2, child: Center(child: Text((planActive == true &&
+              user.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
+              isAdminUser?user.mobileNumber:"-", style: const TextStyle(fontSize: 12)))),
           Expanded(flex: 1, child: Center(child: IconButton(icon: const Icon(Icons.remove_red_eye, color: Colors.grey, size: 18), onPressed: () async {
             Api.userInfo.write('selectUId', user.userId.toString());
             await loginController.getProfileByUserId(user.userId.toString(), context);

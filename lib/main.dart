@@ -236,10 +236,12 @@ Future<void> main() async {
   bool isShowOnboard = prefs.getBool('isShowOnboard') ?? false;
   //setUrlStrategy(PathUrlStrategy()); // removes #
   configureUrlStrategy();
-  // await SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.landscapeLeft,
-  //   DeviceOrientation.landscapeRight,
-  // ]);
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+
   runApp(MyApp(isShowOnboard: isShowOnboard));
 }
 

@@ -113,7 +113,13 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-
+    final planActive = getPlanActive();
+    String userType=Api.userInfo.read('userType')??"";
+    String userId=Api.userInfo.read('userId')??"";
+    String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
+    print('userIdfds$editUserId');
+    final user = loginController.userData.isNotEmpty ? loginController.userData.first : null;
+    final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
     return Scaffold(
       key: _scaffoldKeyClinic,
       backgroundColor: AppColors.scaffoldBg,
@@ -352,20 +358,59 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
     );
   }
 
+  // Widget _buildImagesTab() {
+  //   return Container(
+  //     padding: const EdgeInsets.all(20),
+  //     decoration: _cardDecoration(),
+  //     child: Center(
+  //       child:
+  //       MediaCarousel(
+  //         images: loginController.editImages.isNotEmpty
+  //             ? loginController.editImages.where((img) => img.url != null && img.url!.startsWith('http') && !img.url!.contains('undefined')).toList()
+  //             : [],
+  //       ),
+  //     ),
+  //   );
+  // }
   Widget _buildImagesTab() {
+    final validImages = loginController.editImages
+        .where((img) =>
+    img.url != null &&
+        img.url!.isNotEmpty &&
+        img.url!.startsWith("http"))
+        .toList();
+
+    final userType = Api.userInfo.read('userType')?.toString() ?? "";
+    final bool isAdminUser =
+        userType == 'admin' || userType == 'superAdmin';
+
+    final user = loginController.userData.isNotEmpty
+        ? loginController.userData.first
+        : null;
+
+    final bool planActive = getPlanActive();
+
+    final String userId = Api.userInfo.read('userId') ?? "";
+    final String editUserId = loginController.userData.isNotEmpty
+        ? loginController.userData.first.userId.toString()
+        : "";
+
+    final bool canViewImages =
+    ((planActive &&
+        user?.details["plan"]?["basePlan"]?["details"]?["images"] == true) ||
+        isAdminUser ||
+        userId == editUserId);
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: _cardDecoration(),
       child: Center(
         child: MediaCarousel(
-          images: loginController.editImages.isNotEmpty
-              ? loginController.editImages.where((img) => img.url != null && img.url!.startsWith('http') && !img.url!.contains('undefined')).toList()
-              : [],
+          images: canViewImages ? validImages : [],
         ),
       ),
     );
   }
-
   Widget _buildCertificatesTab(dynamic user) {
     return Container(
       padding: const EdgeInsets.all(20),

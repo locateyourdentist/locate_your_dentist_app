@@ -149,6 +149,9 @@ class _userTypeListState extends State<userTypeList> {
     double size = MediaQuery.of(context).size.width;
     print("Filtered profiles length: ${filteredProfiles.length}");
     final planActive = isAnyBasePlanActive(loginController.profileList);
+    final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
+    String userId=Api.userInfo.read('userId')??"";
+    String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
     //print('planStatus$planActive');
     return WillPopScope(
       onWillPop: () async {
@@ -609,6 +612,9 @@ class _userTypeListState extends State<userTypeList> {
                                       profile: profile,
                                       size: MediaQuery.of(context).size.width,
                                       onCall: () async{
+                                        if((planActive == true &&
+                                            profile.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
+                                            isAdminUser||userId == editUserId)
                                         await launchCall(profile.mobileNumber);
                                       },
                                     ),
