@@ -517,7 +517,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                               ),
                           SizedBox(
                             width: double.infinity,
-                            height: isMobile?600:1200,
+                            height: isMobile?900:1200,
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [

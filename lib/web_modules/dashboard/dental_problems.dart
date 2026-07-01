@@ -248,7 +248,7 @@ class DentalServiceCard extends StatelessWidget {
       onTap: _launchUrl,
       borderRadius: BorderRadius.circular(15),
       child: Container(
-        width:screenWidth>700? 150:80,
+        width:screenWidth>700? 150:90,
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: Colors.white,
