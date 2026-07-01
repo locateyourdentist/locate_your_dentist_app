@@ -849,18 +849,19 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                       ),
 
                                     const SizedBox(height: 30),
-                                    Text(
-                                      "Popular Dental Treatments",
-                                      style: TextStyle(
-                                          fontSize: 26,
-                                          fontWeight: FontWeight.bold,color: AppColors.primary
+                                    Center(
+                                      child: Text(
+                                        "Popular Dental Treatments",
+                                        style: TextStyle(
+                                            fontSize: 26,
+                                            fontWeight: FontWeight.bold,color: AppColors.primary
+                                        ),
                                       ),
                                     ),
-                                   const SizedBox(height: 10),
                                     Container(
                                      // width: double.infinity,
                                       constraints: const BoxConstraints(maxWidth: 1500),
-                                      padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+                                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                                       color: const Color(0xffF8FAFC),
                                       child: Center(
                                         child: AnimatedContainer(
