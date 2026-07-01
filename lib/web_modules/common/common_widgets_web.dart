@@ -77,7 +77,10 @@ class _CommonFooterState extends State<CommonFooter> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery
+        .of(context)
+        .size
+        .width;
 
     bool isMobile = width < 768;
     bool isTablet = width >= 768 && width < 1024;
@@ -105,6 +108,7 @@ class _CommonFooterState extends State<CommonFooter> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
+
               /// 🔹 MAIN CONTENT
               isMobile
                   ? Column(
@@ -433,7 +437,8 @@ class _CommonFooterState extends State<CommonFooter> {
   }
 
   Widget _socialIcon(String path, VoidCallback onTap) {
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(25),
       onTap: onTap,
       child: Image.asset(path, height: 22, width: 22, color: Colors.white),
     );
@@ -558,49 +563,178 @@ class _CommonHeaderState extends State<CommonHeader> {
             /// LOGO
             Row(
               children: [
-                Container(
-                  height: 55,
-                  width: 55,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: Colors.grey.shade100,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
-                    child: Image.network(
-                      loginController.appLogoUrl ?? "",
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) {
-                        return const Icon(Icons.image);
-                      },
-                    ),
-                  ),
-                ),
 
-                const SizedBox(width: 12),
-
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                /// LOGO
+                Row(
                   children: [
-                    Text(
-                      AppConstants.appName,
-                      style: const TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
+                    Container(
+                      height: 55,
+                      width: 55,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        color: Colors.grey.shade100,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Image.network(
+                          loginController.appLogoUrl ?? "",
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) {
+                            return const Icon(Icons.image);
+                          },
+                        ),
                       ),
                     ),
 
-                    const SizedBox(height: 3),
+                    const SizedBox(width: 12),
 
-                    Text(
-                      "Dental Services Platform",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade600,
-                      ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppConstants.appName,
+                          style: const TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        const SizedBox(height: 3),
+
+                        Text(
+                          "Dental Services Platform",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
+                ),
+
+                const Spacer(),
+
+                /// MENU
+                if (width > 900)
+                  Row(
+                    children: [
+                      navItem("Home", "/"),
+                      navItem("Jobs", "/jobListJobSeekersWebPage"),
+                      navItem("About Us", "/aboutUsWebPage"),
+                      navItem("Contact", "/contactWebPage"),
+                    ],
+                  ),
+
+                const Spacer(),
+
+                /// CONTACT
+                if (width > 1000)
+                  GetBuilder<LoginController>(
+                      builder: (controller) {
+                      return Row(
+                        children: [
+
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.email_outlined,
+                                  size: 16,
+                                  color: AppColors.primary,
+                                ),
+
+                                const SizedBox(width: 6),
+
+                                Text(
+                                  planController.emailController.text,
+                                  style: AppTextStyles.caption(context),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(width: 10),
+
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.call_outlined,
+                                  size: 16,
+                                  color: AppColors.primary,
+                                ),
+
+                                const SizedBox(width: 6),
+
+                                Text(
+                                  planController.phoneController.text,
+                                  style: AppTextStyles.caption(context),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(width: 15),
+                          socialIcon(Icons.facebook,
+                                  () => launchWebsite("https://facebook.com")),
+                          socialIcon(Icons.camera_alt_outlined,
+                                  () => launchWebsite("https://instagram.com")),
+                          socialIcon(Icons.alternate_email,
+                                  () => launchWebsite("https://youtube.com")),
+                          // socialIcon("assets/images/linkein.png",
+                          //         () => launchWebsite("https://linkedin.com")),
+
+                        //  socialIcon(Icons.facebook),
+                          //socialIcon(Icons.camera_alt_outlined),
+                         // socialIcon(Icons.alternate_email),
+                        ],
+                      );
+                    }
+                  ),
+
+                const SizedBox(width: 20),
+
+                /// LOGIN BUTTON
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.to(() => WebLoginPage());
+                  },
+                  child: Text(
+                    "Login/Register",
+                    style: AppTextStyles.caption(
+                      context,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ],
             ),

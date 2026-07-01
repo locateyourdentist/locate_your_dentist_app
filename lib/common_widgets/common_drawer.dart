@@ -122,14 +122,131 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                       const SizedBox(width: 20),
 
                     Expanded(
-                      child: _districtDropdown(),
+                      child:Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color:Colors.grey.shade300,
+                            width: 1,
+                          ),
+                        ),
+                        child: MultiSelectDialogField<String>(
+                          checkColor: AppColors.primary,
+                          buttonIcon: const Icon(
+                            Icons.arrow_drop_down,
+                            color: AppColors.white,
+                            size: 2,),
+                          items: loginController.districts
+                              .toSet()
+                              .map(
+                                (e) => MultiSelectItem<String>(
+                              e.toString(),
+                              e.toString(),
+                            ),
+                          ).toList(),
+                          title: Center(
+                            child: Text(
+                              "Select districts",
+                              style: AppTextStyles.body(context),
+                            ),),
+                          buttonText: Text(
+                            "district",
+                            style: AppTextStyles.caption(context,color: AppColors.grey),
+                          ),
+                          decoration: const BoxDecoration(),
+                          searchable: true,
+                          dialogHeight: 400,
+                          dialogWidth:120,
+                          initialValue: loginController.selectedDistricts,
+                          onConfirm: (values)async {
+                            loginController.selectedDistricts = values.map((e) => e.toString()).toList();
+                            await  loginController.fetchTalukas(loginController.selectedDistricts);
+                            loginController.update();
+                          },
+                          chipDisplay: MultiSelectChipDisplay.none(),
+                          // chipDisplay: MultiSelectChipDisplay(
+                          //   height: 130,
+                          //   chipWidth: 100,
+                          //   textStyle: AppTextStyles.caption(context),
+                          //   onTap: (value)async {
+                          //     loginController.selectedDistricts.remove(value);
+                          //     //  await  loginController.fetchTalukas(loginController.selectedDistricts);
+                          //     loginController.update();
+                          //   },
+                          // ),
+                        ),
+                      ),
+                      //_districtDropdown(),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
 
-                _talukaDropdown(),
-                const SizedBox(height: 20),
+                // _talukaDropdown(),
+                // const SizedBox(height: 20),
+                // Container(
+                //   width: double.infinity,
+                //   padding: const EdgeInsets.symmetric(
+                //     horizontal: 12,
+                //     vertical: 8,
+                //   ),
+                //   decoration: BoxDecoration(
+                //     color: Colors.white,
+                //     borderRadius: BorderRadius.circular(8),
+                //     border: Border.all(
+                //      color:  Colors.grey.shade300,
+                //       width: 1,
+                //     ),
+                //   ),
+                //   child: MultiSelectDialogField<String>(
+                //     checkColor: AppColors.primary,buttonIcon: const Icon(
+                //     Icons.arrow_drop_down,
+                //     color: AppColors.white,
+                //     size: 2,
+                //   ),
+                //     items: loginController.villages
+                //         .toSet()
+                //         .map((e) => MultiSelectItem<String>(
+                //       e.toString(),
+                //       e.toString(),
+                //     ))
+                //         .toList(),
+                //
+                //     title:  Center(child: Text("Select Areas",style: AppTextStyles.body(context),)),
+                //     decoration: const BoxDecoration(),
+                //
+                //     buttonText:  Text("Select Areas",textAlign:TextAlign.center,style: AppTextStyles.caption(context,color: AppColors.grey),),
+                //     searchable: true,
+                //     dialogHeight: 200,
+                //     dialogWidth: 100,
+                //
+                //     initialValue: loginController.selectedVillages,
+                //
+                //     onConfirm: (values) {
+                //       loginController.selectedVillages =
+                //           values.map((e) => e.toString()).toList();
+                //
+                //       print(loginController.selectedVillage);
+                //
+                //       loginController.update();
+                //     },
+                //
+                //     chipDisplay: MultiSelectChipDisplay(
+                //       height: 130,
+                //       chipWidth: 100,textStyle: AppTextStyles.caption(context),
+                //       onTap: (value) {
+                //         loginController.selectedVillages.remove(value);
+                //         loginController.update();
+                //       },
+                //     ),
+                //   ),
+                // ),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
@@ -140,51 +257,102 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                     color:  Colors.grey.shade300,
+                      color:Colors.grey.shade300,
                       width: 1,
                     ),
                   ),
                   child: MultiSelectDialogField<String>(
-                    checkColor: AppColors.primary,buttonIcon: const Icon(
-                    Icons.arrow_drop_down,
-                    color: AppColors.white,
-                    size: 2,
+                    checkColor: AppColors.primary,
+                    buttonIcon: const Icon(
+                      Icons.arrow_drop_down,
+                      color: AppColors.white,
+                      size: 2,),
+                    items: loginController.talukas
+                        .toSet()
+                        .map(
+                          (e) => MultiSelectItem<String>(
+                        e.toString(),
+                        e.toString(),
+                      ),
+                    ).toList(),
+                    title: Center(
+                      child: Text(
+                        "Select Taluka",
+                        style: AppTextStyles.body(context),
+                      ),),
+                    buttonText: Text(
+                      "Taluka",
+                      style: AppTextStyles.caption(context,color: AppColors.grey),
+                    ),
+                    decoration: const BoxDecoration(),
+                    searchable: true,
+                    dialogHeight: 400,
+                    dialogWidth:120,
+                    initialValue: loginController.selectedTalukas,
+                    onConfirm: (values) async{
+                      loginController.selectedTalukas = values.map((e) => e.toString()).toList();
+                      await loginController.fetchVillages(loginController.selectedTalukas);
+                      loginController.update();
+                    },
+                    chipDisplay: MultiSelectChipDisplay.none(),
                   ),
+                ),
+                const SizedBox(height: 20),
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.grey.shade300,
+                      width: 1,
+                    ),
+                  ),
+                  child: MultiSelectDialogField<String>(
+                    checkColor: AppColors.primary,
+                    buttonIcon: const Icon(
+                      Icons.arrow_drop_down,
+                      color: AppColors.white,
+                      size: 2,
+                    ),
                     items: loginController.villages
                         .toSet()
-                        .map((e) => MultiSelectItem<String>(
-                      e.toString(),
-                      e.toString(),
-                    ))
+                        .map(
+                          (e) => MultiSelectItem<String>(
+                        e.toString(),
+                        e.toString(),
+                      ),
+                    )
                         .toList(),
 
-                    title:  Center(child: Text("Select Areas",style: AppTextStyles.body(context),)),
+                    title: Center(
+                      child: Text(
+                        "Select Areas",
+                        style: AppTextStyles.body(context),
+                      ),
+                    ),
+
+                    buttonText: Text(
+                      "Area",
+                      style: AppTextStyles.caption(context),
+                    ),
                     decoration: const BoxDecoration(),
 
-                    buttonText:  Text("Select Areas",textAlign:TextAlign.center,style: AppTextStyles.caption(context,color: AppColors.grey),),
                     searchable: true,
-                    dialogHeight: 200,
-                    dialogWidth: 100,
-
+                    dialogHeight: 400,
+                    dialogWidth:120,
                     initialValue: loginController.selectedVillages,
 
                     onConfirm: (values) {
-                      loginController.selectedVillages =
-                          values.map((e) => e.toString()).toList();
-
-                      print(loginController.selectedVillage);
-
+                      loginController.selectedVillages = values.map((e) => e.toString()).toList();
                       loginController.update();
                     },
-
-                    chipDisplay: MultiSelectChipDisplay(
-                      height: 130,
-                      chipWidth: 100,textStyle: AppTextStyles.caption(context),
-                      onTap: (value) {
-                        loginController.selectedVillages.remove(value);
-                        loginController.update();
-                      },
-                    ),
+                    chipDisplay: MultiSelectChipDisplay.none(),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -374,16 +542,34 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
           hintText: "Select District",
           items: loginController.districts.map((d) => d.toString()).toList(),
           //initialItem: loginController.selectedDistrict,
-          onChanged: (val) {
+          // onChanged: (val) async{
+          //   loginController.selectedDistrict = val;
+          //   loginController.talukas.clear();
+          //   loginController.villages.clear();
+          //   loginController.selectedTaluka = null;
+          //   loginController.selectedVillage = null;
+          //   // if (val != null) {
+          //   //   final district = loginController.districts.firstWhere((d) => d == val);
+          //   //  // loginController.fetchTalukas(district['code'].toString());
+          //   //   loginController.fetchTalukas(district.toString());
+          //   //   loginController.update();
+          //   // }
+          //   if (val != null) {
+          //     await loginController.fetchTalukas(val as List<String>);
+          //
+          //     loginController.selectedDistrict = val;
+          //     loginController.update();
+          //   }
+          // },
+          onChanged: (val) async {
             loginController.selectedDistrict = val;
             loginController.talukas.clear();
             loginController.villages.clear();
             loginController.selectedTaluka = null;
             loginController.selectedVillage = null;
+
             if (val != null) {
-              final district = loginController.districts.firstWhere((d) => d == val);
-             // loginController.fetchTalukas(district['code'].toString());
-              loginController.fetchTalukas(district.toString());
+              await loginController.fetchTalukas([val]);
               loginController.update();
             }
           },
@@ -409,7 +595,7 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
             if (val != null) {
               final taluka = loginController.talukas.firstWhere((t) => t == val);
               //loginController.fetchVillages(taluka['code'].toString());
-              loginController.fetchVillages(taluka.toString());
+              loginController.fetchVillages(taluka);
               loginController.update();
             }
           },

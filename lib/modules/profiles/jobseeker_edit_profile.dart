@@ -600,7 +600,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         width: 1.5,
                       ),
                     ),
-                    onChanged: (val) {
+                    onChanged: (val) async{
                       if (val != null) {
                         controller.selectedDistrict = val;
                         controller.talukas.clear();
@@ -609,7 +609,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         controller.selectedVillage = null;
                         _talukaCtrl.value = null;
                         _villageCtrl.value = null;
-                        controller.fetchTalukas(val);
+                        await controller.fetchTalukas([val!]);
                         controller.update();
                       }
                     },

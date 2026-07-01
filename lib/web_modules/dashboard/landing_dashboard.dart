@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/internal.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -24,6 +26,7 @@ import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../common_widgets/common_widget_all.dart';
 import '../../common_widgets/custom_toast.dart';
 import '../../common_widgets/platform_helper.dart';
@@ -259,8 +262,6 @@ class _LandingPageState extends State<LandingPage>
           img.toLowerCase().endsWith('.jpeg'),
       orElse: () => "",
     );
-
-    // Fallback check: If logoImages is empty, check the regular images list
     if (firstImage.isEmpty) {
       firstImage = clinic.images.firstWhere(
         (img) =>
@@ -907,8 +908,8 @@ class _LandingPageState extends State<LandingPage>
                                             maxWidth: 1500,
                                           ),
                                           child: Wrap(
-                                            spacing: 20,
-                                            runSpacing: 20,
+                                            spacing: 10,
+                                            runSpacing: 10,
                                             alignment: WrapAlignment.center,
                                             children: const [
                                               DentalServiceCard(
@@ -2447,20 +2448,31 @@ Widget platformOverviewSection(context) {
                             color: Colors.black,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          item["desc"].toString(),
-                          style: AppTextStyles.caption(
-                            context,
-                            color: AppColors.grey,
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        "Create your account to explore jobs, webinars, clinics and dental services.",
+                        textAlign: TextAlign.center,style: AppTextStyles.caption(context,color: AppColors.white),
+                      ),
+                      SizedBox(height: 15),
+                      TextButton(
+                        onPressed: () {
+                          Get.toNamed('/registerPageWeb');
+                        },
+                        child: Text(
+                          "REGISTER NOW",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,color: AppColors.white,
+                            decoration: TextDecoration.underline,decorationColor: AppColors.white
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                );
-              }).toList(),
-            ),
+                ),
+              ),
+              const SizedBox(height: 40),
 
             const SizedBox(height: 40),
             GestureDetector(
@@ -2477,8 +2489,6 @@ Widget platformOverviewSection(context) {
                 ),
                 child: Column(
                   children: [
-                    SizedBox(height: 15),
-
                     Text(
                       "New to Locate Your Dentist?",
                       style: TextStyle(

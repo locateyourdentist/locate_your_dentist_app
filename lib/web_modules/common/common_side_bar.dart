@@ -382,7 +382,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
       case "Products":
         return Icons.inventory_2_outlined;
 
-      case "Job/Webinars":
+     // case "Job/Webinars":
       case "Jobs/Webinars":
         return Icons.work_outline;
 

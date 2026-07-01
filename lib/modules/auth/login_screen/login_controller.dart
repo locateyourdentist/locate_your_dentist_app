@@ -397,6 +397,9 @@ class LoginController extends GetxController {
   String? selectedDistrict;
   String? selectedTaluka;
   String? selectedVillage;
+  List<String> selectedTalukas = [];
+  List<String> selectedDistricts = [];
+
   List<String> selectedVillages = [];
   void setAppLogo(File file) {
     appLogoFile = file;
@@ -476,7 +479,6 @@ class LoginController extends GetxController {
           if (data is List && data.isNotEmpty) {
             final lat = double.parse(data[0]["lat"].toString());
             final lon = double.parse(data[0]["lon"].toString());
-
             print("Found Location:");
             print("Latitude: $lat");
             print("Longitude: $lon");
@@ -485,7 +487,6 @@ class LoginController extends GetxController {
           }
         }
       }
-
       print("No location found");
       return null;
     } catch (e) {
@@ -1026,11 +1027,11 @@ class LoginController extends GetxController {
           selectedDistrict = user.address["district"] ?? "";
         }
         if (selectedDistrict != null && selectedDistrict!.isNotEmpty) {
-          await fetchTalukas(selectedDistrict!);
+          await fetchTalukas(selectedDistricts!);
           selectedTaluka = user.address["city"] ?? "";
         }
         if (selectedTaluka != null && selectedTaluka!.isNotEmpty) {
-          await fetchVillages(selectedTaluka!);
+          await fetchVillages(selectedTalukas);
           selectedVillage = user.address["area"] ?? "";
         }
         String normalize(String value) => value.trim().toLowerCase();

@@ -416,7 +416,8 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
                         ],
                       ),
                     ),
-                  ),
+                    SizedBox(height: size*0.02,),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

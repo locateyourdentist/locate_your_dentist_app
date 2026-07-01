@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
@@ -103,7 +106,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
     final size = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _scaffoldKeyUser1,
-      backgroundColor: const Color(0xFFEEEEEE),
+      backgroundColor:  AppColors.scaffoldBg,
       appBar: AppBar(
         elevation: 0,
         //backgroundColor: AppColors.primary,
@@ -168,6 +171,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
           ],
         ),
       ),
+
       body: GetBuilder<LoginController>(
         init: loginController,
         builder: (controller) {
@@ -501,5 +505,6 @@ class _PatientDashboardState extends State<PatientDashboard> {
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
+
   }
 }

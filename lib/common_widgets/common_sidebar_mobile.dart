@@ -325,10 +325,10 @@ class SettingsSidebarDrawer extends StatelessWidget {
                       }
                       else if (title == "User List") {
                         if( Api.userInfo.read('userType')=="superAdmin") {
-                          await   loginController.getProfileDetails('', '', '', '',[], '','','','','',  context);
+                          await   loginController.getProfileDetails('', '', [], [], [], '','','','','',  context);
                         }
                         if( Api.userInfo.read('userType')=="admin") {
-                          await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", '', '',[], '','','','','', context);
+                          await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [], [], '','','','','', context);
                         }
                         Get.toNamed('/userTypeListPage');
                       }

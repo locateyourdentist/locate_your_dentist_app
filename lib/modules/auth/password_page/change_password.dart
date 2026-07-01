@@ -217,8 +217,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ),
               ],
             ),
-          ),
-        ),
+          );
+        }
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );

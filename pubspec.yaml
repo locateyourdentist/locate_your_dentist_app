@@ -79,6 +79,7 @@ dependencies:
   crop_your_image:
   firebase_auth: ">=5.0.0 <6.0.0"
   graphview:
+  flutter_speed_dial:
 dev_dependencies:
   flutter_test:
     sdk: flutter

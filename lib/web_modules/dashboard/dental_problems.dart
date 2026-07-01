@@ -309,11 +309,12 @@ class DentalServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: _launchUrl,
       borderRadius: BorderRadius.circular(15),
       child: Container(
-        width: 150,
+        width:screenWidth>700? 150:90,
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: Colors.white,

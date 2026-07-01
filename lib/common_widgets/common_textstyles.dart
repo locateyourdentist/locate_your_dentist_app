@@ -47,7 +47,7 @@ class AppTextStyles {
   }
   static TextStyle body(BuildContext context,
       {Color? color, FontWeight? fontWeight}) {
-    return GoogleFonts.inter(
+    return GoogleFonts.roboto(
       fontSize: _scaleText(context, 13),
       fontWeight: fontWeight ?? FontWeight.w400,
       height: 1.5,

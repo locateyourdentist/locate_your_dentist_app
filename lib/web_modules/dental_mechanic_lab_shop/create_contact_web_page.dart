@@ -35,6 +35,7 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
   String district = '';
   String city = '';
   final ImagePicker _picker = ImagePicker();
+  final GlobalKey<ScaffoldState> _scaffoldKeyCreateContact = GlobalKey<ScaffoldState>();
 
   final int maxFiles = 3;
   String? selectName;
@@ -168,8 +169,10 @@ class _ContactFormWebPageState extends State<ContactFormWebPage> {
     }
 
     return Scaffold(
+      key: _scaffoldKeyCreateContact,
       backgroundColor: AppColors.white,
       appBar: buildAppBar(),
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       body: GetBuilder<LoginController>(
         builder: (controller) {
           return Row(

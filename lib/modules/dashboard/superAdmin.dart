@@ -9,9 +9,13 @@ import 'package:locate_your_dentist/modules/notification_page/notificationContro
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import '../../api/api.dart';
 import '../../common_widgets/color_code.dart';
+import '../../common_widgets/common_drawer.dart';
+import '../../common_widgets/common_sidebar_mobile.dart';
 import '../../common_widgets/common_widget_all.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../auth/login_screen/service_locations.dart';
 
 class SuperAdminDashboardPage extends StatefulWidget {
   const SuperAdminDashboardPage({super.key});
@@ -72,12 +76,14 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
+    final bool isDesktop = size >= 1100;
     return RefreshIndicator(
       onRefresh: _refresh,
       child: Scaffold(
         key: _scaffoldKeySuperAdmin,
+        backgroundColor: AppColors.scaffoldBg,
         appBar: AppBar(
-          //backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.white,
           leading: IconButton(
             icon: Icon(Icons.menu, color: AppColors.white, size: size * 0.06),
             onPressed: () {

@@ -627,6 +627,12 @@ String imgUserType(String userType) {
 String imgUserTypeNew(String userType) {
   String page;
   switch (userType) {
+    case "Admin":
+      page = "assets/images/dental_clinic1.png";
+      break;
+    case "Super Admin":
+      page = "assets/images/dental_clinic1.png";
+      break;
     case "Dental Clinic":
       page = "assets/images/dental_clinic1.png";
       break;

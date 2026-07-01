@@ -833,7 +833,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
 
                                           Center(
                                             child: Container(
-                                              width: 130,
+                                              width: 180,
                                               height: 50,
                                               decoration: BoxDecoration(
                                                 gradient: const LinearGradient(
