@@ -20,7 +20,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({Key? key}) : super(key: key);
+  const EditProfilePage({super.key});
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
@@ -29,15 +29,23 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   final ImagePicker _picker = ImagePicker();
   final _formKeyEditJobProfile = GlobalKey<FormState>();
-  final jobController=Get.put(JobController());
-  final loginController=Get.put(LoginController());
+  final jobController = Get.put(JobController());
+  final loginController = Get.put(LoginController());
   late QuillController _controller;
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
-  final SingleSelectController<String?> _stateCtrl = SingleSelectController(null);
-  final SingleSelectController<String?> _districtCtrl = SingleSelectController(null);
-  final SingleSelectController<String?> _talukaCtrl = SingleSelectController(null);
-  final SingleSelectController<String?> _villageCtrl = SingleSelectController(null);
+  final SingleSelectController<String?> _stateCtrl = SingleSelectController(
+    null,
+  );
+  final SingleSelectController<String?> _districtCtrl = SingleSelectController(
+    null,
+  );
+  final SingleSelectController<String?> _talukaCtrl = SingleSelectController(
+    null,
+  );
+  final SingleSelectController<String?> _villageCtrl = SingleSelectController(
+    null,
+  );
   Future<void> pickSingleImage() async {
     final XFile? pickedImage = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -52,22 +60,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
       loginController.update();
     }
   }
+
   void loadJobDescription(dynamic data) {
     try {
       List<Map<String, dynamic>> delta;
 
       if (data == null || data.toString().trim().isEmpty) {
         delta = [
-          {"insert": "\n"}
+          {"insert": "\n"},
         ];
-      }
-
-      else if (data is String) {
+      } else if (data is String) {
         final trimmed = data.trim();
 
         if (trimmed.isEmpty || trimmed == "[]") {
           delta = [
-            {"insert": "\n"}
+            {"insert": "\n"},
           ];
         } else {
           final decoded = jsonDecode(trimmed);
@@ -76,19 +83,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
             delta = List<Map<String, dynamic>>.from(decoded);
           } else {
             delta = [
-              {"insert": "\n"}
+              {"insert": "\n"},
             ];
           }
         }
-      }
-
-      else if (data is List && data.isNotEmpty) {
+      } else if (data is List && data.isNotEmpty) {
         delta = List<Map<String, dynamic>>.from(data);
-      }
-
-      else {
+      } else {
         delta = [
-          {"insert": "\n"}
+          {"insert": "\n"},
         ];
       }
 
@@ -98,12 +101,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
       print("Quill load error: $e");
 
       _controller.document = Document.fromJson([
-        {"insert": "\n"}
+        {"insert": "\n"},
       ]);
 
       setState(() {});
     }
   }
+
   Future<void> pickSingleImage1() async {
     final XFile? pickedImage = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -120,6 +124,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       loginController.update();
     }
   }
+
   Future<void> pickResume() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -146,14 +151,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
       Get.snackbar("Error", "Failed to pick PDF");
     }
   }
+
   Widget _buildSingleImageWidget({File? file, String? url}) {
     return Stack(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: file != null
-              ? Image.file(file, fit: BoxFit.cover, width: double.infinity, height: double.infinity)
-              : Image.network(url!, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+              ? Image.file(
+                  file,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                )
+              : Image.network(
+                  url!,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
         ),
         Positioned(
           right: 0,
@@ -186,8 +202,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ],
     );
   }
+
   Widget _buildSinglePdfWidget({File? file, String? url}) {
-    final fileName = file?.path.split('/').last ?? url?.split('/').last ?? "PDF";
+    final fileName =
+        file?.path.split('/').last ?? url?.split('/').last ?? "PDF";
     return Stack(
       children: [
         Container(
@@ -197,12 +215,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
           padding: const EdgeInsets.all(8),
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      ViewPDFPage(pdfUrl:loginController.userData.first.certificates[0]??""),
+                  builder: (context) => ViewPDFPage(
+                    pdfUrl:
+                        loginController.userData.first.certificates[0] ?? "",
+                  ),
                 ),
               );
             },
@@ -255,6 +275,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ],
     );
   }
+
   String formatDate(DateTime date) {
     return "${date.day.toString().padLeft(2, '0')}-"
         "${date.month.toString().padLeft(2, '0')}-"
@@ -278,23 +299,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
       loginController.dobController.text = formatDate(pickedDate);
     }
   }
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _controller = QuillController.basic(
       config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
-
+        clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
       ),
     );
     _refresh();
   }
+
   Future<void> _refresh() async {
     await loginController.fetchStates();
-    await loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-    jobController.getJobCategoryLists("",context);
+    await loginController.getProfileByUserId(
+      Api.userInfo.read('userId') ?? "",
+      context,
+    );
+    jobController.getJobCategoryLists("", context);
     loadJobDescription(loginController.descriptionData);
     if (mounted) {
       _stateCtrl.value = loginController.selectedState;
@@ -303,10 +326,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _villageCtrl.value = loginController.selectedVillage;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-    final _items = jobController.jobCategoryAdmin;
+    final items = jobController.jobCategoryAdmin;
     //jobCategories.map((e) => MultiSelectItem<String>(e, e)).toList();
     return Scaffold(
       backgroundColor: Colors.white,
@@ -323,7 +347,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
           key: _formKeyEditJobProfile,
           child: Column(
             children: [
-          
               sectionTitle("Personal Information", size),
               CustomTextField(
                 hint: "Name",
@@ -331,34 +354,35 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 controller: loginController.fullNameController,
               ),
               SizedBox(height: size * 0.03),
-            CustomTextField(
-              hint: "Date of Birth",
-              controller: loginController.dobController,  fillColor: AppColors.white,
-              borderColor: AppColors.grey,
-              readOnly: true,
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime(2000),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
-                );
-
-                if (pickedDate != null) {
-                  loginController.dobController.text =
-                  "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
-                }
-              },
-            ),
-            SizedBox(height: size * 0.03),
               CustomTextField(
-                  hint: "Email",
-                  icon: Icons.email,
-                  controller: loginController.emailController,
-                  keyboardType: TextInputType.emailAddress
+                hint: "Date of Birth",
+                controller: loginController.dobController,
+                fillColor: AppColors.white,
+                borderColor: AppColors.grey,
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime(2000),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  );
+
+                  if (pickedDate != null) {
+                    loginController.dobController.text =
+                        "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                  }
+                },
               ),
               SizedBox(height: size * 0.03),
-          
+              CustomTextField(
+                hint: "Email",
+                icon: Icons.email,
+                controller: loginController.emailController,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              SizedBox(height: size * 0.03),
+
               CustomTextField(
                 hint: "Mobile Number",
                 icon: Icons.phone,
@@ -376,7 +400,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 },
               ),
               SizedBox(height: size * 0.03),
-
 
               sectionTitle("Location Details", size),
 
@@ -396,8 +419,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10),
-                      ),),
-                    height: size*0.4,
+                      ),
+                    ),
+                    height: size * 0.4,
                     width: double.infinity,
                     child: QuillSimpleToolbar(
                       controller: _controller,
@@ -409,14 +433,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                   ),
                   Container(
-                    height: size*0.5,
+                    height: size * 0.5,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(10),
                         bottomRight: Radius.circular(10),
-                      ),),
+                      ),
+                    ),
                     child: QuillEditor(
                       controller: _controller,
                       scrollController: _scrollController,
@@ -429,46 +454,50 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ],
               ),
-              SizedBox(height: size*0.03,),
-              sectionTitle( "Select Preferences Job Categories",size),
-              SizedBox(height: size*0.01,),
-            GetBuilder<JobController>(
-              builder: (jobController) {
-                final List<MultiSelectItem<String>> categoryItems =
-                jobController.jobCategoryAdmin
-                    .map(
-                      (e) => MultiSelectItem<String>(
-                    e.name.trim(),
-                    e.name.trim(),
-                  ),
-                ).toList();
-                return MultiSelectDialogField<String>(
-                  items: categoryItems,
-                  selectedColor: AppColors.primary,
-                  initialValue: loginController.selectedCategories,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.grey, width: 1),
-                  ),
-                  buttonText: Text(
-                    "Select Job Categories",
-                    style: AppTextStyles.caption(
-                      context,
-                      color: AppColors.grey,
-                      fontWeight: FontWeight.normal,
+              SizedBox(height: size * 0.03),
+              sectionTitle("Select Preferences Job Categories", size),
+              SizedBox(height: size * 0.01),
+              GetBuilder<JobController>(
+                builder: (jobController) {
+                  final List<MultiSelectItem<String>> categoryItems =
+                      jobController.jobCategoryAdmin
+                          .map(
+                            (e) => MultiSelectItem<String>(
+                              e.name.trim(),
+                              e.name.trim(),
+                            ),
+                          )
+                          .toList();
+                  return MultiSelectDialogField<String>(
+                    items: categoryItems,
+                    selectedColor: AppColors.primary,
+                    initialValue: loginController.selectedCategories,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppColors.grey, width: 1),
                     ),
-                  ),
-                  onConfirm: (results) {
-                    loginController.selectedCategories = results;
-                    loginController.update();
-                  },
-                );
-              },
-            ),
-            sectionTitle("Educational Details", size),
-          
-               Text("UG Details", style: AppTextStyles.body(context,fontWeight: FontWeight.bold)),
+                    buttonText: Text(
+                      "Select Job Categories",
+                      style: AppTextStyles.caption(
+                        context,
+                        color: AppColors.grey,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    onConfirm: (results) {
+                      loginController.selectedCategories = results;
+                      loginController.update();
+                    },
+                  );
+                },
+              ),
+              sectionTitle("Educational Details", size),
+
+              Text(
+                "UG Details",
+                style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+              ),
               SizedBox(height: size * 0.02),
 
               CustomTextField(
@@ -504,9 +533,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ),
                       closedBorderRadius: BorderRadius.circular(10),
                       expandedBorderRadius: BorderRadius.circular(10),
-                      hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                      headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                      listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
+                      hintStyle: AppTextStyles.caption(
+                        context,
+                        color: AppColors.grey,
+                      ),
+                      headerStyle: AppTextStyles.caption(
+                        context,
+                        color: Colors.black,
+                      ),
+                      listItemStyle: AppTextStyles.caption(
+                        context,
+                        color: Colors.black,
+                      ),
+                    ),
                     items: controller.states.map((s) => s.toString()).toList(),
                     controller: _stateCtrl,
                     onChanged: (val) {
@@ -533,12 +572,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 builder: (controller) {
                   return CustomDropdown<String>.search(
                     hintText: "Select District",
-                    items: controller.districts.map((d) => d.toString()).toList(),
+                    items: controller.districts
+                        .map((d) => d.toString())
+                        .toList(),
                     controller: _districtCtrl,
                     decoration: CustomDropdownDecoration(
-                      hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                      headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                      listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                      hintStyle: AppTextStyles.caption(
+                        context,
+                        color: AppColors.grey,
+                      ),
+                      headerStyle: AppTextStyles.caption(
+                        context,
+                        color: Colors.black,
+                      ),
+                      listItemStyle: AppTextStyles.caption(
+                        context,
+                        color: Colors.black,
+                      ),
                       closedFillColor: Colors.grey[100],
                       expandedFillColor: Colors.white,
                       closedBorder: Border.all(
@@ -570,260 +620,355 @@ class _EditProfilePageState extends State<EditProfilePage> {
               SizedBox(height: size * 0.03),
 
               GetBuilder<LoginController>(
-                  builder: (controller) {
-                    return DefaultTextStyle(
-                      style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
-                      child: CustomDropdown<String>.search(
-                        hintText: "Select  taluka/town",
-                        items: loginController.talukas.map((t) => t.toString()).toList(),
-                        decoration: CustomDropdownDecoration(
-                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                          closedFillColor: Colors.grey[100],
-                          expandedFillColor: Colors.white,
-                          closedBorder: Border.all(
-                            color: AppColors.white,
-                            width: 1.5,
-                          ),
-                          expandedBorder: Border.all(
-                            color: AppColors.primary,
-                            width: 1.5,
-                          ),
+                builder: (controller) {
+                  return DefaultTextStyle(
+                    style: AppTextStyles.caption(
+                      context,
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    child: CustomDropdown<String>.search(
+                      hintText: "Select  taluka/town",
+                      items: loginController.talukas
+                          .map((t) => t.toString())
+                          .toList(),
+                      decoration: CustomDropdownDecoration(
+                        hintStyle: AppTextStyles.caption(
+                          context,
+                          color: AppColors.grey,
                         ),
-                        controller: _talukaCtrl,
-                        excludeSelected: false,
-                        onChanged: (val) {
-                          if (val != null) {
-                            loginController.selectedTaluka = val;
-                            loginController.villages.clear();
-                            loginController.selectedVillage = null;
-                            _villageCtrl.value = null;
-                            loginController.fetchVillages(val);
-                            loginController.update();
-                          }
-                        },),
-                    );
-                  }
+                        headerStyle: AppTextStyles.caption(
+                          context,
+                          color: Colors.black,
+                        ),
+                        listItemStyle: AppTextStyles.caption(
+                          context,
+                          color: Colors.black,
+                        ),
+                        closedFillColor: Colors.grey[100],
+                        expandedFillColor: Colors.white,
+                        closedBorder: Border.all(
+                          color: AppColors.white,
+                          width: 1.5,
+                        ),
+                        expandedBorder: Border.all(
+                          color: AppColors.primary,
+                          width: 1.5,
+                        ),
+                      ),
+                      controller: _talukaCtrl,
+                      excludeSelected: false,
+                      onChanged: (val) {
+                        if (val != null) {
+                          loginController.selectedTaluka = val;
+                          loginController.villages.clear();
+                          loginController.selectedVillage = null;
+                          _villageCtrl.value = null;
+                          loginController.fetchVillages(val);
+                          loginController.update();
+                        }
+                      },
+                    ),
+                  );
+                },
               ),
 
               SizedBox(height: size * 0.03),
               GetBuilder<LoginController>(
-                  builder: (controller) {
-                    return DefaultTextStyle(
-                      style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
-                      child: CustomDropdown<String>.search(
-                        hintText: "Select Area",
-                        items: controller.villages.map((v) => v.toString()).toList(),
-                        decoration: CustomDropdownDecoration(
-                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                          closedFillColor: Colors.grey[100],
-                          expandedFillColor: Colors.white,
-                          closedBorder: Border.all(
-                            color: AppColors.white,
-                            width: 1.5,
-                          ),
-                          expandedBorder: Border.all(
-                            color: AppColors.primary,
-                            width: 1.5,
-                          ),
+                builder: (controller) {
+                  return DefaultTextStyle(
+                    style: AppTextStyles.caption(
+                      context,
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    child: CustomDropdown<String>.search(
+                      hintText: "Select Area",
+                      items: controller.villages
+                          .map((v) => v.toString())
+                          .toList(),
+                      decoration: CustomDropdownDecoration(
+                        hintStyle: AppTextStyles.caption(
+                          context,
+                          color: AppColors.grey,
                         ),
-                        controller: _villageCtrl,
-                        excludeSelected: false,
-                        onChanged: (val) {
-                          loginController.selectedVillage = val;
-                          loginController.update();
-                        },
+                        headerStyle: AppTextStyles.caption(
+                          context,
+                          color: Colors.black,
+                        ),
+                        listItemStyle: AppTextStyles.caption(
+                          context,
+                          color: Colors.black,
+                        ),
+                        closedFillColor: Colors.grey[100],
+                        expandedFillColor: Colors.white,
+                        closedBorder: Border.all(
+                          color: AppColors.white,
+                          width: 1.5,
+                        ),
+                        expandedBorder: Border.all(
+                          color: AppColors.primary,
+                          width: 1.5,
+                        ),
                       ),
-                    );
-                  }
+                      controller: _villageCtrl,
+                      excludeSelected: false,
+                      onChanged: (val) {
+                        loginController.selectedVillage = val;
+                        loginController.update();
+                      },
+                    ),
+                  );
+                },
               ),
               SizedBox(height: size * 0.03),
               GetBuilder<LoginController>(
-                  builder: (controller) {
-                    return  Column(
+                builder: (controller) {
+                  return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ElevatedButton(
                         onPressed: () {
                           loginController.togglePGDetails();
                         },
-                    style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                   // shadowColor: AppColors.primary.withOpacity(0.5),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    ),),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          // shadowColor: AppColors.primary.withOpacity(0.5),
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                         child: Text(
-                          loginController.showPGDetails ? "Hide PG Details" : "Add PG Details",textAlign: TextAlign.right,
-                            style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white)
-                        )
+                          loginController.showPGDetails
+                              ? "Hide PG Details"
+                              : "Add PG Details",
+                          textAlign: TextAlign.right,
+                          style: AppTextStyles.caption(
+                            context,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.white,
+                          ),
+                        ),
                       ),
 
                       // PG Details section
                       loginController.showPGDetails
                           ? GetBuilder<LoginController>(
-                          builder: (controller) {
-                              return Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                               Text(
-                                "PG Details", style: AppTextStyles.body(context,fontWeight: FontWeight.bold)
+                              builder: (controller) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "PG Details",
+                                      style: AppTextStyles.body(
+                                        context,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
 
-                              ),
-                              const SizedBox(height: 10),
+                                    CustomTextField(
+                                      hint: "College Name",
+                                      controller:
+                                          loginController.pgDetails.collegeName,
+                                    ),
+                                    const SizedBox(height: 10),
 
-                              CustomTextField(
-                                hint: "College Name",
-                                controller: loginController.pgDetails.collegeName,
-                              ),
-                              const SizedBox(height: 10),
+                                    CustomTextField(
+                                      hint: "Degree",
+                                      controller:
+                                          loginController.pgDetails.degree,
+                                    ),
+                                    const SizedBox(height: 10),
 
-                              CustomTextField(
-                                hint: "Degree",
-                                controller: loginController.pgDetails.degree,
-                              ),
-                              const SizedBox(height: 10),
+                                    CustomTextField(
+                                      hint: "Percentage",
+                                      controller:
+                                          loginController.pgDetails.percentage,
+                                    ),
+                                    const SizedBox(height: 10),
 
-                              CustomTextField(
-                                hint: "Percentage",
-                                controller: loginController.pgDetails.percentage,
-                              ),
-                              const SizedBox(height: 10),
-
-                              // CustomTextField(
-                              //   hint: "About Me",
-                              //   icon: Icons.location_on,
-                              //   controller: loginController.descriptionController,
-                              // ),
-                              const SizedBox(height: 20),
-                                                  ],
-                                                );
-                            }
-                          )
+                                    // CustomTextField(
+                                    //   hint: "About Me",
+                                    //   icon: Icons.location_on,
+                                    //   controller: loginController.descriptionController,
+                                    // ),
+                                    const SizedBox(height: 20),
+                                  ],
+                                );
+                              },
+                            )
                           : const SizedBox.shrink(),
                     ],
                   );
-                }
+                },
               ),
               SizedBox(height: size * 0.03),
               GetBuilder<LoginController>(
-                  builder: (controller) {
-                    return Column(
+                builder: (controller) {
+                  return Column(
                     children: [
-                      for (int i = 0; i < loginController.experienceList.length; i++)
-                        _experienceFields(i,size),
+                      for (
+                        int i = 0;
+                        i < loginController.experienceList.length;
+                        i++
+                      )
+                        _experienceFields(i, size),
 
                       SizedBox(height: size * 0.03),
-                      Text('Upload Image(Not Mandatory)',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                      SizedBox(height: size * 0.01),
-                             SizedBox(
-                               height: size * 0.5,
-                               child: GetBuilder<LoginController>(
-                                 builder: (controller) {
-                    if (controller.images.isNotEmpty) {
-                      final file = controller.images.first;
-
-                      return _buildSingleImageWidget(file: file);
-                    }
-                    if (controller.editImages.isNotEmpty) {
-                      final img = controller.editImages.first;
-                      print('job img url${img.url}}');
-                      return _buildSingleImageWidget(url: "${img.url}");
-                    }
-
-                    return GestureDetector(
-                      onTap: () => pickSingleImage(),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey),
-                          color: Colors.grey.shade200,
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.add, size: 40, color: Colors.grey),
+                      Text(
+                        'Upload Image(Not Mandatory)',
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.black,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    );
-                                 },
-                               ),
-                             ),
-
-                      SizedBox(height: size * 0.06),
-                      Text('Upload Resume',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
                       SizedBox(height: size * 0.01),
                       SizedBox(
-                                 height: size * 0.15,
-                                 child: GetBuilder<LoginController>(
-                                 builder: (_) {
-                    if (loginController.certificates.isNotEmpty) {
-                      final file = loginController.certificates.first;
-                      return _buildSinglePdfWidget(file: file);
-                    }
-                    if (loginController.editCertificates.isNotEmpty) {
-                      final pdf = loginController.editCertificates.first;
-                      return _buildSinglePdfWidget(url: pdf.url);
-                    }
-                    return GestureDetector(
-                      onTap: () => pickResume(),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey),
-                          color: Colors.grey.shade200,
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.picture_as_pdf, size: 40, color: Colors.grey),
+                        height: size * 0.5,
+                        child: GetBuilder<LoginController>(
+                          builder: (controller) {
+                            if (controller.images.isNotEmpty) {
+                              final file = controller.images.first;
+
+                              return _buildSingleImageWidget(file: file);
+                            }
+                            if (controller.editImages.isNotEmpty) {
+                              final img = controller.editImages.first;
+                              print('job img url${img.url}}');
+                              return _buildSingleImageWidget(url: "${img.url}");
+                            }
+
+                            return GestureDetector(
+                              onTap: () => pickSingleImage(),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.grey),
+                                  color: Colors.grey.shade200,
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 40,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
-                    );
-                                 },
-                               ),
-                             ),
 
+                      SizedBox(height: size * 0.06),
+                      Text(
+                        'Upload Resume',
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: size * 0.01),
+                      SizedBox(
+                        height: size * 0.15,
+                        child: GetBuilder<LoginController>(
+                          builder: (_) {
+                            if (loginController.certificates.isNotEmpty) {
+                              final file = loginController.certificates.first;
+                              return _buildSinglePdfWidget(file: file);
+                            }
+                            if (loginController.editCertificates.isNotEmpty) {
+                              final pdf =
+                                  loginController.editCertificates.first;
+                              return _buildSinglePdfWidget(url: pdf.url);
+                            }
+                            return GestureDetector(
+                              onTap: () => pickResume(),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.grey),
+                                  color: Colors.grey.shade200,
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.picture_as_pdf,
+                                    size: 40,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
 
                       SizedBox(height: size * 0.03),
 
                       ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.white),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.white,
+                        ),
                         onPressed: () => loginController.addExperienceField(),
-                        icon:  Icon(Icons.add,size: size*0.05,color: AppColors.primary),
-                        label:  Text("Add Experience",style: AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),),
-                      )
+                        icon: Icon(
+                          Icons.add,
+                          size: size * 0.05,
+                          color: AppColors.primary,
+                        ),
+                        label: Text(
+                          "Add Experience",
+                          style: AppTextStyles.caption(
+                            context,
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ],
-                                 );
-                 }
-               ),
+                  );
+                },
+              ),
               SizedBox(height: size * 0.06),
-          
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
-                    if (!_formKeyEditJobProfile.currentState!.validate()) return;
+                    if (!_formKeyEditJobProfile.currentState!.validate())
+                      return;
 
                     print("---- DEBUG: Form values ----");
                     print("UserId: ${Api.userInfo.read('userId')}");
                     print("UserType: ${Api.userInfo.read('userType')}");
-                    print("FullName: ${loginController.fullNameController.text}");
+                    print(
+                      "FullName: ${loginController.fullNameController.text}",
+                    );
                     print("Mobile: ${loginController.mobileController.text}");
                     print("Email: ${loginController.emailController.text}");
                     print("Address: ${loginController.addressController.text}");
-                    print("ConfirmPassword: ${loginController.confirmPasswordController.text}");
+                    print(
+                      "ConfirmPassword: ${loginController.confirmPasswordController.text}",
+                    );
                     print("Taluk: ${loginController.stateController.text}");
-                    print("District: ${loginController.districtController.text}");
+                    print(
+                      "District: ${loginController.districtController.text}",
+                    );
                     print("City: ${loginController.cityController.text}");
                     print("PinCode: ${loginController.pinCodeController.text}");
-                    print("TypeName: ${loginController.typeNameController.text}");
+                    print(
+                      "TypeName: ${loginController.typeNameController.text}",
+                    );
                     print("Images: ${loginController.images}");
                     print("Certificates: ${loginController.certificates}");
 
-
-                    List<Map<String, dynamic>> expJson = loginController.experienceList.map((e) {
-                      print("Experience Field: ${e.companyName.text}, ${e.experience.text}, ${e.jobDescription.text}");
+                    List<Map<String, dynamic>>
+                    expJson = loginController.experienceList.map((e) {
+                      print(
+                        "Experience Field: ${e.companyName.text}, ${e.experience.text}, ${e.jobDescription.text}",
+                      );
                       return {
                         "companyName": e.companyName.text ?? "",
                         "experience": e.experience.text ?? "",
@@ -832,31 +977,36 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     }).toList();
 
                     Map<String, dynamic> finalJson = {
-                        "collegeDetails": {
-                          "ugDegree": {
-                            "name": loginController.ugCollege.text ?? "",
-                            "degree": loginController.ugDegree.text ?? "",
-                            "percentage": loginController.ugPercentage.text ?? "",
-                          },
-                          "pgDegree": {
-                            "name": loginController.pgCollege.text ?? "",
-                            "degree": loginController.pgDegree.text ?? "",
-                            "percentage": loginController.pgPercentage.text ?? "",
-                          },
+                      "collegeDetails": {
+                        "ugDegree": {
+                          "name": loginController.ugCollege.text ?? "",
+                          "degree": loginController.ugDegree.text ?? "",
+                          "percentage": loginController.ugPercentage.text ?? "",
                         },
-                        "experienceDetails": expJson,
+                        "pgDegree": {
+                          "name": loginController.pgCollege.text ?? "",
+                          "degree": loginController.pgDegree.text ?? "",
+                          "percentage": loginController.pgPercentage.text ?? "",
+                        },
+                      },
+                      "experienceDetails": expJson,
                     };
                     print("Details JSON: $finalJson");
                     final userType = "${Api.userInfo.read('userType')}";
-                    if (userType == null || userType.isEmpty) {
+                    if (userType.isEmpty) {
                       Get.snackbar("Error", "Please select user type");
                       return;
                     }
-                      print('userid${Api.userInfo.read('userId')} ');
+                    print('userid${Api.userInfo.read('userId')} ');
                     try {
-                      Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
-                        return await Future.wait(files.map((file) => file.readAsBytes()));
+                      Future<List<Uint8List>> convertFilesToBytes(
+                        List<File> files,
+                      ) async {
+                        return await Future.wait(
+                          files.map((file) => file.readAsBytes()),
+                        );
                       }
+
                       // final imageBytes = loginController.selectedUserType == "Job Seekers"
                       //     ? await convertFilesToBytes(loginController.logoImages)
                       //     : await convertFilesToBytes(loginController.images);
@@ -864,33 +1014,45 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       // final logoBytes = loginController.selectedUserType != "Job Seekers"
                       //     ? await convertFilesToBytes(loginController.logoImages)
                       //     : [];
-                      final imageBytes =
-                      await convertFilesToBytes(loginController.images);
+                      final imageBytes = await convertFilesToBytes(
+                        loginController.images,
+                      );
 
-                      final logoBytes =
-                      await convertFilesToBytes(loginController.logoImages);
+                      final logoBytes = await convertFilesToBytes(
+                        loginController.logoImages,
+                      );
 
-                      final certBytes = await convertFilesToBytes(loginController.certificates);
+                      final certBytes = await convertFilesToBytes(
+                        loginController.certificates,
+                      );
 
                       // Preserve existing server URLs when no new file was picked
                       final oldImageUrls = loginController.images.isEmpty
-                          ? loginController.editImages.where((e) => e.url != null).map((e) => e.url!).toList()
+                          ? loginController.editImages
+                                .where((e) => e.url != null)
+                                .map((e) => e.url!)
+                                .toList()
                           : <String>[];
-                      final oldCertificateUrls = loginController.certificates.isEmpty
-                          ? loginController.editCertificates.where((e) => e.url != null).map((e) => e.url!).toList()
+                      final oldCertificateUrls =
+                          loginController.certificates.isEmpty
+                          ? loginController.editCertificates
+                                .where((e) => e.url != null)
+                                .map((e) => e.url!)
+                                .toList()
                           : <String>[];
                       print("IMAGE BYTES LENGTH = ${imageBytes.length}");
                       print("LOGO BYTES LENGTH = ${logoBytes.length}");
-                      print("CERT BYTES LENGTH = ${certBytes.length}");;
-                      final descriptionAbout =
-                      jsonEncode(_controller.document.toDelta().toJson());
+                      print("CERT BYTES LENGTH = ${certBytes.length}");
+                      final descriptionAbout = jsonEncode(
+                        _controller.document.toDelta().toJson(),
+                      );
                       print('dgdesc$descriptionAbout');
                       final location = await loginController.getLatLng(
                         state: loginController.selectedState ?? '',
                         district: loginController.selectedDistrict ?? '',
-                        taluka:  loginController.selectedTaluka ?? '',
+                        taluka: loginController.selectedTaluka ?? '',
                         area: loginController.selectedVillage ?? '',
-                        pincode:loginController.pinCodeController.text,
+                        pincode: loginController.pinCodeController.text,
                       );
 
                       print(location);
@@ -908,12 +1070,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         userId: Api.userInfo.read('userId') ?? "",
                         userType: userType,
                         fullName: loginController.fullNameController.text ?? "",
-                        martialStatus:loginController.selectedMartialStatus!,
-                        dob: loginController.dobController.text??"",
+                        martialStatus: loginController.selectedMartialStatus!,
+                        dob: loginController.dobController.text ?? "",
                         mobile: loginController.mobileController.text ?? "",
                         email: loginController.emailController.text ?? "",
-                        addressLine1: loginController.addressLine1Controller.text ?? '',
-                        addressLine2:  loginController.addressLine2Controller.text ?? '',
+                        addressLine1:
+                            loginController.addressLine1Controller.text ?? '',
+                        addressLine2:
+                            loginController.addressLine2Controller.text ?? '',
                         taluk: loginController.selectedState ?? '',
                         district: loginController.selectedDistrict ?? '',
                         city: loginController.selectedTaluka ?? '',
@@ -929,14 +1093,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         //certificate: loginController.certificates.isNotEmpty ? loginController.certificates : [],
                         image: imageBytes ?? [],
                         certificate: certBytes,
-                        logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
+                        logoImage:
+                            loginController.selectedUserType != "Job Seekers"
+                            ? logoBytes ?? []
+                            : [],
                         oldImageUrl: oldImageUrls,
                         oldCertificatesUrl: oldCertificateUrls,
                         description: descriptionAbout,
-                        latitude: loginController.latitude.toString()??"",
-                        longitude: loginController.longitude.toString()??"",
+                        latitude: loginController.latitude.toString() ?? "",
+                        longitude: loginController.longitude.toString() ?? "",
                         //loginController.descriptionController.text,
-                        jobCategory:loginController.selectedCategories,
+                        jobCategory: loginController.selectedCategories,
                         details: finalJson,
                         context: context,
                       );
@@ -955,11 +1122,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   child: Text(
                     "Save Changes",
-                    style: AppTextStyles.body(context,fontWeight: FontWeight.bold,color: AppColors.white),
+                    style: AppTextStyles.body(
+                      context,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white,
+                    ),
                   ),
                 ),
               ),
-          
+
               const SizedBox(height: 40),
             ],
           ),
@@ -976,7 +1147,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
         padding: const EdgeInsets.only(top: 10, bottom: 5),
         child: Text(
           text,
-          style: TextStyle(fontSize: size * 0.032, fontWeight: FontWeight.bold,color: AppColors.primary),
+          style: TextStyle(
+            fontSize: size * 0.032,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+          ),
         ),
       ),
     );
@@ -991,6 +1166,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.dispose();
   }
 }
+
 Widget editField({
   required String label,
   required TextEditingController controller,
@@ -1005,8 +1181,7 @@ Widget editField({
       style: TextStyle(fontSize: size * 0.04),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle:
-        TextStyle(color: Colors.black54, fontSize: size * 0.04),
+        labelStyle: TextStyle(color: Colors.black54, fontSize: size * 0.04),
 
         filled: true,
         fillColor: Colors.grey.shade100,
@@ -1032,6 +1207,7 @@ Widget editField({
     ),
   );
 }
+
 Widget _buildCertificatePreview(cert, double size) {
   String fileName = getCertificateFileName(cert);
 
@@ -1040,7 +1216,12 @@ Widget _buildCertificatePreview(cert, double size) {
     if (filePath.endsWith(".pdf")) {
       return _pdfPlaceholder(size, fileName);
     }
-    return Image.file(cert.file!, fit: BoxFit.cover, width: size * 0.3, height: size * 0.3);
+    return Image.file(
+      cert.file!,
+      fit: BoxFit.cover,
+      width: size * 0.3,
+      height: size * 0.3,
+    );
   }
 
   if (cert.url != null && cert.url!.isNotEmpty) {
@@ -1048,11 +1229,17 @@ Widget _buildCertificatePreview(cert, double size) {
     if (url.endsWith(".pdf")) {
       return _pdfPlaceholder(size, fileName);
     }
-    return Image.network(cert.url!, fit: BoxFit.cover, width: size * 0.3, height: size * 0.3);
+    return Image.network(
+      cert.url!,
+      fit: BoxFit.cover,
+      width: size * 0.3,
+      height: size * 0.3,
+    );
   }
 
   return _errorPlaceholder(size);
 }
+
 Widget _pdfPlaceholder(double size, String fileName) {
   return Container(
     color: Colors.grey.shade300,
@@ -1067,12 +1254,17 @@ Widget _pdfPlaceholder(double size, String fileName) {
           fileName,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style:  TextStyle(fontSize: size*0.012,fontWeight: FontWeight.normal,color: AppColors.black),
+          style: TextStyle(
+            fontSize: size * 0.012,
+            fontWeight: FontWeight.normal,
+            color: AppColors.black,
+          ),
         ),
       ],
     ),
   );
 }
+
 Widget _errorPlaceholder(double size) {
   return Container(
     color: Colors.grey.shade200,
@@ -1083,8 +1275,9 @@ Widget _errorPlaceholder(double size) {
     ),
   );
 }
-Widget _experienceFields(int index,size) {
-  final loginController=Get.put(LoginController());
+
+Widget _experienceFields(int index, size) {
+  final loginController = Get.put(LoginController());
   final exp = loginController.experienceList[index];
 
   return Container(
@@ -1099,24 +1292,25 @@ Widget _experienceFields(int index,size) {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Experience ${index + 1}", style: const TextStyle(fontWeight: FontWeight.bold)),
-             SizedBox(height: size*0.02,),
+            Text(
+              "Experience ${index + 1}",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: size * 0.02),
             if (index > 0)
               GetBuilder<LoginController>(
-                  builder: (controller) {
-                    return IconButton(
+                builder: (controller) {
+                  return IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => loginController.removeExperienceField(index),
+                    onPressed: () =>
+                        loginController.removeExperienceField(index),
                   );
-                }
+                },
               ),
           ],
         ),
 
-        CustomTextField(
-          hint: "Company Name",
-          controller: exp.companyName,
-        ),
+        CustomTextField(hint: "Company Name", controller: exp.companyName),
         SizedBox(height: size * 0.03),
         CustomTextField(
           hint: "Experience (e.g. 4 years)",
@@ -1126,8 +1320,8 @@ Widget _experienceFields(int index,size) {
         CustomTextField(
           hint: "Job Description",
           controller: exp.jobDescription,
-        ),            SizedBox(height: size * 0.03),
-
+        ),
+        SizedBox(height: size * 0.03),
       ],
     ),
   );

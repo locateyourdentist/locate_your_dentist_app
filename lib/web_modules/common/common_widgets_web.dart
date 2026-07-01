@@ -16,9 +16,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../common_widgets/common_widget_all.dart';
 import '../../modules/auth/login_screen/service_locations.dart';
 
-
 PreferredSizeWidget buildAppBar(dynamic context) {
-  double size=MediaQuery.of(context).size.width;
+  double size = MediaQuery.of(context).size.width;
   if (Api.userInfo.read('token') != null) {
     return CommonWebAppBar(
       height: size * 0.03,
@@ -27,10 +26,9 @@ PreferredSizeWidget buildAppBar(dynamic context) {
       onNotification: () {},
     );
   } else {
-    return   CommonHeader();
+    return CommonHeader();
   }
 }
-
 
 class CommonFooter extends StatefulWidget {
   const CommonFooter({super.key});
@@ -69,8 +67,11 @@ class _CommonFooterState extends State<CommonFooter> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      Get.snackbar("Error", "Could not open website",
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "Error",
+        "Could not open website",
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 
@@ -95,11 +96,7 @@ class _CommonFooterState extends State<CommonFooter> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            AppColors.primary,
-            AppColors.secondary,
-            AppColors.primary,
-          ],
+          colors: [AppColors.primary, AppColors.secondary, AppColors.primary],
         ),
       ),
       child: Center(
@@ -111,119 +108,117 @@ class _CommonFooterState extends State<CommonFooter> {
               /// 🔹 MAIN CONTENT
               isMobile
                   ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildLogoSection(context),
-                  const SizedBox(height: 20),
-                  VerticalDivider(
-                    color: Colors.white,
-                    thickness: 1,
-                    width: 20,
-                  ),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildLogoSection(context),
+                        const SizedBox(height: 20),
+                        VerticalDivider(
+                          color: Colors.white,
+                          thickness: 1,
+                          width: 20,
+                        ),
 
-                  _buildCompanySection(context),
-                  const SizedBox(height: 20),
-                  VerticalDivider(
-                    color: Colors.white,
-                    thickness: 1,
-                    width: 20,
-                  ),
+                        _buildCompanySection(context),
+                        const SizedBox(height: 20),
+                        VerticalDivider(
+                          color: Colors.white,
+                          thickness: 1,
+                          width: 20,
+                        ),
 
-                  _buildContactSection(context),
-                  const SizedBox(height: 20),
-                  VerticalDivider(
-                    color: Colors.white,
-                    thickness: 1,
-                    width: 20,
-                  ),
+                        _buildContactSection(context),
+                        const SizedBox(height: 20),
+                        VerticalDivider(
+                          color: Colors.white,
+                          thickness: 1,
+                          width: 20,
+                        ),
 
-                  _buildLegalSection(context),
-                ],
-              )
+                        _buildLegalSection(context),
+                      ],
+                    )
                   : Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(flex: 2, child: _buildLogoSection(context)),
-                  const SizedBox(width: 20),
-                  VerticalDivider(
-                    color: Colors.white,
-                    thickness: 1,
-                    width: 20,
-                  ),
-                  Expanded(flex: 2, child: _buildContactSection(context)),
-                  const SizedBox(width: 20),
-                  VerticalDivider(
-                    color: Colors.white,
-                    thickness: 1,
-                    width: 20,
-                  ),
-                  Expanded(flex: 1, child: _buildLegalSection(context)),
-                  const SizedBox(width: 20),
-                  VerticalDivider(
-                    color: Colors.white,
-                    thickness: 1,
-                    width: 20,
-                  ),
-                  Expanded(flex: 1, child: _buildCompanySection(context)),
-                  // const SizedBox(width: 20),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(flex: 2, child: _buildLogoSection(context)),
+                        const SizedBox(width: 20),
+                        VerticalDivider(
+                          color: Colors.white,
+                          thickness: 1,
+                          width: 20,
+                        ),
+                        Expanded(flex: 2, child: _buildContactSection(context)),
+                        const SizedBox(width: 20),
+                        VerticalDivider(
+                          color: Colors.white,
+                          thickness: 1,
+                          width: 20,
+                        ),
+                        Expanded(flex: 1, child: _buildLegalSection(context)),
+                        const SizedBox(width: 20),
+                        VerticalDivider(
+                          color: Colors.white,
+                          thickness: 1,
+                          width: 20,
+                        ),
+                        Expanded(flex: 1, child: _buildCompanySection(context)),
 
-                ],
-              ),
+                        // const SizedBox(width: 20),
+                      ],
+                    ),
 
               const SizedBox(height: 20),
               Divider(color: AppColors.white, thickness: 0.2),
 
               isMobile
                   ? Column(
-                children: [
-                  Text(
-                    "© ${DateTime.now().year} ${AppConstants.appName}. All rights reserved.",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.caption(
-                      context,
-                      color: AppColors.white.withOpacity(0.9),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      launchWebsite(
-                          AppConstants.developerCompanyUrl);
-                    },
-                    child: Text(
-                      "Developed by @ ${AppConstants.developerCompanyName}",
-                      style: AppTextStyles.caption(
-                        context,
-                        color: AppColors.white.withOpacity(0.9),
-                      ),
-                    ),
-                  ),
-                ],
-              )
+                      children: [
+                        Text(
+                          "© ${DateTime.now().year} ${AppConstants.appName}. All rights reserved.",
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.caption(
+                            context,
+                            color: AppColors.white.withValues(alpha: 0.9),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            launchWebsite(AppConstants.developerCompanyUrl);
+                          },
+                          child: Text(
+                            "Developed by @ ${AppConstants.developerCompanyName}",
+                            style: AppTextStyles.caption(
+                              context,
+                              color: AppColors.white.withValues(alpha: 0.9),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
                   : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "© ${DateTime.now().year} ${AppConstants.appName}. All rights reserved.",
-                    style: AppTextStyles.caption(
-                      context,
-                      color: AppColors.white.withOpacity(0.9),
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "© ${DateTime.now().year} ${AppConstants.appName}. All rights reserved.",
+                          style: AppTextStyles.caption(
+                            context,
+                            color: AppColors.white.withValues(alpha: 0.9),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            launchWebsite(AppConstants.developerCompanyUrl);
+                          },
+                          child: Text(
+                            "Developed by @ ${AppConstants.developerCompanyName}",
+                            style: AppTextStyles.caption(
+                              context,
+                              color: AppColors.white.withValues(alpha: 0.9),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      launchWebsite(
-                          AppConstants.developerCompanyUrl);
-                    },
-                    child: Text(
-                      "Developed by @ ${AppConstants.developerCompanyName}",
-                      style: AppTextStyles.caption(
-                        context,
-                        color: AppColors.white.withOpacity(0.9),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
@@ -243,23 +238,23 @@ class _CommonFooterState extends State<CommonFooter> {
                   height: 50,
                   width: 50,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.4),
+                      color: Colors.white.withValues(alpha: 0.4),
                       width: 1.5,
                     ),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: controller.appLogoFile != null
-                        ? Image.file(controller.appLogoFile!,
-                        fit: BoxFit.cover)
+                        ? Image.file(controller.appLogoFile!, fit: BoxFit.cover)
                         : controller.appLogoUrl != null
-                        ? Image.network(controller.appLogoUrl!,
-                        fit: BoxFit.cover)
-                        : const Icon(Icons.image_outlined,
-                        color: Colors.white),
+                        ? Image.network(
+                            controller.appLogoUrl!,
+                            fit: BoxFit.cover,
+                          )
+                        : const Icon(Icons.image_outlined, color: Colors.white),
                   ),
                 );
               },
@@ -268,10 +263,7 @@ class _CommonFooterState extends State<CommonFooter> {
             Expanded(
               child: Text(
                 AppConstants.appName,
-                style: AppTextStyles.subtitle(
-                  context,
-                  color: AppColors.white,
-                ),
+                style: AppTextStyles.subtitle(context, color: AppColors.white),
               ),
             ),
           ],
@@ -282,10 +274,9 @@ class _CommonFooterState extends State<CommonFooter> {
           AppConstants.appDescription,
           style: AppTextStyles.caption(
             context,
-            color: AppColors.white.withOpacity(0.9),
+            color: AppColors.white.withValues(alpha: 0.9),
           ),
         ),
-
       ],
     );
   }
@@ -297,10 +288,10 @@ class _CommonFooterState extends State<CommonFooter> {
         _footerTitle(context, "Company"),
         const SizedBox(height: 10),
         _footerLink(context, "Home", () {
-          Get.toNamed('/landingPage',);
+          Get.toNamed('/landingPage');
         }),
         _footerLink(context, "About Us", () {
-          Get.toNamed('/aboutUsWebPage',);
+          Get.toNamed('/aboutUsWebPage');
         }),
         _footerLink(context, "Contact Us", () {
           Get.toNamed('/contactWebPage');
@@ -310,21 +301,29 @@ class _CommonFooterState extends State<CommonFooter> {
           "Follow Us On",
           style: AppTextStyles.caption(
             context,
-            color: AppColors.white.withOpacity(0.9),
+            color: AppColors.white.withValues(alpha: 0.9),
           ),
         ),
         const SizedBox(height: 10),
         Wrap(
           spacing: 10,
           children: [
-            _socialIcon("assets/images/facebook.png",
-                    () => launchWebsite("https://facebook.com")),
-            _socialIcon("assets/images/instagram.png",
-                    () => launchWebsite("https://instagram.com")),
-            _socialIcon("assets/images/youtube.png",
-                    () => launchWebsite("https://youtube.com")),
-            _socialIcon("assets/images/linkein.png",
-                    () => launchWebsite("https://linkedin.com")),
+            _socialIcon(
+              "assets/images/facebook.png",
+              () => launchWebsite("https://facebook.com"),
+            ),
+            _socialIcon(
+              "assets/images/instagram.png",
+              () => launchWebsite("https://instagram.com"),
+            ),
+            _socialIcon(
+              "assets/images/youtube.png",
+              () => launchWebsite("https://youtube.com"),
+            ),
+            _socialIcon(
+              "assets/images/linkein.png",
+              () => launchWebsite("https://linkedin.com"),
+            ),
           ],
         ),
       ],
@@ -334,11 +333,9 @@ class _CommonFooterState extends State<CommonFooter> {
   Future<void> launchCall1(String phone) async {
     final Uri uri = Uri.parse('tel:$phone');
 
-    await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
+
   Widget _buildContactSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -346,19 +343,34 @@ class _CommonFooterState extends State<CommonFooter> {
         _footerTitle(context, "Contact"),
         const SizedBox(height: 10),
 
-        _infoRow(Icons.location_on,
-            "${planController.streetController.text}, ${planController.cityController.text}, ${planController.stateController.text}, ${planController.zipController.text}"),
+        _infoRow(
+          Icons.location_on,
+          "${planController.streetController.text}, ${planController.cityController.text}, ${planController.stateController.text}, ${planController.zipController.text}",
+        ),
 
-        _infoRow(Icons.phone,onTap: ()async {
-          await   launchCall1("tel:${planController.phoneController.text.toString()}");
-        }, planController.phoneController.text),
+        _infoRow(
+          Icons.phone,
+          onTap: () async {
+            await launchCall1(
+              "tel:${planController.phoneController.text.toString()}",
+            );
+          },
+          planController.phoneController.text,
+        ),
 
-        _infoRow(Icons.email,   onTap: ()async {
-          await  sendEmail("mailto:${planController.emailController.text.toString()}");
-        }, planController.emailController.text),
+        _infoRow(
+          Icons.email,
+          onTap: () async {
+            await sendEmail(
+              "mailto:${planController.emailController.text.toString()}",
+            );
+          },
+          planController.emailController.text,
+        ),
       ],
     );
   }
+
   Widget _buildLegalSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,13 +380,13 @@ class _CommonFooterState extends State<CommonFooter> {
         ...titles.map((title) {
           return _footerLink(context, title, () {
             Api.userInfo.write('legalPage', title);
-            Get.toNamed('/viewLegalPage',
-                arguments: {'title': title});
+            Get.toNamed('/viewLegalPage', arguments: {'title': title});
           });
-        }).toList(),
+        }),
       ],
     );
   }
+
   Widget _footerTitle(BuildContext context, String title) {
     return Text(
       title,
@@ -386,28 +398,20 @@ class _CommonFooterState extends State<CommonFooter> {
     );
   }
 
-  Widget _footerLink(
-      BuildContext context, String title, VoidCallback onTap) {
+  Widget _footerLink(BuildContext context, String title, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: GestureDetector(
         onTap: onTap,
         child: Text(
           title,
-          style: AppTextStyles.caption(
-            context,
-            color: AppColors.white,
-          ),
+          style: AppTextStyles.caption(context, color: AppColors.white),
         ),
       ),
     );
   }
 
-  Widget _infoRow(
-      IconData icon,
-      String text, {
-        VoidCallback? onTap,
-      }) {
+  Widget _infoRow(IconData icon, String text, {VoidCallback? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -419,10 +423,7 @@ class _CommonFooterState extends State<CommonFooter> {
             Expanded(
               child: Text(
                 text,
-                style: AppTextStyles.caption(
-                  context,
-                  color: AppColors.white,
-                ),
+                style: AppTextStyles.caption(context, color: AppColors.white),
               ),
             ),
           ],
@@ -430,15 +431,11 @@ class _CommonFooterState extends State<CommonFooter> {
       ),
     );
   }
+
   Widget _socialIcon(String path, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Image.asset(
-        path,
-        height: 22,
-        width: 22,
-        color: Colors.white,
-      ),
+      child: Image.asset(path, height: 22, width: 22, color: Colors.white),
     );
   }
 }
@@ -470,8 +467,6 @@ class _EnlargeOnTapCardState extends State<EnlargeOnTapCard> {
   }
 }
 
-
-
 class CommonHeader extends StatefulWidget implements PreferredSizeWidget {
   const CommonHeader({super.key});
 
@@ -500,10 +495,7 @@ class _CommonHeaderState extends State<CommonHeader> {
         Get.toNamed(route);
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         child: Text(
           title,
           style: const TextStyle(
@@ -516,10 +508,7 @@ class _CommonHeaderState extends State<CommonHeader> {
     );
   }
 
-  Widget socialIcon(
-      IconData icon,
-      VoidCallback onTap,
-      ) {
+  Widget socialIcon(IconData icon, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -529,14 +518,11 @@ class _CommonHeaderState extends State<CommonHeader> {
           color: Colors.grey.shade100,
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          icon,
-          size: 16,
-          color: AppColors.primary,
-        ),
+        child: Icon(icon, size: 16, color: AppColors.primary),
       ),
     );
   }
+
   Future<void> launchWebsite(String url) async {
     String safeUrl = url.trim();
 
@@ -549,10 +535,14 @@ class _CommonHeaderState extends State<CommonHeader> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      Get.snackbar("Error", "Could not open website",
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "Error",
+        "Could not open website",
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -565,7 +555,6 @@ class _CommonHeaderState extends State<CommonHeader> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Row(
           children: [
-
             /// LOGO
             Row(
               children: [
@@ -635,7 +624,6 @@ class _CommonHeaderState extends State<CommonHeader> {
             if (width > 1000)
               Row(
                 children: [
-
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -693,18 +681,24 @@ class _CommonHeaderState extends State<CommonHeader> {
                   ),
 
                   const SizedBox(width: 15),
-                  socialIcon(Icons.facebook,
-                          () => launchWebsite("https://facebook.com")),
-                  socialIcon(Icons.camera_alt_outlined,
-                          () => launchWebsite("https://instagram.com")),
-                  socialIcon(Icons.alternate_email,
-                          () => launchWebsite("https://youtube.com")),
+                  socialIcon(
+                    Icons.facebook,
+                    () => launchWebsite("https://facebook.com"),
+                  ),
+                  socialIcon(
+                    Icons.camera_alt_outlined,
+                    () => launchWebsite("https://instagram.com"),
+                  ),
+                  socialIcon(
+                    Icons.alternate_email,
+                    () => launchWebsite("https://youtube.com"),
+                  ),
                   // socialIcon("assets/images/linkein.png",
                   //         () => launchWebsite("https://linkedin.com")),
 
-                //  socialIcon(Icons.facebook),
+                  //  socialIcon(Icons.facebook),
                   //socialIcon(Icons.camera_alt_outlined),
-                 // socialIcon(Icons.alternate_email),
+                  // socialIcon(Icons.alternate_email),
                 ],
               ),
 
@@ -728,10 +722,7 @@ class _CommonHeaderState extends State<CommonHeader> {
               },
               child: Text(
                 "Login/Register",
-                style: AppTextStyles.caption(
-                  context,
-                  color: Colors.white,
-                ),
+                style: AppTextStyles.caption(context, color: Colors.white),
               ),
             ),
           ],
@@ -740,29 +731,27 @@ class _CommonHeaderState extends State<CommonHeader> {
     );
   }
 }
-void showFilterDialog(BuildContext context,
-    {required VoidCallback onApply, required VoidCallback onReset}) {
+
+void showFilterDialog(
+  BuildContext context, {
+  required VoidCallback onApply,
+  required VoidCallback onReset,
+}) {
   showDialog(
     context: context,
     barrierDismissible: true,
     builder: (context) {
       return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: SizedBox(
           width: 200,
           height: MediaQuery.of(context).size.height * 0.75,
-          child: FilterDialogContent(
-            onApply: onApply,
-            onReset: onReset,
-          ),
+          child: FilterDialogContent(onApply: onApply, onReset: onReset),
         ),
       );
     },
   );
 }
-
 
 class CommonWebAppBar extends StatefulWidget implements PreferredSizeWidget {
   final double height;
@@ -816,12 +805,10 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
             height: safeHeight,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.primary,AppColors.secondary],
+                colors: [AppColors.primary, AppColors.secondary],
               ),
             ),
-            child: isMobile
-                ? _mobileLayout()
-                : _desktopLayout(isTablet),
+            child: isMobile ? _mobileLayout() : _desktopLayout(isTablet),
           ),
         );
       },
@@ -861,21 +848,19 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
     );
   }
 
-
   Widget _desktopLayout(bool isTablet) {
     bool multipleBranches = loginController.userBranchesList.length > 1;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         border: Border(
-          bottom: BorderSide(color: Colors.white.withOpacity(0.1)),
+          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-
           Row(
             children: [
               _logo(),
@@ -897,8 +882,7 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
           ),
           Row(
             children: [
-              if (multipleBranches && !isTablet)
-                _switchAccountModern(),
+              if (multipleBranches && !isTablet) _switchAccountModern(),
 
               const SizedBox(width: 16),
               _notificationModern(),
@@ -906,8 +890,8 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
               const SizedBox(width: 16),
               _profileSection(),
 
-             // const SizedBox(width: 16),
-             // if (!isTablet) _profileSection(),
+              // const SizedBox(width: 16),
+              // if (!isTablet) _profileSection(),
             ],
           ),
         ],
@@ -918,14 +902,14 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
   Widget _logo() {
     return loginController.appLogoUrl != null
         ? ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Image.network(
-        loginController.appLogoUrl!,
-        width: 42,
-        height: 42,
-        fit: BoxFit.cover,
-      ),
-    )
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              loginController.appLogoUrl!,
+              width: 42,
+              height: 42,
+              fit: BoxFit.cover,
+            ),
+          )
         : const Icon(Icons.local_hospital, color: Colors.white, size: 32);
   }
 
@@ -943,7 +927,7 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
         ),
         child: const Row(
           children: [
@@ -955,6 +939,7 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
       ),
     );
   }
+
   Future<void> getLocation() async {
     final position = await LocationService.getCurrentLocation();
 
@@ -963,11 +948,11 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
       loginController.longitude = position.longitude;
       print('latitude ${loginController.latitude}');
       print('longitude ${loginController.longitude}');
-
     } else {
       Get.snackbar('Location', 'Unable to get location');
     }
   }
+
   Widget _notificationModern() {
     return GetBuilder<NotificationController>(
       builder: (_) {
@@ -979,13 +964,17 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
               ),
               child: IconButton(
                 icon: const Icon(Icons.notifications, color: Colors.white),
                 onPressed: () async {
-                  await notificationController.getNotificationListAdmin(context);
-                  await notificationController.updateNotificationListAdmin(context);
+                  await notificationController.getNotificationListAdmin(
+                    context,
+                  );
+                  await notificationController.updateNotificationListAdmin(
+                    context,
+                  );
                   Get.toNamed('/viewNotificationWebPage');
                 },
               ),
@@ -1003,8 +992,7 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
                   ),
                   child: Text(
                     unread.toString(),
-                    style: const TextStyle(
-                        fontSize: 10, color: Colors.white),
+                    style: const TextStyle(fontSize: 10, color: Colors.white),
                   ),
                 ),
               ),
@@ -1061,19 +1049,29 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
         }
       },
       itemBuilder: (_) => [
-         PopupMenuItem(
+        PopupMenuItem(
           value: "profile",
           child: ListTile(
-            leading: Icon(Icons.person_outline,color:AppColors.black,size: 18,),
-            title: Text("My Profile",style: AppTextStyles.caption(context,color: Colors.black),),
+            leading: Icon(
+              Icons.person_outline,
+              color: AppColors.black,
+              size: 18,
+            ),
+            title: Text(
+              "My Profile",
+              style: AppTextStyles.caption(context, color: Colors.black),
+            ),
             contentPadding: EdgeInsets.zero,
           ),
         ),
-         PopupMenuItem(
+        PopupMenuItem(
           value: "logout",
           child: ListTile(
             leading: Icon(Icons.logout, color: Colors.red),
-            title: Text("Logout",style: AppTextStyles.caption(context,color: Colors.red),),
+            title: Text(
+              "Logout",
+              style: AppTextStyles.caption(context, color: Colors.red),
+            ),
             contentPadding: EdgeInsets.zero,
           ),
         ),
@@ -1096,7 +1094,8 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
         ],
       ),
     );
-  }}
+  }
+}
 
 Widget gradientButton({
   required String text,
@@ -1117,13 +1116,10 @@ Widget gradientButton({
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
-      border: Border.all(
-        color: AppColors.primary,
-        width: 1,
-      ),
+      border: Border.all(color: AppColors.primary, width: 1),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.2),
+          color: Colors.black.withValues(alpha: 0.2),
           offset: const Offset(0, 4),
           blurRadius: 6,
         ),

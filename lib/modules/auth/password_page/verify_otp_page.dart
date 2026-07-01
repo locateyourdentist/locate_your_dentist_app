@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -19,14 +18,14 @@ class VerifyOtpPassword extends StatefulWidget {
 }
 
 class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
-  final loginController=Get.put(LoginController());
+  final loginController = Get.put(LoginController());
   final _formKeyForgotPassword = GlobalKey<FormState>();
   bool isLoading = false;
   int resendCooldown = 60;
   late Timer timer;
   @override
   void dispose() {
-    timer?.cancel();
+    timer.cancel();
     super.dispose();
   }
 
@@ -51,7 +50,7 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
     final response = await http.post(
       Uri.parse('https://your-api.com/resend-registration-otp'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': Api.userInfo.read('otpMail')??""}),
+      body: jsonEncode({'email': Api.userInfo.read('otpMail') ?? ""}),
     );
 
     final data = jsonDecode(response.body);
@@ -64,16 +63,19 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
       Get.snackbar('Error', data['message']);
     }
   }
+
   DateTime? currentBackPressTime;
 
   Future<bool> _onWillPopOTP() async {
     DateTime now = DateTime.now();
-    if (currentBackPressTime == null || now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
       return true;
     }
     exit(0);
   }
+
   final otp1 = TextEditingController();
   final otp2 = TextEditingController();
   final otp3 = TextEditingController();
@@ -81,7 +83,7 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
   //final otp5 = TextEditingController();
   //final otp6 = TextEditingController();
 
- // bool isLoading = false;
+  // bool isLoading = false;
 
   Widget otpBox(TextEditingController controller) {
     return SizedBox(
@@ -92,10 +94,7 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
         keyboardType: TextInputType.number,
         maxLength: 1,
         textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         decoration: InputDecoration(
           counterText: "",
           filled: true,
@@ -113,46 +112,54 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
       ),
     );
   }
+
   Future<void> verifyOtp() async {
     setState(() {
       isLoading = true;
     });
 
-    String otp = otp1.text +
+    String otp =
+        otp1.text +
         otp2.text +
         otp3.text +
         otp4.text +
         //otp5.text +
         //otp6.text;
-
-    await Future.delayed(const Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 2));
 
     setState(() {
       isLoading = false;
     });
 
     print("OTP => $otp");
-    Api.userInfo.read('otpMail',);
-        loginController.verifyOtpPassword(Api.userInfo.read('otpMail')??"", otp,context);
+    Api.userInfo.read('otpMail');
+    loginController.verifyOtpPassword(
+      Api.userInfo.read('otpMail') ?? "",
+      otp,
+      context,
+    );
     // ScaffoldMessenger.of(context).showSnackBar(
     //   const SnackBar(
     //     content: Text("OTP Verified Successfully"),
     //   ),
     // );
   }
+
   @override
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
   }
+
   @override
   Widget build(BuildContext context) {
-    double size=MediaQuery.of(context).size.width;
-    return  WillPopScope(
+    double size = MediaQuery.of(context).size.width;
+    return WillPopScope(
       onWillPop: _onWillPopOTP,
       child: Scaffold(
         appBar: AppBar(
-          centerTitle: true,backgroundColor: AppColors.transparent,
+          centerTitle: true,
+          backgroundColor: AppColors.transparent,
           iconTheme: const IconThemeData(color: AppColors.white),
           automaticallyImplyLeading: true,
           leading: Padding(
@@ -160,7 +167,7 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
             child: GestureDetector(
               onTap: () {
                 Get.back();
-               // Navigator.pop(context);
+                // Navigator.pop(context);
               },
               child: Container(
                 decoration: const BoxDecoration(
@@ -172,10 +179,7 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
                   ),
                 ),
                 child: const Center(
-                  child: Icon(
-                    Icons.arrow_back,
-                    color: AppColors.white,
-                  ),
+                  child: Icon(Icons.arrow_back, color: AppColors.white),
                 ),
               ),
             ),
@@ -223,9 +227,25 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
                     ),
                     SizedBox(height: size * 0.1),
 
-                    Center(child: Text('Verify OTP Password',style: AppTextStyles.subtitle(context,color: AppColors.black),)),
+                    Center(
+                      child: Text(
+                        'Verify OTP Password',
+                        style: AppTextStyles.subtitle(
+                          context,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    ),
                     SizedBox(height: size * 0.02),
-                    Text('Enter Your OTP',textAlign:TextAlign.left,style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.normal),),
+                    Text(
+                      'Enter Your OTP',
+                      textAlign: TextAlign.left,
+                      style: AppTextStyles.caption(
+                        context,
+                        color: AppColors.black,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
                     SizedBox(height: size * 0.1),
 
                     // OtpTextField(
@@ -245,9 +265,8 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
                     //
                     //   },
                     // ),
-
-
-                    Text(Api.userInfo.read('otpMail')??"",
+                    Text(
+                      Api.userInfo.read('otpMail') ?? "",
                       //  widget.email,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
@@ -264,8 +283,8 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
                         otpBox(otp2),
                         otpBox(otp3),
                         otpBox(otp4),
-                       // otpBox(otp5),
-                       // otpBox(otp6),
+                        // otpBox(otp5),
+                        // otpBox(otp6),
                       ],
                     ),
 
@@ -277,37 +296,42 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
                       child: ElevatedButton(
                         onPressed: isLoading ? null : verifyOtp,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:AppColors.primary,
+                          backgroundColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
                         ),
                         child: isLoading
                             ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
+                                color: Colors.white,
+                              )
                             : const Text(
-                          "Verify",
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
+                                "Verify",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
                     ),
 
                     TextButton(
-                      onPressed: ()async{
-                        await  loginController.forgotPassword(Api.userInfo.read('otpMail')??"",context);
-
+                      onPressed: () async {
+                        await loginController.forgotPassword(
+                          Api.userInfo.read('otpMail') ?? "",
+                          context,
+                        );
                       },
                       child: Text(
                         'Resend OTP',
-                        style: AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-
                   ],
                 ),
               ),

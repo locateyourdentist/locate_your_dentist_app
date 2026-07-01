@@ -6,56 +6,72 @@ import 'package:get/get.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
-import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
 import 'package:locate_your_dentist/model/notification_model.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:locate_your_dentist/utills/constants.dart';
 import 'package:path_provider/path_provider.dart';
 
-  class  NotificationController extends GetxController{
-  List<NotificationModel>_notificationList=[];
-  List<NotificationModel> get notificationList=>_notificationList;
-  bool isLoading=true;
+class NotificationController extends GetxController {
+  List<NotificationModel> _notificationList = [];
+  List<NotificationModel> get notificationList => _notificationList;
+  bool isLoading = true;
   final Api api = Api();
   String? unreadCount;
   List<File> notificationImage = [];
   List<AppImage> notificationFileImages = [];
-  TextEditingController titleController=TextEditingController();
-  TextEditingController messageController=TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController messageController = TextEditingController();
   String? selectedUserType;
   String? selectedTitle;
 
   //final loginController=Get.put(LoginController());
-  Future<void> createNotification(String userId,
-      String userType,
-      bool isAdmin,
-      String title,
-      String message,
-      String state,
-      String district,
-      String city,
-      String area,
-      BuildContext context, {
-        Uint8List? notificationImage1,
-       // List<File>? notificationImage1,
-      })async {
+  Future<void> createNotification(
+    String userId,
+    String userType,
+    bool isAdmin,
+    String title,
+    String message,
+    String state,
+    String district,
+    String city,
+    String area,
+    BuildContext context, {
+    Uint8List? notificationImage1,
+    // List<File>? notificationImage1,
+  }) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
+    isLoading = true;
     try {
-      _notificationList=[];
-      final response = await api.createNotification( userId, userType,isAdmin, title, message, state, district, city, area,notificationImage1);
+      _notificationList = [];
+      final response = await api.createNotification(
+        userId,
+        userType,
+        isAdmin,
+        title,
+        message,
+        state,
+        district,
+        city,
+        area,
+        notificationImage1,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context, title:"Success",message :"Created Successfully ${data["message"]}", onOkPressed: () {});
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: "Success",
+          message: "Created Successfully ${data["message"]}",
+          onOkPressed: () {},
+        );
         titleController.clear();
         messageController.clear();
         notificationImage.clear();
-        notificationImage1=null;
+        notificationImage1 = null;
         //loginController.update();
       } else {
         print('notification error ,${data["message"] ?? "error"}');
@@ -68,6 +84,7 @@ import 'package:path_provider/path_provider.dart';
       update();
     }
   }
+
   Future<String?> downloadAndSaveImage(String url, String fileName) async {
     try {
       final directory = await getTemporaryDirectory();
@@ -119,30 +136,37 @@ import 'package:path_provider/path_provider.dart';
   //   );
   // }
 
-  Future<void> getNotificationListAdmin( dynamic context) async {
+  Future<void> getNotificationListAdmin(dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
+    isLoading = true;
     try {
-      _notificationList=[];
+      _notificationList = [];
       final response = await api.getNotificationListAdmin();
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> notifications = data["data"];
-        unreadCount=data["unreadCount"].toString()??"0";
+        unreadCount = data["unreadCount"].toString() ?? "0";
         print('notifi count$unreadCount');
         update();
-        _notificationList = notifications.map((e) => NotificationModel.fromJson(e)).toList();
+        _notificationList = notifications
+            .map((e) => NotificationModel.fromJson(e))
+            .toList();
         if (_notificationList.isNotEmpty &&
             _notificationList.first.notificationImage != null &&
             _notificationList.first.notificationImage!.isNotEmpty) {
-
           final imageUrl = _notificationList.first.notificationImage!;
 
-          notificationFileImages = imageUrl.map((u) => AppImage(url: AppConstants.baseUrl + u.replaceAll("\\", "/"))).toList();
+          notificationFileImages = imageUrl
+              .map(
+                (u) => AppImage(
+                  url: AppConstants.baseUrl + u.replaceAll("\\", "/"),
+                ),
+              )
+              .toList();
         }
       } else {
         print('notification error ,${data["message"] ?? "error"}');
@@ -156,21 +180,20 @@ import 'package:path_provider/path_provider.dart';
     }
   }
 
-  Future<void> updateNotificationListAdmin( dynamic context) async {
+  Future<void> updateNotificationListAdmin(dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
+    isLoading = true;
     try {
       final response = await api.updateNotificationListAdmin();
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        print('update notification success' );
-
+      if (data["status"].toString().toLowerCase() == "success") {
+        print('update notification success');
       } else {
-     print('error update notification');
+        print('error update notification');
       }
     } catch (error) {
       print('notification list admin error $error');

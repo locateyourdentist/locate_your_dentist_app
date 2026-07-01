@@ -11,7 +11,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:get/get.dart';
 
-
 class DoctorCardWidget extends StatelessWidget {
   final dynamic doctor;
   final double size;
@@ -39,15 +38,14 @@ class DoctorCardWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(.12),
+              color: Colors.grey.withValues(alpha: .12),
               blurRadius: 8,
               offset: const Offset(0, 3),
-            )
+            ),
           ],
         ),
         child: Column(
           children: [
-
             /// Top Section
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,21 +54,21 @@ class DoctorCardWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   child: doctor.logoImages.isNotEmpty
                       ? Image.network(
-                    doctor.logoImages.first,
-                    width: size * 0.25,
-                    height: size * 0.25,
-                    fit: BoxFit.cover,
-                  )
+                          doctor.logoImages.first,
+                          width: size * 0.25,
+                          height: size * 0.25,
+                          fit: BoxFit.cover,
+                        )
                       : Container(
-                    width: size * 0.25,
-                    height: size * 0.25,
-                    color: Colors.grey.shade200,
-                    child: const Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Colors.grey,
-                    ),
-                  ),
+                          width: size * 0.25,
+                          height: size * 0.25,
+                          color: Colors.grey.shade200,
+                          child: const Icon(
+                            Icons.person,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        ),
                 ),
 
                 const SizedBox(width: 12),
@@ -79,7 +77,6 @@ class DoctorCardWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       /// Doctor Name
                       Text(
                         "Dr. ${doctor.name}",
@@ -106,23 +103,29 @@ class DoctorCardWidget extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                           IconButton(
-                           icon:Icon( Icons.location_on,
-                            color: Colors.red,
-                            size: 18,),
-                            onPressed: (){
-                              if(doctor.location.toString().isNotEmpty&&(planActive==true
-                                  &&doctor?.details["plan"]?["basePlan"]?["details"]?["location"]==true|| isAdminUser)) {
+                          IconButton(
+                            icon: Icon(
+                              Icons.location_on,
+                              color: Colors.red,
+                              size: 18,
+                            ),
+                            onPressed: () {
+                              if (doctor.location.toString().isNotEmpty &&
+                                  (planActive == true &&
+                                          doctor?.details["plan"]?["basePlan"]?["details"]?["location"] ==
+                                              true ||
+                                      isAdminUser)) {
                                 if (PlatformHelper.platform == 'Android' ||
                                     PlatformHelper.platform == 'iOS') {
                                   Get.toNamed(
-                                      '/webViewProfilePage', arguments: {
-                                    "url": doctor
-                                        .location
-                                        .toString() ?? "",
-                                    "clinicName": doctor
-                                        .details["name"].toString() ?? ""
-                                  });
+                                    '/webViewProfilePage',
+                                    arguments: {
+                                      "url": doctor.location.toString() ?? "",
+                                      "clinicName":
+                                          doctor.details["name"].toString() ??
+                                          "",
+                                    },
+                                  );
                                 }
                               }
                             },
@@ -131,12 +134,17 @@ class DoctorCardWidget extends StatelessWidget {
                           Expanded(
                             child: Text(
                               "${doctor.address['addressLine1'] ?? ''}, "
-                                  "${doctor.address['addressLine2'] ?? ''}, " "${doctor.address['area'] ?? ''}, "
-                                  "${doctor.address['city'] ?? ''}, "
-                                  "${doctor.address['district'] ?? ''}, ",
-                                 // "${doctor.address['state'] ?? ''}",
+                              "${doctor.address['addressLine2'] ?? ''}, "
+                              "${doctor.address['area'] ?? ''}, "
+                              "${doctor.address['city'] ?? ''}, "
+                              "${doctor.address['district'] ?? ''}, ",
+                              // "${doctor.address['state'] ?? ''}",
                               maxLines: 3,
-                              overflow: TextOverflow.ellipsis,style: AppTextStyles.caption(context,color: AppColors.grey),
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.caption(
+                                context,
+                                color: AppColors.grey,
+                              ),
                             ),
                           ),
                         ],
@@ -155,10 +163,7 @@ class DoctorCardWidget extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      Api.userInfo.write(
-                        'selectUId',
-                        doctor.userId,
-                      );
+                      Api.userInfo.write('selectUId', doctor.userId);
 
                       Get.toNamed('/clinicProfilePage');
                     },
@@ -175,9 +180,7 @@ class DoctorCardWidget extends StatelessWidget {
                       ),
                     ),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: AppColors.primary,
-                      ),
+                      side: const BorderSide(color: AppColors.primary),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -186,9 +189,8 @@ class DoctorCardWidget extends StatelessWidget {
                 ),
 
                 if ((planActive &&
-                    doctor.details["plan"]?["basePlan"]?["details"]
-                    ?["mobileNumber"] ==
-                        true) ||
+                        doctor.details["plan"]?["basePlan"]?["details"]?["mobileNumber"] ==
+                            true) ||
                     isAdminUser) ...[
                   const SizedBox(width: 10),
 
@@ -212,16 +214,14 @@ class DoctorCardWidget extends StatelessWidget {
                         ),
                       ),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.green,
-                        ),
+                        side: const BorderSide(color: Colors.green),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
                     ),
                   ),
-                ]
+                ],
               ],
             ),
 
@@ -249,10 +249,7 @@ class DoctorCardWidget extends StatelessWidget {
 class ProfileImageWidget extends StatelessWidget {
   final double size;
 
-  const ProfileImageWidget({
-    super.key,
-    required this.size,
-  });
+  const ProfileImageWidget({super.key, required this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -293,14 +290,18 @@ class ProfileImageWidget extends StatelessWidget {
   }
 }
 
-void confirmRemoveImage(BuildContext context, int index, VoidCallback onTap ) {
+void confirmRemoveImage(BuildContext context, int index, VoidCallback onTap) {
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
       title: Center(
         child: Text(
           "Remove Image",
-          style: AppTextStyles.caption(fontWeight:FontWeight.bold ,context, color: AppColors.black),
+          style: AppTextStyles.caption(
+            fontWeight: FontWeight.bold,
+            context,
+            color: AppColors.black,
+          ),
         ),
       ),
       content: Text(
@@ -328,6 +329,7 @@ void confirmRemoveImage(BuildContext context, int index, VoidCallback onTap ) {
     ),
   );
 }
+
 class CommonSearchTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
@@ -336,13 +338,13 @@ class CommonSearchTextField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
 
   const CommonSearchTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.hintText,
     this.onSubmitted,
     this.isDense = true,
     this.contentPadding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -357,7 +359,8 @@ class CommonSearchTextField extends StatelessWidget {
         ),
         border: InputBorder.none,
         isDense: isDense,
-        contentPadding: contentPadding ?? const EdgeInsets.symmetric(vertical: 8),
+        contentPadding:
+            contentPadding ?? const EdgeInsets.symmetric(vertical: 8),
       ),
       style: AppTextStyles.caption(
         context,
@@ -389,30 +392,37 @@ String timeAgo(DateTime date) {
     return "${(diff.inDays / 365).floor()} years ago";
   }
 }
+
 class CommonListTile extends StatelessWidget {
   final String title;
   final VoidCallback? onTap;
-  const CommonListTile({
-    super.key,
-  required this.title,
-  required this.onTap});
+  const CommonListTile({super.key, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    double s= MediaQuery.of(context).size.width;
+    double s = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: onTap,
-      child: ListTile(title: Text(title,style: AppTextStyles.subtitle(context,color: AppColors.black
-      ),),trailing: IconButton(onPressed:onTap,
-          icon: Icon(Icons.arrow_forward_ios,color: AppColors.black,size:s*0.04,)),),
+      child: ListTile(
+        title: Text(
+          title,
+          style: AppTextStyles.subtitle(context, color: AppColors.black),
+        ),
+        trailing: IconButton(
+          onPressed: onTap,
+          icon: Icon(
+            Icons.arrow_forward_ios,
+            color: AppColors.black,
+            size: s * 0.04,
+          ),
+        ),
+      ),
     );
   }
 }
+
 Future<void> sendEmail(String email) async {
-  final Uri emailUri = Uri(
-    scheme: 'mailto',
-    path: email,
-  );
+  final Uri emailUri = Uri(scheme: 'mailto', path: email);
 
   if (await canLaunchUrl(emailUri)) {
     await launchUrl(emailUri);
@@ -453,6 +463,7 @@ String pageUserType(String userType) {
   }
   return page;
 }
+
 String pageUserTypeWeb(String userType) {
   String page;
   switch (userType) {
@@ -485,6 +496,7 @@ String pageUserTypeWeb(String userType) {
   }
   return page;
 }
+
 Color getStatusColor(String status) {
   switch (status.toLowerCase()) {
     case "shortlisted":
@@ -499,6 +511,7 @@ Color getStatusColor(String status) {
       return Colors.grey;
   }
 }
+
 Color getRandomColor(String seed) {
   final colors = [
     Colors.red,
@@ -514,6 +527,7 @@ Color getRandomColor(String seed) {
   final hash = seed.hashCode;
   return colors[hash % colors.length];
 }
+
 String profilePage(String userType) {
   String page;
   switch (userType) {
@@ -546,6 +560,7 @@ String profilePage(String userType) {
   }
   return page;
 }
+
 String profilePageWeb(String userType) {
   String page;
   switch (userType) {
@@ -578,6 +593,7 @@ String profilePageWeb(String userType) {
   }
   return page;
 }
+
 String imgUserType(String userType) {
   String page;
   switch (userType) {
@@ -607,6 +623,7 @@ String imgUserType(String userType) {
   }
   return page;
 }
+
 String imgUserTypeNew(String userType) {
   String page;
   switch (userType) {
@@ -636,28 +653,27 @@ String imgUserTypeNew(String userType) {
   }
   return page;
 }
+
 Future<void> launchCallWeb(String phone) async {
   final Uri uri = Uri.parse('tel:$phone');
 
-  await launchUrl(
-    uri,
-    mode: LaunchMode.externalApplication,
-  );
+  await launchUrl(uri, mode: LaunchMode.externalApplication);
 }
+
 Future<void> getLocation() async {
   final position = await LocationService.getCurrentLocation();
-  final loginController=Get.put(LoginController());
+  final loginController = Get.put(LoginController());
 
   if (position != null) {
     loginController.latitude = position.latitude;
     loginController.longitude = position.longitude;
     print('latitude ${loginController.latitude}');
     print('longitude ${loginController.longitude}');
-
   } else {
     Get.snackbar('Location', 'Unable to get location');
   }
 }
+
 Future<void> launchCall(String input) async {
   Uri uri;
   if (RegExp(r'^\+?\d+$').hasMatch(input)) {
@@ -679,17 +695,14 @@ Future<void> launchCall(String input) async {
   }
 }
 
- class CommonSettingContainer extends StatefulWidget {
+class CommonSettingContainer extends StatefulWidget {
   final String images;
-  const CommonSettingContainer({
-    super.key,
-    required this.images,
-  });
+  const CommonSettingContainer({super.key, required this.images});
   @override
   State<CommonSettingContainer> createState() => _CommonSettingContainerState();
- }
+}
 
- class _CommonSettingContainerState extends State<CommonSettingContainer> {
+class _CommonSettingContainerState extends State<CommonSettingContainer> {
   @override
   Widget build(BuildContext context) {
     double s = MediaQuery.of(context).size.width;
@@ -707,7 +720,8 @@ Future<void> launchCall(String input) async {
           padding: const EdgeInsets.all(8.0),
           child: Image.asset(
             widget.images,
-            color: AppColors.black,fit: BoxFit.cover,
+            color: AppColors.black,
+            fit: BoxFit.cover,
             //height: s * 1,width: s*0.0006,
           ),
         ),
@@ -722,17 +736,20 @@ class CommonContactContainer extends StatefulWidget {
   final String? title;
   const CommonContactContainer({
     super.key,
-    required this.icons,this.onTap,this.title,
+    required this.icons,
+    this.onTap,
+    this.title,
   });
   @override
   State<CommonContactContainer> createState() => _CommonContactContainerState();
 }
+
 class _CommonContactContainerState extends State<CommonContactContainer> {
   @override
   Widget build(BuildContext context) {
     double s = MediaQuery.of(context).size.width;
     bool isWeb = PlatformHelper.platform == "Web";
-    
+
     return Container(
       height: !isWeb ? s * 0.25 : (s * 0.08).clamp(60.0, 100.0),
       width: !isWeb ? s * 0.26 : (s * 0.1).clamp(80.0, 150.0),
@@ -750,9 +767,7 @@ class _CommonContactContainerState extends State<CommonContactContainer> {
             child: ShaderMask(
               shaderCallback: (Rect bounds) {
                 return const LinearGradient(
-                  colors: [
-                   AppColors.primary,AppColors.secondary
-                  ],
+                  colors: [AppColors.primary, AppColors.secondary],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ).createShader(bounds);
@@ -777,7 +792,7 @@ class _CommonContactContainerState extends State<CommonContactContainer> {
               textAlign: TextAlign.center,
               style: AppTextStyles.caption(context, color: AppColors.grey),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -837,31 +852,30 @@ class _AnimatedIconButtonState extends State<AnimatedIconButton>
       onTapUp: _onTapUp,
       child: AnimatedBuilder(
         animation: _controller,
-        builder: (_, child) => Transform.scale(
-          scale: _scaleAnim.value,
-          child: child,
-        ),
+        builder: (_, child) =>
+            Transform.scale(scale: _scaleAnim.value, child: child),
         child: Column(
           children: [
             Container(
               width: widget.size,
               height: widget.size,
-              decoration:  BoxDecoration(
+              decoration: BoxDecoration(
                 //shape: BoxShape.circle,
-             borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(15),
                 color: Colors.white,
                 border: Border.all(
                   //color: getRandomColor(Jobs.orgName.toString()),
-                    color: Colors.grey.shade300,
-                    width: 1),
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
               ),
-                // boxShadow: [
-                //   BoxShadow(
-                //     color: Colors.black26,
-                //     blurRadius: 8,
-                //     offset: Offset(0, 1),
-                //   ),
-                // ],
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.black26,
+              //     blurRadius: 8,
+              //     offset: Offset(0, 1),
+              //   ),
+              // ],
               child: Center(
                 child: Image.asset(
                   widget.iconPath,
@@ -870,14 +884,21 @@ class _AnimatedIconButtonState extends State<AnimatedIconButton>
                 ),
               ),
             ),
-            SizedBox(height: widget.size*0.04,),
-            Text(widget.text,style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),)
+            SizedBox(height: widget.size * 0.04),
+            Text(
+              widget.text,
+              style: AppTextStyles.caption(
+                context,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
 Widget shimmerBox({
   double height = 100,
   double width = double.infinity,
@@ -896,6 +917,7 @@ Widget shimmerBox({
     ),
   );
 }
+
 Widget buildShimmerEmptyWidget(double size) {
   return ListView.builder(
     itemCount: 3,
@@ -918,20 +940,19 @@ Widget buildShimmerEmptyWidget(double size) {
     ),
   );
 }
+
 Widget buildActionButton({
   required IconData icon,
   required String label,
-  required VoidCallback onTap,dynamic context
+  required VoidCallback onTap,
+  dynamic context,
 }) {
   return InkWell(
     onTap: onTap,
     borderRadius: BorderRadius.circular(18),
     child: Container(
       width: 90,
-      padding: const EdgeInsets.symmetric(
-        vertical: 12,
-        horizontal: 10,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
       decoration: BoxDecoration(
         color: AppColors.transparent,
         //color: AppColors.primary.withOpacity(0.08),
@@ -950,17 +971,17 @@ Widget buildActionButton({
               color: Colors.grey.shade200,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              color: AppColors.primary,
-              size: 25,
-            ),
+            child: Icon(icon, color: AppColors.primary, size: 25),
           ),
           const SizedBox(height: 8),
           Text(
-              label,
-              textAlign: TextAlign.center,
-              style:AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold)
+            label,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.caption(
+              context,
+              color: AppColors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),

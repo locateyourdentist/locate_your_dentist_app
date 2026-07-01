@@ -54,7 +54,11 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                       children: [
                         const Text(
                           "Filter Requests",
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                         if (tempFrom != null || tempTo != null)
                           TextButton(
@@ -64,8 +68,11 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                                 tempTo = null;
                               });
                             },
-                            child: const Text("Clear All", style: TextStyle(color: Colors.redAccent)),
-                          )
+                            child: const Text(
+                              "Clear All",
+                              style: TextStyle(color: Colors.redAccent),
+                            ),
+                          ),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -84,7 +91,8 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                                 firstDate: DateTime(2024),
                                 lastDate: DateTime.now(),
                               );
-                              if (picked != null) setSheetState(() => tempFrom = picked);
+                              if (picked != null)
+                                setSheetState(() => tempFrom = picked);
                             },
                           ),
                         ),
@@ -100,7 +108,8 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                                 firstDate: DateTime(2024),
                                 lastDate: DateTime.now(),
                               );
-                              if (picked != null) setSheetState(() => tempTo = picked);
+                              if (picked != null)
+                                setSheetState(() => tempTo = picked);
                             },
                           ),
                         ),
@@ -115,7 +124,9 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.indigo.shade600,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           elevation: 0,
                         ),
                         onPressed: () {
@@ -133,7 +144,11 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                         },
                         child: const Text(
                           "Apply Filters",
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
                         ),
                       ),
                     ),
@@ -147,7 +162,11 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
     );
   }
 
-  Widget _datePickerTile({required String label, required DateTime? value, required VoidCallback onTap}) {
+  Widget _datePickerTile({
+    required String label,
+    required DateTime? value,
+    required VoidCallback onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -164,15 +183,32 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: TextStyle(fontSize: 12, color: Colors.grey.shade500, fontWeight: FontWeight.w500)),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade500,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Text(
-                  value == null ? "Select Date" : DateFormat("dd MMM yyyy").format(value),
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
+                  value == null
+                      ? "Select Date"
+                      : DateFormat("dd MMM yyyy").format(value),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
                 ),
               ],
             ),
-            Icon(Icons.calendar_today_rounded, color: Colors.indigo.shade400, size: 18),
+            Icon(
+              Icons.calendar_today_rounded,
+              color: Colors.indigo.shade400,
+              size: 18,
+            ),
           ],
         ),
       ),
@@ -181,7 +217,9 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
 
   String formatDate(dynamic date) {
     try {
-      return DateFormat("dd MMM yyyy • hh:mm a").format(DateTime.parse(date.toString()).toLocal());
+      return DateFormat(
+        "dd MMM yyyy • hh:mm a",
+      ).format(DateTime.parse(date.toString()).toLocal());
     } catch (_) {
       return "-";
     }
@@ -195,7 +233,11 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade100),
         boxShadow: [
-          BoxShadow(color: Colors.indigo.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: Colors.indigo.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       padding: const EdgeInsets.all(18),
@@ -208,8 +250,14 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                 radius: 22,
                 backgroundColor: Colors.indigo.shade50,
                 child: Text(
-                  item.name.toString().isNotEmpty ? item.name[0].toUpperCase() : "?",
-                  style: TextStyle(color: Colors.indigo.shade700, fontWeight: FontWeight.bold, fontSize: 16),
+                  item.name.toString().isNotEmpty
+                      ? item.name[0].toUpperCase()
+                      : "?",
+                  style: TextStyle(
+                    color: Colors.indigo.shade700,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -219,14 +267,21 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                   children: [
                     Text(
                       item.name ?? "Anonymous",
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
                       formatDate(item.createdAt),
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                      ),
                     ),
                   ],
                 ),
@@ -258,7 +313,11 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
               child: SingleChildScrollView(
                 child: Text(
                   item.message ?? "No message contents written.",
-                  style: TextStyle(color: Colors.grey.shade700, fontSize: 13, height: 1.4),
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
                 ),
               ),
             ),
@@ -286,7 +345,7 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -300,7 +359,11 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
         Expanded(
           child: Text(
             text,
-            style: TextStyle(color: Colors.grey.shade700, fontSize: 13, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              color: Colors.grey.shade700,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -309,14 +372,19 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
     );
   }
 
-  Widget _actionButton({required String label, required IconData icon, required Color color, required VoidCallback onTap}) {
+  Widget _actionButton({
+    required String label,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
       child: Container(
         height: 38,
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
@@ -324,13 +392,22 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
           children: [
             Icon(icon, size: 15, color: color),
             const SizedBox(width: 6),
-            Text(label, style: TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.bold)),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-  final GlobalKey<ScaffoldState> _scaffoldKeyFeedback = GlobalKey<ScaffoldState>();
+
+  final GlobalKey<ScaffoldState> _scaffoldKeyFeedback =
+      GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -352,32 +429,30 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
     return Scaffold(
       key: _scaffoldKeyFeedback,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
 
-      appBar: !isDesktop?AppBar(
-        centerTitle: true,
-        automaticallyImplyLeading: true,
-        backgroundColor: AppColors.primary,
+      appBar: !isDesktop
+          ? AppBar(
+              centerTitle: true,
+              automaticallyImplyLeading: true,
+              backgroundColor: AppColors.primary,
 
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+              iconTheme: const IconThemeData(color: Colors.white),
 
-        title: Text(
-          'Feedback Forms',
-          style: AppTextStyles.subtitle(
-            context,
-            color: Colors.white,
-          ),
-        ),
-      ):
-     CommonWebAppBar(
-        height: isMobile ? 60 : 80,
-        title: "LOCATE YOUR DENTIST",
-        onLogout: () {},
-        onNotification: () {},
-      ),
-     // backgroundColor: const Color(0xFFFAFBFC),
+              title: Text(
+                'Feedback Forms',
+                style: AppTextStyles.subtitle(context, color: Colors.white),
+              ),
+            )
+          : CommonWebAppBar(
+              height: isMobile ? 60 : 80,
+              title: "LOCATE YOUR DENTIST",
+              onLogout: () {},
+              onNotification: () {},
+            ),
+      // backgroundColor: const Color(0xFFFAFBFC),
       body: GetBuilder<ContactController>(
         builder: (controller) {
           final double width = MediaQuery.of(context).size.width;
@@ -395,69 +470,102 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                      if (isLoggedIn && !isDesktop)
-                        Padding(
+                          if (isLoggedIn && !isDesktop)
+                            Padding(
                               padding: const EdgeInsets.only(top: 10, left: 10),
-                              child:    Align(
+                              child: Align(
                                 alignment: Alignment.topLeft,
                                 child: IconButton(
-                                  icon: const Icon(Icons.menu,color: AppColors.black,),
-                                  onPressed: () => _scaffoldKeyFeedback.currentState?.openDrawer(),
+                                  icon: const Icon(
+                                    Icons.menu,
+                                    color: AppColors.black,
+                                  ),
+                                  onPressed: () => _scaffoldKeyFeedback
+                                      .currentState
+                                      ?.openDrawer(),
                                 ),
                               ),
                             ),
-                      
-                      if (controller.isLoading)
-                       const Center(child: CircularProgressIndicator(strokeWidth: 3)),
-                      
-                      
-                      if (controller.publicContactFormLists.isEmpty)
-                       Center(
-                      child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                      Icon(Icons.inbox_rounded, size: 64, color: Colors.grey.shade300),
-                      const SizedBox(height: 16),
-                      Text(
-                      "No Requests Found",
-                      style: TextStyle(fontSize: 16, color: Colors.grey.shade500, fontWeight: FontWeight.w600),
-                      ),
-                      ],
-                      ),
-                      ),
+
+                          if (controller.isLoading)
+                            const Center(
+                              child: CircularProgressIndicator(strokeWidth: 3),
+                            ),
+
+                          if (controller.publicContactFormLists.isEmpty)
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.inbox_rounded,
+                                    size: 64,
+                                    color: Colors.grey.shade300,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    "No Requests Found",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey.shade500,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           Center(
                             child: Text(
                               "View Feedback Forms",
-                              style: TextStyle(fontSize: 16, color: Colors.grey.shade500, fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey.shade500,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
-                         SizedBox(height: 20,),
-                         // showFilterSheet(context)
+                          SizedBox(height: 20),
+                          // showFilterSheet(context)
                           if (controller.publicContactFormLists.isNotEmpty)
-                      
                             Center(
                               child: ConstrainedBox(
-                                constraints: const BoxConstraints(maxWidth: 1200),
+                                constraints: const BoxConstraints(
+                                  maxWidth: 1200,
+                                ),
                                 child: Container(
-                                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))]),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(20),
                                     child: GridView.builder(
                                       shrinkWrap: true,
-                                     physics: const ScrollPhysics(),
-                                      itemCount: controller.publicContactFormLists.length,
-                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: crossAxisCount,
-                                        crossAxisSpacing: 16,
-                                        mainAxisSpacing: 16,
-                                        mainAxisExtent: 310,
-                                      ),
+                                      physics: const ScrollPhysics(),
+                                      itemCount: controller
+                                          .publicContactFormLists
+                                          .length,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: crossAxisCount,
+                                            crossAxisSpacing: 16,
+                                            mainAxisSpacing: 16,
+                                            mainAxisExtent: 310,
+                                          ),
                                       itemBuilder: (context, index) {
                                         return feedbackCard(
-                                          controller.publicContactFormLists[index],
+                                          controller
+                                              .publicContactFormLists[index],
                                         );
                                       },
-                                    )
+                                    ),
                                   ),
                                 ),
                               ),

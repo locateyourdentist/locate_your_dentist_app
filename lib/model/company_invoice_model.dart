@@ -108,7 +108,6 @@
 //     'createdAt': {'\$date': createdAt.toIso8601String()},
 //   };
 // }
-import 'dart:convert';
 
 class Company {
   final String companyName;
@@ -155,8 +154,16 @@ class TaxSummary {
   final double igstPercentage;
   final double totalAmount;
 
-  TaxSummary(
-      {required this.baseAmount, required this.cgst, required this.sgst, required this.igst, required this.cgstPercentage, required this.sgstPercentage, required this.igstPercentage, required this.totalAmount});
+  TaxSummary({
+    required this.baseAmount,
+    required this.cgst,
+    required this.sgst,
+    required this.igst,
+    required this.cgstPercentage,
+    required this.sgstPercentage,
+    required this.igstPercentage,
+    required this.totalAmount,
+  });
 
   factory TaxSummary.fromJson(Map<String, dynamic> json) {
     return TaxSummary(
@@ -219,7 +226,8 @@ class InvoiceModel {
       invoiceId: json['invoiceId'] ?? "",
       taxSummary: TaxSummary.fromJson(json['taxSummary'] ?? {}),
       company: Company.fromJson(json['company'] ?? {}),
-      createdAt: DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now(),
+      createdAt:
+          DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now(),
     );
   }
 

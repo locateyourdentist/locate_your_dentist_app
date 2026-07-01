@@ -28,7 +28,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     "Dental Shop",
     "Dental Mechanic",
     "Dental Consultant",
-    "Job Seekers"
+    "Job Seekers",
   ];
   final ImagePicker picker = ImagePicker();
 
@@ -41,15 +41,23 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
 
   Future<void> _initData() async {
     String userType = Api.userInfo.read('userType') ?? "";
-    String userIdForFetch = userType == 'superAdmin' ? "" : Api.userInfo.read('userId') ?? "";
-    
+    String userIdForFetch = userType == 'superAdmin'
+        ? ""
+        : Api.userInfo.read('userId') ?? "";
+
     await planController.getUploadImages(
       userId: userIdForFetch,
       userType: planController.selectedUserType!,
       context: context,
     );
-    await planController.checkPlansStatus(Api.userInfo.read('userId') ?? "", context);
-    await planController.getPostImagePlanList(planController.selectedUserType.toString(), context);
+    await planController.checkPlansStatus(
+      Api.userInfo.read('userId') ?? "",
+      context,
+    );
+    await planController.getPostImagePlanList(
+      planController.selectedUserType.toString(),
+      context,
+    );
     planController.update();
   }
 
@@ -58,7 +66,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
   }
 
   Future<void> pickImages(BuildContext context) async {
-    final List<XFile>? pickedImages = await picker.pickMultiImage();
+    final List<XFile> pickedImages = await picker.pickMultiImage();
     if (pickedImages == null || pickedImages.isEmpty) return;
 
     for (var file in pickedImages) {
@@ -71,10 +79,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
       if (result == null) continue;
       final Uint8List croppedBytes = result;
 
-      final appImage2 = AppImage2(
-        bytes: croppedBytes,
-        isActive: true,
-      );
+      final appImage2 = AppImage2(bytes: croppedBytes, isActive: true);
 
       planController.editUploadImage1.add(appImage2);
     }
@@ -84,7 +89,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
   Map<String, dynamic>? getSafePosterPlan(PlanController controller) {
     if (controller.checkPlanList.isEmpty) return null;
     final data = controller.checkPlanList.first;
-    if (data == null || data is! Map<String, dynamic>) return null;
+    if (data is! Map<String, dynamic>) return null;
     return data["details"]?["plan"]?["posterPlan"];
   }
 
@@ -104,7 +109,9 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
         onLogout: () {},
         onNotification: () {},
       ),
-      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: !isDesktop
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       body: GetBuilder<PlanController>(
         builder: (controller) {
           return Row(
@@ -117,15 +124,22 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                     children: [
                       if (!isDesktop)
                         Positioned(
-                          top: 10, left: 10,
+                          top: 10,
+                          left: 10,
                           child: IconButton(
                             icon: const Icon(Icons.menu),
-                            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+                            onPressed: () =>
+                                _scaffoldKey.currentState?.openDrawer(),
                           ),
                         ),
                       SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.fromLTRB(isMobile ? 10 : 30, !isDesktop ? 60 : 30, isMobile ? 10 : 30, 30),
+                        padding: EdgeInsets.fromLTRB(
+                          isMobile ? 10 : 30,
+                          !isDesktop ? 60 : 30,
+                          isMobile ? 10 : 30,
+                          30,
+                        ),
                         child: Center(
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(maxWidth: 1300),
@@ -135,7 +149,11 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: const [
-                                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 6,
+                                    offset: Offset(0, 3),
+                                  ),
                                 ],
                               ),
                               child: Padding(
@@ -143,11 +161,20 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    if (userType == 'superAdmin') _buildUserTypeSelector(controller, isMobile),
+                                    if (userType == 'superAdmin')
+                                      _buildUserTypeSelector(
+                                        controller,
+                                        isMobile,
+                                      ),
                                     const SizedBox(height: 30),
                                     _buildHeaderRow(context, isMobile),
                                     const SizedBox(height: 20),
-                                    _buildImageGrid(controller, isMobile, width, userType),
+                                    _buildImageGrid(
+                                      controller,
+                                      isMobile,
+                                      width,
+                                      userType,
+                                    ),
                                   ],
                                 ),
                               ),
@@ -185,9 +212,9 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
 
             items: userTypes.toSet().toList(),
             selectedValue:
-            (controller.selectedUserType != null &&
-                controller.selectedUserType!.isNotEmpty &&
-                userTypes.contains(controller.selectedUserType))
+                (controller.selectedUserType != null &&
+                    controller.selectedUserType!.isNotEmpty &&
+                    userTypes.contains(controller.selectedUserType))
                 ? controller.selectedUserType
                 : null,
 
@@ -195,8 +222,14 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
               if (value == null) return;
               controller.selectedUserType = value;
               String userType = Api.userInfo.read('userType') ?? "";
-              String userIdForFetch = userType == 'superAdmin' ? "" : Api.userInfo.read('userId') ?? "";
-              await controller.getUploadImages(userId: userIdForFetch, userType: value, context: context);
+              String userIdForFetch = userType == 'superAdmin'
+                  ? ""
+                  : Api.userInfo.read('userId') ?? "";
+              await controller.getUploadImages(
+                userId: userIdForFetch,
+                userType: value,
+                context: context,
+              );
               await controller.getPostImagePlanList(value, context);
               controller.update();
             },
@@ -216,14 +249,22 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
           icon: const Icon(Icons.add),
           label: const Text("Upload Images"),
           style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: isMobile ? 12 : 20, vertical: 15),
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 12 : 20,
+              vertical: 15,
+            ),
           ),
-        )
+        ),
       ],
     );
   }
 
-  Widget _buildImageGrid(PlanController controller, bool isMobile, double width, String userType) {
+  Widget _buildImageGrid(
+    PlanController controller,
+    bool isMobile,
+    double width,
+    String userType,
+  ) {
     if (controller.editUploadImage1.isEmpty) {
       return Center(
         child: Padding(
@@ -234,8 +275,8 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     }
 
     return GetBuilder<PlanController>(
-        builder: (controller) {
-          return  GridView.builder(
+      builder: (controller) {
+        return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: controller.editUploadImage1.length,
@@ -250,17 +291,22 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
             return _buildImageCard(controller, image, index, userType);
           },
         );
-      }
+      },
     );
   }
 
-  Widget _buildImageCard(PlanController controller, AppImage2 image, int index, String userType) {
+  Widget _buildImageCard(
+    PlanController controller,
+    AppImage2 image,
+    int index,
+    String userType,
+  ) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: Colors.white,
         boxShadow: [
-          BoxShadow(blurRadius: 10, color: Colors.grey.withOpacity(0.2))
+          BoxShadow(blurRadius: 10, color: Colors.grey.withValues(alpha: 0.2)),
         ],
       ),
       child: Column(
@@ -268,11 +314,23 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(15),
+              ),
               child: image.bytes != null
-                  ? Image.memory(image.bytes!, width: double.infinity, fit: BoxFit.cover)
+                  ? Image.memory(
+                      image.bytes!,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    )
                   : image.url != null
-                  ? Image.network(image.url!, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.broken_image))
+                  ? Image.network(
+                      image.url!,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          const Icon(Icons.broken_image),
+                    )
                   : const Icon(Icons.image_not_supported),
             ),
           ),
@@ -281,13 +339,21 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Row(
                 children: [
-                  const Icon(Icons.calendar_today, size: 14, color: Colors.blueGrey),
+                  const Icon(
+                    Icons.calendar_today,
+                    size: 14,
+                    color: Colors.blueGrey,
+                  ),
                   const SizedBox(width: 5),
                   Flexible(
                     child: Text(
                       "Validity: ${image.startDate} to ${image.endDate}",
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12, color: Colors.blueGrey, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.blueGrey,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],
@@ -301,16 +367,28 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
               children: [
                 DropdownButtonFormField<String>(
                   isExpanded: true,
-                  value: controller.postImagePlanList.any((plan) => plan.id == image.planId) ? image.planId : null,
-                  hint: Text("Select Plan", style: AppTextStyles.caption(context)),
+                  initialValue:
+                      controller.postImagePlanList.any(
+                        (plan) => plan.id == image.planId,
+                      )
+                      ? image.planId
+                      : null,
+                  hint: Text(
+                    "Select Plan",
+                    style: AppTextStyles.caption(context),
+                  ),
                   decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     border: OutlineInputBorder(),
                   ),
                   items: controller.postImagePlanList.map((plan) {
                     return DropdownMenuItem<String>(
                       value: plan.id,
-                      child: Text("${plan.postPlanName} (${plan.duration} days)",
+                      child: Text(
+                        "${plan.postPlanName} (${plan.duration} days)",
                         style: AppTextStyles.caption(context),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -320,7 +398,13 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                     if (value == null) return;
                     image.planId = value;
                     controller.update();
-                    await _handleStatusChange(controller, image, index, userType, image.isActive ?? false);
+                    await _handleStatusChange(
+                      controller,
+                      image,
+                      index,
+                      userType,
+                      image.isActive ?? false,
+                    );
                   },
                 ),
                 const SizedBox(height: 10),
@@ -337,11 +421,22 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                           height: 35,
                           child: Switch(
                             value: image.isActive ?? false,
-                            onChanged: (val) => _handleStatusChange(controller, image, index, userType, val),
+                            onChanged: (val) => _handleStatusChange(
+                              controller,
+                              image,
+                              index,
+                              userType,
+                              val,
+                            ),
                           ),
                         ),
-                        Text(image.isActive == true ? "Active" : "Inactive",
-                          style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
+                        Text(
+                          image.isActive == true ? "Active" : "Inactive",
+                          style: AppTextStyles.caption(
+                            context,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                     Row(
@@ -350,21 +445,33 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                         IconButton(
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
-                          icon: const Icon(Icons.edit, color: Colors.blue, size: 20),
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Colors.blue,
+                            size: 20,
+                          ),
                           onPressed: () {},
                         ),
                         const SizedBox(width: 15),
                         IconButton(
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
-                          icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                          onPressed: ()async {
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                          onPressed: () async {
                             controller.editUploadImage1.removeAt(index);
 
-                            String currentUserId = Api.userInfo.read('userId')?.toString() ?? "";
-                            String storedUserType = Api.userInfo.read('userType')?.toString() ?? "";
-                            String targetUserType = (storedUserType.toLowerCase() == 'superadmin')
-                                ? (controller.selectedUserType ?? "Dental Clinic")
+                            String currentUserId =
+                                Api.userInfo.read('userId')?.toString() ?? "";
+                            String storedUserType =
+                                Api.userInfo.read('userType')?.toString() ?? "";
+                            String targetUserType =
+                                (storedUserType.toLowerCase() == 'superadmin')
+                                ? (controller.selectedUserType ??
+                                      "Dental Clinic")
                                 : storedUserType;
                             //_handleStatusChange(controller, image, index, userType, 'delete'),
                             // await controller.uploadImagesUserType(
@@ -382,18 +489,24 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
                           },
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Future<void> _handleStatusChange(PlanController controller, AppImage2 image, int index, String userType, bool val) async {
+  Future<void> _handleStatusChange(
+    PlanController controller,
+    AppImage2 image,
+    int index,
+    String userType,
+    bool val,
+  ) async {
     image.isActive = val;
     controller.editUploadImage1[index] = image;
     controller.update();
@@ -412,8 +525,8 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
 
     String currentUserId = Api.userInfo.read('userId')?.toString() ?? "";
     String storedUserType = Api.userInfo.read('userType')?.toString() ?? "";
-    String targetUserType = (storedUserType.toLowerCase() == 'superadmin') 
-        ? (controller.selectedUserType ?? "Dental Clinic") 
+    String targetUserType = (storedUserType.toLowerCase() == 'superadmin')
+        ? (controller.selectedUserType ?? "Dental Clinic")
         : storedUserType;
 
     if (currentUserId.isEmpty || targetUserType.isEmpty) {

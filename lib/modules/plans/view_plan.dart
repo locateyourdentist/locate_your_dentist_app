@@ -18,14 +18,15 @@ class ViewPlan extends StatefulWidget {
   @override
   State<ViewPlan> createState() => _ViewPlanState();
 }
+
 class _ViewPlanState extends State<ViewPlan> {
-  List<Map<String,dynamic>> planDetails=[];
-  bool selectPlan=false;
+  List<Map<String, dynamic>> planDetails = [];
+  bool selectPlan = false;
   int? selectedIndex;
   String? userType;
   String? selectedString;
-  final PlanController planController=Get.put(PlanController());
-  final LoginController loginController=Get.put(LoginController());
+  final PlanController planController = Get.put(PlanController());
+  final LoginController loginController = Get.put(LoginController());
   late Razorpay _razorpay;
   Map<String, String> calculatePlanDates(String durationStr) {
     int duration = int.tryParse(durationStr) ?? 0;
@@ -36,6 +37,7 @@ class _ViewPlanState extends State<ViewPlan> {
       "endDate": "${end.day}-${end.month}-${end.year}",
     };
   }
+
   void openCheckout({
     required double amount,
     required String name,
@@ -49,7 +51,9 @@ class _ViewPlanState extends State<ViewPlan> {
       'name': name,
       'description': description,
       'prefill': {'contact': contact, 'email': email},
-      'external': {'wallets': ['paytm']},
+      'external': {
+        'wallets': ['paytm'],
+      },
     };
     try {
       _razorpay.open(options);
@@ -57,16 +61,18 @@ class _ViewPlanState extends State<ViewPlan> {
       debugPrint('Error opening Razorpay: $e');
     }
   }
-  void loadData(userType)async{
-    print('cv${Api.userInfo.read('userType')??""}');
+
+  void loadData(userType) async {
+    print('cv${Api.userInfo.read('userType') ?? ""}');
     // await  loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
-    await  planController.getBasePlanList(userType,context);
-    await planController.getAddOnPlansList(userType,context);
-    await planController.getJobPlansList(userType,context);
-    await planController.getWebinarPlansList(userType,context);
-    await planController.getPostImagePlanList(userType,context);
+    await planController.getBasePlanList(userType, context);
+    await planController.getAddOnPlansList(userType, context);
+    await planController.getJobPlansList(userType, context);
+    await planController.getWebinarPlansList(userType, context);
+    await planController.getPostImagePlanList(userType, context);
     await loginController.getBranchDetails(context);
   }
+
   Widget _modernFilterBox({
     required IconData icon,
     required String label,
@@ -82,7 +88,7 @@ class _ViewPlanState extends State<ViewPlan> {
           border: Border.all(color: Colors.grey.shade300),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 5,
               offset: const Offset(0, 2),
             ),
@@ -95,8 +101,11 @@ class _ViewPlanState extends State<ViewPlan> {
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                  label,
-                  style: AppTextStyles.caption(context,fontWeight: FontWeight.bold)
+                label,
+                style: AppTextStyles.caption(
+                  context,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
@@ -105,43 +114,46 @@ class _ViewPlanState extends State<ViewPlan> {
       ),
     );
   }
+
   @override
   void initState() {
     super.initState();
-    selectedIndex=1;
-    selectedString="Buy Plans";
+    selectedIndex = 1;
+    selectedString = "Buy Plans";
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
     if (userType != "admin" && userType != "superAdmin") {
       loadData(userType);
-    }
-    else{
-      planController.selectedUserType="Dental Clinic";
+    } else {
+      planController.selectedUserType = "Dental Clinic";
       loadData(planController.selectedUserType);
     }
-    final userId = Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId');
-    planController.checkPlansStatus(userId,context);
+    final userId =
+        Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId');
+    planController.checkPlansStatus(userId, context);
     //planController.getUploadImages(Api.userInfo.read('userId')??"", Api.userInfo.read('userType')??"", context);
   }
+
   Future<void> _refresh() async {
-    selectedIndex=1;
-    selectedString="Buy Plans";
+    selectedIndex = 1;
+    selectedString = "Buy Plans";
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
     if (userType != "admin" && userType != "superAdmin") {
       loadData(userType);
-    }
-    else{
-      planController.selectedUserType="Dental Clinic";
+    } else {
+      planController.selectedUserType = "Dental Clinic";
       loadData(planController.selectedUserType);
     }
-    final userId = Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId');
-    planController.checkPlansStatus(userId,context);
+    final userId =
+        Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId');
+    planController.checkPlansStatus(userId, context);
     planController.getCompanyDetails();
     planController.getGstDetails(context);
     //planController.getUploadImages(Api.userInfo.read('userId')??"", Api.userInfo.read('userType')??"", context);
   }
+
   @override
   Widget build(BuildContext context) {
-    double s=MediaQuery.of(context).size.width;
+    double s = MediaQuery.of(context).size.width;
     // final currentPlanDetails =
     // planDetails.firstWhere((plan) => plan['planName'] == currentPlan);
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
@@ -155,21 +167,21 @@ class _ViewPlanState extends State<ViewPlan> {
         "endDate": "${end.day}-${end.month}-${end.year}",
       };
     }
+
     bool isPosterActive = false;
     if (planController.checkPlanList.isNotEmpty) {
       final firstPlanDetails =
-      planController.checkPlanList[0]["details"]?["plan"];
-      isPosterActive =
-          firstPlanDetails?["posterPlan"]?["isActive"] ?? false;
+          planController.checkPlanList[0]["details"]?["plan"];
+      isPosterActive = firstPlanDetails?["posterPlan"]?["isActive"] ?? false;
     }
-    void _showUserTypeDialog() {
+    void showUserTypeDialog() {
       final states = [
         "Dental Clinic",
         "Dental Lab",
         "Dental Shop",
         "Dental Mechanic",
         "Dental Consultant",
-        "Job Seekers"
+        "Job Seekers",
       ];
       String? tempSelectedState = planController.selectedUserType;
 
@@ -180,13 +192,16 @@ class _ViewPlanState extends State<ViewPlan> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            title:  Text(
+            title: Text(
               "Select UserType",
-              style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
+              style: AppTextStyles.caption(
+                context,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             content: SizedBox(
               width: double.maxFinite,
-              height: s*0.4,
+              height: s * 0.4,
               child: StatefulBuilder(
                 builder: (context, setStateDialog) {
                   return ListView(
@@ -195,12 +210,13 @@ class _ViewPlanState extends State<ViewPlan> {
                         title: Text(
                           state,
                           style: AppTextStyles.caption(
-                              fontWeight: tempSelectedState == state
-                                  ? FontWeight.bold
-                                  : FontWeight.bold,
-                              color: tempSelectedState == state
-                                  ? AppColors.primary
-                                  : Colors.black,context
+                            fontWeight: tempSelectedState == state
+                                ? FontWeight.bold
+                                : FontWeight.bold,
+                            color: tempSelectedState == state
+                                ? AppColors.primary
+                                : Colors.black,
+                            context,
                           ),
                         ),
                         value: state,
@@ -209,7 +225,7 @@ class _ViewPlanState extends State<ViewPlan> {
                         onChanged: (value) {
                           setStateDialog(() {
                             tempSelectedState = value;
-                            print('sele view${value}');
+                            print('sele view$value');
                             loadData(value);
                           });
                         },
@@ -241,9 +257,11 @@ class _ViewPlanState extends State<ViewPlan> {
         },
       );
     }
+
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,backgroundColor: AppColors.white,
+        centerTitle: true,
+        backgroundColor: AppColors.white,
         iconTheme: const IconThemeData(color: AppColors.white),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -261,400 +279,635 @@ class _ViewPlanState extends State<ViewPlan> {
                 ),
               ),
               child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
+                child: Icon(Icons.arrow_back, color: AppColors.white),
               ),
             ),
           ),
         ),
-        title: Text('Choose Your Plan',style: AppTextStyles.subtitle(context,color: AppColors.black),),
+        title: Text(
+          'Choose Your Plan',
+          style: AppTextStyles.subtitle(context, color: AppColors.black),
+        ),
         actions: [
-          if(userType=="superAdmin")
-            IconButton(onPressed: (){
-              Get.toNamed('/createPlanPage',arguments: { 'selectedString': "BasePlan"});
-              resetPlanFields();
-            }, icon: Icon(Icons.edit,color: AppColors.black,size: s*0.06,))],
+          if (userType == "superAdmin")
+            IconButton(
+              onPressed: () {
+                Get.toNamed(
+                  '/createPlanPage',
+                  arguments: {'selectedString': "BasePlan"},
+                );
+                resetPlanFields();
+              },
+              icon: Icon(Icons.edit, color: AppColors.black, size: s * 0.06),
+            ),
+        ],
       ),
       body: GetBuilder<LoginController>(
-          builder: (controller) {
-            return RefreshIndicator(
-              onRefresh:_refresh ,
-              child: DefaultTabController(
-                length: 5,
-                child:GetBuilder<PlanController>(
-                    builder: (controller) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              if(userType != "superAdmin"&&userType != "admin")
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Radio(
-                                      value: "Active Plans",
-                                      groupValue: selectedString,
-                                      activeColor: AppColors.primary,
-                                      fillColor: MaterialStateProperty.all(AppColors.primary),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedString = value.toString();
-                                        });
-                                      },
-                                    ),
-                                    Text("Active Plans",style: AppTextStyles.caption(context,color: AppColors.black),),
-                                    Radio(
-                                      value: "Buy Plans",
-                                      groupValue: selectedString,
-                                      activeColor: AppColors.black,
-                                      fillColor: MaterialStateProperty.all(AppColors.primary),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedString = value.toString();
-                                        });
-                                      },
-                                    ),
-                                    Text( "Buy Plan",style: AppTextStyles.caption(context,color: AppColors.black),),
-                                  ],
+        builder: (controller) {
+          return RefreshIndicator(
+            onRefresh: _refresh,
+            child: DefaultTabController(
+              length: 5,
+              child: GetBuilder<PlanController>(
+                builder: (controller) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          if (userType != "superAdmin" && userType != "admin")
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Radio(
+                                  value: "Active Plans",
+                                  groupValue: selectedString,
+                                  activeColor: AppColors.primary,
+                                  fillColor: WidgetStateProperty.all(
+                                    AppColors.primary,
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedString = value.toString();
+                                    });
+                                  },
                                 ),
-                              if(selectedString=="Active Plans")
-
-                                PlanDetailsWidget(planList: planController.checkPlanList),
-                              if(selectedString=="Buy Plans")
-
-                                GetBuilder<PlanController>(
-                                    builder: (controller) {
-                                      return  Column(
+                                Text(
+                                  "Active Plans",
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    color: AppColors.black,
+                                  ),
+                                ),
+                                Radio(
+                                  value: "Buy Plans",
+                                  groupValue: selectedString,
+                                  activeColor: AppColors.black,
+                                  fillColor: WidgetStateProperty.all(
+                                    AppColors.primary,
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedString = value.toString();
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  "Buy Plan",
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    color: AppColors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          if (selectedString == "Active Plans")
+                            PlanDetailsWidget(
+                              planList: planController.checkPlanList,
+                            ),
+                          if (selectedString == "Buy Plans")
+                            GetBuilder<PlanController>(
+                              builder: (controller) {
+                                return Column(
+                                  children: [
+                                    SizedBox(height: s * 0.03),
+                                    if (userType != "admin" &&
+                                        userType != "superAdmin")
+                                      Center(
+                                        child: BlinkingText(
+                                          text: "Upgrade your Plan",
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: s * 0.04,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    SizedBox(height: s * 0.03),
+                                    if (isPosterActive &&
+                                        planController
+                                            .editUploadImage
+                                            .isNotEmpty)
+                                      TextButton(
+                                        onPressed: () {
+                                          Get.toNamed('/createPostImages');
+                                        },
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: Colors.white,
+                                          backgroundColor: AppColors.primary,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 12,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Scrolling Ads Pick Image',
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: AppColors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    SizedBox(height: s * 0.01),
+                                    if (userType == "superAdmin" ||
+                                        userType == "admin")
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
-                                          SizedBox(height: s*0.03,),
-                                          if (userType != "admin" && userType != "superAdmin")
-                                            Center(
-                                              child: BlinkingText(text: "Upgrade your Plan", style: TextStyle(
-                                                color: Colors.red, fontSize: s*0.04, fontWeight: FontWeight.bold,),),
+                                          Text(
+                                            'Select UserType',
+                                            style: AppTextStyles.caption(
+                                              context,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                          SizedBox(height: s*0.03,),
-                                          if(isPosterActive&&planController.editUploadImage.isNotEmpty)
-                                            TextButton(
-                                              onPressed: (){
-                                                Get.toNamed('/createPostImages');
-                                              },
-                                              style: TextButton.styleFrom(
-                                                foregroundColor: Colors.white,
-                                                backgroundColor: AppColors.primary,
-                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(8),
-                                                ),
-                                              ),
-                                              child:  Text(
-                                                'Scrolling Ads Pick Image',
-                                                style: AppTextStyles.caption(context,color: AppColors.white),
-                                              ),
-                                            ),
-                                          SizedBox(height: s*0.01,),
-                                          if(userType=="superAdmin"||userType=="admin")
-
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Text('Select UserType',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
-                                                const SizedBox(width: 10,),
-                                                SizedBox(
-                                                  width: s*0.6,
-                                                  child: GestureDetector(
-                                                    child: _modernFilterBox(
-                                                        icon: Icons.person_outline,
-                                                        label: planController.selectedUserType ?? "Select User Type",
-                                                        onTap: _showUserTypeDialog
-                                                    ),
-                                                  ),
-                                                ),
-                                                // GetBuilder<LoginController>(
-                                                //     builder: (controller) {
-                                                //       return
-                                                //         SizedBox(
-                                                //       width: s*0.5,
-                                                //       child: CustomDropdownField(
-                                                //         hint: "Select User Type",
-                                                //         //icon: Icons.person_outline,
-                                                //         borderColor: AppColors.grey,
-                                                //         fillColor: AppColors.white,
-                                                //         items: const [
-                                                //           "Dental Clinic",
-                                                //           "Dental Lab",
-                                                //           "Dental Shop",
-                                                //           "Dental Mechanic",
-                                                //           "Dental Consultant"
-                                                //         ],
-                                                //         selectedValue: planController.selectedUserType?.isEmpty == true
-                                                //             ? null
-                                                //             : planController.selectedUserType,
-                                                //         onChanged: (value) {
-                                                //           setState(() async{
-                                                //             planController.selectedUserType = value;
-                                                //             await  loginController.getProfileByUserId(planController.selectedUserType.toString(), context);
-                                                //             await  planController.getBasePlanList(planController.selectedUserType.toString(),context);
-                                                //             await planController.getAddOnPlansList(planController.selectedUserType.toString(),context);
-                                                //             await planController.getJobPlansList(planController.selectedUserType.toString(),context);
-                                                //             planController.update();
-                                                //           });
-                                                //         },
-                                                //       ),
-                                                //     );
-                                                //   }
-                                                // ),
-                                              ],
-                                            ),
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(left: 8.0),
-                                              child: Text(
-                                                "Choose your Plans",
-                                                style: AppTextStyles.caption(context,
-                                                    color: Colors.grey),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          SizedBox(
+                                            width: s * 0.6,
+                                            child: GestureDetector(
+                                              child: _modernFilterBox(
+                                                icon: Icons.person_outline,
+                                                label:
+                                                    planController
+                                                        .selectedUserType ??
+                                                    "Select User Type",
+                                                onTap: showUserTypeDialog,
                                               ),
                                             ),
                                           ),
-                                          SizedBox(height: s*0.03,),
-
-                                          GetBuilder<PlanController>(
-                                              builder: (controller){
-                                                return Container(
-                                                  height: s*0.12,
-                                                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                                                  decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(10),),
-                                                      color: Colors.grey.shade100
-                                                  ),
-                                                  child: TabBar(
-                                                    isScrollable: true,
-                                                    indicatorSize: TabBarIndicatorSize.tab,
-                                                    dividerColor: Colors.transparent,
-                                                    indicator: BoxDecoration(
-                                                      gradient: const LinearGradient(
-                                                        colors: [AppColors.primary,AppColors.secondary],
-                                                        begin: Alignment.topLeft,
-                                                        end: Alignment.bottomRight,
-                                                      ),
-                                                      borderRadius: BorderRadius.circular(10),
-                                                    ),
-                                                    labelColor: AppColors.white,
-                                                    unselectedLabelColor: AppColors.black,
-                                                    tabs: const [
-                                                      Tab(
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Text('BasePlan'),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Tab(
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Text('AddOns')
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Tab(
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Text('Job Plan')
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Tab(
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Text('Webinar Plan')
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Tab(
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Text('Scrolling Ads Plan')
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                );
-                                              }
+                                          // GetBuilder<LoginController>(
+                                          //     builder: (controller) {
+                                          //       return
+                                          //         SizedBox(
+                                          //       width: s*0.5,
+                                          //       child: CustomDropdownField(
+                                          //         hint: "Select User Type",
+                                          //         //icon: Icons.person_outline,
+                                          //         borderColor: AppColors.grey,
+                                          //         fillColor: AppColors.white,
+                                          //         items: const [
+                                          //           "Dental Clinic",
+                                          //           "Dental Lab",
+                                          //           "Dental Shop",
+                                          //           "Dental Mechanic",
+                                          //           "Dental Consultant"
+                                          //         ],
+                                          //         selectedValue: planController.selectedUserType?.isEmpty == true
+                                          //             ? null
+                                          //             : planController.selectedUserType,
+                                          //         onChanged: (value) {
+                                          //           setState(() async{
+                                          //             planController.selectedUserType = value;
+                                          //             await  loginController.getProfileByUserId(planController.selectedUserType.toString(), context);
+                                          //             await  planController.getBasePlanList(planController.selectedUserType.toString(),context);
+                                          //             await planController.getAddOnPlansList(planController.selectedUserType.toString(),context);
+                                          //             await planController.getJobPlansList(planController.selectedUserType.toString(),context);
+                                          //             planController.update();
+                                          //           });
+                                          //         },
+                                          //       ),
+                                          //     );
+                                          //   }
+                                          // ),
+                                        ],
+                                      ),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 8.0,
+                                        ),
+                                        child: Text(
+                                          "Choose your Plans",
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: Colors.grey,
                                           ),
-                                          const SizedBox(height: 10,),
-                                          GetBuilder<PlanController>(
-                                              builder: (controller) {
-                                                return  SizedBox(
-                                                  height: MediaQuery.of(context).size.height * 0.7,
-                                                  child: TabBarView(
-                                                      children: [
-                                                        AnimationLimiter(
-                                                          child: ListView.builder(
-                                                              itemCount: planController.basePlanList.length,
-                                                              physics: const NeverScrollableScrollPhysics(),
-                                                              //shrinkWrap: true,
-                                                              itemBuilder: (BuildContext context,int index){
-                                                                final plan=planController.basePlanList[index];
-                                                                selectPlan = selectedIndex == index;
-                                                                return GestureDetector(
-                                                                  onTap: (){
-                                                                    setState(() {
-                                                                      selectedIndex = index;
-                                                                    });},
-                                                                  child: AnimationConfiguration.staggeredList(
-                                                                    position: index,
-                                                                    duration: const Duration(milliseconds: 1300),
-                                                                    child: SlideAnimation(
-                                                                      verticalOffset: 120.0,
-                                                                      curve: Curves.easeOutBack,
-                                                                      child: FadeInAnimation(
-                                                                        child: Column(
-                                                                          children: [
-                                                                            Stack(
-                                                                              clipBehavior: Clip.none,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: s * 0.03),
+
+                                    GetBuilder<PlanController>(
+                                      builder: (controller) {
+                                        return Container(
+                                          height: s * 0.12,
+                                          margin: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                  Radius.circular(10),
+                                                ),
+                                            color: Colors.grey.shade100,
+                                          ),
+                                          child: TabBar(
+                                            isScrollable: true,
+                                            indicatorSize:
+                                                TabBarIndicatorSize.tab,
+                                            dividerColor: Colors.transparent,
+                                            indicator: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  AppColors.primary,
+                                                  AppColors.secondary,
+                                                ],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            labelColor: AppColors.white,
+                                            unselectedLabelColor:
+                                                AppColors.black,
+                                            tabs: const [
+                                              Tab(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [Text('BasePlan')],
+                                                ),
+                                              ),
+                                              Tab(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [Text('AddOns')],
+                                                ),
+                                              ),
+                                              Tab(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [Text('Job Plan')],
+                                                ),
+                                              ),
+                                              Tab(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text('Webinar Plan'),
+                                                  ],
+                                                ),
+                                              ),
+                                              Tab(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text('Scrolling Ads Plan'),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    const SizedBox(height: 10),
+                                    GetBuilder<PlanController>(
+                                      builder: (controller) {
+                                        return SizedBox(
+                                          height:
+                                              MediaQuery.of(
+                                                context,
+                                              ).size.height *
+                                              0.7,
+                                          child: TabBarView(
+                                            children: [
+                                              AnimationLimiter(
+                                                child: ListView.builder(
+                                                  itemCount: planController
+                                                      .basePlanList
+                                                      .length,
+                                                  physics:
+                                                      const NeverScrollableScrollPhysics(),
+                                                  //shrinkWrap: true,
+                                                  itemBuilder: (BuildContext context, int index) {
+                                                    final plan = planController
+                                                        .basePlanList[index];
+                                                    selectPlan =
+                                                        selectedIndex == index;
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          selectedIndex = index;
+                                                        });
+                                                      },
+                                                      child: AnimationConfiguration.staggeredList(
+                                                        position: index,
+                                                        duration:
+                                                            const Duration(
+                                                              milliseconds:
+                                                                  1300,
+                                                            ),
+                                                        child: SlideAnimation(
+                                                          verticalOffset: 120.0,
+                                                          curve: Curves
+                                                              .easeOutBack,
+                                                          child: FadeInAnimation(
+                                                            child: Column(
+                                                              children: [
+                                                                Stack(
+                                                                  clipBehavior:
+                                                                      Clip.none,
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                            10.0,
+                                                                          ),
+                                                                      child: Card(
+                                                                        elevation:
+                                                                            6,
+                                                                        color: AppColors
+                                                                            .white,
+                                                                        child: Container(
+                                                                          decoration: BoxDecoration(
+                                                                            color:
+                                                                                AppColors.white,
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              10,
+                                                                            ),
+                                                                            border: Border.all(
+                                                                              color: selectPlan
+                                                                                  ? AppColors.primary
+                                                                                  : AppColors.grey,
+                                                                              width: 1.5,
+                                                                            ),
+                                                                            boxShadow: [
+                                                                              BoxShadow(
+                                                                                color: Colors.black.withValues(
+                                                                                  alpha: 0.1,
+                                                                                ),
+                                                                                spreadRadius: 1,
+                                                                                blurRadius: 6,
+                                                                                offset: const Offset(
+                                                                                  0,
+                                                                                  3,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.all(
+                                                                              15.0,
+                                                                            ),
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: [
-                                                                                Padding(
-                                                                                  padding: const EdgeInsets.all(10.0),
-                                                                                  child: Card(
-                                                                                    elevation: 6, color:AppColors.white,
-                                                                                    child: Container(
-                                                                                      decoration: BoxDecoration(
-                                                                                        color: AppColors.white,
-                                                                                        borderRadius: BorderRadius.circular(10),
-                                                                                        border: Border.all(color: selectPlan? AppColors.primary : AppColors.grey,
-                                                                                          width: 1.5,),boxShadow: [BoxShadow(
-                                                                                          color: Colors.black.withOpacity(0.1),
-                                                                                          spreadRadius: 1,
-                                                                                          blurRadius: 6,
-                                                                                          offset: const Offset(0, 3)),],), child: Padding(padding: const EdgeInsets.all(15.0),
-                                                                                      child: Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                        children: [
-                                                                                          SizedBox(height: s*0.04,),
-                                                                                          Text("Great Place To Start",style: AppTextStyles.caption(context,color: AppColors.grey),),
-                                                                                          SizedBox(height: s*0.01,),
-                                                                                          SizedBox(
-                                                                                            height: s*0.25,
-                                                                                            child: Row(
-                                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                              children: [
-                                                                                                Column(
-                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                  children: [
-                                                                                                    Text(plan.planName??"",style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold),),
-                                                                                                    Text("₹${plan.price??"0"}",style: AppTextStyles.body(context,color:AppColors.black,fontWeight: FontWeight.bold),),
-                                                                                                    Container(
-                                                                                                        height: s*0.08,decoration: BoxDecoration(gradient: const LinearGradient(
-                                                                                                      colors: [AppColors.primary,AppColors.secondary],
-                                                                                                      begin: Alignment.topLeft,
-                                                                                                      end: Alignment.bottomRight,
-                                                                                                    ),borderRadius: BorderRadius.circular(10)),
-                                                                                                        child: Center(child: Padding(
-                                                                                                          padding: const EdgeInsets.all(5.0),
-                                                                                                          child: Text("Valid Up to ${plan.duration??"0"} days",style: AppTextStyles.caption(context,color:Colors.white,fontWeight: FontWeight.normal),),
-                                                                                                        ))),
-                                                                                                  ],
-                                                                                                ),
-                                                                                                IconButton(
-                                                                                                    onPressed: (){
-                                                                                                    }, icon: Icon(Icons.bookmarks_rounded,size: s*0.06,color: AppColors.primary,))
-                                                                                                // Image.asset('assets/images/plan.png',scale: 0.05,height: s*0.05,width: s*0.09,)
-                                                                                              ],
-                                                                                            ),
-                                                                                          ),
-                                                                                          const Divider(color: AppColors.grey,thickness: 0.3,),
-                                                                                          SizedBox(height: s*0.01,),
-                                                                                          if (plan.features != null && plan.features!.isNotEmpty)
-                                                                                            Column(
-                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                              children: plan.features!.map((f) {
-                                                                                                return Padding(
-                                                                                                  padding: const EdgeInsets.only(bottom: 4),
-                                                                                                  child: Row(
-                                                                                                    children: [
-                                                                                                      Icon(Icons.check_circle, color: AppColors.primary,size: s*0.06,),
-                                                                                                      const SizedBox(width: 6),
-                                                                                                      Expanded(child: Text(f)),
-                                                                                                    ],
-                                                                                                  ),
-                                                                                                );
-                                                                                              }).toList(),
-                                                                                            )
-
-                                                                                        ],
-                                                                                      ),
-                                                                                    ),
-                                                                                    ),
-
+                                                                                SizedBox(
+                                                                                  height:
+                                                                                      s *
+                                                                                      0.04,
+                                                                                ),
+                                                                                Text(
+                                                                                  "Great Place To Start",
+                                                                                  style: AppTextStyles.caption(
+                                                                                    context,
+                                                                                    color: AppColors.grey,
                                                                                   ),
                                                                                 ),
-                                                                                if(selectPlan)
-                                                                                  GetBuilder<PlanController>(
-                                                                                      builder: (controller) {
-                                                                                        return Positioned(top: 0,left: 0, right: 0,child:
-                                                                                        Center(child: GetBuilder<PlanController>(
-                                                                                            builder: (controller) {
-                                                                                              return  GestureDetector(
-                                                                                                onTap: ()async{
-                                                                                                  if(userType=="superAdmin") {
-                                                                                                    Get.toNamed('/createPlanPage',
-                                                                                                        arguments: {'planName': plan.planName.toString(),
-                                                                                                          'planId': plan.planId.toString(),
-                                                                                                          'price': plan.price.toString(),
-                                                                                                          'duration': plan.duration.toString(),
-                                                                                                          'details': {
-                                                                                                            'images': plan.details?.images,
-                                                                                                            'location': plan.details?.location,
-                                                                                                            'mobileNumber': plan.details?.mobileNumber,
-                                                                                                            'services': plan.details?.services,
-                                                                                                            'video':plan.details?.video,
-                                                                                                            'imageCount':plan.details?.imageCount,
-                                                                                                            'imageSize':plan.details?.imageSize,
-                                                                                                            'videoCount':plan.details?.videoCount,
-                                                                                                            'videoSize':plan.details?.videoSize
-                                                                                                          },
-                                                                                                          'features': plan.features,
-                                                                                                          'selectedString': "BasePlan",
-                                                                                                          'userType': plan.userType
-                                                                                                        });
+                                                                                SizedBox(
+                                                                                  height:
+                                                                                      s *
+                                                                                      0.01,
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height:
+                                                                                      s *
+                                                                                      0.25,
+                                                                                  child: Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                    children: [
+                                                                                      Column(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                        children: [
+                                                                                          Text(
+                                                                                            plan.planName ??
+                                                                                                "",
+                                                                                            style: AppTextStyles.body(
+                                                                                              context,
+                                                                                              color: AppColors.primary,
+                                                                                              fontWeight: FontWeight.bold,
+                                                                                            ),
+                                                                                          ),
+                                                                                          Text(
+                                                                                            "₹${plan.price ?? "0"}",
+                                                                                            style: AppTextStyles.body(
+                                                                                              context,
+                                                                                              color: AppColors.black,
+                                                                                              fontWeight: FontWeight.bold,
+                                                                                            ),
+                                                                                          ),
+                                                                                          Container(
+                                                                                            height:
+                                                                                                s *
+                                                                                                0.08,
+                                                                                            decoration: BoxDecoration(
+                                                                                              gradient: const LinearGradient(
+                                                                                                colors: [
+                                                                                                  AppColors.primary,
+                                                                                                  AppColors.secondary,
+                                                                                                ],
+                                                                                                begin: Alignment.topLeft,
+                                                                                                end: Alignment.bottomRight,
+                                                                                              ),
+                                                                                              borderRadius: BorderRadius.circular(
+                                                                                                10,
+                                                                                              ),
+                                                                                            ),
+                                                                                            child: Center(
+                                                                                              child: Padding(
+                                                                                                padding: const EdgeInsets.all(
+                                                                                                  5.0,
+                                                                                                ),
+                                                                                                child: Text(
+                                                                                                  "Valid Up to ${plan.duration ?? "0"} days",
+                                                                                                  style: AppTextStyles.caption(
+                                                                                                    context,
+                                                                                                    color: Colors.white,
+                                                                                                    fontWeight: FontWeight.normal,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                      IconButton(
+                                                                                        onPressed: () {},
+                                                                                        icon: Icon(
+                                                                                          Icons.bookmarks_rounded,
+                                                                                          size:
+                                                                                              s *
+                                                                                              0.06,
+                                                                                          color: AppColors.primary,
+                                                                                        ),
+                                                                                      ),
+                                                                                      // Image.asset('assets/images/plan.png',scale: 0.05,height: s*0.05,width: s*0.09,)
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                                const Divider(
+                                                                                  color: AppColors.grey,
+                                                                                  thickness: 0.3,
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height:
+                                                                                      s *
+                                                                                      0.01,
+                                                                                ),
+                                                                                if (plan.features !=
+                                                                                        null &&
+                                                                                    plan.features!.isNotEmpty)
+                                                                                  Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: plan.features!.map(
+                                                                                      (
+                                                                                        f,
+                                                                                      ) {
+                                                                                        return Padding(
+                                                                                          padding: const EdgeInsets.only(
+                                                                                            bottom: 4,
+                                                                                          ),
+                                                                                          child: Row(
+                                                                                            children: [
+                                                                                              Icon(
+                                                                                                Icons.check_circle,
+                                                                                                color: AppColors.primary,
+                                                                                                size:
+                                                                                                    s *
+                                                                                                    0.06,
+                                                                                              ),
+                                                                                              const SizedBox(
+                                                                                                width: 6,
+                                                                                              ),
+                                                                                              Expanded(
+                                                                                                child: Text(
+                                                                                                  f,
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                    ).toList(),
+                                                                                  ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    if (selectPlan)
+                                                                      GetBuilder<
+                                                                        PlanController
+                                                                      >(
+                                                                        builder:
+                                                                            (
+                                                                              controller,
+                                                                            ) {
+                                                                              return Positioned(
+                                                                                top: 0,
+                                                                                left: 0,
+                                                                                right: 0,
+                                                                                child: Center(
+                                                                                  child:
+                                                                                      GetBuilder<
+                                                                                        PlanController
+                                                                                      >(
+                                                                                        builder:
+                                                                                            (
+                                                                                              controller,
+                                                                                            ) {
+                                                                                              return GestureDetector(
+                                                                                                onTap: () async {
+                                                                                                  if (userType ==
+                                                                                                      "superAdmin") {
+                                                                                                    Get.toNamed(
+                                                                                                      '/createPlanPage',
+                                                                                                      arguments: {
+                                                                                                        'planName': plan.planName.toString(),
+                                                                                                        'planId': plan.planId.toString(),
+                                                                                                        'price': plan.price.toString(),
+                                                                                                        'duration': plan.duration.toString(),
+                                                                                                        'details': {
+                                                                                                          'images': plan.details?.images,
+                                                                                                          'location': plan.details?.location,
+                                                                                                          'mobileNumber': plan.details?.mobileNumber,
+                                                                                                          'services': plan.details?.services,
+                                                                                                          'video': plan.details?.video,
+                                                                                                          'imageCount': plan.details?.imageCount,
+                                                                                                          'imageSize': plan.details?.imageSize,
+                                                                                                          'videoCount': plan.details?.videoCount,
+                                                                                                          'videoSize': plan.details?.videoSize,
+                                                                                                        },
+                                                                                                        'features': plan.features,
+                                                                                                        'selectedString': "BasePlan",
+                                                                                                        'userType': plan.userType,
+                                                                                                      },
+                                                                                                    );
                                                                                                   }
-                                                                                                  if(userType!="admin"&&userType!="superAdmin") {
+                                                                                                  if (userType !=
+                                                                                                          "admin" &&
+                                                                                                      userType !=
+                                                                                                          "superAdmin") {
                                                                                                     var dates = calculatePlanDates(
-                                                                                                        plan.duration.toString());
-                                                                                                    print(dates["startDate"]);
+                                                                                                      plan.duration.toString(),
+                                                                                                    );
+                                                                                                    print(
+                                                                                                      dates["startDate"],
+                                                                                                    );
                                                                                                     String startDate = dates["startDate"].toString();
                                                                                                     String endDate = dates["endDate"].toString();
-                                                                                                    print("user${userId}planId${plan.planId.toString()}""planName${planController.planNameController.text.toString()}start${startDate}end$endDate");
-                                                                                                    double amount = plan.price != null ? double.parse(plan.price!) : 0.0;
+                                                                                                    print(
+                                                                                                      "user${userId}planId${plan.planId.toString()}"
+                                                                                                      "planName${planController.planNameController.text.toString()}start${startDate}end$endDate",
+                                                                                                    );
+                                                                                                    double amount =
+                                                                                                        plan.price !=
+                                                                                                            null
+                                                                                                        ? double.parse(
+                                                                                                            plan.price!,
+                                                                                                          )
+                                                                                                        : 0.0;
                                                                                                     // await planController.createUserPlans(userId, plan.planId.toString(), plan.planName.toString(), startDate, endDate, context);
                                                                                                     bool isBasePlanActive = false;
                                                                                                     if (planController.checkPlanList.isNotEmpty) {
                                                                                                       final planDetails = planController.checkPlanList[0]["details"]?["plan"];
-                                                                                                      if (planDetails != null) {
-                                                                                                        isBasePlanActive = planDetails["basePlan"]?["isActive"] ?? false;
+                                                                                                      if (planDetails !=
+                                                                                                          null) {
+                                                                                                        isBasePlanActive =
+                                                                                                            planDetails["basePlan"]?["isActive"] ??
+                                                                                                            false;
                                                                                                       } else {
                                                                                                         isBasePlanActive = false;
                                                                                                       }
                                                                                                     }
-                                                                                                    if (isBasePlanActive == true) {
+                                                                                                    if (isBasePlanActive ==
+                                                                                                        true) {
                                                                                                       // branchSelector(context);
                                                                                                       // showBranchDialog(context,
                                                                                                       // (userId){
                                                                                                       //   print("Selected branch userId: $userId");
                                                                                                       showSuccessDialog(
-                                                                                                          context,
-                                                                                                          title: "Alert",
-                                                                                                          message: "Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated.",
-                                                                                                          onOkPressed: () {
-                                                                                                            Get.toNamed('/paymentPage', arguments: {
+                                                                                                        context,
+                                                                                                        title: "Alert",
+                                                                                                        message: "Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated.",
+                                                                                                        onOkPressed: () {
+                                                                                                          Get.toNamed(
+                                                                                                            '/paymentPage',
+                                                                                                            arguments: {
                                                                                                               'userId': userId,
                                                                                                               'planId': plan.planId.toString(),
                                                                                                               'startDate': startDate,
@@ -662,1105 +915,1991 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                               'amount': amount,
                                                                                                               'name': 'basePlan',
                                                                                                               'planName': "${plan.planName}",
-                                                                                                              'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                              'email': Api.userInfo.read('email') ?? "",
-                                                                                                            });
-                                                                                                          });
+                                                                                                              'mobileNumber':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'mobileNumber',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                              'email':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'email',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                            },
+                                                                                                          );
+                                                                                                        },
+                                                                                                      );
                                                                                                       //  });
-                                                                                                    }
-                                                                                                    else {
+                                                                                                    } else {
                                                                                                       // showBranchDialog(context,(userId){
                                                                                                       //   print("Selected branch userId: $userId");
 
-                                                                                                      Get.toNamed('/paymentPage', arguments: {
-                                                                                                        'userId': userId,
-                                                                                                        'planId': plan.planId.toString(),
-                                                                                                        'startDate': startDate,
-                                                                                                        'endDate': endDate,
-                                                                                                        'amount': amount,
-                                                                                                        'name': 'basePlan',
-                                                                                                        'planName': "${plan.planName}",
-                                                                                                        'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                        'email': Api.userInfo.read('email') ?? "",
-                                                                                                      });
+                                                                                                      Get.toNamed(
+                                                                                                        '/paymentPage',
+                                                                                                        arguments: {
+                                                                                                          'userId': userId,
+                                                                                                          'planId': plan.planId.toString(),
+                                                                                                          'startDate': startDate,
+                                                                                                          'endDate': endDate,
+                                                                                                          'amount': amount,
+                                                                                                          'name': 'basePlan',
+                                                                                                          'planName': "${plan.planName}",
+                                                                                                          'mobileNumber':
+                                                                                                              Api.userInfo.read(
+                                                                                                                'mobileNumber',
+                                                                                                              ) ??
+                                                                                                              "",
+                                                                                                          'email':
+                                                                                                              Api.userInfo.read(
+                                                                                                                'email',
+                                                                                                              ) ??
+                                                                                                              "",
+                                                                                                        },
+                                                                                                      );
                                                                                                       //});
-
                                                                                                     }
                                                                                                   }
                                                                                                 },
-                                                                                                child: Container(decoration: BoxDecoration(
-                                                                                                  borderRadius: BorderRadius.circular(10),gradient: const LinearGradient(
-                                                                                                  colors: [AppColors.primary,AppColors.secondary],
-                                                                                                  begin: Alignment.topLeft,
-                                                                                                  end: Alignment.bottomRight,
-                                                                                                ),),
+                                                                                                child: Container(
+                                                                                                  decoration: BoxDecoration(
+                                                                                                    borderRadius: BorderRadius.circular(
+                                                                                                      10,
+                                                                                                    ),
+                                                                                                    gradient: const LinearGradient(
+                                                                                                      colors: [
+                                                                                                        AppColors.primary,
+                                                                                                        AppColors.secondary,
+                                                                                                      ],
+                                                                                                      begin: Alignment.topLeft,
+                                                                                                      end: Alignment.bottomRight,
+                                                                                                    ),
+                                                                                                  ),
                                                                                                   child: Padding(
-                                                                                                    padding: const EdgeInsets.all(8.0),
-                                                                                                    child: Text(userType=="superAdmin"?'Edit Plan':"Buy Now",style: AppTextStyles.caption(context,color: AppColors.white),),
+                                                                                                    padding: const EdgeInsets.all(
+                                                                                                      8.0,
+                                                                                                    ),
+                                                                                                    child: Text(
+                                                                                                      userType ==
+                                                                                                              "superAdmin"
+                                                                                                          ? 'Edit Plan'
+                                                                                                          : "Buy Now",
+                                                                                                      style: AppTextStyles.caption(
+                                                                                                        context,
+                                                                                                        color: AppColors.white,
+                                                                                                      ),
+                                                                                                    ),
                                                                                                   ),
                                                                                                 ),
                                                                                               );
-                                                                                            }
-                                                                                        ),
-                                                                                        )
-                                                                                        );
-                                                                                      }
-                                                                                  ),
-
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
+                                                                                            },
+                                                                                      ),
+                                                                                ),
+                                                                              );
+                                                                            },
                                                                       ),
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              }),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
                                                         ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
 
-                                                        GetBuilder<PlanController>(
-                                                            builder: (controller) {
-                                                              return AnimationLimiter(
-                                                                child: ListView.builder(
-                                                                    itemCount: planController.addOnsPlanList.length,
-                                                                    //shrinkWrap: true,
-                                                                    //physics: const NeverScrollableScrollPhysics(),
-                                                                    itemBuilder: (BuildContext context,int index){
-                                                                      final plan=planController.addOnsPlanList[index];
-                                                                      selectPlan = selectedIndex == index;
-                                                                      return GestureDetector(
-                                                                        onTap: (){
-                                                                          setState(() {
-                                                                            selectedIndex = index;
-                                                                          });},
-                                                                        child: AnimationConfiguration.staggeredList(
-                                                                          position: index,
-                                                                          duration: const Duration(milliseconds: 1300),
-                                                                          child: SlideAnimation(
-                                                                            verticalOffset: 120.0,
-                                                                            curve: Curves.easeOutBack,
-                                                                            child: FadeInAnimation(
-                                                                              child: Stack(
-                                                                                clipBehavior: Clip.none,
-                                                                                children: [
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.all(10.0),
-                                                                                    child: Card(
-                                                                                      elevation: 6, color:AppColors.white,
-                                                                                      child: Container(
-                                                                                        decoration: BoxDecoration(
-                                                                                          color: AppColors.white,
-                                                                                          borderRadius: BorderRadius.circular(10),
-                                                                                          border: Border.all(
-                                                                                            color:
-                                                                                            //AppColors.primary,
-                                                                                            selectPlan? AppColors.primary : AppColors.grey,
-                                                                                            width: 1.5,
-                                                                                          ),boxShadow: [
-                                                                                          BoxShadow(
-                                                                                              color: Colors.black.withOpacity(0.1),
-                                                                                              spreadRadius: 1,
-                                                                                              blurRadius: 6,
-                                                                                              offset: const Offset(0, 3)
-                                                                                          ),
-                                                                                        ],
-                                                                                        ),
-                                                                                        child: Padding(
-                                                                                          padding: const EdgeInsets.all(15.0),
-                                                                                          child: Column(
+                                              GetBuilder<PlanController>(
+                                                builder: (controller) {
+                                                  return AnimationLimiter(
+                                                    child: ListView.builder(
+                                                      itemCount: planController
+                                                          .addOnsPlanList
+                                                          .length,
+                                                      //shrinkWrap: true,
+                                                      //physics: const NeverScrollableScrollPhysics(),
+                                                      itemBuilder:
+                                                          (
+                                                            BuildContext
+                                                            context,
+                                                            int index,
+                                                          ) {
+                                                            final plan =
+                                                                planController
+                                                                    .addOnsPlanList[index];
+                                                            selectPlan =
+                                                                selectedIndex ==
+                                                                index;
+                                                            return GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  selectedIndex =
+                                                                      index;
+                                                                });
+                                                              },
+                                                              child: AnimationConfiguration.staggeredList(
+                                                                position: index,
+                                                                duration:
+                                                                    const Duration(
+                                                                      milliseconds:
+                                                                          1300,
+                                                                    ),
+                                                                child: SlideAnimation(
+                                                                  verticalOffset:
+                                                                      120.0,
+                                                                  curve: Curves
+                                                                      .easeOutBack,
+                                                                  child: FadeInAnimation(
+                                                                    child: Stack(
+                                                                      clipBehavior:
+                                                                          Clip.none,
+                                                                      children: [
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.all(
+                                                                            10.0,
+                                                                          ),
+                                                                          child: Card(
+                                                                            elevation:
+                                                                                6,
+                                                                            color:
+                                                                                AppColors.white,
+                                                                            child: Container(
+                                                                              decoration: BoxDecoration(
+                                                                                color: AppColors.white,
+                                                                                borderRadius: BorderRadius.circular(
+                                                                                  10,
+                                                                                ),
+                                                                                border: Border.all(
+                                                                                  color:
+                                                                                      //AppColors.primary,
+                                                                                      selectPlan
+                                                                                      ? AppColors.primary
+                                                                                      : AppColors.grey,
+                                                                                  width: 1.5,
+                                                                                ),
+                                                                                boxShadow: [
+                                                                                  BoxShadow(
+                                                                                    color: Colors.black.withValues(
+                                                                                      alpha: 0.1,
+                                                                                    ),
+                                                                                    spreadRadius: 1,
+                                                                                    blurRadius: 6,
+                                                                                    offset: const Offset(
+                                                                                      0,
+                                                                                      3,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.all(
+                                                                                  15.0,
+                                                                                ),
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.04,
+                                                                                    ),
+
+                                                                                    Text(
+                                                                                      "Great Place To Start",
+                                                                                      style: AppTextStyles.caption(
+                                                                                        context,
+                                                                                        color: AppColors.grey,
+                                                                                      ),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.01,
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.23,
+                                                                                      child: Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                        children: [
+                                                                                          Column(
                                                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                                                             children: [
-                                                                                              SizedBox(height: s*0.04,),
-
-                                                                                              Text("Great Place To Start",style: AppTextStyles.caption(context,color: AppColors.grey),),
-                                                                                              SizedBox(height: s*0.01,),
-                                                                                              SizedBox(
-                                                                                                height: s*0.23,
-                                                                                                child: Row(
-                                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                                  children: [
-                                                                                                    Column(
-                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                      children: [
-                                                                                                        Text(plan.addOnsPlanName??"",style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold)),
-                                                                                                        Text("₹${plan.price??"0"}",style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                                                                                                        Container(
-                                                                                                            height: s*0.08,decoration: BoxDecoration(gradient: const LinearGradient(
-                                                                                                          colors: [AppColors.primary,AppColors.secondary],
-                                                                                                          begin: Alignment.topLeft,
-                                                                                                          end: Alignment.bottomRight,
-                                                                                                        ),borderRadius: BorderRadius.circular(10)),
-                                                                                                            child: Center(child: Padding(
-                                                                                                              padding: const EdgeInsets.all(5.0),
-                                                                                                              child: Text("Valid Up to ${plan.duration??"0"} days",style: AppTextStyles.caption(context,color:Colors.white,fontWeight: FontWeight.normal),),
-                                                                                                            ))),
-                                                                                                      ],
-                                                                                                    ),
-                                                                                                    IconButton(onPressed: (){}, icon: Icon(Icons.bookmarks_rounded,size: s*0.06,color: AppColors.primary,))
-                                                                                                    // Image.asset('assets/images/plan.png',scale: 0.05,height: s*0.05,width: s*0.09,)
-                                                                                                  ],
+                                                                                              Text(
+                                                                                                plan.addOnsPlanName ??
+                                                                                                    "",
+                                                                                                style: AppTextStyles.body(
+                                                                                                  context,
+                                                                                                  color: AppColors.primary,
+                                                                                                  fontWeight: FontWeight.bold,
                                                                                                 ),
                                                                                               ),
-                                                                                              const Divider(color: AppColors.grey,thickness: 0.3,),
-                                                                                              SizedBox(height: s*0.01,),
-                                                                                              if (plan.features != null && plan.features!.isNotEmpty)
-                                                                                                Column(
-                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                  children: plan.features!.map((f) {
-                                                                                                    return Padding(
-                                                                                                      padding: const EdgeInsets.only(bottom: 4),
-                                                                                                      child: Row(
-                                                                                                        children: [
-                                                                                                          Icon(Icons.check_circle, color: AppColors.primary,size: s*0.06,),
-                                                                                                          const SizedBox(width: 6),
-                                                                                                          Expanded(child: Text(f)),
-                                                                                                        ],
+                                                                                              Text(
+                                                                                                "₹${plan.price ?? "0"}",
+                                                                                                style: AppTextStyles.body(
+                                                                                                  context,
+                                                                                                  color: AppColors.black,
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                ),
+                                                                                              ),
+                                                                                              Container(
+                                                                                                height:
+                                                                                                    s *
+                                                                                                    0.08,
+                                                                                                decoration: BoxDecoration(
+                                                                                                  gradient: const LinearGradient(
+                                                                                                    colors: [
+                                                                                                      AppColors.primary,
+                                                                                                      AppColors.secondary,
+                                                                                                    ],
+                                                                                                    begin: Alignment.topLeft,
+                                                                                                    end: Alignment.bottomRight,
+                                                                                                  ),
+                                                                                                  borderRadius: BorderRadius.circular(
+                                                                                                    10,
+                                                                                                  ),
+                                                                                                ),
+                                                                                                child: Center(
+                                                                                                  child: Padding(
+                                                                                                    padding: const EdgeInsets.all(
+                                                                                                      5.0,
+                                                                                                    ),
+                                                                                                    child: Text(
+                                                                                                      "Valid Up to ${plan.duration ?? "0"} days",
+                                                                                                      style: AppTextStyles.caption(
+                                                                                                        context,
+                                                                                                        color: Colors.white,
+                                                                                                        fontWeight: FontWeight.normal,
                                                                                                       ),
-                                                                                                    );
-                                                                                                  }).toList(),
-                                                                                                )
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
                                                                                             ],
                                                                                           ),
-                                                                                        ),
+                                                                                          IconButton(
+                                                                                            onPressed: () {},
+                                                                                            icon: Icon(
+                                                                                              Icons.bookmarks_rounded,
+                                                                                              size:
+                                                                                                  s *
+                                                                                                  0.06,
+                                                                                              color: AppColors.primary,
+                                                                                            ),
+                                                                                          ),
+                                                                                          // Image.asset('assets/images/plan.png',scale: 0.05,height: s*0.05,width: s*0.09,)
+                                                                                        ],
                                                                                       ),
-
                                                                                     ),
-                                                                                  ),
-                                                                                  if(selectPlan)
-                                                                                    GetBuilder<PlanController>(
-                                                                                        builder: (controller) {
-                                                                                          return Positioned(top: 0,left: 0,
-                                                                                              right: 0,child:
-                                                                                              Center(
-                                                                                                child: GetBuilder<PlanController>(
-                                                                                                    builder: (controller) {
-                                                                                                      return  GestureDetector(
-                                                                                                        onTap: ()async{
-                                                                                                          if(userType=="superAdmin") {
-
-                                                                                                            Get.toNamed(
-                                                                                                                '/createPlanPage',
-                                                                                                                arguments: {'addOnsPlanName': plan.addOnsPlanName.toString(),
-                                                                                                                  'addOnsId': plan.addOnsPlanId.toString(),
-                                                                                                                  // 'planName':plan.planName.toString()
-                                                                                                                  'price': plan.price.toString(),
-                                                                                                                  'duration': plan.duration.toString(),
-                                                                                                                  'details': {
-                                                                                                                    'state': plan.details?.state,
-                                                                                                                    'district': plan.details?.district,
-                                                                                                                    'city': plan.details?.city,
-                                                                                                                    'area': plan.details?.area,
-                                                                                                                  },
-                                                                                                                  'features': plan.features,
-                                                                                                                  'selectedString': "AddOnsPlan",
-                                                                                                                  'userType': plan.userType
-                                                                                                                });
-                                                                                                          }
-                                                                                                          if(userType!="admin"&&userType!="superAdmin") {
-                                                                                                            var dates = calculatePlanDates(
-                                                                                                                plan.duration.toString());
-                                                                                                            print(dates["startDate"]);
-                                                                                                            String startDate = dates["startDate"].toString();
-                                                                                                            String endDate = dates["endDate"].toString();
-                                                                                                            print("user${userId}planiD${plan.addOnsPlanId.toString()} ""planName${planController.planNameController.text.toString()}start${startDate}end$endDate");
-                                                                                                            // await planController.createUserAddonsPlans(
-                                                                                                            //   userId,
-                                                                                                            //   plan.addOnsPlanId.toString(),
-                                                                                                            //   plan.addOnsPlanName.toString(),
-                                                                                                            //   startDate,endDate,
-                                                                                                            //   context,
-                                                                                                            // );
-                                                                                                            double amount = plan.price != null ? double.parse(plan.price!) : 0.0;
-                                                                                                            bool? isaddonsPlanActive;
-                                                                                                            bool? isBasePlanActive;
-                                                                                                            if (planController.checkPlanList.isNotEmpty) {
-                                                                                                              final planDetails = planController.checkPlanList[0]["details"]?["plan"];
-
-                                                                                                              if (planDetails != null) {
-                                                                                                                isBasePlanActive = planDetails["basePlan"]?["isActive"] ?? false;
-                                                                                                              } else {
-                                                                                                                isBasePlanActive = false;
-                                                                                                                isaddonsPlanActive=false;
-                                                                                                              }
-                                                                                                            }
-                                                                                                            if (isBasePlanActive == true) {
-                                                                                                              final plan = planController.checkPlanList[0]["details"]?["plan"]?["addonsPlan"];
-                                                                                                              isaddonsPlanActive = plan?["isActive"] ?? false;
-                                                                                                            }
-                                                                                                            if (isBasePlanActive ==true&&
-                                                                                                                isaddonsPlanActive ==true) {
-                                                                                                              showSuccessDialog(
-                                                                                                                  context,
-                                                                                                                  title: "Alert",
-                                                                                                                  message: "Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated.",
-                                                                                                                  onOkPressed: () {
-                                                                                                                    Get.toNamed('/paymentPage',
-                                                                                                                        arguments: {'userId': userId,
-                                                                                                                          'planId': plan.addOnsPlanId.toString(),
-                                                                                                                          'startDate': startDate,
-                                                                                                                          'endDate': endDate,
-                                                                                                                          'amount': amount,
-                                                                                                                          'name': 'addonsPlan',
-                                                                                                                          'planName': plan.addOnsPlanName.toString(),
-                                                                                                                          'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                                          'email': Api.userInfo.read('email') ?? "",
-                                                                                                                        });
-                                                                                                                  });
-                                                                                                            }
-                                                                                                            else  if (isBasePlanActive ==true&&
-                                                                                                                isaddonsPlanActive ==false) {
-                                                                                                              Get.toNamed('/paymentPage',
-                                                                                                                  arguments: {'userId': userId,
-                                                                                                                    'planId': plan.addOnsPlanId.toString(),
-                                                                                                                    'startDate': startDate,
-                                                                                                                    'endDate': endDate,
-                                                                                                                    'amount': amount,
-                                                                                                                    'name': 'addonsPlan',
-                                                                                                                    'planName': plan.addOnsPlanName.toString(),
-                                                                                                                    'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                                    'email': Api.userInfo.read('email') ?? "",
-                                                                                                                  });
-                                                                                                            }
-                                                                                                            else if (isBasePlanActive ==true&&
-                                                                                                                isaddonsPlanActive ==false) {
-
-                                                                                                              Get.toNamed('/paymentPage',
-                                                                                                                  arguments: {'userId': userId,
-                                                                                                                    'planId': plan.addOnsPlanId.toString(),
-                                                                                                                    'startDate': startDate,
-                                                                                                                    'endDate': endDate,
-                                                                                                                    'amount': amount,
-                                                                                                                    'name': 'addonsPlan',
-                                                                                                                    'planName': plan.addOnsPlanName.toString(),
-                                                                                                                    'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                                    'email': Api.userInfo.read('email') ?? "",
-                                                                                                                  });
-
-                                                                                                            }
-                                                                                                            else if(isBasePlanActive ==false){
-                                                                                                              showSuccessDialog(
-                                                                                                                  context,
-                                                                                                                  title: "Alert",
-                                                                                                                  message: "Oops! Base plan not Activated.please activate base plan..",
-                                                                                                                  onOkPressed: () {});
-                                                                                                            }
-                                                                                                            // else {
-                                                                                                            //   Get.toNamed('/paymentPage',
-                                                                                                            //       arguments: {'userId': userId,
-                                                                                                            //         'planId': plan.addOnsPlanId.toString(),
-                                                                                                            //         'startDate': startDate,
-                                                                                                            //         'endDate': endDate,
-                                                                                                            //         'amount': amount,
-                                                                                                            //         'name': 'addonsPlan',
-                                                                                                            //         'planName': plan.addOnsPlanName.toString(),
-                                                                                                            //         'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                            //         'email': Api.userInfo.read('email') ?? "",
-                                                                                                            //       });
-                                                                                                            // }
-                                                                                                          }
-                                                                                                        },
-                                                                                                        child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),gradient: const LinearGradient(
-                                                                                                          colors: [AppColors.primary,AppColors.secondary],
-                                                                                                          begin: Alignment.topLeft,
-                                                                                                          end: Alignment.bottomRight,
-                                                                                                        ),),child: Padding(
-                                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                                          child: Text(Api.userInfo.read('userType')=="superAdmin"?'Edit Plan':"Buy Now",style: AppTextStyles.caption(context,color: AppColors.white),),
-
-                                                                                                        ),),
-                                                                                                      );
-                                                                                                    }
-                                                                                                ),
-                                                                                              )
-                                                                                          );
-                                                                                        }
+                                                                                    const Divider(
+                                                                                      color: AppColors.grey,
+                                                                                      thickness: 0.3,
                                                                                     ),
-                                                                                ],
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.01,
+                                                                                    ),
+                                                                                    if (plan.features !=
+                                                                                            null &&
+                                                                                        plan.features!.isNotEmpty)
+                                                                                      Column(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                        children: plan.features!.map(
+                                                                                          (
+                                                                                            f,
+                                                                                          ) {
+                                                                                            return Padding(
+                                                                                              padding: const EdgeInsets.only(
+                                                                                                bottom: 4,
+                                                                                              ),
+                                                                                              child: Row(
+                                                                                                children: [
+                                                                                                  Icon(
+                                                                                                    Icons.check_circle,
+                                                                                                    color: AppColors.primary,
+                                                                                                    size:
+                                                                                                        s *
+                                                                                                        0.06,
+                                                                                                  ),
+                                                                                                  const SizedBox(
+                                                                                                    width: 6,
+                                                                                                  ),
+                                                                                                  Expanded(
+                                                                                                    child: Text(
+                                                                                                      f,
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ],
+                                                                                              ),
+                                                                                            );
+                                                                                          },
+                                                                                        ).toList(),
+                                                                                      ),
+                                                                                  ],
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                      );
-                                                                    }),
-                                                              );
-                                                            }
-                                                        ),
+                                                                        if (selectPlan)
+                                                                          GetBuilder<
+                                                                            PlanController
+                                                                          >(
+                                                                            builder:
+                                                                                (
+                                                                                  controller,
+                                                                                ) {
+                                                                                  return Positioned(
+                                                                                    top: 0,
+                                                                                    left: 0,
+                                                                                    right: 0,
+                                                                                    child: Center(
+                                                                                      child:
+                                                                                          GetBuilder<
+                                                                                            PlanController
+                                                                                          >(
+                                                                                            builder:
+                                                                                                (
+                                                                                                  controller,
+                                                                                                ) {
+                                                                                                  return GestureDetector(
+                                                                                                    onTap: () async {
+                                                                                                      if (userType ==
+                                                                                                          "superAdmin") {
+                                                                                                        Get.toNamed(
+                                                                                                          '/createPlanPage',
+                                                                                                          arguments: {
+                                                                                                            'addOnsPlanName': plan.addOnsPlanName.toString(),
+                                                                                                            'addOnsId': plan.addOnsPlanId.toString(),
+                                                                                                            // 'planName':plan.planName.toString()
+                                                                                                            'price': plan.price.toString(),
+                                                                                                            'duration': plan.duration.toString(),
+                                                                                                            'details': {
+                                                                                                              'state': plan.details?.state,
+                                                                                                              'district': plan.details?.district,
+                                                                                                              'city': plan.details?.city,
+                                                                                                              'area': plan.details?.area,
+                                                                                                            },
+                                                                                                            'features': plan.features,
+                                                                                                            'selectedString': "AddOnsPlan",
+                                                                                                            'userType': plan.userType,
+                                                                                                          },
+                                                                                                        );
+                                                                                                      }
+                                                                                                      if (userType !=
+                                                                                                              "admin" &&
+                                                                                                          userType !=
+                                                                                                              "superAdmin") {
+                                                                                                        var dates = calculatePlanDates(
+                                                                                                          plan.duration.toString(),
+                                                                                                        );
+                                                                                                        print(
+                                                                                                          dates["startDate"],
+                                                                                                        );
+                                                                                                        String startDate = dates["startDate"].toString();
+                                                                                                        String endDate = dates["endDate"].toString();
+                                                                                                        print(
+                                                                                                          "user${userId}planiD${plan.addOnsPlanId.toString()} "
+                                                                                                          "planName${planController.planNameController.text.toString()}start${startDate}end$endDate",
+                                                                                                        );
+                                                                                                        // await planController.createUserAddonsPlans(
+                                                                                                        //   userId,
+                                                                                                        //   plan.addOnsPlanId.toString(),
+                                                                                                        //   plan.addOnsPlanName.toString(),
+                                                                                                        //   startDate,endDate,
+                                                                                                        //   context,
+                                                                                                        // );
+                                                                                                        double amount =
+                                                                                                            plan.price !=
+                                                                                                                null
+                                                                                                            ? double.parse(
+                                                                                                                plan.price!,
+                                                                                                              )
+                                                                                                            : 0.0;
+                                                                                                        bool? isaddonsPlanActive;
+                                                                                                        bool? isBasePlanActive;
+                                                                                                        if (planController.checkPlanList.isNotEmpty) {
+                                                                                                          final planDetails = planController.checkPlanList[0]["details"]?["plan"];
 
-                                                        GetBuilder<PlanController>(
-                                                            builder: (controller) {
-                                                              return AnimationLimiter(
-                                                                child: ListView.builder(
-                                                                    itemCount: planController.jobPlanList.length,
-                                                                    //shrinkWrap: true,
-                                                                    //physics: const NeverScrollableScrollPhysics(),
-                                                                    itemBuilder: (BuildContext context,int index){
-                                                                      final plan=planController.jobPlanList[index];
-                                                                      selectPlan = selectedIndex == index;
-                                                                      return  AnimationConfiguration.staggeredList(
-                                                                        position: index,
-                                                                        duration: const Duration(milliseconds: 1300),
-                                                                        child: SlideAnimation(
-                                                                          verticalOffset: 120.0,
-                                                                          curve: Curves.easeOutBack,
-                                                                          child: FadeInAnimation(
-                                                                            child: GestureDetector(
-                                                                              onTap: (){
-                                                                                setState(() {
-                                                                                  selectedIndex = index;
-                                                                                });},
-                                                                              child: Stack(
-                                                                                clipBehavior: Clip.none,
-                                                                                children: [
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.all(10.0),
-                                                                                    child: Card(
-                                                                                      elevation: 6, color:AppColors.white,
-                                                                                      child: Container(
-                                                                                        decoration: BoxDecoration(
-                                                                                          color: AppColors.white,
-                                                                                          borderRadius: BorderRadius.circular(10),
-                                                                                          border: Border.all(
-                                                                                            color:
-                                                                                            //AppColors.primary,
-                                                                                            selectPlan? AppColors.primary : AppColors.grey,
-                                                                                            width: 1.5,
-                                                                                          ),boxShadow: [
-                                                                                          BoxShadow(
-                                                                                              color: Colors.black.withOpacity(0.1),
-                                                                                              spreadRadius: 1,
-                                                                                              blurRadius: 6,
-                                                                                              offset: const Offset(0, 3)
-                                                                                          ),
-                                                                                        ],
-                                                                                        ),
-                                                                                        child: Padding(
-                                                                                          padding: const EdgeInsets.all(15.0),
-                                                                                          child: Column(
-                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                            children: [
-                                                                                              SizedBox(height: s*0.04,),
-
-                                                                                              Text("Great Place To Start",style: AppTextStyles.caption(context,color: AppColors.grey),),
-                                                                                              SizedBox(height: s*0.01,),
-                                                                                              SizedBox(
-                                                                                                height: s*0.23,
-                                                                                                child: Row(
-                                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                                  children: [
-                                                                                                    Column(
-                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                      children: [
-                                                                                                        Text(plan.jobPlanName??"",style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold)),
-                                                                                                        Text("₹${plan.price??"0"}",style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                                                                                                        Container(
-                                                                                                            height: s*0.08,decoration: BoxDecoration(
-                                                                                                          borderRadius: BorderRadius.circular(10),
-                                                                                                          gradient: const LinearGradient(
-                                                                                                            colors: [AppColors.primary,AppColors.secondary],
-                                                                                                            begin: Alignment.topLeft,
-                                                                                                            end: Alignment.bottomRight,
-                                                                                                          ),),
-                                                                                                            child: Center(child: Padding(
-                                                                                                              padding: const EdgeInsets.all(5.0),
-                                                                                                              child: Text("Valid Up to ${plan.duration??"0"} days",style: AppTextStyles.caption(context,color:Colors.white,fontWeight: FontWeight.normal),),
-                                                                                                            ))),
-                                                                                                      ],
-                                                                                                    ),
-                                                                                                    IconButton(onPressed: (){}, icon: Icon(Icons.bookmarks_rounded,size: s*0.06,color: AppColors.primary,))
-                                                                                                    // Image.asset('assets/images/plan.png',scale: 0.05,height: s*0.05,width: s*0.09,)
-                                                                                                  ],
-                                                                                                ),
-                                                                                              ),
-                                                                                              const Divider(color: AppColors.grey,thickness: 0.3,),
-                                                                                              SizedBox(height: s*0.01,),
-                                                                                              if (plan.features != null && plan.features!.isNotEmpty)
-                                                                                                Column(
-                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                  children: plan.features!.map((f) {
-                                                                                                    return Padding(
-                                                                                                      padding: const EdgeInsets.only(bottom: 4),
-                                                                                                      child: Row(
-                                                                                                        children: [
-                                                                                                          Icon(Icons.check_circle, color: AppColors.primary,size: s*0.06,),
-                                                                                                          const SizedBox(width: 6),
-                                                                                                          Expanded(child: Text(f)),
-                                                                                                        ],
+                                                                                                          if (planDetails !=
+                                                                                                              null) {
+                                                                                                            isBasePlanActive =
+                                                                                                                planDetails["basePlan"]?["isActive"] ??
+                                                                                                                false;
+                                                                                                          } else {
+                                                                                                            isBasePlanActive = false;
+                                                                                                            isaddonsPlanActive = false;
+                                                                                                          }
+                                                                                                        }
+                                                                                                        if (isBasePlanActive ==
+                                                                                                            true) {
+                                                                                                          final plan = planController.checkPlanList[0]["details"]?["plan"]?["addonsPlan"];
+                                                                                                          isaddonsPlanActive =
+                                                                                                              plan?["isActive"] ??
+                                                                                                              false;
+                                                                                                        }
+                                                                                                        if (isBasePlanActive ==
+                                                                                                                true &&
+                                                                                                            isaddonsPlanActive ==
+                                                                                                                true) {
+                                                                                                          showSuccessDialog(
+                                                                                                            context,
+                                                                                                            title: "Alert",
+                                                                                                            message: "Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated.",
+                                                                                                            onOkPressed: () {
+                                                                                                              Get.toNamed(
+                                                                                                                '/paymentPage',
+                                                                                                                arguments: {
+                                                                                                                  'userId': userId,
+                                                                                                                  'planId': plan.addOnsPlanId.toString(),
+                                                                                                                  'startDate': startDate,
+                                                                                                                  'endDate': endDate,
+                                                                                                                  'amount': amount,
+                                                                                                                  'name': 'addonsPlan',
+                                                                                                                  'planName': plan.addOnsPlanName.toString(),
+                                                                                                                  'mobileNumber':
+                                                                                                                      Api.userInfo.read(
+                                                                                                                        'mobileNumber',
+                                                                                                                      ) ??
+                                                                                                                      "",
+                                                                                                                  'email':
+                                                                                                                      Api.userInfo.read(
+                                                                                                                        'email',
+                                                                                                                      ) ??
+                                                                                                                      "",
+                                                                                                                },
+                                                                                                              );
+                                                                                                            },
+                                                                                                          );
+                                                                                                        } else if (isBasePlanActive ==
+                                                                                                                true &&
+                                                                                                            isaddonsPlanActive ==
+                                                                                                                false) {
+                                                                                                          Get.toNamed(
+                                                                                                            '/paymentPage',
+                                                                                                            arguments: {
+                                                                                                              'userId': userId,
+                                                                                                              'planId': plan.addOnsPlanId.toString(),
+                                                                                                              'startDate': startDate,
+                                                                                                              'endDate': endDate,
+                                                                                                              'amount': amount,
+                                                                                                              'name': 'addonsPlan',
+                                                                                                              'planName': plan.addOnsPlanName.toString(),
+                                                                                                              'mobileNumber':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'mobileNumber',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                              'email':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'email',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                            },
+                                                                                                          );
+                                                                                                        } else if (isBasePlanActive ==
+                                                                                                                true &&
+                                                                                                            isaddonsPlanActive ==
+                                                                                                                false) {
+                                                                                                          Get.toNamed(
+                                                                                                            '/paymentPage',
+                                                                                                            arguments: {
+                                                                                                              'userId': userId,
+                                                                                                              'planId': plan.addOnsPlanId.toString(),
+                                                                                                              'startDate': startDate,
+                                                                                                              'endDate': endDate,
+                                                                                                              'amount': amount,
+                                                                                                              'name': 'addonsPlan',
+                                                                                                              'planName': plan.addOnsPlanName.toString(),
+                                                                                                              'mobileNumber':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'mobileNumber',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                              'email':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'email',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                            },
+                                                                                                          );
+                                                                                                        } else if (isBasePlanActive ==
+                                                                                                            false) {
+                                                                                                          showSuccessDialog(
+                                                                                                            context,
+                                                                                                            title: "Alert",
+                                                                                                            message: "Oops! Base plan not Activated.please activate base plan..",
+                                                                                                            onOkPressed: () {},
+                                                                                                          );
+                                                                                                        }
+                                                                                                        // else {
+                                                                                                        //   Get.toNamed('/paymentPage',
+                                                                                                        //       arguments: {'userId': userId,
+                                                                                                        //         'planId': plan.addOnsPlanId.toString(),
+                                                                                                        //         'startDate': startDate,
+                                                                                                        //         'endDate': endDate,
+                                                                                                        //         'amount': amount,
+                                                                                                        //         'name': 'addonsPlan',
+                                                                                                        //         'planName': plan.addOnsPlanName.toString(),
+                                                                                                        //         'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
+                                                                                                        //         'email': Api.userInfo.read('email') ?? "",
+                                                                                                        //       });
+                                                                                                        // }
+                                                                                                      }
+                                                                                                    },
+                                                                                                    child: Container(
+                                                                                                      decoration: BoxDecoration(
+                                                                                                        borderRadius: BorderRadius.circular(
+                                                                                                          10,
+                                                                                                        ),
+                                                                                                        gradient: const LinearGradient(
+                                                                                                          colors: [
+                                                                                                            AppColors.primary,
+                                                                                                            AppColors.secondary,
+                                                                                                          ],
+                                                                                                          begin: Alignment.topLeft,
+                                                                                                          end: Alignment.bottomRight,
+                                                                                                        ),
                                                                                                       ),
-                                                                                                    );
-                                                                                                  }).toList(),
-                                                                                                )
-                                                                                            ],
+                                                                                                      child: Padding(
+                                                                                                        padding: const EdgeInsets.all(
+                                                                                                          8.0,
+                                                                                                        ),
+                                                                                                        child: Text(
+                                                                                                          Api.userInfo.read(
+                                                                                                                    'userType',
+                                                                                                                  ) ==
+                                                                                                                  "superAdmin"
+                                                                                                              ? 'Edit Plan'
+                                                                                                              : "Buy Now",
+                                                                                                          style: AppTextStyles.caption(
+                                                                                                            context,
+                                                                                                            color: AppColors.white,
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                },
                                                                                           ),
-                                                                                        ),
-                                                                                      ),
+                                                                                    ),
+                                                                                  );
+                                                                                },
+                                                                          ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                    ),
+                                                  );
+                                                },
+                                              ),
 
+                                              GetBuilder<PlanController>(
+                                                builder: (controller) {
+                                                  return AnimationLimiter(
+                                                    child: ListView.builder(
+                                                      itemCount: planController
+                                                          .jobPlanList
+                                                          .length,
+                                                      //shrinkWrap: true,
+                                                      //physics: const NeverScrollableScrollPhysics(),
+                                                      itemBuilder:
+                                                          (
+                                                            BuildContext
+                                                            context,
+                                                            int index,
+                                                          ) {
+                                                            final plan =
+                                                                planController
+                                                                    .jobPlanList[index];
+                                                            selectPlan =
+                                                                selectedIndex ==
+                                                                index;
+                                                            return AnimationConfiguration.staggeredList(
+                                                              position: index,
+                                                              duration:
+                                                                  const Duration(
+                                                                    milliseconds:
+                                                                        1300,
+                                                                  ),
+                                                              child: SlideAnimation(
+                                                                verticalOffset:
+                                                                    120.0,
+                                                                curve: Curves
+                                                                    .easeOutBack,
+                                                                child: FadeInAnimation(
+                                                                  child: GestureDetector(
+                                                                    onTap: () {
+                                                                      setState(() {
+                                                                        selectedIndex =
+                                                                            index;
+                                                                      });
+                                                                    },
+                                                                    child: Stack(
+                                                                      clipBehavior:
+                                                                          Clip.none,
+                                                                      children: [
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.all(
+                                                                            10.0,
+                                                                          ),
+                                                                          child: Card(
+                                                                            elevation:
+                                                                                6,
+                                                                            color:
+                                                                                AppColors.white,
+                                                                            child: Container(
+                                                                              decoration: BoxDecoration(
+                                                                                color: AppColors.white,
+                                                                                borderRadius: BorderRadius.circular(
+                                                                                  10,
+                                                                                ),
+                                                                                border: Border.all(
+                                                                                  color:
+                                                                                      //AppColors.primary,
+                                                                                      selectPlan
+                                                                                      ? AppColors.primary
+                                                                                      : AppColors.grey,
+                                                                                  width: 1.5,
+                                                                                ),
+                                                                                boxShadow: [
+                                                                                  BoxShadow(
+                                                                                    color: Colors.black.withValues(
+                                                                                      alpha: 0.1,
+                                                                                    ),
+                                                                                    spreadRadius: 1,
+                                                                                    blurRadius: 6,
+                                                                                    offset: const Offset(
+                                                                                      0,
+                                                                                      3,
                                                                                     ),
                                                                                   ),
-                                                                                  if(selectPlan)
-                                                                                    GetBuilder<PlanController>(
-                                                                                        builder: (controller) {
-                                                                                          return Positioned(top: 0,left: 0,
-                                                                                              right: 0,child:
-                                                                                              Center(
-                                                                                                child: GetBuilder<PlanController>(
-                                                                                                    builder: (controller) {
-                                                                                                      return  GestureDetector(
-                                                                                                        onTap: ()async{
-                                                                                                          if(userType=="superAdmin") {
-                                                                                                            Get.toNamed(
-                                                                                                                '/createPlanPage',
-                                                                                                                arguments: {'jobPlanName': plan.jobPlanName.toString(),
-                                                                                                                  'jobPlansId': plan.jobPlansId.toString(),
-                                                                                                                  // 'planName':plan.planName.toString()
-                                                                                                                  'price': plan.price.toString(),
-                                                                                                                  'duration': plan.duration.toString(),
-                                                                                                                  'details': {
-                                                                                                                    'state': plan.details?.state,
-                                                                                                                    'district': plan.details?.district,
-                                                                                                                    'city': plan.details?.city,
-                                                                                                                    'area': plan.details?.area,
-                                                                                                                  },
-                                                                                                                  'features': plan.features,
-                                                                                                                  'selectedString': "JobPlan",
-                                                                                                                  'userType': plan.userType
-                                                                                                                });
-                                                                                                            planController.getJobPlansList(userType, context);
+                                                                                ],
+                                                                              ),
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.all(
+                                                                                  15.0,
+                                                                                ),
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.04,
+                                                                                    ),
+
+                                                                                    Text(
+                                                                                      "Great Place To Start",
+                                                                                      style: AppTextStyles.caption(
+                                                                                        context,
+                                                                                        color: AppColors.grey,
+                                                                                      ),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.01,
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.23,
+                                                                                      child: Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                        children: [
+                                                                                          Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              Text(
+                                                                                                plan.jobPlanName ??
+                                                                                                    "",
+                                                                                                style: AppTextStyles.body(
+                                                                                                  context,
+                                                                                                  color: AppColors.primary,
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                ),
+                                                                                              ),
+                                                                                              Text(
+                                                                                                "₹${plan.price ?? "0"}",
+                                                                                                style: AppTextStyles.body(
+                                                                                                  context,
+                                                                                                  color: AppColors.black,
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                ),
+                                                                                              ),
+                                                                                              Container(
+                                                                                                height:
+                                                                                                    s *
+                                                                                                    0.08,
+                                                                                                decoration: BoxDecoration(
+                                                                                                  borderRadius: BorderRadius.circular(
+                                                                                                    10,
+                                                                                                  ),
+                                                                                                  gradient: const LinearGradient(
+                                                                                                    colors: [
+                                                                                                      AppColors.primary,
+                                                                                                      AppColors.secondary,
+                                                                                                    ],
+                                                                                                    begin: Alignment.topLeft,
+                                                                                                    end: Alignment.bottomRight,
+                                                                                                  ),
+                                                                                                ),
+                                                                                                child: Center(
+                                                                                                  child: Padding(
+                                                                                                    padding: const EdgeInsets.all(
+                                                                                                      5.0,
+                                                                                                    ),
+                                                                                                    child: Text(
+                                                                                                      "Valid Up to ${plan.duration ?? "0"} days",
+                                                                                                      style: AppTextStyles.caption(
+                                                                                                        context,
+                                                                                                        color: Colors.white,
+                                                                                                        fontWeight: FontWeight.normal,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                          IconButton(
+                                                                                            onPressed: () {},
+                                                                                            icon: Icon(
+                                                                                              Icons.bookmarks_rounded,
+                                                                                              size:
+                                                                                                  s *
+                                                                                                  0.06,
+                                                                                              color: AppColors.primary,
+                                                                                            ),
+                                                                                          ),
+                                                                                          // Image.asset('assets/images/plan.png',scale: 0.05,height: s*0.05,width: s*0.09,)
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                    const Divider(
+                                                                                      color: AppColors.grey,
+                                                                                      thickness: 0.3,
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.01,
+                                                                                    ),
+                                                                                    if (plan.features !=
+                                                                                            null &&
+                                                                                        plan.features!.isNotEmpty)
+                                                                                      Column(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                        children: plan.features!.map(
+                                                                                          (
+                                                                                            f,
+                                                                                          ) {
+                                                                                            return Padding(
+                                                                                              padding: const EdgeInsets.only(
+                                                                                                bottom: 4,
+                                                                                              ),
+                                                                                              child: Row(
+                                                                                                children: [
+                                                                                                  Icon(
+                                                                                                    Icons.check_circle,
+                                                                                                    color: AppColors.primary,
+                                                                                                    size:
+                                                                                                        s *
+                                                                                                        0.06,
+                                                                                                  ),
+                                                                                                  const SizedBox(
+                                                                                                    width: 6,
+                                                                                                  ),
+                                                                                                  Expanded(
+                                                                                                    child: Text(
+                                                                                                      f,
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ],
+                                                                                              ),
+                                                                                            );
+                                                                                          },
+                                                                                        ).toList(),
+                                                                                      ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        if (selectPlan)
+                                                                          GetBuilder<
+                                                                            PlanController
+                                                                          >(
+                                                                            builder:
+                                                                                (
+                                                                                  controller,
+                                                                                ) {
+                                                                                  return Positioned(
+                                                                                    top: 0,
+                                                                                    left: 0,
+                                                                                    right: 0,
+                                                                                    child: Center(
+                                                                                      child:
+                                                                                          GetBuilder<
+                                                                                            PlanController
+                                                                                          >(
+                                                                                            builder:
+                                                                                                (
+                                                                                                  controller,
+                                                                                                ) {
+                                                                                                  return GestureDetector(
+                                                                                                    onTap: () async {
+                                                                                                      if (userType ==
+                                                                                                          "superAdmin") {
+                                                                                                        Get.toNamed(
+                                                                                                          '/createPlanPage',
+                                                                                                          arguments: {
+                                                                                                            'jobPlanName': plan.jobPlanName.toString(),
+                                                                                                            'jobPlansId': plan.jobPlansId.toString(),
+                                                                                                            // 'planName':plan.planName.toString()
+                                                                                                            'price': plan.price.toString(),
+                                                                                                            'duration': plan.duration.toString(),
+                                                                                                            'details': {
+                                                                                                              'state': plan.details?.state,
+                                                                                                              'district': plan.details?.district,
+                                                                                                              'city': plan.details?.city,
+                                                                                                              'area': plan.details?.area,
+                                                                                                            },
+                                                                                                            'features': plan.features,
+                                                                                                            'selectedString': "JobPlan",
+                                                                                                            'userType': plan.userType,
+                                                                                                          },
+                                                                                                        );
+                                                                                                        planController.getJobPlansList(
+                                                                                                          userType,
+                                                                                                          context,
+                                                                                                        );
+                                                                                                      }
+                                                                                                      if (userType !=
+                                                                                                              "admin" &&
+                                                                                                          userType !=
+                                                                                                              "superAdmin") {
+                                                                                                        var dates = calculatePlanDates(
+                                                                                                          plan.duration.toString(),
+                                                                                                        );
+                                                                                                        print(
+                                                                                                          dates["startDate"],
+                                                                                                        );
+                                                                                                        print(
+                                                                                                          "duration${plan.duration.toString()}",
+                                                                                                        );
+                                                                                                        print(
+                                                                                                          "endDate ${dates["endDate"]}",
+                                                                                                        );
+                                                                                                        String startDate = dates["startDate"].toString();
+                                                                                                        String endDate = dates["endDate"].toString();
+                                                                                                        print(
+                                                                                                          "user${userId}planiD${plan.jobPlansId.toString()}"
+                                                                                                          "planName${planController.planNameController.text.toString()}start${startDate}end$endDate",
+                                                                                                        );
+                                                                                                        // await planController.createUserJobPlans(
+                                                                                                        //   userId,
+                                                                                                        //   plan.jobPlansId.toString(),
+                                                                                                        //   plan.jobPlanName.toString(),
+                                                                                                        //   startDate,endDate,
+                                                                                                        //   context,
+                                                                                                        // );
+                                                                                                        bool? isJobActive;
+                                                                                                        bool? isBasePlanActive;
+                                                                                                        if (planController.checkPlanList.isNotEmpty) {
+                                                                                                          final planDetails = planController.checkPlanList[0]["details"]?["plan"];
+                                                                                                          isJobActive =
+                                                                                                              planDetails?["jobPlan"]?["isActive"] ??
+                                                                                                              false;
+                                                                                                          if (planDetails !=
+                                                                                                              null) {
+                                                                                                            isBasePlanActive =
+                                                                                                                planDetails["basePlan"]?["isActive"] ??
+                                                                                                                false;
+                                                                                                          } else {
+                                                                                                            isBasePlanActive = false;
                                                                                                           }
-                                                                                                          if(userType!="admin"&&userType!="superAdmin"){
-                                                                                                            var dates=  calculatePlanDates(plan.duration.toString());
-                                                                                                            print(dates["startDate"]);
-                                                                                                            print("duration${plan.duration.toString()}");
-                                                                                                            print("endDate ${dates["endDate"]}");
-                                                                                                            String startDate=dates["startDate"].toString();
-                                                                                                            String endDate=dates["endDate"].toString();
-                                                                                                            print("user${userId}planiD${plan.jobPlansId.toString()}"
-                                                                                                                "planName${planController.planNameController.text.toString()}start${startDate}end$endDate");
-                                                                                                            // await planController.createUserJobPlans(
-                                                                                                            //   userId,
-                                                                                                            //   plan.jobPlansId.toString(),
-                                                                                                            //   plan.jobPlanName.toString(),
-                                                                                                            //   startDate,endDate,
-                                                                                                            //   context,
-                                                                                                            // );
-                                                                                                            bool? isJobActive;
-                                                                                                            bool? isBasePlanActive;
-                                                                                                            if (planController
-                                                                                                                .checkPlanList
-                                                                                                                .isNotEmpty) {
-                                                                                                              final planDetails = planController
-                                                                                                                  .checkPlanList[0]["details"]?["plan"];
-                                                                                                              isJobActive = planDetails?["jobPlan"]?["isActive"] ?? false;
-                                                                                                              if (planDetails != null) {
-                                                                                                                isBasePlanActive = planDetails["basePlan"]?["isActive"] ?? false;
-                                                                                                              } else {
-                                                                                                                isBasePlanActive = false;
-                                                                                                              }
-                                                                                                            } // );
-                                                                                                            if (isJobActive==true&&isBasePlanActive==true) {
-                                                                                                              showSuccessDialog(context, title:"Alert",message :"Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated", onOkPressed: () {
-                                                                                                                double amount = plan.price != null ? double.parse(plan.price!) : 0.0;
-                                                                                                                Get.toNamed('/paymentPage',arguments: {
-                                                                                                                  'userId':userId,
-                                                                                                                  'planId':plan.jobPlansId.toString(),
-                                                                                                                  'startDate':startDate,'endDate':endDate,
+                                                                                                        } // );
+                                                                                                        if (isJobActive ==
+                                                                                                                true &&
+                                                                                                            isBasePlanActive ==
+                                                                                                                true) {
+                                                                                                          showSuccessDialog(
+                                                                                                            context,
+                                                                                                            title: "Alert",
+                                                                                                            message: "Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated",
+                                                                                                            onOkPressed: () {
+                                                                                                              double amount =
+                                                                                                                  plan.price !=
+                                                                                                                      null
+                                                                                                                  ? double.parse(
+                                                                                                                      plan.price!,
+                                                                                                                    )
+                                                                                                                  : 0.0;
+                                                                                                              Get.toNamed(
+                                                                                                                '/paymentPage',
+                                                                                                                arguments: {
+                                                                                                                  'userId': userId,
+                                                                                                                  'planId': plan.jobPlansId.toString(),
+                                                                                                                  'startDate': startDate,
+                                                                                                                  'endDate': endDate,
                                                                                                                   'amount': amount,
                                                                                                                   'name': 'jobPlan',
                                                                                                                   'planName': plan.jobPlanName.toString(),
-                                                                                                                  'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                                  'email': Api.userInfo.read('email') ?? "",});
-
-                                                                                                              });
-                                                                                                            }
-                                                                                                            if (isJobActive==false&&isBasePlanActive==true) {
-                                                                                                              double amount = plan.price != null ? double.parse(plan.price!) : 0.0;
-                                                                                                              Get.toNamed('/paymentPage',arguments: {
-                                                                                                                'userId':userId,
-                                                                                                                'planId':plan.jobPlansId.toString(),
-                                                                                                                'startDate':startDate,'endDate':endDate,
-                                                                                                                'amount': amount,
-                                                                                                                'name': 'jobPlan',
-                                                                                                                'planName': plan.jobPlanName.toString(),
-                                                                                                                'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                                'email': Api.userInfo.read('email') ?? "",});
-                                                                                                            }
-                                                                                                            else if(isBasePlanActive ==false){
-                                                                                                              showSuccessDialog(
-                                                                                                                  context,
-                                                                                                                  title: "Alert",
-                                                                                                                  message: "Oops! Base plan not Activated.please activate base plan..",
-                                                                                                                  onOkPressed: () {});
-                                                                                                            }
-                                                                                                            //         else {
-                                                                                                            //           double amount = plan.price != null ? double.parse(plan.price!) : 0.0;
-                                                                                                            //           Get.toNamed('/paymentPage',arguments: {
-                                                                                                            //             'userId':userId,
-                                                                                                            //             'planId':plan.jobPlansId.toString(),
-                                                                                                            //             'startDate':startDate,'endDate':endDate,
-                                                                                                            //             'amount': amount,
-                                                                                                            //             'name': 'jobPlan',
-                                                                                                            //             'planName': plan.jobPlanName.toString(),
-                                                                                                            //             'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                            //             'email': Api.userInfo.read('email') ?? "",});
-                                                                                                            // }
-                                                                                                          }
-
-                                                                                                        },
-                                                                                                        child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),gradient: const LinearGradient(
-                                                                                                          colors: [AppColors.primary,AppColors.secondary],
+                                                                                                                  'mobileNumber':
+                                                                                                                      Api.userInfo.read(
+                                                                                                                        'mobileNumber',
+                                                                                                                      ) ??
+                                                                                                                      "",
+                                                                                                                  'email':
+                                                                                                                      Api.userInfo.read(
+                                                                                                                        'email',
+                                                                                                                      ) ??
+                                                                                                                      "",
+                                                                                                                },
+                                                                                                              );
+                                                                                                            },
+                                                                                                          );
+                                                                                                        }
+                                                                                                        if (isJobActive ==
+                                                                                                                false &&
+                                                                                                            isBasePlanActive ==
+                                                                                                                true) {
+                                                                                                          double amount =
+                                                                                                              plan.price !=
+                                                                                                                  null
+                                                                                                              ? double.parse(
+                                                                                                                  plan.price!,
+                                                                                                                )
+                                                                                                              : 0.0;
+                                                                                                          Get.toNamed(
+                                                                                                            '/paymentPage',
+                                                                                                            arguments: {
+                                                                                                              'userId': userId,
+                                                                                                              'planId': plan.jobPlansId.toString(),
+                                                                                                              'startDate': startDate,
+                                                                                                              'endDate': endDate,
+                                                                                                              'amount': amount,
+                                                                                                              'name': 'jobPlan',
+                                                                                                              'planName': plan.jobPlanName.toString(),
+                                                                                                              'mobileNumber':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'mobileNumber',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                              'email':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'email',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                            },
+                                                                                                          );
+                                                                                                        } else if (isBasePlanActive ==
+                                                                                                            false) {
+                                                                                                          showSuccessDialog(
+                                                                                                            context,
+                                                                                                            title: "Alert",
+                                                                                                            message: "Oops! Base plan not Activated.please activate base plan..",
+                                                                                                            onOkPressed: () {},
+                                                                                                          );
+                                                                                                        }
+                                                                                                        //         else {
+                                                                                                        //           double amount = plan.price != null ? double.parse(plan.price!) : 0.0;
+                                                                                                        //           Get.toNamed('/paymentPage',arguments: {
+                                                                                                        //             'userId':userId,
+                                                                                                        //             'planId':plan.jobPlansId.toString(),
+                                                                                                        //             'startDate':startDate,'endDate':endDate,
+                                                                                                        //             'amount': amount,
+                                                                                                        //             'name': 'jobPlan',
+                                                                                                        //             'planName': plan.jobPlanName.toString(),
+                                                                                                        //             'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
+                                                                                                        //             'email': Api.userInfo.read('email') ?? "",});
+                                                                                                        // }
+                                                                                                      }
+                                                                                                    },
+                                                                                                    child: Container(
+                                                                                                      decoration: BoxDecoration(
+                                                                                                        borderRadius: BorderRadius.circular(
+                                                                                                          10,
+                                                                                                        ),
+                                                                                                        gradient: const LinearGradient(
+                                                                                                          colors: [
+                                                                                                            AppColors.primary,
+                                                                                                            AppColors.secondary,
+                                                                                                          ],
                                                                                                           begin: Alignment.topLeft,
                                                                                                           end: Alignment.bottomRight,
-                                                                                                        ),),child: Padding(
-                                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                                          child: Text(Api.userInfo.read('userType')=="superAdmin"?'Edit Plan':"Buy Now",style: AppTextStyles.caption(context,color: AppColors.white),),
-
-                                                                                                        ),),
-                                                                                                      );
-                                                                                                    }
-                                                                                                ),
-                                                                                              )
-                                                                                          );
-                                                                                        }
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                      child: Padding(
+                                                                                                        padding: const EdgeInsets.all(
+                                                                                                          8.0,
+                                                                                                        ),
+                                                                                                        child: Text(
+                                                                                                          Api.userInfo.read(
+                                                                                                                    'userType',
+                                                                                                                  ) ==
+                                                                                                                  "superAdmin"
+                                                                                                              ? 'Edit Plan'
+                                                                                                              : "Buy Now",
+                                                                                                          style: AppTextStyles.caption(
+                                                                                                            context,
+                                                                                                            color: AppColors.white,
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                },
+                                                                                          ),
                                                                                     ),
+                                                                                  );
+                                                                                },
+                                                                          ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                              GetBuilder<PlanController>(
+                                                builder: (controller) {
+                                                  return AnimationLimiter(
+                                                    child: ListView.builder(
+                                                      itemCount: planController
+                                                          .webinarPlanList
+                                                          .length,
+                                                      //shrinkWrap: true,
+                                                      //physics: const NeverScrollableScrollPhysics(),
+                                                      itemBuilder:
+                                                          (
+                                                            BuildContext
+                                                            context,
+                                                            int index,
+                                                          ) {
+                                                            final plan =
+                                                                planController
+                                                                    .webinarPlanList[index];
+                                                            selectPlan =
+                                                                selectedIndex ==
+                                                                index;
+                                                            return GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  selectedIndex =
+                                                                      index;
+                                                                });
+                                                              },
+                                                              child: AnimationConfiguration.staggeredList(
+                                                                position: index,
+                                                                duration:
+                                                                    const Duration(
+                                                                      milliseconds:
+                                                                          1300,
+                                                                    ),
+                                                                child: SlideAnimation(
+                                                                  verticalOffset:
+                                                                      120.0,
+                                                                  curve: Curves
+                                                                      .easeOutBack,
+                                                                  child: FadeInAnimation(
+                                                                    child: Stack(
+                                                                      clipBehavior:
+                                                                          Clip.none,
+                                                                      children: [
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.all(
+                                                                            10.0,
+                                                                          ),
+                                                                          child: Card(
+                                                                            elevation:
+                                                                                6,
+                                                                            color:
+                                                                                AppColors.white,
+                                                                            child: Container(
+                                                                              decoration: BoxDecoration(
+                                                                                color: AppColors.white,
+                                                                                borderRadius: BorderRadius.circular(
+                                                                                  10,
+                                                                                ),
+                                                                                border: Border.all(
+                                                                                  color: selectPlan
+                                                                                      ? AppColors.primary
+                                                                                      : AppColors.grey,
+                                                                                  width: 1.5,
+                                                                                ),
+                                                                                boxShadow: [
+                                                                                  BoxShadow(
+                                                                                    color: Colors.black.withValues(
+                                                                                      alpha: 0.1,
+                                                                                    ),
+                                                                                    spreadRadius: 1,
+                                                                                    blurRadius: 6,
+                                                                                    offset: const Offset(
+                                                                                      0,
+                                                                                      3,
+                                                                                    ),
+                                                                                  ),
                                                                                 ],
+                                                                              ),
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.all(
+                                                                                  15.0,
+                                                                                ),
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.04,
+                                                                                    ),
+
+                                                                                    Text(
+                                                                                      "Great Place To Start",
+                                                                                      style: AppTextStyles.caption(
+                                                                                        context,
+                                                                                        color: AppColors.grey,
+                                                                                      ),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.01,
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.23,
+                                                                                      child: Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                        children: [
+                                                                                          Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              Text(
+                                                                                                plan.webinarPlanName ??
+                                                                                                    "",
+                                                                                                style: AppTextStyles.body(
+                                                                                                  context,
+                                                                                                  color: AppColors.primary,
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                ),
+                                                                                              ),
+                                                                                              Text(
+                                                                                                "₹${plan.price ?? "0"}",
+                                                                                                style: AppTextStyles.body(
+                                                                                                  context,
+                                                                                                  color: AppColors.black,
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                ),
+                                                                                              ),
+                                                                                              Container(
+                                                                                                height:
+                                                                                                    s *
+                                                                                                    0.08,
+                                                                                                decoration: BoxDecoration(
+                                                                                                  gradient: const LinearGradient(
+                                                                                                    colors: [
+                                                                                                      AppColors.primary,
+                                                                                                      AppColors.secondary,
+                                                                                                    ],
+                                                                                                    begin: Alignment.topLeft,
+                                                                                                    end: Alignment.bottomRight,
+                                                                                                  ),
+                                                                                                  borderRadius: BorderRadius.circular(
+                                                                                                    10,
+                                                                                                  ),
+                                                                                                ),
+                                                                                                child: Center(
+                                                                                                  child: Padding(
+                                                                                                    padding: const EdgeInsets.all(
+                                                                                                      5.0,
+                                                                                                    ),
+                                                                                                    child: Text(
+                                                                                                      "Valid Up to ${plan.duration ?? "0"} days",
+                                                                                                      style: AppTextStyles.caption(
+                                                                                                        context,
+                                                                                                        color: Colors.white,
+                                                                                                        fontWeight: FontWeight.normal,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                          IconButton(
+                                                                                            onPressed: () {},
+                                                                                            icon: Icon(
+                                                                                              Icons.bookmarks_rounded,
+                                                                                              size:
+                                                                                                  s *
+                                                                                                  0.06,
+                                                                                              color: AppColors.primary,
+                                                                                            ),
+                                                                                          ),
+                                                                                          // Image.asset('assets/images/plan.png',scale: 0.05,height: s*0.05,width: s*0.09,)
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                    const Divider(
+                                                                                      color: AppColors.grey,
+                                                                                      thickness: 0.3,
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.01,
+                                                                                    ),
+                                                                                    //   if (plan.details != null && plan.details!.isNotEmpty)
+                                                                                    //     Column(
+                                                                                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    //       children: plan.details!.map((f) {
+                                                                                    //         return Padding(
+                                                                                    //           padding: const EdgeInsets.only(bottom: 4),
+                                                                                    //           child: Row(
+                                                                                    //             children: [
+                                                                                    //               Icon(Icons.check_circle, color: AppColors.primary,size: s*0.06,),
+                                                                                    //               const SizedBox(width: 6),
+                                                                                    //               Expanded(child: Text(f)),
+                                                                                    //             ],
+                                                                                    //           ),
+                                                                                    //         );
+                                                                                    //       }).toList(),
+                                                                                    //     )
+                                                                                  ],
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                      );
-                                                                    }),
-                                                              );
-                                                            }
-                                                        ),
-                                                        GetBuilder<PlanController>(
-                                                            builder: (controller) {
-                                                              return AnimationLimiter(
-                                                                child: ListView.builder(
-                                                                    itemCount: planController.webinarPlanList.length,
-                                                                    //shrinkWrap: true,
-                                                                    //physics: const NeverScrollableScrollPhysics(),
-                                                                    itemBuilder: (BuildContext context,int index){
-                                                                      final plan=planController.webinarPlanList[index];
-                                                                      selectPlan = selectedIndex == index;
-                                                                      return GestureDetector(
-                                                                        onTap: (){
-                                                                          setState(() {
-                                                                            selectedIndex = index;
-                                                                          });},
-                                                                        child:  AnimationConfiguration.staggeredList(
-                                                                          position: index,
-                                                                          duration: const Duration(milliseconds: 1300),
-                                                                          child: SlideAnimation(
-                                                                            verticalOffset: 120.0,
-                                                                            curve: Curves.easeOutBack,
-                                                                            child: FadeInAnimation(
-                                                                              child: Stack(
-                                                                                clipBehavior: Clip.none,
-                                                                                children: [
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.all(10.0),
-                                                                                    child: Card(
-                                                                                      elevation: 6, color:AppColors.white,
-                                                                                      child: Container(
-                                                                                        decoration: BoxDecoration(
-                                                                                          color: AppColors.white,
-                                                                                          borderRadius: BorderRadius.circular(10),
-                                                                                          border: Border.all(
-                                                                                            color:
-                                                                                            selectPlan? AppColors.primary : AppColors.grey,
-                                                                                            width: 1.5,
-                                                                                          ),boxShadow: [
-                                                                                          BoxShadow(
-                                                                                              color: Colors.black.withOpacity(0.1),
-                                                                                              spreadRadius: 1,
-                                                                                              blurRadius: 6,
-                                                                                              offset: const Offset(0, 3)
-                                                                                          ),
-                                                                                        ],
-                                                                                        ),
-                                                                                        child: Padding(
-                                                                                          padding: const EdgeInsets.all(15.0),
-                                                                                          child: Column(
-                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                            children: [
-                                                                                              SizedBox(height: s*0.04,),
-
-                                                                                              Text("Great Place To Start",style: AppTextStyles.caption(context,color: AppColors.grey),),
-                                                                                              SizedBox(height: s*0.01,),
-                                                                                              SizedBox(
-                                                                                                height: s*0.23,
-                                                                                                child: Row(
-                                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                                  children: [
-                                                                                                    Column(
-                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                      children: [
-                                                                                                        Text(plan.webinarPlanName??"",style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold)),
-                                                                                                        Text("₹${plan.price??"0"}",style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                                                                                                        Container(
-                                                                                                            height: s*0.08,decoration: BoxDecoration(gradient: const LinearGradient(
-                                                                                                          colors: [AppColors.primary,AppColors.secondary],
-                                                                                                          begin: Alignment.topLeft,
-                                                                                                          end: Alignment.bottomRight,
-                                                                                                        ),borderRadius: BorderRadius.circular(10)),
-                                                                                                            child: Center(child: Padding(
-                                                                                                              padding: const EdgeInsets.all(5.0),
-                                                                                                              child: Text("Valid Up to ${plan.duration??"0"} days",style: AppTextStyles.caption(context,color:Colors.white,fontWeight: FontWeight.normal),),
-                                                                                                            ))),
-                                                                                                      ],
-                                                                                                    ),
-                                                                                                    IconButton(onPressed: (){}, icon: Icon(Icons.bookmarks_rounded,size: s*0.06,color: AppColors.primary,))
-                                                                                                    // Image.asset('assets/images/plan.png',scale: 0.05,height: s*0.05,width: s*0.09,)
-                                                                                                  ],
-                                                                                                ),
-                                                                                              ),
-                                                                                              const Divider(color: AppColors.grey,thickness: 0.3,),
-                                                                                              SizedBox(height: s*0.01,),
-                                                                                              //   if (plan.details != null && plan.details!.isNotEmpty)
-                                                                                              //     Column(
-                                                                                              //       crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                              //       children: plan.details!.map((f) {
-                                                                                              //         return Padding(
-                                                                                              //           padding: const EdgeInsets.only(bottom: 4),
-                                                                                              //           child: Row(
-                                                                                              //             children: [
-                                                                                              //               Icon(Icons.check_circle, color: AppColors.primary,size: s*0.06,),
-                                                                                              //               const SizedBox(width: 6),
-                                                                                              //               Expanded(child: Text(f)),
-                                                                                              //             ],
-                                                                                              //           ),
-                                                                                              //         );
-                                                                                              //       }).toList(),
-                                                                                              //     )
-                                                                                            ],
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-
-                                                                                    ),
-                                                                                  ),
-                                                                                  if(selectPlan)
-                                                                                    GetBuilder<PlanController>(
-                                                                                        builder: (controller) {
-                                                                                          return Positioned(top: 0,left: 0,
-                                                                                              right: 0,child:
-                                                                                              Center(
-                                                                                                child: GetBuilder<PlanController>(
-                                                                                                    builder: (controller) {
-                                                                                                      return  GestureDetector(
-                                                                                                        onTap: ()async{
-                                                                                                          if(userType=="superAdmin") {
-                                                                                                            Get.toNamed(
-                                                                                                                '/createPlanPage',
-                                                                                                                arguments: {'webinarPlanName': plan.webinarPlanName.toString(),
-                                                                                                                  'webinarPlanId': plan.webinarPlanId.toString(),
-                                                                                                                  // 'planName':plan.planName.toString()
-                                                                                                                  'price': plan.price.toString(),
-                                                                                                                  'duration': plan.duration.toString(),
-                                                                                                                  'details': {
-                                                                                                                    // 'state': plan.details?.state,
-                                                                                                                    // 'district': plan.details?.district,
-                                                                                                                    // 'city': plan.details?.city,
-                                                                                                                    // 'area': plan.details?.area,
-                                                                                                                  },
-                                                                                                                  // 'features': plan.features,
-                                                                                                                  'selectedString': "WebinarPlan",
-                                                                                                                  'userType': plan.userType
-                                                                                                                });
-                                                                                                            await    planController.getWebinarPlansList(userType, context);
+                                                                        if (selectPlan)
+                                                                          GetBuilder<
+                                                                            PlanController
+                                                                          >(
+                                                                            builder:
+                                                                                (
+                                                                                  controller,
+                                                                                ) {
+                                                                                  return Positioned(
+                                                                                    top: 0,
+                                                                                    left: 0,
+                                                                                    right: 0,
+                                                                                    child: Center(
+                                                                                      child:
+                                                                                          GetBuilder<
+                                                                                            PlanController
+                                                                                          >(
+                                                                                            builder:
+                                                                                                (
+                                                                                                  controller,
+                                                                                                ) {
+                                                                                                  return GestureDetector(
+                                                                                                    onTap: () async {
+                                                                                                      if (userType ==
+                                                                                                          "superAdmin") {
+                                                                                                        Get.toNamed(
+                                                                                                          '/createPlanPage',
+                                                                                                          arguments: {
+                                                                                                            'webinarPlanName': plan.webinarPlanName.toString(),
+                                                                                                            'webinarPlanId': plan.webinarPlanId.toString(),
+                                                                                                            // 'planName':plan.planName.toString()
+                                                                                                            'price': plan.price.toString(),
+                                                                                                            'duration': plan.duration.toString(),
+                                                                                                            'details': {
+                                                                                                              // 'state': plan.details?.state,
+                                                                                                              // 'district': plan.details?.district,
+                                                                                                              // 'city': plan.details?.city,
+                                                                                                              // 'area': plan.details?.area,
+                                                                                                            },
+                                                                                                            // 'features': plan.features,
+                                                                                                            'selectedString': "WebinarPlan",
+                                                                                                            'userType': plan.userType,
+                                                                                                          },
+                                                                                                        );
+                                                                                                        await planController.getWebinarPlansList(
+                                                                                                          userType,
+                                                                                                          context,
+                                                                                                        );
+                                                                                                      }
+                                                                                                      if (userType !=
+                                                                                                              "admin" &&
+                                                                                                          userType !=
+                                                                                                              "superAdmin") {
+                                                                                                        var dates = calculatePlanDates(
+                                                                                                          plan.duration.toString(),
+                                                                                                        );
+                                                                                                        print(
+                                                                                                          dates["startDate"],
+                                                                                                        );
+                                                                                                        print(
+                                                                                                          "duration${plan.duration.toString()}",
+                                                                                                        );
+                                                                                                        print(
+                                                                                                          "endDate ${dates["endDate"]}",
+                                                                                                        );
+                                                                                                        String startDate = dates["startDate"].toString();
+                                                                                                        String endDate = dates["endDate"].toString();
+                                                                                                        print(
+                                                                                                          "user${userId}planiD${plan.webinarPlanId.toString()}"
+                                                                                                          "planName${planController.planNameController.text.toString()}start${startDate}end$endDate",
+                                                                                                        );
+                                                                                                        // await planController.createUserWebinarPlans(
+                                                                                                        //   userId,
+                                                                                                        //   plan.webinarPlanId.toString(),
+                                                                                                        //   plan.webinarPlanName.toString(),
+                                                                                                        //   startDate,endDate,
+                                                                                                        //   context,
+                                                                                                        bool? isWebinarActive;
+                                                                                                        bool? isBasePlanActive;
+                                                                                                        if (planController.checkPlanList.isNotEmpty) {
+                                                                                                          final planDetails = planController.checkPlanList[0]["details"]?["plan"];
+                                                                                                          isWebinarActive =
+                                                                                                              planDetails["webinarPlan"]?["isActive"] ??
+                                                                                                              false;
+                                                                                                          if (planDetails !=
+                                                                                                              null) {
+                                                                                                            isBasePlanActive =
+                                                                                                                planDetails["basePlan"]?["isActive"] ??
+                                                                                                                false;
+                                                                                                          } else {
+                                                                                                            isBasePlanActive = false;
                                                                                                           }
-                                                                                                          if(userType!="admin"&&userType!="superAdmin") {
-                                                                                                            var dates = calculatePlanDates(plan.duration.toString());
-                                                                                                            print(dates["startDate"]);
-                                                                                                            print("duration${plan.duration.toString()}");
-                                                                                                            print("endDate ${dates["endDate"]}");
-                                                                                                            String startDate = dates["startDate"].toString();
-                                                                                                            String endDate = dates["endDate"].toString();
-                                                                                                            print("user${userId}planiD${plan.webinarPlanId.toString()}"
-                                                                                                                "planName${planController
-                                                                                                                .planNameController
-                                                                                                                .text
-                                                                                                                .toString()}start${startDate}end$endDate");
-                                                                                                            // await planController.createUserWebinarPlans(
-                                                                                                            //   userId,
-                                                                                                            //   plan.webinarPlanId.toString(),
-                                                                                                            //   plan.webinarPlanName.toString(),
-                                                                                                            //   startDate,endDate,
-                                                                                                            //   context,
-                                                                                                            bool? isWebinarActive;
-                                                                                                            bool? isBasePlanActive;
-                                                                                                            if (planController
-                                                                                                                .checkPlanList
-                                                                                                                .isNotEmpty) {
-                                                                                                              final planDetails = planController
-                                                                                                                  .checkPlanList[0]["details"]?["plan"];
-                                                                                                              isWebinarActive = planDetails["webinarPlan"]?["isActive"] ?? false;
-                                                                                                              if (planDetails != null) {
-                                                                                                                isBasePlanActive = planDetails["basePlan"]?["isActive"] ?? false;
-                                                                                                              } else {
-                                                                                                                isBasePlanActive = false;
-                                                                                                              }
-
-                                                                                                            }
-                                                                                                            if (isWebinarActive==true&&isBasePlanActive==true) {
-                                                                                                              showSuccessDialog(context, title:"Alert",message :"Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated", onOkPressed: () {
-                                                                                                                double amount = plan.price != null ? double.parse(plan.price!) : 0.0;
-                                                                                                                Get.toNamed('/paymentPage',
-                                                                                                                    arguments: {'userId': userId,
-                                                                                                                      'planId': plan.webinarPlanId.toString(),
-                                                                                                                      'startDate': startDate,
-                                                                                                                      'endDate': endDate,
-                                                                                                                      'amount': amount,
-                                                                                                                      'name': 'webinarPlan',
-                                                                                                                      'planName': plan.webinarPlanName.toString(),
-                                                                                                                      'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                                      'email': Api.userInfo.read('email') ?? "",
-                                                                                                                    });
-
-                                                                                                              });
-                                                                                                            }
-                                                                                                            else if (isWebinarActive==false&&isBasePlanActive==true) {
-                                                                                                              double amount = plan.price != null ? double.parse(plan.price!) : 0.0;
-                                                                                                              Get.toNamed('/paymentPage',
-                                                                                                                  arguments: {'userId': userId,
-                                                                                                                    'planId': plan.webinarPlanId.toString(),
-                                                                                                                    'startDate': startDate,
-                                                                                                                    'endDate': endDate,
-                                                                                                                    'amount': amount,
-                                                                                                                    'name': 'webinarPlan',
-                                                                                                                    'planName': plan.webinarPlanName.toString(),
-                                                                                                                    'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                                    'email': Api.userInfo.read('email') ?? "",
-                                                                                                                  });
-                                                                                                            }
-                                                                                                            else if(isBasePlanActive ==false){
-                                                                                                              showSuccessDialog(
-                                                                                                                  context,
-                                                                                                                  title: "Alert",
-                                                                                                                  message: "Oops! Base plan not Activated.please activate base plan..",
-                                                                                                                  onOkPressed: () {});
-                                                                                                            }
-
-                                                                                                            // else {
-                                                                                                            //   double amount = plan
-                                                                                                            //       .price != null ? double.parse(plan.price!) : 0.0;
-                                                                                                            //   Get.toNamed('/paymentPage',
-                                                                                                            //       arguments: {
-                                                                                                            //         'userId': userId,
-                                                                                                            //         'planId': plan
-                                                                                                            //             .webinarPlanId
-                                                                                                            //             .toString(),
-                                                                                                            //         'startDate': startDate,
-                                                                                                            //         'endDate': endDate,
-                                                                                                            //         'amount': amount,
-                                                                                                            //         'name': 'webinarPlan',
-                                                                                                            //         'planName': plan
-                                                                                                            //             .webinarPlanName
-                                                                                                            //             .toString(),
-                                                                                                            //         'mobileNumber': Api
-                                                                                                            //             .userInfo
-                                                                                                            //             .read(
-                                                                                                            //             'mobileNumber') ??
-                                                                                                            //             "",
-                                                                                                            //         'email': Api
-                                                                                                            //             .userInfo
-                                                                                                            //             .read(
-                                                                                                            //             'email') ??
-                                                                                                            //             "",
-                                                                                                            //       });
-                                                                                                            // }
-                                                                                                          }
-
-                                                                                                        },
-                                                                                                        child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),gradient: const LinearGradient(
-                                                                                                          colors: [AppColors.primary,AppColors.secondary],
-                                                                                                          begin: Alignment.topLeft,
-                                                                                                          end: Alignment.bottomRight,
-                                                                                                        ),),child: Padding(
-                                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                                          child: Text(Api.userInfo.read('userType')=="superAdmin"?'Edit Plan':"Buy Now",style: AppTextStyles.caption(context,color: AppColors.white),),
-
-                                                                                                        ),),
-                                                                                                      );
-                                                                                                    }
-                                                                                                ),
-                                                                                              )
-                                                                                          );
-                                                                                        }
-                                                                                    ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    }),
-                                                              );
-                                                            }
-                                                        ),
-                                                        GetBuilder<PlanController>(
-                                                            builder: (controller) {
-                                                              return AnimationLimiter(
-                                                                child: ListView.builder(
-                                                                    itemCount: planController.postImagePlanList.length,
-                                                                    //shrinkWrap: true,
-                                                                    //physics: const NeverScrollableScrollPhysics(),
-                                                                    itemBuilder: (BuildContext context,int index){
-                                                                      final plan=planController.postImagePlanList[index];
-                                                                      selectPlan = selectedIndex == index;
-                                                                      return  AnimationConfiguration.staggeredList(
-                                                                        position: index,
-                                                                        duration: const Duration(milliseconds: 1300),
-                                                                        child: SlideAnimation(
-                                                                          verticalOffset: 120.0,
-                                                                          curve: Curves.easeOutBack,
-                                                                          child: FadeInAnimation(
-                                                                            child: GestureDetector(
-                                                                              onTap: (){
-                                                                                setState(() {
-                                                                                  selectedIndex = index;
-                                                                                });},
-                                                                              child: Stack(
-                                                                                clipBehavior: Clip.none,
-                                                                                children: [
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.all(10.0),
-                                                                                    child: Card(
-                                                                                      elevation: 6, color:AppColors.white,
-                                                                                      child: Container(
-                                                                                        decoration: BoxDecoration(
-                                                                                          color: AppColors.white,
-                                                                                          borderRadius: BorderRadius.circular(10),
-                                                                                          border: Border.all(
-                                                                                            color:
-                                                                                            selectPlan? AppColors.primary : AppColors.grey,
-                                                                                            width: 1.5,
-                                                                                          ),boxShadow: [
-                                                                                          BoxShadow(
-                                                                                              color: Colors.black.withOpacity(0.1),
-                                                                                              spreadRadius: 1,
-                                                                                              blurRadius: 6,
-                                                                                              offset: const Offset(0, 3)
-                                                                                          ),
-                                                                                        ],
-                                                                                        ),
-                                                                                        child: Padding(
-                                                                                          padding: const EdgeInsets.all(15.0),
-                                                                                          child: Column(
-                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                            children: [
-                                                                                              SizedBox(height: s*0.04,),
-
-                                                                                              Text("Great Place To Start",style: AppTextStyles.caption(context,color: AppColors.grey),),
-                                                                                              SizedBox(height: s*0.01,),
-                                                                                              SizedBox(
-                                                                                                height: s*0.23,
-                                                                                                child: Row(
-                                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                                  children: [
-                                                                                                    Column(
-                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                      children: [
-                                                                                                        Text(plan.postPlanName??"",style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold)),
-                                                                                                        Text("₹${plan.price??"0"}",style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                                                                                                        Container(
-                                                                                                            height: s*0.08,decoration: BoxDecoration(gradient: const LinearGradient(
-                                                                                                          colors: [AppColors.primary,AppColors.secondary],
-                                                                                                          begin: Alignment.topLeft,
-                                                                                                          end: Alignment.bottomRight,
-                                                                                                        ),borderRadius: BorderRadius.circular(10)),
-                                                                                                            child: Center(child: Padding(
-                                                                                                              padding: const EdgeInsets.all(5.0),
-                                                                                                              child: Text("Valid Up to ${plan.duration??"0"} days",style: AppTextStyles.caption(context,color:Colors.white,fontWeight: FontWeight.normal),),
-                                                                                                            ))),
-                                                                                                      ],
-                                                                                                    ),
-                                                                                                    IconButton(onPressed: (){}, icon: Icon(Icons.bookmarks_rounded,size: s*0.06,color: AppColors.primary,))
-                                                                                                    // Image.asset('assets/images/plan.png',scale: 0.05,height: s*0.05,width: s*0.09,)
-                                                                                                  ],
-                                                                                                ),
-                                                                                              ),
-                                                                                              const Divider(color: AppColors.grey,thickness: 0.3,),
-                                                                                              SizedBox(height: s*0.01,),
-                                                                                              //   if (plan.details != null && plan.details!.isNotEmpty)
-                                                                                              //     Column(
-                                                                                              //       crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                              //       children: plan.details!.map((f) {
-                                                                                              //         return Padding(
-                                                                                              //           padding: const EdgeInsets.only(bottom: 4),
-                                                                                              //           child: Row(
-                                                                                              //             children: [
-                                                                                              //               Icon(Icons.check_circle, color: AppColors.primary,size: s*0.06,),
-                                                                                              //               const SizedBox(width: 6),
-                                                                                              //               Expanded(child: Text(f)),
-                                                                                              //             ],
-                                                                                              //           ),
-                                                                                              //         );
-                                                                                              //       }).toList(),
-                                                                                              //     )
-                                                                                            ],
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-
-                                                                                    ),
-                                                                                  ),
-                                                                                  if(selectPlan)
-                                                                                    GetBuilder<PlanController>(
-                                                                                        builder: (controller) {
-                                                                                          return Positioned(top: 0,left: 0,
-                                                                                              right: 0,child:
-                                                                                              Center(
-                                                                                                child: GetBuilder<PlanController>(
-                                                                                                    builder: (controller) {
-                                                                                                      return  GestureDetector(
-                                                                                                        onTap: ()async{
-                                                                                                          if(userType=="superAdmin") {
-                                                                                                            print('dfid${plan.postImagesPlanId.toString()}name${plan.postPlanName.toString()}price${plan.price.toString()}dura${plan.duration.toString()}');
-                                                                                                            double amount = plan.price != null ? double.parse(plan.price!) : 0.0;
-
-                                                                                                            Get.toNamed(
-                                                                                                                '/createPlanPage',
+                                                                                                        }
+                                                                                                        if (isWebinarActive ==
+                                                                                                                true &&
+                                                                                                            isBasePlanActive ==
+                                                                                                                true) {
+                                                                                                          showSuccessDialog(
+                                                                                                            context,
+                                                                                                            title: "Alert",
+                                                                                                            message: "Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated",
+                                                                                                            onOkPressed: () {
+                                                                                                              double amount = double.parse(
+                                                                                                                plan.price!,
+                                                                                                              );
+                                                                                                              Get.toNamed(
+                                                                                                                '/paymentPage',
                                                                                                                 arguments: {
-                                                                                                                  'postPlanName': plan.postPlanName.toString(),
-                                                                                                                  'postImagesPlanId': plan.postImagesPlanId.toString(),
-                                                                                                                  'price': plan.price.toString(),
-                                                                                                                  'duration': plan.duration.toString(),
-                                                                                                                  'details': {
-                                                                                                                    // 'state': plan.details?.state,
-                                                                                                                    // 'district': plan.details?.district,
-                                                                                                                    // 'city': plan.details?.city,
-                                                                                                                    // 'area': plan.details?.area,
-                                                                                                                  },
-                                                                                                                  // 'features': plan.features,
-                                                                                                                  'selectedString': "Scrolling Ads Plan",
-                                                                                                                  'userType': plan.userType
-                                                                                                                });
-                                                                                                            planController.getPostImagePlanList(userType, context);
-                                                                                                          }
-                                                                                                          if(userType!="admin"&&userType!="superAdmin") {
-                                                                                                            var dates = calculatePlanDates(
-                                                                                                                plan.duration.toString());
-                                                                                                            print(dates["startDate"]);
-                                                                                                            print("duration${plan.duration.toString()}");
-                                                                                                            print("endDate ${dates["endDate"]}");
-                                                                                                            String startDate = dates["startDate"].toString();
-                                                                                                            String endDate = dates["endDate"].toString();
-                                                                                                            print("user${userId}plan id${plan
-                                                                                                                .postImagesPlanId
-                                                                                                                .toString()}""planName${planController
-                                                                                                                .planNameController
-                                                                                                                .text
-                                                                                                                .toString()}start${startDate}end$endDate");
+                                                                                                                  'userId': userId,
+                                                                                                                  'planId': plan.webinarPlanId.toString(),
+                                                                                                                  'startDate': startDate,
+                                                                                                                  'endDate': endDate,
+                                                                                                                  'amount': amount,
+                                                                                                                  'name': 'webinarPlan',
+                                                                                                                  'planName': plan.webinarPlanName.toString(),
+                                                                                                                  'mobileNumber':
+                                                                                                                      Api.userInfo.read(
+                                                                                                                        'mobileNumber',
+                                                                                                                      ) ??
+                                                                                                                      "",
+                                                                                                                  'email':
+                                                                                                                      Api.userInfo.read(
+                                                                                                                        'email',
+                                                                                                                      ) ??
+                                                                                                                      "",
+                                                                                                                },
+                                                                                                              );
+                                                                                                            },
+                                                                                                          );
+                                                                                                        } else if (isWebinarActive ==
+                                                                                                                false &&
+                                                                                                            isBasePlanActive ==
+                                                                                                                true) {
+                                                                                                          double amount = double.parse(
+                                                                                                            plan.price!,
+                                                                                                          );
+                                                                                                          Get.toNamed(
+                                                                                                            '/paymentPage',
+                                                                                                            arguments: {
+                                                                                                              'userId': userId,
+                                                                                                              'planId': plan.webinarPlanId.toString(),
+                                                                                                              'startDate': startDate,
+                                                                                                              'endDate': endDate,
+                                                                                                              'amount': amount,
+                                                                                                              'name': 'webinarPlan',
+                                                                                                              'planName': plan.webinarPlanName.toString(),
+                                                                                                              'mobileNumber':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'mobileNumber',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                              'email':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'email',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                            },
+                                                                                                          );
+                                                                                                        } else if (isBasePlanActive ==
+                                                                                                            false) {
+                                                                                                          showSuccessDialog(
+                                                                                                            context,
+                                                                                                            title: "Alert",
+                                                                                                            message: "Oops! Base plan not Activated.please activate base plan..",
+                                                                                                            onOkPressed: () {},
+                                                                                                          );
+                                                                                                        }
 
-                                                                                                            bool? isposterPlanActive;
-                                                                                                            bool? isBasePlanActive;
-                                                                                                            if (planController.checkPlanList.isNotEmpty) {
-                                                                                                              final planDetails = planController.checkPlanList[0]["details"]?["plan"];
-                                                                                                              isposterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
-                                                                                                              if (planDetails != null) {
-                                                                                                                isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
-                                                                                                              } else {
-                                                                                                                isBasePlanActive = false;
-                                                                                                              }
-                                                                                                            }
-                                                                                                            if (isBasePlanActive==true && isposterPlanActive ==true) {
-                                                                                                              showSuccessDialog(
-                                                                                                                  context,
-                                                                                                                  title: "Alert",
-                                                                                                                  message: "Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated",
-                                                                                                                  onOkPressed: () { double amount = plan
-                                                                                                                      .price != null ? double.parse(plan.price!) : 0.0;
-                                                                                                                  Get.toNamed('/paymentPage', arguments: {
-                                                                                                                    'userId': userId, 'planId': plan.postImagesPlanId.toString(),
-                                                                                                                    'startDate': startDate,
-                                                                                                                    'endDate': endDate,
-                                                                                                                    'amount': amount,
-                                                                                                                    'name': 'Scrolling Ads Plan',
-                                                                                                                    'planName': plan.postPlanName.toString(),
-                                                                                                                    'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                                    'email': Api.userInfo.read('email') ?? "",
-                                                                                                                  });});
-                                                                                                            }
-                                                                                                            else if (isBasePlanActive==true && isposterPlanActive ==false) {
-                                                                                                              double amount = plan.price != null ? double.parse(plan.price!) : 0.0;
-                                                                                                              Get.toNamed('/paymentPage', arguments: {
-                                                                                                                'userId': userId, 'planId': plan.postImagesPlanId.toString(),
-                                                                                                                'startDate': startDate,
-                                                                                                                'endDate': endDate,
-                                                                                                                'amount': amount,
-                                                                                                                'name': 'Scrolling Ads Plan',
-                                                                                                                'planName': plan.postPlanName.toString(),
-                                                                                                                'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                                'email': Api.userInfo.read('email') ?? "",
-                                                                                                              });
-                                                                                                            }
-                                                                                                            else if(isBasePlanActive ==false) {
-                                                                                                              showSuccessDialog(
-                                                                                                                  context,
-                                                                                                                  title: "Alert",
-                                                                                                                  message: "Oops! Base plan not Activated.please activate base plan..",
-                                                                                                                  onOkPressed: () {});
-                                                                                                            }
-
-                                                                                                            // else {
-                                                                                                            //   double amount = plan
-                                                                                                            //       .price != null ? double.parse(plan.price!) : 0.0;
-                                                                                                            //   Get.toNamed('/paymentPage', arguments: {
-                                                                                                            //         'userId': userId, 'planId': plan.postImagesPlanId.toString(),
-                                                                                                            //         'startDate': startDate,
-                                                                                                            //         'endDate': endDate,
-                                                                                                            //         'amount': amount,
-                                                                                                            //         'name': 'postPlan',
-                                                                                                            //         'planName': plan.postPlanName.toString(),
-                                                                                                            //         'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-                                                                                                            //         'email': Api.userInfo.read('email') ?? "",
-                                                                                                            //       });
-                                                                                                            // }
-                                                                                                          }
-                                                                                                        },
-                                                                                                        child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),gradient: const LinearGradient(
-                                                                                                          colors: [AppColors.primary,AppColors.secondary],
+                                                                                                        // else {
+                                                                                                        //   double amount = plan
+                                                                                                        //       .price != null ? double.parse(plan.price!) : 0.0;
+                                                                                                        //   Get.toNamed('/paymentPage',
+                                                                                                        //       arguments: {
+                                                                                                        //         'userId': userId,
+                                                                                                        //         'planId': plan
+                                                                                                        //             .webinarPlanId
+                                                                                                        //             .toString(),
+                                                                                                        //         'startDate': startDate,
+                                                                                                        //         'endDate': endDate,
+                                                                                                        //         'amount': amount,
+                                                                                                        //         'name': 'webinarPlan',
+                                                                                                        //         'planName': plan
+                                                                                                        //             .webinarPlanName
+                                                                                                        //             .toString(),
+                                                                                                        //         'mobileNumber': Api
+                                                                                                        //             .userInfo
+                                                                                                        //             .read(
+                                                                                                        //             'mobileNumber') ??
+                                                                                                        //             "",
+                                                                                                        //         'email': Api
+                                                                                                        //             .userInfo
+                                                                                                        //             .read(
+                                                                                                        //             'email') ??
+                                                                                                        //             "",
+                                                                                                        //       });
+                                                                                                        // }
+                                                                                                      }
+                                                                                                    },
+                                                                                                    child: Container(
+                                                                                                      decoration: BoxDecoration(
+                                                                                                        borderRadius: BorderRadius.circular(
+                                                                                                          10,
+                                                                                                        ),
+                                                                                                        gradient: const LinearGradient(
+                                                                                                          colors: [
+                                                                                                            AppColors.primary,
+                                                                                                            AppColors.secondary,
+                                                                                                          ],
                                                                                                           begin: Alignment.topLeft,
                                                                                                           end: Alignment.bottomRight,
-                                                                                                        ),),child: Padding(
-                                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                                          child: Text(Api.userInfo.read('userType')=="superAdmin"?'Edit Plan':"Buy Now",style: AppTextStyles.caption(context,color: AppColors.white),),
-                                                                                                        ),),
-                                                                                                      );
-                                                                                                    }
-                                                                                                ),
-                                                                                              )
-                                                                                          );
-                                                                                        }
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                      child: Padding(
+                                                                                                        padding: const EdgeInsets.all(
+                                                                                                          8.0,
+                                                                                                        ),
+                                                                                                        child: Text(
+                                                                                                          Api.userInfo.read(
+                                                                                                                    'userType',
+                                                                                                                  ) ==
+                                                                                                                  "superAdmin"
+                                                                                                              ? 'Edit Plan'
+                                                                                                              : "Buy Now",
+                                                                                                          style: AppTextStyles.caption(
+                                                                                                            context,
+                                                                                                            color: AppColors.white,
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                },
+                                                                                          ),
                                                                                     ),
+                                                                                  );
+                                                                                },
+                                                                          ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                              GetBuilder<PlanController>(
+                                                builder: (controller) {
+                                                  return AnimationLimiter(
+                                                    child: ListView.builder(
+                                                      itemCount: planController
+                                                          .postImagePlanList
+                                                          .length,
+                                                      //shrinkWrap: true,
+                                                      //physics: const NeverScrollableScrollPhysics(),
+                                                      itemBuilder:
+                                                          (
+                                                            BuildContext
+                                                            context,
+                                                            int index,
+                                                          ) {
+                                                            final plan =
+                                                                planController
+                                                                    .postImagePlanList[index];
+                                                            selectPlan =
+                                                                selectedIndex ==
+                                                                index;
+                                                            return AnimationConfiguration.staggeredList(
+                                                              position: index,
+                                                              duration:
+                                                                  const Duration(
+                                                                    milliseconds:
+                                                                        1300,
+                                                                  ),
+                                                              child: SlideAnimation(
+                                                                verticalOffset:
+                                                                    120.0,
+                                                                curve: Curves
+                                                                    .easeOutBack,
+                                                                child: FadeInAnimation(
+                                                                  child: GestureDetector(
+                                                                    onTap: () {
+                                                                      setState(() {
+                                                                        selectedIndex =
+                                                                            index;
+                                                                      });
+                                                                    },
+                                                                    child: Stack(
+                                                                      clipBehavior:
+                                                                          Clip.none,
+                                                                      children: [
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.all(
+                                                                            10.0,
+                                                                          ),
+                                                                          child: Card(
+                                                                            elevation:
+                                                                                6,
+                                                                            color:
+                                                                                AppColors.white,
+                                                                            child: Container(
+                                                                              decoration: BoxDecoration(
+                                                                                color: AppColors.white,
+                                                                                borderRadius: BorderRadius.circular(
+                                                                                  10,
+                                                                                ),
+                                                                                border: Border.all(
+                                                                                  color: selectPlan
+                                                                                      ? AppColors.primary
+                                                                                      : AppColors.grey,
+                                                                                  width: 1.5,
+                                                                                ),
+                                                                                boxShadow: [
+                                                                                  BoxShadow(
+                                                                                    color: Colors.black.withValues(
+                                                                                      alpha: 0.1,
+                                                                                    ),
+                                                                                    spreadRadius: 1,
+                                                                                    blurRadius: 6,
+                                                                                    offset: const Offset(
+                                                                                      0,
+                                                                                      3,
+                                                                                    ),
+                                                                                  ),
                                                                                 ],
+                                                                              ),
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.all(
+                                                                                  15.0,
+                                                                                ),
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.04,
+                                                                                    ),
+
+                                                                                    Text(
+                                                                                      "Great Place To Start",
+                                                                                      style: AppTextStyles.caption(
+                                                                                        context,
+                                                                                        color: AppColors.grey,
+                                                                                      ),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.01,
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.23,
+                                                                                      child: Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                        children: [
+                                                                                          Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              Text(
+                                                                                                plan.postPlanName ??
+                                                                                                    "",
+                                                                                                style: AppTextStyles.body(
+                                                                                                  context,
+                                                                                                  color: AppColors.primary,
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                ),
+                                                                                              ),
+                                                                                              Text(
+                                                                                                "₹${plan.price ?? "0"}",
+                                                                                                style: AppTextStyles.body(
+                                                                                                  context,
+                                                                                                  color: AppColors.black,
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                ),
+                                                                                              ),
+                                                                                              Container(
+                                                                                                height:
+                                                                                                    s *
+                                                                                                    0.08,
+                                                                                                decoration: BoxDecoration(
+                                                                                                  gradient: const LinearGradient(
+                                                                                                    colors: [
+                                                                                                      AppColors.primary,
+                                                                                                      AppColors.secondary,
+                                                                                                    ],
+                                                                                                    begin: Alignment.topLeft,
+                                                                                                    end: Alignment.bottomRight,
+                                                                                                  ),
+                                                                                                  borderRadius: BorderRadius.circular(
+                                                                                                    10,
+                                                                                                  ),
+                                                                                                ),
+                                                                                                child: Center(
+                                                                                                  child: Padding(
+                                                                                                    padding: const EdgeInsets.all(
+                                                                                                      5.0,
+                                                                                                    ),
+                                                                                                    child: Text(
+                                                                                                      "Valid Up to ${plan.duration ?? "0"} days",
+                                                                                                      style: AppTextStyles.caption(
+                                                                                                        context,
+                                                                                                        color: Colors.white,
+                                                                                                        fontWeight: FontWeight.normal,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                          IconButton(
+                                                                                            onPressed: () {},
+                                                                                            icon: Icon(
+                                                                                              Icons.bookmarks_rounded,
+                                                                                              size:
+                                                                                                  s *
+                                                                                                  0.06,
+                                                                                              color: AppColors.primary,
+                                                                                            ),
+                                                                                          ),
+                                                                                          // Image.asset('assets/images/plan.png',scale: 0.05,height: s*0.05,width: s*0.09,)
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                    const Divider(
+                                                                                      color: AppColors.grey,
+                                                                                      thickness: 0.3,
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height:
+                                                                                          s *
+                                                                                          0.01,
+                                                                                    ),
+                                                                                    //   if (plan.details != null && plan.details!.isNotEmpty)
+                                                                                    //     Column(
+                                                                                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    //       children: plan.details!.map((f) {
+                                                                                    //         return Padding(
+                                                                                    //           padding: const EdgeInsets.only(bottom: 4),
+                                                                                    //           child: Row(
+                                                                                    //             children: [
+                                                                                    //               Icon(Icons.check_circle, color: AppColors.primary,size: s*0.06,),
+                                                                                    //               const SizedBox(width: 6),
+                                                                                    //               Expanded(child: Text(f)),
+                                                                                    //             ],
+                                                                                    //           ),
+                                                                                    //         );
+                                                                                    //       }).toList(),
+                                                                                    //     )
+                                                                                  ],
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                      );
-                                                                    }),
-                                                              );
-                                                            }
-                                                        ),
-                                                      ]),
-                                                );
-                                              }
-                                          ),
+                                                                        if (selectPlan)
+                                                                          GetBuilder<
+                                                                            PlanController
+                                                                          >(
+                                                                            builder:
+                                                                                (
+                                                                                  controller,
+                                                                                ) {
+                                                                                  return Positioned(
+                                                                                    top: 0,
+                                                                                    left: 0,
+                                                                                    right: 0,
+                                                                                    child: Center(
+                                                                                      child:
+                                                                                          GetBuilder<
+                                                                                            PlanController
+                                                                                          >(
+                                                                                            builder:
+                                                                                                (
+                                                                                                  controller,
+                                                                                                ) {
+                                                                                                  return GestureDetector(
+                                                                                                    onTap: () async {
+                                                                                                      if (userType ==
+                                                                                                          "superAdmin") {
+                                                                                                        print(
+                                                                                                          'dfid${plan.postImagesPlanId.toString()}name${plan.postPlanName.toString()}price${plan.price.toString()}dura${plan.duration.toString()}',
+                                                                                                        );
+                                                                                                        double amount = double.parse(
+                                                                                                          plan.price!,
+                                                                                                        );
 
-                                        ],
-                                      );
-                                    }
-                                )
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                ),
+                                                                                                        Get.toNamed(
+                                                                                                          '/createPlanPage',
+                                                                                                          arguments: {
+                                                                                                            'postPlanName': plan.postPlanName.toString(),
+                                                                                                            'postImagesPlanId': plan.postImagesPlanId.toString(),
+                                                                                                            'price': plan.price.toString(),
+                                                                                                            'duration': plan.duration.toString(),
+                                                                                                            'details': {
+                                                                                                              // 'state': plan.details?.state,
+                                                                                                              // 'district': plan.details?.district,
+                                                                                                              // 'city': plan.details?.city,
+                                                                                                              // 'area': plan.details?.area,
+                                                                                                            },
+                                                                                                            // 'features': plan.features,
+                                                                                                            'selectedString': "Scrolling Ads Plan",
+                                                                                                            'userType': plan.userType,
+                                                                                                          },
+                                                                                                        );
+                                                                                                        planController.getPostImagePlanList(
+                                                                                                          userType,
+                                                                                                          context,
+                                                                                                        );
+                                                                                                      }
+                                                                                                      if (userType !=
+                                                                                                              "admin" &&
+                                                                                                          userType !=
+                                                                                                              "superAdmin") {
+                                                                                                        var dates = calculatePlanDates(
+                                                                                                          plan.duration.toString(),
+                                                                                                        );
+                                                                                                        print(
+                                                                                                          dates["startDate"],
+                                                                                                        );
+                                                                                                        print(
+                                                                                                          "duration${plan.duration.toString()}",
+                                                                                                        );
+                                                                                                        print(
+                                                                                                          "endDate ${dates["endDate"]}",
+                                                                                                        );
+                                                                                                        String startDate = dates["startDate"].toString();
+                                                                                                        String endDate = dates["endDate"].toString();
+                                                                                                        print(
+                                                                                                          "user${userId}plan id${plan.postImagesPlanId.toString()}"
+                                                                                                          "planName${planController.planNameController.text.toString()}start${startDate}end$endDate",
+                                                                                                        );
+
+                                                                                                        bool? isposterPlanActive;
+                                                                                                        bool? isBasePlanActive;
+                                                                                                        if (planController.checkPlanList.isNotEmpty) {
+                                                                                                          final planDetails = planController.checkPlanList[0]["details"]?["plan"];
+                                                                                                          isposterPlanActive =
+                                                                                                              planDetails?["posterPlan"]?["isActive"] ??
+                                                                                                              false;
+                                                                                                          if (planDetails !=
+                                                                                                              null) {
+                                                                                                            isBasePlanActive =
+                                                                                                                planDetails?["basePlan"]?["isActive"] ??
+                                                                                                                false;
+                                                                                                          } else {
+                                                                                                            isBasePlanActive = false;
+                                                                                                          }
+                                                                                                        }
+                                                                                                        if (isBasePlanActive ==
+                                                                                                                true &&
+                                                                                                            isposterPlanActive ==
+                                                                                                                true) {
+                                                                                                          showSuccessDialog(
+                                                                                                            context,
+                                                                                                            title: "Alert",
+                                                                                                            message: "Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated",
+                                                                                                            onOkPressed: () {
+                                                                                                              double amount = double.parse(
+                                                                                                                plan.price!,
+                                                                                                              );
+                                                                                                              Get.toNamed(
+                                                                                                                '/paymentPage',
+                                                                                                                arguments: {
+                                                                                                                  'userId': userId,
+                                                                                                                  'planId': plan.postImagesPlanId.toString(),
+                                                                                                                  'startDate': startDate,
+                                                                                                                  'endDate': endDate,
+                                                                                                                  'amount': amount,
+                                                                                                                  'name': 'Scrolling Ads Plan',
+                                                                                                                  'planName': plan.postPlanName.toString(),
+                                                                                                                  'mobileNumber':
+                                                                                                                      Api.userInfo.read(
+                                                                                                                        'mobileNumber',
+                                                                                                                      ) ??
+                                                                                                                      "",
+                                                                                                                  'email':
+                                                                                                                      Api.userInfo.read(
+                                                                                                                        'email',
+                                                                                                                      ) ??
+                                                                                                                      "",
+                                                                                                                },
+                                                                                                              );
+                                                                                                            },
+                                                                                                          );
+                                                                                                        } else if (isBasePlanActive ==
+                                                                                                                true &&
+                                                                                                            isposterPlanActive ==
+                                                                                                                false) {
+                                                                                                          double amount = double.parse(
+                                                                                                            plan.price!,
+                                                                                                          );
+                                                                                                          Get.toNamed(
+                                                                                                            '/paymentPage',
+                                                                                                            arguments: {
+                                                                                                              'userId': userId,
+                                                                                                              'planId': plan.postImagesPlanId.toString(),
+                                                                                                              'startDate': startDate,
+                                                                                                              'endDate': endDate,
+                                                                                                              'amount': amount,
+                                                                                                              'name': 'Scrolling Ads Plan',
+                                                                                                              'planName': plan.postPlanName.toString(),
+                                                                                                              'mobileNumber':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'mobileNumber',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                              'email':
+                                                                                                                  Api.userInfo.read(
+                                                                                                                    'email',
+                                                                                                                  ) ??
+                                                                                                                  "",
+                                                                                                            },
+                                                                                                          );
+                                                                                                        } else if (isBasePlanActive ==
+                                                                                                            false) {
+                                                                                                          showSuccessDialog(
+                                                                                                            context,
+                                                                                                            title: "Alert",
+                                                                                                            message: "Oops! Base plan not Activated.please activate base plan..",
+                                                                                                            onOkPressed: () {},
+                                                                                                          );
+                                                                                                        }
+
+                                                                                                        // else {
+                                                                                                        //   double amount = plan
+                                                                                                        //       .price != null ? double.parse(plan.price!) : 0.0;
+                                                                                                        //   Get.toNamed('/paymentPage', arguments: {
+                                                                                                        //         'userId': userId, 'planId': plan.postImagesPlanId.toString(),
+                                                                                                        //         'startDate': startDate,
+                                                                                                        //         'endDate': endDate,
+                                                                                                        //         'amount': amount,
+                                                                                                        //         'name': 'postPlan',
+                                                                                                        //         'planName': plan.postPlanName.toString(),
+                                                                                                        //         'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
+                                                                                                        //         'email': Api.userInfo.read('email') ?? "",
+                                                                                                        //       });
+                                                                                                        // }
+                                                                                                      }
+                                                                                                    },
+                                                                                                    child: Container(
+                                                                                                      decoration: BoxDecoration(
+                                                                                                        borderRadius: BorderRadius.circular(
+                                                                                                          10,
+                                                                                                        ),
+                                                                                                        gradient: const LinearGradient(
+                                                                                                          colors: [
+                                                                                                            AppColors.primary,
+                                                                                                            AppColors.secondary,
+                                                                                                          ],
+                                                                                                          begin: Alignment.topLeft,
+                                                                                                          end: Alignment.bottomRight,
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                      child: Padding(
+                                                                                                        padding: const EdgeInsets.all(
+                                                                                                          8.0,
+                                                                                                        ),
+                                                                                                        child: Text(
+                                                                                                          Api.userInfo.read(
+                                                                                                                    'userType',
+                                                                                                                  ) ==
+                                                                                                                  "superAdmin"
+                                                                                                              ? 'Edit Plan'
+                                                                                                              : "Buy Now",
+                                                                                                          style: AppTextStyles.caption(
+                                                                                                            context,
+                                                                                                            color: AppColors.white,
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                },
+                                                                                          ),
+                                                                                    ),
+                                                                                  );
+                                                                                },
+                                                                          ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          }
+            ),
+          );
+        },
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
@@ -1780,9 +2919,14 @@ class _ViewPlanState extends State<ViewPlan> {
     planController.isLocationAndroid = false;
     planController.isMobileNumber = false;
     planController.isServices = false;
-    planController.selectJobId='';
+    planController.selectJobId = '';
   }
-  Map<String, double> splitGST(double totalPrice, double cgstPercent, double sgstPercent) {
+
+  Map<String, double> splitGST(
+    double totalPrice,
+    double cgstPercent,
+    double sgstPercent,
+  ) {
     double basePrice = totalPrice / (1 + (cgstPercent + sgstPercent) / 100);
     double cgstAmount = basePrice * cgstPercent / 100;
     double sgstAmount = basePrice * sgstPercent / 100;
@@ -1794,7 +2938,6 @@ class _ViewPlanState extends State<ViewPlan> {
       'totalPrice': totalPrice,
     };
   }
-
 }
 
 class PlanDetailsWidget extends StatelessWidget {
@@ -1825,16 +2968,15 @@ class PlanDetailsWidget extends StatelessWidget {
             child: SlideAnimation(
               verticalOffset: 80.0,
               curve: Curves.easeOutCubic,
-              child: FadeInAnimation(
-                child: planCards[index],
-              ),
+              child: FadeInAnimation(child: planCards[index]),
             ),
           );
         }),
       ),
     );
   }
-  Widget _planCard(String title, Map<String, dynamic>? plan,dynamic context) {
+
+  Widget _planCard(String title, Map<String, dynamic>? plan, dynamic context) {
     if (plan == null) return const SizedBox();
     final bool isActive = plan["isActive"] == true;
     String formatDate(String date) {
@@ -1851,18 +2993,18 @@ class PlanDetailsWidget extends StatelessWidget {
         return date;
       }
     }
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ExpansionTile(
-        title: Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(
           isActive ? "Active" : "Expired",
           style: TextStyle(
-              color: isActive ? Colors.green : Colors.red,fontWeight: FontWeight.bold,fontSize: MediaQuery.of(context).size.width*0.03
+            color: isActive ? Colors.green : Colors.red,
+            fontWeight: FontWeight.bold,
+            fontSize: MediaQuery.of(context).size.width * 0.03,
           ),
         ),
         childrenPadding: const EdgeInsets.all(16),
@@ -1870,11 +3012,7 @@ class PlanDetailsWidget extends StatelessWidget {
           // _row("Plan Name", plan["name"],context),
           // _row("Start Date", formatDate(plan["startDate"]),context),
           // _row("End Date", formatDate(plan["endDate"]),context),
-          _row(
-            "Plan Name",
-            plan["name"]?.toString() ?? "-",
-            context,
-          ),
+          _row("Plan Name", plan["name"]?.toString() ?? "-", context),
 
           _row(
             "Start Date",
@@ -1892,22 +3030,31 @@ class PlanDetailsWidget extends StatelessWidget {
             context,
           ),
           const SizedBox(height: 8),
-          if (plan["details"] != null)
-            _features(plan["details"]),
+          if (plan["details"] != null) _features(plan["details"]),
         ],
       ),
     );
   }
 
-  Widget _row(String label, dynamic value,dynamic context) {
+  Widget _row(String label, dynamic value, dynamic context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
         children: [
           Text(
-            "$label: ",style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),
+            "$label: ",
+            style: AppTextStyles.caption(
+              context,
+              color: AppColors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          Expanded(child: Text(value?.toString() ?? "-",style: AppTextStyles.caption(context,color: AppColors.black),)),
+          Expanded(
+            child: Text(
+              value?.toString() ?? "-",
+              style: AppTextStyles.caption(context, color: AppColors.black),
+            ),
+          ),
         ],
       ),
     );

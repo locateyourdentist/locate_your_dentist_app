@@ -27,7 +27,7 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
     "Dental Lab",
     "Dental Shop",
     "Dental Mechanic",
-    "Dental Consultant"
+    "Dental Consultant",
   ];
 
   @override
@@ -36,16 +36,23 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
     jobController.selectedUserType = "All";
     fetchCategories();
   }
+
   Future<void> fetchCategories() async {
     await jobController.getJobCategoryLists(
-        jobController.selectedUserType == "All" ? "" : jobController
-            .selectedUserType!, context);
+      jobController.selectedUserType == "All"
+          ? ""
+          : jobController.selectedUserType!,
+      context,
+    );
     // await jobController.getJobCategoryLists("",context);
   }
 
   void addCategory() async {
     await jobController.createJobCategoryAdmin(
-        jobController.selectedUserType!, nameController.text, context);
+      jobController.selectedUserType!,
+      nameController.text,
+      context,
+    );
     nameController.clear();
     fetchCategories();
   }
@@ -60,93 +67,98 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
     }
     showDialog(
       context: context,
-      builder: (_) =>
-          AlertDialog(
-            title: Center(
-              child: Text(
-                model != null ? "Update Category" : "Add Category",
-                style: AppTextStyles.caption(
-                    context, color: AppColors.black,
-                    fontWeight: FontWeight.bold),
-              ),
+      builder: (_) => AlertDialog(
+        title: Center(
+          child: Text(
+            model != null ? "Update Category" : "Add Category",
+            style: AppTextStyles.caption(
+              context,
+              color: AppColors.black,
+              fontWeight: FontWeight.bold,
             ),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  GetBuilder<JobController>(
-                    builder: (controller) {
-                      return SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        child: CustomDropdownField(
-                          hint: "Select User Type",
-                          borderColor: AppColors.white,
-                          fillColor: AppColors.white,
-                          items: const [
-                            "Dental Clinic",
-                            "Dental Lab",
-                            "Dental Shop",
-                            "Dental Mechanic",
-                            "Dental Consultant"
-                          ],
-                          selectedValue: controller.selectedUserType,
-                          onChanged: (value) {
-                            controller.selectedUserType = value;
-                            controller.update();
-                          },
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 15),
-
-                  CustomTextField(
-                    hint: "Job Category",
-                    icon: Icons.location_city,
-                    controller: nameController,
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () async {
-                  if (model != null) {
-                    await jobController.updateJobCategoryAdmin(
-                        model.id,
-                        nameController.text,
-                        jobController.isActive.toString(),
-                        context);
-                  } else {
-                    // Add
-                    await jobController.createJobCategoryAdmin(
-                        jobController.selectedUserType!,
-                        nameController.text,
-                        context);
-                  }
-                  Navigator.pop(context);
-                  fetchCategories();
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GetBuilder<JobController>(
+                builder: (controller) {
+                  return SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: CustomDropdownField(
+                      hint: "Select User Type",
+                      borderColor: AppColors.white,
+                      fillColor: AppColors.white,
+                      items: const [
+                        "Dental Clinic",
+                        "Dental Lab",
+                        "Dental Shop",
+                        "Dental Mechanic",
+                        "Dental Consultant",
+                      ],
+                      selectedValue: controller.selectedUserType,
+                      onChanged: (value) {
+                        controller.selectedUserType = value;
+                        controller.update();
+                      },
+                    ),
+                  );
                 },
-                child: Center(
-                  child: Text(
-                    model != null ? "Update" : "Add",
-                    style: AppTextStyles.caption(
-                        context, color: AppColors.primary),
-                  ),
-                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              CustomTextField(
+                hint: "Job Category",
+                icon: Icons.location_city,
+                controller: nameController,
               ),
             ],
           ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              if (model != null) {
+                await jobController.updateJobCategoryAdmin(
+                  model.id,
+                  nameController.text,
+                  jobController.isActive.toString(),
+                  context,
+                );
+              } else {
+                // Add
+                await jobController.createJobCategoryAdmin(
+                  jobController.selectedUserType!,
+                  nameController.text,
+                  context,
+                );
+              }
+              Navigator.pop(context);
+              fetchCategories();
+            },
+            child: Center(
+              child: Text(
+                model != null ? "Update" : "Add",
+                style: AppTextStyles.caption(context, color: AppColors.primary),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
+
   void deleteCategory(String id) async {
     // await jobController.updateJobCategoryAdmin(model.id, nameController.text,jobController.isActive.toString(),context);
     fetchCategories();
   }
+
   Future<void> _refresh() async {
     fetchCategories();
   }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -154,8 +166,10 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: AppColors.white,
-        title: Text('Add Job Category',
-          style: AppTextStyles.subtitle(context, color: AppColors.black),),
+        title: Text(
+          'Add Job Category',
+          style: AppTextStyles.subtitle(context, color: AppColors.black),
+        ),
         automaticallyImplyLeading: true,
         iconTheme: IconThemeData(color: AppColors.black, size: size * 0.05),
         leading: Padding(
@@ -174,140 +188,160 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
                 ),
               ),
               child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
+                child: Icon(Icons.arrow_back, color: AppColors.white),
               ),
             ),
           ),
         ),
       ),
       body: GetBuilder<JobController>(
-          builder: (controller) {
-            return RefreshIndicator(
-              onRefresh: _refresh,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                    const SizedBox(height: 10,),
-                    Text(
-                      "Select User Type",
-                      style: AppTextStyles.caption(
-                        context,
-                        fontWeight: FontWeight.bold,
-                      ),
+        builder: (controller) {
+          return RefreshIndicator(
+            onRefresh: _refresh,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  Text(
+                    "Select User Type",
+                    style: AppTextStyles.caption(
+                      context,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 10,),
+                  ),
+                  const SizedBox(height: 10),
 
-                    GestureDetector(
-                      child: _modernFilterBox(
-                          icon: Icons.person_outline,
-                          label: jobController.selectedUserType ?? "Select User Type",
-                          onTap: _showUserTypeDialog
-                      ),
+                  GestureDetector(
+                    child: _modernFilterBox(
+                      icon: Icons.person_outline,
+                      label:
+                          jobController.selectedUserType ?? "Select User Type",
+                      onTap: _showUserTypeDialog,
                     ),
-                    const SizedBox(height: 10),
+                  ),
+                  const SizedBox(height: 10),
 
-                    Center(
-                      child: Container(
-                        width: size * 0.35,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          gradient: const LinearGradient(
-                            colors: [AppColors.primary, AppColors.secondary],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            backgroundColor: AppColors.transparent,shadowColor: AppColors.transparent
-                          ),
-                          onPressed: () {
-                            openCategoryDialog();
-                          },
-                          child: Text("Add", style: AppTextStyles.caption(
-                              context, color: AppColors.white,
-                              fontWeight: FontWeight.bold),),
+                  Center(
+                    child: Container(
+                      width: size * 0.35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        gradient: const LinearGradient(
+                          colors: [AppColors.primary, AppColors.secondary],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
                       ),
+
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          backgroundColor: AppColors.transparent,
+                          shadowColor: AppColors.transparent,
+                        ),
+                        onPressed: () {
+                          openCategoryDialog();
+                        },
+                        child: Text(
+                          "Add",
+                          style: AppTextStyles.caption(
+                            context,
+                            color: AppColors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
+                  ),
 
-                    const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                    Expanded(
-                      child:  GetBuilder<JobController>(
-                          builder: (controller) {
-                            return ListView.builder(
-                            itemCount: jobController.jobCategoryAdmin.length,
-                            itemBuilder: (_, index) {
-                              final item = jobController.jobCategoryAdmin[index];
-                              return Card(
-                                child: ListTile(
-                                  title: Text(item.name, style: AppTextStyles.body(
-                                      context, color: AppColors.black,
-                                      fontWeight: FontWeight.bold),),
-                                  subtitle: Text(item.userType,
-                                      style: AppTextStyles.caption(
-                                          context, color: AppColors.black,
-                                          fontWeight: FontWeight.normal)),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.edit, color: AppColors.primary,
-                                          size: size * 0.06,),
-                                        onPressed: () =>
-                                            openCategoryDialog(model: item),
-                                      ),
-                                      IconButton(
-                                          icon: Icon(
-                                            Icons.delete, color: Colors.red,
-                                            size: size * 0.06,),
-                                          onPressed: () async {
-                                            showDeleteDialog(
-                                              context: context,
-                                              title: "Delete Category",
-                                              message: "This category will be permanently removed.",
-                                              onConfirm: () async {
-                                                print('itrm id${item.id}');
-                                                await jobController
-                                                    .deleteJobCategoryLists(
-                                                    item.id, context);
-                                                await fetchCategories();
-                                                jobController.update();
-                                              },
-                                            );
-                                          }
-                                      ),
-                                    ],
+                  Expanded(
+                    child: GetBuilder<JobController>(
+                      builder: (controller) {
+                        return ListView.builder(
+                          itemCount: jobController.jobCategoryAdmin.length,
+                          itemBuilder: (_, index) {
+                            final item = jobController.jobCategoryAdmin[index];
+                            return Card(
+                              child: ListTile(
+                                title: Text(
+                                  item.name,
+                                  style: AppTextStyles.body(
+                                    context,
+                                    color: AppColors.black,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              );
-                            },
-                          );
-                        }
-                      ),
-                    )
-                  ],
-                ),
+                                subtitle: Text(
+                                  item.userType,
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    color: AppColors.black,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.edit,
+                                        color: AppColors.primary,
+                                        size: size * 0.06,
+                                      ),
+                                      onPressed: () =>
+                                          openCategoryDialog(model: item),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                        size: size * 0.06,
+                                      ),
+                                      onPressed: () async {
+                                        showDeleteDialog(
+                                          context: context,
+                                          title: "Delete Category",
+                                          message:
+                                              "This category will be permanently removed.",
+                                          onConfirm: () async {
+                                            print('itrm id${item.id}');
+                                            await jobController
+                                                .deleteJobCategoryLists(
+                                                  item.id,
+                                                  context,
+                                                );
+                                            await fetchCategories();
+                                            jobController.update();
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            );
-          }
+            ),
+          );
+        },
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
   }
+
   void _showUserTypeDialog() {
     final userTypes = [
       "All",
@@ -315,7 +349,7 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
       "Dental Lab",
       "Dental Shop",
       "Dental Mechanic",
-      "Dental Consultant"
+      "Dental Consultant",
     ];
 
     String? tempSelected = jobController.selectedUserType;
@@ -327,9 +361,9 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title:  Text(
+          title: Text(
             "Select User Type",
-            style: AppTextStyles.caption(fontWeight: FontWeight.bold,context),
+            style: AppTextStyles.caption(fontWeight: FontWeight.bold, context),
           ),
           content: SizedBox(
             width: double.maxFinite,
@@ -341,7 +375,13 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
                     value: type,
                     groupValue: tempSelected,
                     activeColor: AppColors.primary,
-                    title: Text(type,style: AppTextStyles.caption(fontWeight: FontWeight.bold,context),),
+                    title: Text(
+                      type,
+                      style: AppTextStyles.caption(
+                        fontWeight: FontWeight.bold,
+                        context,
+                      ),
+                    ),
                     onChanged: (value) {
                       tempSelected = value;
                       Navigator.pop(context);
@@ -361,6 +401,7 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
       },
     );
   }
+
   Widget _modernFilterBox({
     required IconData icon,
     required String label,
@@ -376,7 +417,7 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
           border: Border.all(color: Colors.grey.shade300),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 5,
               offset: const Offset(0, 2),
             ),
@@ -389,8 +430,11 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                  label,
-                  style: AppTextStyles.caption(context,fontWeight: FontWeight.bold)
+                label,
+                style: AppTextStyles.caption(
+                  context,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
@@ -400,86 +444,98 @@ class _JobCategoryScreenState extends State<JobCategoryScreen> {
     );
   }
 }
-  class ModernUserTypeSelector extends StatelessWidget {
+
+class ModernUserTypeSelector extends StatelessWidget {
   final List<String> userTypes;
   const ModernUserTypeSelector({super.key, required this.userTypes});
 
   @override
   Widget build(BuildContext context) {
-  final jobController = Get.find<JobController>();
-  return GestureDetector(
-  onTap: () => _showUserTypePopup(context, jobController),
-  child: Container(
- // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-  decoration: BoxDecoration(
-  color: AppColors.white,
-  border: Border.all(color: AppColors.grey),
-  borderRadius: BorderRadius.circular(12),
-  ),
-  child: Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-  child: Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-  Expanded(child: Obx(() => Text(
-  jobController.selectedUserType ?? "Select User Type",
-  overflow: TextOverflow.ellipsis,
-  style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
-  ))),
-  const Icon(Icons.arrow_drop_down),
-  ],
-  ),
-  ),
-  ),
-  );
+    final jobController = Get.find<JobController>();
+    return GestureDetector(
+      onTap: () => _showUserTypePopup(context, jobController),
+      child: Container(
+        // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          border: Border.all(color: AppColors.grey),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Obx(
+                  () => Text(
+                    jobController.selectedUserType ?? "Select User Type",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.04,
+                    ),
+                  ),
+                ),
+              ),
+              const Icon(Icons.arrow_drop_down),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _showUserTypePopup(BuildContext context, JobController controller) {
-  showModalBottomSheet(
-  context: context,
-  shape: const RoundedRectangleBorder(
-  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-  ),
-  backgroundColor: Colors.white,
-  builder: (_) {
-  return SizedBox(
-  height: 300,
-  child: Column(
-  children: [
-  const Padding(
-  padding: EdgeInsets.all(16.0),
-  child: Text(
-  "Select User Type",
-  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-  ),
-  ),
-  const Divider(height: 1),
-  Expanded(
-  child: ListView.builder(
-  itemCount: userTypes.length,
-  itemBuilder: (context, index) {
-  final type = userTypes[index];
-  return ListTile(
-  title: Text(type),
-  onTap: () async {
-  controller.selectedUserType = type;
-  final jobController = Get.put(JobController());
-  Future<void> fetchCategories() async {
-    await jobController.getJobCategoryLists(jobController.selectedUserType == "All" ? "" :
-    jobController.selectedUserType!, context);
-    // await jobController.getJobCategoryLists("",context);
-  }  controller.update();
-  Navigator.pop(context);
-  },
-  );
-  },
-  ),
-  ),
-  ],
-  ),
-  );
-  },
-  );
-  }
-  }
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.white,
+      builder: (_) {
+        return SizedBox(
+          height: 300,
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  "Select User Type",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: userTypes.length,
+                  itemBuilder: (context, index) {
+                    final type = userTypes[index];
+                    return ListTile(
+                      title: Text(type),
+                      onTap: () async {
+                        controller.selectedUserType = type;
+                        final jobController = Get.put(JobController());
+                        Future<void> fetchCategories() async {
+                          await jobController.getJobCategoryLists(
+                            jobController.selectedUserType == "All"
+                                ? ""
+                                : jobController.selectedUserType!,
+                            context,
+                          );
+                          // await jobController.getJobCategoryLists("",context);
+                        }
 
+                        controller.update();
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

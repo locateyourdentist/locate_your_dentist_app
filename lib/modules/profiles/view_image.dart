@@ -1,11 +1,8 @@
-
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
-
 
 class ViewImage extends StatefulWidget {
   const ViewImage({super.key});
@@ -57,19 +54,18 @@ class _ViewImageState extends State<ViewImage> {
       body: Center(
         child: isVideo
             ? controller != null && controller!.value.isInitialized
-            ? AspectRatio(
-          aspectRatio: controller!.value.aspectRatio,
-          child: VideoPlayer(controller!),
-        )
-            : const CircularProgressIndicator()
+                  ? AspectRatio(
+                      aspectRatio: controller!.value.aspectRatio,
+                      child: VideoPlayer(controller!),
+                    )
+                  : const CircularProgressIndicator()
             : (kIsWeb && bytes != null)
             ? Image.memory(bytes!)
             : (file != null)
             ? Image.file(file!)
             : (url != null)
             ? Image.network(url!)
-            : const Icon(Icons.image_not_supported,
-            color: Colors.white),
+            : const Icon(Icons.image_not_supported, color: Colors.white),
       ),
     );
   }

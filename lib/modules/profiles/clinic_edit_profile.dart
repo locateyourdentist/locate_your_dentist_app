@@ -23,34 +23,43 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:geocoding/geocoding.dart';
 
-
-  class ClinicEditProfile extends StatefulWidget {
+class ClinicEditProfile extends StatefulWidget {
   const ClinicEditProfile({super.key});
   @override
   State<ClinicEditProfile> createState() => _ClinicEditProfileState();
+}
+
+class _ClinicEditProfileState extends State<ClinicEditProfile> {
+  final loginController = Get.put(LoginController());
+  final _formKeyEditProfile = GlobalKey<FormState>();
+  late final TextEditingController countryCont = TextEditingController();
+  final TextEditingController stateCont = TextEditingController();
+  final TextEditingController cityCont = TextEditingController();
+  String? userId;
+  String? branchId;
+  late QuillController _controller;
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode _focusNode = FocusNode();
+  final SingleSelectController<String?> _stateCtrl = SingleSelectController(
+    null,
+  );
+  final SingleSelectController<String?> _districtCtrl = SingleSelectController(
+    null,
+  );
+  final SingleSelectController<String?> _talukaCtrl = SingleSelectController(
+    null,
+  );
+  final SingleSelectController<String?> _villageCtrl = SingleSelectController(
+    null,
+  );
+  @override
+  final ImagePicker _picker = ImagePicker();
+  final planController = Get.put(PlanController());
+  void removeMedia(int index) {
+    loginController.editImages.removeAt(index);
+    loginController.update();
   }
-  class _ClinicEditProfileState extends State<ClinicEditProfile> {
-    final loginController = Get.put(LoginController());
-    final _formKeyEditProfile = GlobalKey<FormState>();
-    late final TextEditingController countryCont = TextEditingController();
-    final TextEditingController stateCont = TextEditingController();
-    final TextEditingController cityCont = TextEditingController();
-    String? userId;
-    String? branchId;
-    late QuillController _controller;
-    final ScrollController _scrollController = ScrollController();
-    final FocusNode _focusNode = FocusNode();
-    final SingleSelectController<String?> _stateCtrl = SingleSelectController(null);
-    final SingleSelectController<String?> _districtCtrl = SingleSelectController(null);
-    final SingleSelectController<String?> _talukaCtrl = SingleSelectController(null);
-    final SingleSelectController<String?> _villageCtrl = SingleSelectController(null);
-    @override
-    final ImagePicker _picker = ImagePicker();
-    final planController = Get.put(PlanController());
-    void removeMedia(int index) {
-      loginController.editImages.removeAt(index);
-      loginController.update();
-    }
+
   Future<void> pickCertificates() async {
     if (loginController.editCertificates.length >= 3) {
       Get.snackbar("Error", "Maximum 3 images allowed");
@@ -66,12 +75,13 @@ import 'package:geocoding/geocoding.dart';
         );
       });
       if (selected.length > remaining) {
-        showCustomToast(context,  "error, Only $remaining more images allowed",);
+        showCustomToast(context, "error, Only $remaining more images allowed");
       }
-        } catch (e) {
+    } catch (e) {
       print("Error picking images: $e");
     }
   }
+
   Future<void> pickSingleImage1() async {
     final XFile? pickedImage = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -86,14 +96,25 @@ import 'package:geocoding/geocoding.dart';
       loginController.update();
     }
   }
+
   Widget _buildSingleImageWidget1({File? file, String? url}) {
     return Stack(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: file != null
-              ? Image.file(file, fit: BoxFit.cover, width: double.infinity, height: double.infinity)
-              : Image.network(url!, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+              ? Image.file(
+                  file,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                )
+              : Image.network(
+                  url!,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
         ),
         Positioned(
           right: 0,
@@ -104,7 +125,7 @@ import 'package:geocoding/geocoding.dart';
               loginController.logoImage.clear();
               loginController.update();
             },
-            child:  Icon(Icons.cancel,size: 12, color: Colors.white,),
+            child: Icon(Icons.cancel, size: 12, color: Colors.white),
           ),
         ),
         Positioned(
@@ -118,178 +139,184 @@ import 'package:geocoding/geocoding.dart';
                 color: Colors.black54,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.edit,  color: Colors.white),
+              child: const Icon(Icons.edit, color: Colors.white),
             ),
           ),
         ),
       ],
     );
   }
-    void loadJobDescription(dynamic data) {
-      try {
-        List<Map<String, dynamic>> delta;
 
-        if (data == null || data.toString().trim().isEmpty) {
+  void loadJobDescription(dynamic data) {
+    try {
+      List<Map<String, dynamic>> delta;
+
+      if (data == null || data.toString().trim().isEmpty) {
+        delta = [
+          {"insert": "\n"},
+        ];
+      } else if (data is String) {
+        final trimmed = data.trim();
+
+        if (trimmed.isEmpty || trimmed == "[]") {
           delta = [
-            {"insert": "\n"}
+            {"insert": "\n"},
           ];
-        }
+        } else {
+          final decoded = jsonDecode(trimmed);
 
-        else if (data is String) {
-          final trimmed = data.trim();
-
-          if (trimmed.isEmpty || trimmed == "[]") {
-            delta = [
-              {"insert": "\n"}
-            ];
+          if (decoded is List && decoded.isNotEmpty) {
+            delta = List<Map<String, dynamic>>.from(decoded);
           } else {
-            final decoded = jsonDecode(trimmed);
-
-            if (decoded is List && decoded.isNotEmpty) {
-              delta = List<Map<String, dynamic>>.from(decoded);
-            } else {
-              delta = [
-                {"insert": "\n"}
-              ];
-            }
+            delta = [
+              {"insert": "\n"},
+            ];
           }
         }
-
-        else if (data is List && data.isNotEmpty) {
-          delta = List<Map<String, dynamic>>.from(data);
-        }
-
-        else {
-          delta = [
-            {"insert": "\n"}
-          ];
-        }
-
-        _controller.document = Document.fromJson(delta);
-        setState(() {});
-      } catch (e) {
-        print("Quill load error: $e");
-
-        _controller.document = Document.fromJson([
-          {"insert": "\n"}
-        ]);
-      }
-    }
-    Future<String> getAddressFromLatLng(double lat, double lng) async {
-      try {
-        List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
-        Placemark place = placemarks.first;
-        return '${place.subLocality}, ${place.locality} ${place.postalCode}';
-      } catch (e) {
-        return '';
-      }
-    }
-    Future<void> getLocation() async {
-      final position = await LocationService.getCurrentLocation();
-
-      if (position != null) {
-        loginController.latitude = position.latitude;
-        loginController.longitude = position.longitude;
-
-        final address = await getAddressFromLatLng(loginController.latitude!, loginController.longitude!);
-
-        print('latitude ${loginController.latitude}');
-        print('longitude ${loginController.longitude}');
-
-        planController.currentLocation = address;
+      } else if (data is List && data.isNotEmpty) {
+        delta = List<Map<String, dynamic>>.from(data);
       } else {
-        Get.snackbar('Location', 'Unable to get location');
+        delta = [
+          {"insert": "\n"},
+        ];
       }
+
+      _controller.document = Document.fromJson(delta);
+      setState(() {});
+    } catch (e) {
+      print("Quill load error: $e");
+
+      _controller.document = Document.fromJson([
+        {"insert": "\n"},
+      ]);
     }
+  }
+
+  Future<String> getAddressFromLatLng(double lat, double lng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+      Placemark place = placemarks.first;
+      return '${place.subLocality}, ${place.locality} ${place.postalCode}';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  Future<void> getLocation() async {
+    final position = await LocationService.getCurrentLocation();
+
+    if (position != null) {
+      loginController.latitude = position.latitude;
+      loginController.longitude = position.longitude;
+
+      final address = await getAddressFromLatLng(
+        loginController.latitude!,
+        loginController.longitude!,
+      );
+
+      print('latitude ${loginController.latitude}');
+      print('longitude ${loginController.longitude}');
+
+      planController.currentLocation = address;
+    } else {
+      Get.snackbar('Location', 'Unable to get location');
+    }
+  }
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _controller = QuillController.basic(
       config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
-
+        clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
       ),
     );
     _refresh();
   }
-    Future<void> _refresh() async {
-      userId=Get.arguments?["userId"]??"";
-      branchId = Get.arguments?['branchId'] ??"";
-      print('sd${Api.userInfo.read('selectUId')??""}');
-      await loginController.fetchStates();
-      await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
-      if (mounted) {
-        _stateCtrl.value = loginController.selectedState;
-        _districtCtrl.value = loginController.selectedDistrict;
-        _talukaCtrl.value = loginController.selectedTaluka;
-        _villageCtrl.value = loginController.selectedVillage;
-      }
-      loadJobDescription(loginController.descriptionData);
-      await getPlanLimits();
-    }
-    Future<void> setProfileData(user) async {
 
-      loginController.selectedState = user.address["state"] ?? "";
-      loginController.selectedDistrict = user.address["district"] ?? "";
-      loginController.selectedTaluka = user.address["city"] ?? "";
-      loginController.selectedVillage = user.address["area"] ?? "";
-      print('fgf${user.address["district"] ?? ""}');
-      await loginController.fetchStates();
-      if (loginController.selectedState != null && loginController.selectedState!.isNotEmpty) {
-        await loginController.fetchDistricts(loginController.selectedState!);
-      }
-      if (loginController.selectedDistrict != null && loginController.selectedDistrict!.isNotEmpty) {
-        await loginController.fetchTalukas(loginController.selectedDistrict!);
-      }
-      if (loginController.selectedTaluka != null && loginController.selectedTaluka!.isNotEmpty) {
-        await loginController.fetchVillages(loginController.selectedTaluka!);
-      }
+  Future<void> _refresh() async {
+    userId = Get.arguments?["userId"] ?? "";
+    branchId = Get.arguments?['branchId'] ?? "";
+    print('sd${Api.userInfo.read('selectUId') ?? ""}');
+    await loginController.fetchStates();
+    await loginController.getProfileByUserId(
+      Api.userInfo.read('selectUId') ?? "",
+      context,
+    );
+    if (mounted) {
+      _stateCtrl.value = loginController.selectedState;
+      _districtCtrl.value = loginController.selectedDistrict;
+      _talukaCtrl.value = loginController.selectedTaluka;
+      _villageCtrl.value = loginController.selectedVillage;
+    }
+    loadJobDescription(loginController.descriptionData);
+    getPlanLimits();
+  }
 
-      loginController.update();
+  Future<void> setProfileData(user) async {
+    loginController.selectedState = user.address["state"] ?? "";
+    loginController.selectedDistrict = user.address["district"] ?? "";
+    loginController.selectedTaluka = user.address["city"] ?? "";
+    loginController.selectedVillage = user.address["area"] ?? "";
+    print('fgf${user.address["district"] ?? ""}');
+    await loginController.fetchStates();
+    if (loginController.selectedState != null &&
+        loginController.selectedState!.isNotEmpty) {
+      await loginController.fetchDistricts(loginController.selectedState!);
     }
-    bool getPlanActive() {
-      final userData = loginController.userData;
-      if (userData.isEmpty) return false;
-      final raw = userData.first.details["plan"]?["basePlan"]?["isActive"]??"";
-      return raw == true || raw == "true";
+    if (loginController.selectedDistrict != null &&
+        loginController.selectedDistrict!.isNotEmpty) {
+      await loginController.fetchTalukas(loginController.selectedDistrict!);
     }
+    if (loginController.selectedTaluka != null &&
+        loginController.selectedTaluka!.isNotEmpty) {
+      await loginController.fetchVillages(loginController.selectedTaluka!);
+    }
+
+    loginController.update();
+  }
+
+  bool getPlanActive() {
+    final userData = loginController.userData;
+    if (userData.isEmpty) return false;
+    final raw = userData.first.details["plan"]?["basePlan"]?["isActive"] ?? "";
+    return raw == true || raw == "true";
+  }
+
+  @override
   Widget build(BuildContext context) {
-    double size=MediaQuery.of(context).size.width;
-    return  Scaffold(
-        appBar:AppBar(
-          automaticallyImplyLeading: false,centerTitle: true,
-          title: Text(
-            'Profile',
-            style: AppTextStyles.subtitle(context, color: AppColors.black),
-          ),
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [AppColors.primary, AppColors.secondary],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+    double size = MediaQuery.of(context).size.width;
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: Text(
+          'Profile',
+          style: AppTextStyles.subtitle(context, color: AppColors.black),
+        ),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [AppColors.primary, AppColors.secondary],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                child: const Center(
-                  child: Icon(
-                    Icons.arrow_back,
-                    color: AppColors.white,
-                  ),
-                ),
+              ),
+              child: const Center(
+                child: Icon(Icons.arrow_back, color: AppColors.white),
               ),
             ),
           ),
-          iconTheme: const IconThemeData(color: AppColors.white),
         ),
+        iconTheme: const IconThemeData(color: AppColors.white),
+      ),
       body: GetBuilder<LoginController>(
         builder: (controller) {
           final planActive = getPlanActive();
@@ -301,8 +328,14 @@ import 'package:geocoding/geocoding.dart';
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Add Details',style: AppTextStyles.subtitle(context,color: AppColors.black),),
-                    SizedBox(height: size*0.03,),
+                    Text(
+                      'Add Details',
+                      style: AppTextStyles.subtitle(
+                        context,
+                        color: AppColors.black,
+                      ),
+                    ),
+                    SizedBox(height: size * 0.03),
                     CustomTextField(
                       hint: "Name",
                       icon: Icons.location_on,
@@ -310,7 +343,7 @@ import 'package:geocoding/geocoding.dart';
                       // fillColor: AppColors.white,
                       // borderColor: AppColors.grey,
                     ),
-                    SizedBox(height: size*0.03,),
+                    SizedBox(height: size * 0.03),
                     CustomTextField(
                       hint: "Date of Birth",
                       controller: loginController.dobController,
@@ -327,7 +360,7 @@ import 'package:geocoding/geocoding.dart';
 
                         if (pickedDate != null) {
                           loginController.dobController.text =
-                          "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                              "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
                         }
                       },
                     ),
@@ -339,7 +372,7 @@ import 'package:geocoding/geocoding.dart';
                       // fillColor: AppColors.white,
                       // borderColor: AppColors.grey,
                     ),
-                    SizedBox(height: size*0.03,),
+                    SizedBox(height: size * 0.03),
 
                     // CustomTextField(
                     //   hint: "Clinic Description",
@@ -356,8 +389,9 @@ import 'package:geocoding/geocoding.dart';
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(10),
                               topRight: Radius.circular(10),
-                            ),),
-                          height: size*0.4,
+                            ),
+                          ),
+                          height: size * 0.4,
                           width: double.infinity,
                           child: QuillSimpleToolbar(
                             controller: _controller,
@@ -369,14 +403,15 @@ import 'package:geocoding/geocoding.dart';
                           ),
                         ),
                         Container(
-                          height: size*0.5,
+                          height: size * 0.5,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.grey.shade100,
                             borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(10),
                               bottomRight: Radius.circular(10),
-                            ),),
+                            ),
+                          ),
                           child: QuillEditor(
                             controller: _controller,
                             scrollController: _scrollController,
@@ -389,16 +424,17 @@ import 'package:geocoding/geocoding.dart';
                         ),
                       ],
                     ),
-                    SizedBox(height: size*0.03,),
-                    if(branchId!="0")
-                    CustomTextField(
-                      hint: "Email",
-                      icon: Icons.location_on,
-                      controller: loginController.emailController,readOnly: true,
-                      // fillColor: AppColors.white,
-                      // borderColor: AppColors.grey,
-                    ),
-                    SizedBox(height: size*0.03,),
+                    SizedBox(height: size * 0.03),
+                    if (branchId != "0")
+                      CustomTextField(
+                        hint: "Email",
+                        icon: Icons.location_on,
+                        controller: loginController.emailController,
+                        readOnly: true,
+                        // fillColor: AppColors.white,
+                        // borderColor: AppColors.grey,
+                      ),
+                    SizedBox(height: size * 0.03),
                     CustomTextField(
                       hint: "Mobile Number",
                       icon: Icons.location_on,
@@ -407,7 +443,7 @@ import 'package:geocoding/geocoding.dart';
                       // borderColor: AppColors.grey,
                       maxLength: 10,
                     ),
-                    SizedBox(height: size*0.03,),
+                    SizedBox(height: size * 0.03),
 
                     CustomTextField(
                       hint: "Google map Link",
@@ -416,7 +452,7 @@ import 'package:geocoding/geocoding.dart';
                       // fillColor: AppColors.white,
                       // borderColor: AppColors.grey,
                     ),
-                    SizedBox(height: size*0.03,),
+                    SizedBox(height: size * 0.03),
                     CustomTextField(
                       hint: "Website Link",
                       icon: Icons.web,
@@ -424,7 +460,7 @@ import 'package:geocoding/geocoding.dart';
                       // fillColor: AppColors.white,
                       // borderColor: AppColors.grey,
                     ),
-                     SizedBox(height: size*0.03,),
+                    SizedBox(height: size * 0.03),
 
                     // CustomTextField(
                     //   hint: "Area",
@@ -434,425 +470,618 @@ import 'package:geocoding/geocoding.dart';
                     //   // borderColor: AppColors.grey,
                     // ),
                     // SizedBox(height: size * 0.03),
-               //if(Api.userInfo.read('userType')=="admin" || Api.userInfo.read('userType')=="superAdmin")
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CustomTextField(
-                        hint: "Address Line 1 (House No, Street Name)",
-                        icon: Icons.location_on,
-                        controller: loginController.addressLine1Controller,
-                        // fillColor: AppColors.white,
-                        // borderColor: AppColors.grey,
-                      ),
-                      SizedBox(height: size * 0.03),
-                      CustomTextField(
-                        hint: "Address Line 2 (Landmark, Area, Building)",
-                        icon: Icons.location_on,
-                        controller: loginController.addressLine2Controller,
-                        // fillColor: AppColors.white,
-                        // borderColor: AppColors.grey,
-                      ),
-                      SizedBox(height: size * 0.03),
-
-                      GetBuilder<LoginController>(
-                    builder: (controller) {
-                      final items = controller.states.map((v) => v.toString()).toList();
-                      return CustomDropdown<String>.search(
-                        hintText: "Select State",
-                        decoration: CustomDropdownDecoration(
-                          closedFillColor: Colors.grey[100],
-                          expandedFillColor: Colors.white,
-                          closedBorder: Border.all(
-                            color: AppColors.white,
-                            width: 1.5,
-                          ),
-                          expandedBorder: Border.all(
-                            color: AppColors.primary,
-                            width: 1.5,
-                          ),
-                          closedBorderRadius: BorderRadius.circular(10),
-                          expandedBorderRadius: BorderRadius.circular(10),
-                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
-                        items: controller.states.map((s) => s.toString()).toList(),
-                        controller: _stateCtrl,
-                        onChanged: (val) {
-                          if (val != null) {
-                            controller.selectedState = val;
-                            controller.districts.clear();
-                            controller.selectedDistrict = null;
-                            controller.selectedTaluka = null;
-                            controller.selectedVillage = null;
-                            _districtCtrl.value = null;
-                            _talukaCtrl.value = null;
-                            _villageCtrl.value = null;
-                            final state = controller.states.firstWhere((s) => s == val);
-                            controller.fetchDistricts(state.toString());
-                            controller.update();
-                          }
-                        },
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: size * 0.03),
-
-                  GetBuilder<LoginController>(
-                    builder: (controller) {
-                      return CustomDropdown<String>.search(
-                        hintText: "Select District",
-                        items: controller.districts.map((d) => d.toString()).toList(),
-                        controller: _districtCtrl,
-                        decoration: CustomDropdownDecoration(
-                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                          closedFillColor: Colors.grey[100],
-                          expandedFillColor: Colors.white,
-                          closedBorder: Border.all(
-                            color: AppColors.white,
-                            width: 1.5,
-                          ),
-                          expandedBorder: Border.all(
-                            color: AppColors.primary,
-                            width: 1.5,
-                          ),
+                    //if(Api.userInfo.read('userType')=="admin" || Api.userInfo.read('userType')=="superAdmin")
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          hint: "Address Line 1 (House No, Street Name)",
+                          icon: Icons.location_on,
+                          controller: loginController.addressLine1Controller,
+                          // fillColor: AppColors.white,
+                          // borderColor: AppColors.grey,
                         ),
-                        onChanged: (val) {
-                          if (val != null) {
-                            controller.selectedDistrict = val;
-                            controller.talukas.clear();
-                            controller.villages.clear();
-                            controller.selectedTaluka = null;
-                            controller.selectedVillage = null;
-                            _talukaCtrl.value = null;
-                            _villageCtrl.value = null;
-                            final district = controller.districts.firstWhere((d) => d == val);
-                            print('sub district selected$district');
-                            controller.fetchTalukas(district.toString());
-                            controller.update();
-                          }
-                        },
-                      );
-                    },
-                  ),
+                        SizedBox(height: size * 0.03),
+                        CustomTextField(
+                          hint: "Address Line 2 (Landmark, Area, Building)",
+                          icon: Icons.location_on,
+                          controller: loginController.addressLine2Controller,
+                          // fillColor: AppColors.white,
+                          // borderColor: AppColors.grey,
+                        ),
+                        SizedBox(height: size * 0.03),
 
-                  SizedBox(height: size * 0.03),
+                        GetBuilder<LoginController>(
+                          builder: (controller) {
+                            final items = controller.states
+                                .map((v) => v.toString())
+                                .toList();
+                            return CustomDropdown<String>.search(
+                              hintText: "Select State",
+                              decoration: CustomDropdownDecoration(
+                                closedFillColor: Colors.grey[100],
+                                expandedFillColor: Colors.white,
+                                closedBorder: Border.all(
+                                  color: AppColors.white,
+                                  width: 1.5,
+                                ),
+                                expandedBorder: Border.all(
+                                  color: AppColors.primary,
+                                  width: 1.5,
+                                ),
+                                closedBorderRadius: BorderRadius.circular(10),
+                                expandedBorderRadius: BorderRadius.circular(10),
+                                hintStyle: AppTextStyles.caption(
+                                  context,
+                                  color: AppColors.grey,
+                                ),
+                                headerStyle: AppTextStyles.caption(
+                                  context,
+                                  color: Colors.black,
+                                ),
+                                listItemStyle: AppTextStyles.caption(
+                                  context,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              items: controller.states
+                                  .map((s) => s.toString())
+                                  .toList(),
+                              controller: _stateCtrl,
+                              onChanged: (val) {
+                                if (val != null) {
+                                  controller.selectedState = val;
+                                  controller.districts.clear();
+                                  controller.selectedDistrict = null;
+                                  controller.selectedTaluka = null;
+                                  controller.selectedVillage = null;
+                                  _districtCtrl.value = null;
+                                  _talukaCtrl.value = null;
+                                  _villageCtrl.value = null;
+                                  final state = controller.states.firstWhere(
+                                    (s) => s == val,
+                                  );
+                                  controller.fetchDistricts(state.toString());
+                                  controller.update();
+                                }
+                              },
+                            );
+                          },
+                        ),
 
-                  GetBuilder<LoginController>(
-                      builder: (controller) {
-                        return  DefaultTextStyle(
-                          style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
-                          child: CustomDropdown<String>.search(
-                            hintText: "Select  taluka/town",
-                            items: loginController.talukas.map((t) => t.toString()).toList(),
-                            decoration: CustomDropdownDecoration(
-                              hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                              headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                              listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                              closedFillColor: Colors.grey[100],
-                              expandedFillColor: Colors.white,
-                              closedBorder: Border.all(
-                                color: AppColors.white,
-                                width: 1.5,
+                        SizedBox(height: size * 0.03),
+
+                        GetBuilder<LoginController>(
+                          builder: (controller) {
+                            return CustomDropdown<String>.search(
+                              hintText: "Select District",
+                              items: controller.districts
+                                  .map((d) => d.toString())
+                                  .toList(),
+                              controller: _districtCtrl,
+                              decoration: CustomDropdownDecoration(
+                                hintStyle: AppTextStyles.caption(
+                                  context,
+                                  color: AppColors.grey,
+                                ),
+                                headerStyle: AppTextStyles.caption(
+                                  context,
+                                  color: Colors.black,
+                                ),
+                                listItemStyle: AppTextStyles.caption(
+                                  context,
+                                  color: Colors.black,
+                                ),
+                                closedFillColor: Colors.grey[100],
+                                expandedFillColor: Colors.white,
+                                closedBorder: Border.all(
+                                  color: AppColors.white,
+                                  width: 1.5,
+                                ),
+                                expandedBorder: Border.all(
+                                  color: AppColors.primary,
+                                  width: 1.5,
+                                ),
                               ),
-                              expandedBorder: Border.all(
-                                color: AppColors.primary,
-                                width: 1.5,
+                              onChanged: (val) {
+                                if (val != null) {
+                                  controller.selectedDistrict = val;
+                                  controller.talukas.clear();
+                                  controller.villages.clear();
+                                  controller.selectedTaluka = null;
+                                  controller.selectedVillage = null;
+                                  _talukaCtrl.value = null;
+                                  _villageCtrl.value = null;
+                                  final district = controller.districts
+                                      .firstWhere((d) => d == val);
+                                  print('sub district selected$district');
+                                  controller.fetchTalukas(district.toString());
+                                  controller.update();
+                                }
+                              },
+                            );
+                          },
+                        ),
+
+                        SizedBox(height: size * 0.03),
+
+                        GetBuilder<LoginController>(
+                          builder: (controller) {
+                            return DefaultTextStyle(
+                              style: AppTextStyles.caption(
+                                context,
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
                               ),
-                            ),
-                            controller: _talukaCtrl,
-                            excludeSelected: false,
-                            onChanged: (val) {
-                              setState(() => loginController.selectedTaluka = val);
-                              if (val != null) {
-                                _villageCtrl.value = null;
-                                loginController.villages.clear();
-                                loginController.fetchVillages(val);
-                                loginController.update();
-                              }
-                            },),
-                        );
-                      }
-                  ),
-                      SizedBox(height: size * 0.03),
-                  GetBuilder<LoginController>(
-                      builder: (controller) {
-                        final items = controller.villages.map((v) => v.toString()).toList();
-                        return DefaultTextStyle(
-                          style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
-                          child: CustomDropdown<String>.search(
-                            hintText: "Select Area",
-                            // items: loginController.villages.map((v) => v['name'].toString()).toList(),
-                            items: items,
-                            decoration: CustomDropdownDecoration(
-                              hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                              headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                              listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                              closedFillColor: Colors.grey[100],
-                              expandedFillColor: Colors.white,
-                              closedBorder: Border.all(color: AppColors.white, width: 1.5,),
-                              expandedBorder: Border.all(color: AppColors.primary, width: 1.5,
+                              child: CustomDropdown<String>.search(
+                                hintText: "Select  taluka/town",
+                                items: loginController.talukas
+                                    .map((t) => t.toString())
+                                    .toList(),
+                                decoration: CustomDropdownDecoration(
+                                  hintStyle: AppTextStyles.caption(
+                                    context,
+                                    color: AppColors.grey,
+                                  ),
+                                  headerStyle: AppTextStyles.caption(
+                                    context,
+                                    color: Colors.black,
+                                  ),
+                                  listItemStyle: AppTextStyles.caption(
+                                    context,
+                                    color: Colors.black,
+                                  ),
+                                  closedFillColor: Colors.grey[100],
+                                  expandedFillColor: Colors.white,
+                                  closedBorder: Border.all(
+                                    color: AppColors.white,
+                                    width: 1.5,
+                                  ),
+                                  expandedBorder: Border.all(
+                                    color: AppColors.primary,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                controller: _talukaCtrl,
+                                excludeSelected: false,
+                                onChanged: (val) {
+                                  setState(
+                                    () => loginController.selectedTaluka = val,
+                                  );
+                                  if (val != null) {
+                                    _villageCtrl.value = null;
+                                    loginController.villages.clear();
+                                    loginController.fetchVillages(val);
+                                    loginController.update();
+                                  }
+                                },
                               ),
-                            ),
-                            controller: _villageCtrl,
-                            excludeSelected: false,
-                            onChanged: (val) {
-                              setState(() => loginController.selectedVillage = val);
-                              loginController.update();
-                              print('Area${loginController.selectedArea}');
-                            },
-                          ),
-                        );
-                      }
-                  ),
-                  SizedBox(height: size * 0.03),
-                    CustomTextField(
-                      hint: "PinCode",
-                      icon: Icons.pin,
-                      controller: loginController.pinCodeController,
-                      keyboardType: TextInputType.number,
-                      // fillColor: AppColors.white,
-                      // borderColor: AppColors.grey,
+                            );
+                          },
+                        ),
+                        SizedBox(height: size * 0.03),
+                        GetBuilder<LoginController>(
+                          builder: (controller) {
+                            final items = controller.villages
+                                .map((v) => v.toString())
+                                .toList();
+                            return DefaultTextStyle(
+                              style: AppTextStyles.caption(
+                                context,
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                              ),
+                              child: CustomDropdown<String>.search(
+                                hintText: "Select Area",
+                                // items: loginController.villages.map((v) => v['name'].toString()).toList(),
+                                items: items,
+                                decoration: CustomDropdownDecoration(
+                                  hintStyle: AppTextStyles.caption(
+                                    context,
+                                    color: AppColors.grey,
+                                  ),
+                                  headerStyle: AppTextStyles.caption(
+                                    context,
+                                    color: Colors.black,
+                                  ),
+                                  listItemStyle: AppTextStyles.caption(
+                                    context,
+                                    color: Colors.black,
+                                  ),
+                                  closedFillColor: Colors.grey[100],
+                                  expandedFillColor: Colors.white,
+                                  closedBorder: Border.all(
+                                    color: AppColors.white,
+                                    width: 1.5,
+                                  ),
+                                  expandedBorder: Border.all(
+                                    color: AppColors.primary,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                controller: _villageCtrl,
+                                excludeSelected: false,
+                                onChanged: (val) {
+                                  setState(
+                                    () => loginController.selectedVillage = val,
+                                  );
+                                  loginController.update();
+                                  print('Area${loginController.selectedArea}');
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(height: size * 0.03),
+                        CustomTextField(
+                          hint: "PinCode",
+                          icon: Icons.pin,
+                          controller: loginController.pinCodeController,
+                          keyboardType: TextInputType.number,
+                          // fillColor: AppColors.white,
+                          // borderColor: AppColors.grey,
+                        ),
+                      ],
                     ),
-                    ]),
                     SizedBox(height: size * 0.02),
-             if (Api.userInfo.read('userType') != 'superAdmin' && Api.userInfo.read('userType') != 'admin')
-               GetBuilder<LoginController>(
-                   builder: (controller) {
-                   return Column(
-                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                 children: [
-                    Text("Images", style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,)),
-                    SizedBox(
-                      height: size * 0.35,
-                      child: GetBuilder<LoginController>(
+                    if (Api.userInfo.read('userType') != 'superAdmin' &&
+                        Api.userInfo.read('userType') != 'admin')
+                      GetBuilder<LoginController>(
                         builder: (controller) {
-                          final images = controller.editImages.where((e) => !e.isVideo).toList();
-                          return ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: loginController.maxFilesImage,
-                            itemBuilder: (_, index) {
-                              if (index < images.length) {
-                                final media = images[index];
-                                return buildMediaItem(media, size, () {
-                                  controller.editImages.remove(media);
-                                  controller.update();
-                                },context);
-                              }
-                              return buildAddButton(() {
-                                if(planActive==true&&(loginController.userData.first.details["plan"]?["basePlan"]?["details"]["images"]==true)) {
-                                  pickMedia("image", context);
-                                }
-                                else{
-                                  showSuccessDialog(
-                                      context,
-                                      title: "Alert",
-                                      message: "Please activate Base Plan to Edit/Upload Image",
-                                      onOkPressed: () {});
-                                }
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Images",
+                                style: AppTextStyles.caption(
+                                  context,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(
+                                height: size * 0.35,
+                                child: GetBuilder<LoginController>(
+                                  builder: (controller) {
+                                    final images = controller.editImages
+                                        .where((e) => !e.isVideo)
+                                        .toList();
+                                    return ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: loginController.maxFilesImage,
+                                      itemBuilder: (_, index) {
+                                        if (index < images.length) {
+                                          final media = images[index];
+                                          return buildMediaItem(
+                                            media,
+                                            size,
+                                            () {
+                                              controller.editImages.remove(
+                                                media,
+                                              );
+                                              controller.update();
+                                            },
+                                            context,
+                                          );
+                                        }
+                                        return buildAddButton(() {
+                                          if (planActive == true &&
+                                              (loginController
+                                                      .userData
+                                                      .first
+                                                      .details["plan"]?["basePlan"]?["details"]["images"] ==
+                                                  true)) {
+                                            pickMedia("image", context);
+                                          } else {
+                                            showSuccessDialog(
+                                              context,
+                                              title: "Alert",
+                                              message:
+                                                  "Please activate Base Plan to Edit/Upload Image",
+                                              onOkPressed: () {},
+                                            );
+                                          }
+                                        }, size);
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
 
-                              }, size);
-                            },
+                              const SizedBox(height: 10),
+                              Center(
+                                child: Text(
+                                  "** Maximum ${loginController.maxFilesImage} images allowed",
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    color: Colors.redAccent,
+                                  ),
+                                ),
+                              ),
+
+                              Text(
+                                "Videos",
+                                style: AppTextStyles.caption(
+                                  context,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              if (Api.userInfo.read('userType') != 'admin' ||
+                                  Api.userInfo.read('userType') != 'superAdmin')
+                                SizedBox(
+                                  height: size * 0.35,
+                                  child: GetBuilder<LoginController>(
+                                    builder: (controller) {
+                                      final videos = controller.editImages
+                                          .where((e) => e.isVideo)
+                                          .toList();
+
+                                      return ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount:
+                                            loginController.maxFilesVideo,
+                                        itemBuilder: (_, index) {
+                                          if (index < videos.length) {
+                                            final media = videos[index];
+
+                                            return buildMediaItem(
+                                              media,
+                                              size,
+                                              () {
+                                                controller.editImages.remove(
+                                                  media,
+                                                );
+                                                controller.update();
+                                              },
+                                              context,
+                                            );
+                                          }
+
+                                          return buildAddButton(() {
+                                            if (planActive == true &&
+                                                (loginController
+                                                        .userData
+                                                        .first
+                                                        .details["plan"]?["basePlan"]?["details"]["video"] ==
+                                                    true)) {
+                                              pickMedia("video", context);
+                                            } else {
+                                              showSuccessDialog(
+                                                context,
+                                                title: "Alert",
+                                                message:
+                                                    "Please activate Base Plan to Edit/Upload Video",
+                                                onOkPressed: () {
+                                                  Get.toNamed('/viewPlanPage');
+                                                },
+                                              );
+                                            }
+                                          }, size);
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+
+                              const SizedBox(height: 10),
+
+                              Center(
+                                child: Text(
+                                  "** Maximum ${loginController.maxFilesVideo} videos allowed",
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    color: Colors.redAccent,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                'Certificate:',
+                                style: AppTextStyles.caption(
+                                  context,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              // SizedBox(height: size*0.03,),
+
+                              // SizedBox(height: size*0.02,),
+                              SizedBox(
+                                height: size * 0.35,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 3,
+                                  itemBuilder: (_, index) {
+                                    if (index <
+                                        loginController
+                                            .editCertificates
+                                            .length) {
+                                      final cert = loginController
+                                          .editCertificates[index];
+                                      return Container(
+                                        margin: const EdgeInsets.all(8),
+                                        width: size * 0.3,
+                                        height: size * 0.3,
+                                        child: Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: _buildCertificatePreview(
+                                                cert,
+                                                size,
+                                              ),
+                                            ),
+                                            Positioned(
+                                              right: 0,
+                                              top: 0,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  // confirmRemoveImage(context, index, () {
+                                                  //   loginController.editCertificates.removeAt(index);
+                                                  //   final certToDelete = loginController.editCertificates[index];
+                                                  //   loginController.deleteAwsFile(certToDelete.url.toString(), context);
+                                                  //   print('deleteFile ${certToDelete.url}');
+                                                  //   loginController.update();
+                                                  //   Get.back();
+                                                  // });
+                                                  confirmRemoveImage(
+                                                    context,
+                                                    index,
+                                                    () async {
+                                                      final certToDelete =
+                                                          loginController
+                                                              .editCertificates[index];
+                                                      if (certToDelete.url !=
+                                                          null) {
+                                                        await loginController
+                                                            .deleteAwsFile(
+                                                              certToDelete.url
+                                                                  .toString(),
+                                                              'user',
+                                                              context,
+                                                            );
+                                                        print(
+                                                          'deleteFile ${certToDelete.url}',
+                                                        );
+                                                      }
+                                                      loginController
+                                                          .editCertificates
+                                                          .removeAt(index);
+                                                      for (var img
+                                                          in loginController
+                                                              .editCertificates) {
+                                                        print(
+                                                          'after delete URL: ${img.url}',
+                                                        );
+                                                      }
+                                                      loginController.update();
+                                                      Get.back();
+                                                    },
+                                                  );
+                                                },
+                                                child: Icon(
+                                                  Icons.cancel,
+                                                  size: size * 0.06,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              right: 5,
+                                              bottom: 5,
+                                              child: Container(
+                                                padding: const EdgeInsets.all(
+                                                  4,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.black54,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.edit,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    return GestureDetector(
+                                      onTap: () => pickCertificates(),
+                                      child: Container(
+                                        margin: const EdgeInsets.all(8),
+                                        width: size * 0.3,
+                                        height: size * 0.3,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.grey,
+                                          ),
+                                          color: Colors.grey.shade200,
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.add,
+                                            size: size * 0.03,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+
+                              Center(
+                                child: Text(
+                                  "** maximum 3 images/pdf allowed",
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    color: Colors.redAccent,
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(height: size * 0.03),
+                              Text(
+                                'Upload  Logo Image:',
+                                style: AppTextStyles.caption(
+                                  context,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: size * 0.03),
+
+                              SizedBox(
+                                height: size * 0.3,
+                                width: size * 0.3,
+                                child: GetBuilder<LoginController>(
+                                  builder: (controller) {
+                                    if (controller.logoImages.isNotEmpty) {
+                                      final File file =
+                                          controller.logoImages.first;
+                                      return _buildSingleImageWidget1(
+                                        file: file,
+                                      );
+                                    }
+                                    if (controller.logoImage.isNotEmpty) {
+                                      final img = controller.logoImage.first;
+                                      //final AppImage img = controller.logoImage.first;
+                                      return _buildSingleImageWidget1(url: img);
+                                    }
+                                    return GestureDetector(
+                                      onTap: () => pickSingleImage1(),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.grey,
+                                          ),
+                                          color: Colors.grey.shade200,
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.add,
+                                            size: size * 0.03,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           );
                         },
                       ),
-                    ),
-
-                    const SizedBox(height: 10),
-                    Center(
-                      child: Text(
-                        "** Maximum ${loginController.maxFilesImage} images allowed",
-                        style:AppTextStyles.caption(context,color: Colors.redAccent)
-                      ),
-                    ),
-
-                    Text("Videos",
-                        style: AppTextStyles.caption(context,fontWeight: FontWeight.bold)),
-                    if(Api.userInfo.read('userType')!='admin'||Api.userInfo.read('userType')!='superAdmin')
-
-                    SizedBox(
-                      height: size * 0.35,
-                      child: GetBuilder<LoginController>(
-                        builder: (controller) {
-                          final videos = controller.editImages
-                              .where((e) => e.isVideo)
-                              .toList();
-
-                          return ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: loginController.maxFilesVideo,
-                            itemBuilder: (_, index) {
-                              if (index < videos.length) {
-                                final media = videos[index];
-
-                                return buildMediaItem(media, size, () {
-                                  controller.editImages.remove(media);
-                                  controller.update();
-                                },context);
-                              }
-
-                              return buildAddButton(() {
-                                if(planActive==true&&(loginController.userData.first.details["plan"]?["basePlan"]?["details"]["video"]==true)) {
-                                  pickMedia("video", context);
-                                }
-                                else{
-                                  showSuccessDialog(
-                                      context,
-                                      title: "Alert",
-                                      message: "Please activate Base Plan to Edit/Upload Video",
-                                      onOkPressed: () {
-                                        Get.toNamed('/viewPlanPage');
-                                      });
-                                }
-                              }, size);
-                            },
-                          );
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Center(
-                      child: Text(
-                        "** Maximum ${loginController.maxFilesVideo} videos allowed",
-                          style:AppTextStyles.caption(context,color: Colors.redAccent)
-
-                      ),
-                    ),
-                       Text('Certificate:',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
-                       // SizedBox(height: size*0.03,),
-
-                      // SizedBox(height: size*0.02,),
-                                       SizedBox(
-                                         height: size * 0.35,
-                                         child: ListView.builder(
-                       scrollDirection: Axis.horizontal,
-                       itemCount: 3,
-                       itemBuilder: (_, index) {
-                         if (index < loginController.editCertificates.length) {
-                           final cert = loginController.editCertificates[index];
-                           return Container(
-                             margin: const EdgeInsets.all(8),
-                             width: size * 0.3,
-                             height: size * 0.3,
-                             child: Stack(
-                               children: [
-                                 ClipRRect(
-                                   borderRadius: BorderRadius.circular(10),
-                                   child: _buildCertificatePreview(cert, size),
-                                 ),
-                                 Positioned(
-                                   right: 0,
-                                   top: 0,
-                                   child: GestureDetector(
-                                     onTap: () {
-                                       // confirmRemoveImage(context, index, () {
-                                       //   loginController.editCertificates.removeAt(index);
-                                       //   final certToDelete = loginController.editCertificates[index];
-                                       //   loginController.deleteAwsFile(certToDelete.url.toString(), context);
-                                       //   print('deleteFile ${certToDelete.url}');
-                                       //   loginController.update();
-                                       //   Get.back();
-                                       // });
-                                       confirmRemoveImage(context, index, () async {
-                                         final certToDelete = loginController.editCertificates[index];
-                                         if (certToDelete.url != null) {
-                                           await loginController.deleteAwsFile(certToDelete.url.toString(),'user', context);
-                                           print('deleteFile ${certToDelete.url}');
-                                         }
-                                         loginController.editCertificates.removeAt(index);
-                                         loginController.editCertificates.forEach((img) {
-                                           print('after delete URL: ${img.url}');
-                                         });
-                                         loginController.update();
-                                         Get.back();
-                                       });
-                                       },
-                                     child:  Icon(Icons.cancel,size: size*0.06, color: Colors.white),
-                                   ),
-                                 ),
-                                 Positioned(
-                                   right: 5,
-                                   bottom: 5,
-                                   child: Container(
-                                     padding: const EdgeInsets.all(4),
-                                     decoration: BoxDecoration(
-                                       color: Colors.black54,
-                                       borderRadius: BorderRadius.circular(8),
-                                     ),
-                                     child: const Icon(Icons.edit, color: Colors.white, size: 20),
-                                   ),
-                                 ),
-                               ],
-                             ),
-                           );
-                         }
-                         return GestureDetector(
-                           onTap: () => pickCertificates(),
-                           child: Container(
-                             margin: const EdgeInsets.all(8),
-                             width: size * 0.3,
-                             height: size * 0.3,
-                             decoration: BoxDecoration(
-                               borderRadius: BorderRadius.circular(10),
-                               border: Border.all(color: Colors.grey),
-                               color: Colors.grey.shade200,
-                             ),
-                             child:  Center(
-                               child: Icon(Icons.add, size: size*0.03, color: Colors.grey),
-                             ),
-                           ),
-                         );
-                       },
-                                         ),
-                                       ),
-
-                       Center(child: Text("** maximum 3 images/pdf allowed",  style:AppTextStyles.caption(context,color: Colors.redAccent)
-                       )),
-
-                       SizedBox(height: size*0.03,),
-                        Text('Upload  Logo Image:',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
-                        SizedBox(height: size*0.03,),
-
-                       SizedBox(
-                         height: size * 0.3,
-                         width: size * 0.3,
-                         child: GetBuilder<LoginController>(
-                           builder: (controller) {
-                             if (controller.logoImages.isNotEmpty) {
-                               final File file = controller.logoImages.first;
-                               return _buildSingleImageWidget1(file: file);
-                             }
-                             if (controller.logoImage.isNotEmpty) {
-                               final  img = controller.logoImage.first;
-                               //final AppImage img = controller.logoImage.first;
-                               return _buildSingleImageWidget1(url: img);
-                             }
-                             return GestureDetector(
-                               onTap: () => pickSingleImage1(),
-                               child: Container(
-                                 decoration: BoxDecoration(
-                                   borderRadius: BorderRadius.circular(10),
-                                   border: Border.all(color: Colors.grey),
-                                   color: Colors.grey.shade200,
-                                 ),
-                                 child:  Center(
-                                   child: Icon(Icons.add, size: size*0.03, color: Colors.grey),
-                                 ),
-                               ),
-                             );
-                           },
-                         ),
-                       )
-                        ]);
-                 }
-               ),
-                    SizedBox(height: size*0.06,),
+                    SizedBox(height: size * 0.06),
                     Center(
                       child: Container(
                         width: double.infinity,
@@ -865,262 +1094,357 @@ import 'package:geocoding/geocoding.dart';
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: ElevatedButton(
-                            onPressed: ()async
-                        {
-                          if (_formKeyEditProfile.currentState!.validate()) {
-                            final location = await loginController.getLatLng(
-                              state: loginController.selectedState ?? '',
-                              district: loginController.selectedDistrict ?? '',
-                              taluka:  loginController.selectedTaluka ?? '',
-                              area: loginController.selectedVillage ?? '',
-                              pincode:loginController.pinCodeController.text,
-                            );
+                          onPressed: () async {
+                            if (_formKeyEditProfile.currentState!.validate()) {
+                              final location = await loginController.getLatLng(
+                                state: loginController.selectedState ?? '',
+                                district:
+                                    loginController.selectedDistrict ?? '',
+                                taluka: loginController.selectedTaluka ?? '',
+                                area: loginController.selectedVillage ?? '',
+                                pincode: loginController.pinCodeController.text,
+                              );
 
-                            print(location);
-                            if (location != null) {
-                              loginController.latitude = location['latitude'];
-                              loginController.longitude = location['longitude'];
-                              print('lat${loginController.latitude}');
-                            } else {
-                              loginController.latitude = null;
-                              loginController.longitude = null;
+                              print(location);
+                              if (location != null) {
+                                loginController.latitude = location['latitude'];
+                                loginController.longitude =
+                                    location['longitude'];
+                                print('lat${loginController.latitude}');
+                              } else {
+                                loginController.latitude = null;
+                                loginController.longitude = null;
+                              }
+                              //print('lat:${position.latitude} lon:${position.longitude}');
+                              print(
+                                "FULL NAME = ${loginController.fullNameController.text}",
+                              );
+                              print(
+                                "type NAME = ${loginController.typeNameController.text}",
+                              );
+                              print(
+                                "MOBILE = ${loginController.mobileController.text}",
+                              );
+                              print(
+                                "EMAIL = ${loginController.emailController.text}",
+                              );
+                              print(
+                                "ADDRESS = ${loginController.addressController.text}",
+                              );
+                              print(
+                                "STATE = ${loginController.stateController.text}",
+                              );
+                              print(
+                                "DISTRICT = ${loginController.districtController.text}",
+                              );
+                              print(
+                                "CITY = ${loginController.cityController.text}",
+                              );
+                              print(
+                                "PINCODE = ${loginController.pinCodeController.text}",
+                              );
+                              print(
+                                "LAB NAME = ${loginController.typeNameController.text}",
+                              );
+                              print("IMAGES = ${loginController.images}");
+                              print(
+                                "CERTIFICATES = ${loginController.certificates}",
+                              );
+                              print('userid${loginController.selectUserId}');
+                              print(
+                                'services name${loginController.servicesOfferedController.text}',
+                              );
+                              print(
+                                'website${loginController.websiteController.text}',
+                              );
+                              print(
+                                'google location${loginController.locationController.text}',
+                              );
+                              print(
+                                'lat${loginController.latitude}lon${loginController.longitude}',
+                              );
+                              final descriptionAbout = jsonEncode(
+                                _controller.document.toDelta().toJson(),
+                              );
+
+                              List<File> fileImages = loginController.editImages
+                                  .where((img) => img.file != null)
+                                  .map((img) => img.file!)
+                                  .toList();
+                              List<File> fileCertificate = loginController
+                                  .editCertificates
+                                  .where((img) => img.file != null)
+                                  .map((img) => img.file!)
+                                  .toList();
+                              final oldImageUrls = loginController.editImages
+                                  .where((e) => e.url != null)
+                                  .map((e) => e.url!)
+                                  .toList();
+
+                              final oldCertificateUrls = loginController
+                                  .editCertificates
+                                  .where((e) => e.url != null)
+                                  .map((e) => e.url!)
+                                  .toList();
+
+                              print(
+                                'fileCertificate count: ${fileCertificate.length}',
+                              );
+                              for (final img in fileCertificate) {
+                                debugPrint(
+                                  'before upload Certificate path: ${img.path}',
+                                );
+                              }
+                              Future<List<Uint8List>> convertFilesToBytes(
+                                List<File> files,
+                              ) async {
+                                return await Future.wait(
+                                  files.map((file) => file.readAsBytes()),
+                                );
+                              }
+
+                              final imageBytes =
+                                  loginController.selectedUserType ==
+                                      "Job Seekers"
+                                  ? await convertFilesToBytes(
+                                      controller.logoImages,
+                                    )
+                                  : await convertFilesToBytes(fileImages);
+
+                              final logoBytes =
+                                  loginController.selectedUserType !=
+                                      "Job Seekers"
+                                  ? await convertFilesToBytes(
+                                      controller.logoImages,
+                                    )
+                                  : [];
+
+                              final certBytes = await convertFilesToBytes(
+                                fileCertificate,
+                              );
+                              print(
+                                'branch id${branchId?.isNotEmpty == true ? branchId! : loginController.selectUserId!}',
+                              );
+                              await loginController.registerUser(
+                                userId: branchId?.isNotEmpty == true
+                                    ? branchId!
+                                    : loginController.selectUserId!,
+                                userType: branchId == "0"
+                                    ? Api.userInfo.read('userType')
+                                    : loginController.selectedUserType!,
+                                fullName:
+                                    loginController.fullNameController.text,
+                                martialStatus:
+                                    loginController.selectedMartialStatus!,
+                                dob: loginController.dobController.text,
+                                mobile: loginController.mobileController.text,
+                                email: branchId == "0"
+                                    ? Api.userInfo.read('email')
+                                    : loginController.emailController.text,
+                                confirmPassword: branchId == "0"
+                                    ? Api.userInfo.read('password')
+                                    : loginController
+                                          .confirmPasswordController
+                                          .text,
+                                addressLine1:
+                                    loginController.addressLine1Controller.text,
+                                addressLine2:
+                                    loginController.addressLine2Controller.text,
+                                taluk: loginController.selectedState ?? '',
+                                district:
+                                    loginController.selectedDistrict ?? '',
+                                city: loginController.selectedTaluka ?? '',
+                                area: loginController.selectedVillage ?? '',
+                                pinCode: loginController.pinCodeController.text,
+                                typeName:
+                                    loginController.typeNameController.text,
+                                image: imageBytes,
+                                //fileImages,
+                                certificate: certBytes,
+                                //fileCertificate,
+                                logoImage: logoBytes,
+                                //controller.logoImages ?? [],
+                                oldImageUrl: oldImageUrls,
+                                oldCertificatesUrl: oldCertificateUrls,
+                                description: descriptionAbout,
+                                //loginController.descriptionController.text,
+                                // services: loginController.servicesOfferedController.text,
+                                location:
+                                    loginController.locationController.text,
+                                website: loginController.websiteController.text,
+                                adminId: branchId == "0"
+                                    ? Api.userInfo.read('userId')
+                                    : loginController.selectUserId!,
+                                isAdmin: branchId == "0" ? "true" : "false",
+                                latitude:
+                                    loginController.latitude.toString() ?? "",
+                                longitude:
+                                    loginController.longitude.toString() ?? "",
+                                // specialisation: loginController.specialisationController.text,
+                                context: context,
+                              );
                             }
-                            //print('lat:${position.latitude} lon:${position.longitude}');
-                            print("FULL NAME = ${loginController.fullNameController.text}");
-                            print("type NAME = ${loginController.typeNameController.text}");
-                            print("MOBILE = ${loginController.mobileController.text}");
-                            print("EMAIL = ${loginController.emailController.text}");
-                            print("ADDRESS = ${loginController.addressController.text}");
-                            print("STATE = ${loginController.stateController.text}");
-                            print("DISTRICT = ${loginController.districtController.text}");
-                            print("CITY = ${loginController.cityController.text}");
-                            print("PINCODE = ${loginController.pinCodeController.text}");
-                            print("LAB NAME = ${loginController.typeNameController.text}");
-                            print("IMAGES = ${loginController.images}");
-                            print("CERTIFICATES = ${loginController.certificates}");
-                            print('userid${ loginController.selectUserId }');
-                            print('services name${loginController.servicesOfferedController.text}');
-                            print('website${loginController.websiteController.text}');
-                            print('google location${loginController.locationController.text}');
-                            print('lat${loginController.latitude}lon${loginController.longitude}');
-                            final descriptionAbout =
-                            jsonEncode(_controller.document.toDelta().toJson());
-
-                            List<File> fileImages = loginController.editImages
-                                .where((img) => img.file != null)
-                                .map((img) => img.file!)
-                                .toList();
-                            List<File> fileCertificate = loginController.editCertificates
-                                .where((img) => img.file != null)
-                                .map((img) => img.file!)
-                                .toList();
-                            final oldImageUrls = loginController.editImages
-                                .where((e) => e.url != null)
-                                .map((e) => e.url!)
-                                .toList();
-
-                            final oldCertificateUrls = loginController.editCertificates
-                                .where((e) => e.url != null)
-                                .map((e) => e.url!)
-                                .toList();
-
-
-                            print('fileCertificate count: ${fileCertificate.length}');
-                            for (final img in fileCertificate) {
-                              debugPrint('before upload Certificate path: ${img.path}');
-                            }
-                            Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
-                              return await Future.wait(files.map((file) => file.readAsBytes()));
-                            }
-                            final imageBytes = loginController.selectedUserType == "Job Seekers"
-                                ? await convertFilesToBytes(controller.logoImages)
-                                : await convertFilesToBytes(fileImages);
-
-                            final logoBytes = loginController.selectedUserType != "Job Seekers"
-                                ? await convertFilesToBytes(controller.logoImages)
-                                : [];
-
-                            final certBytes = await convertFilesToBytes(fileCertificate);
-                             print('branch id${branchId?.isNotEmpty == true
-                                 ? branchId!
-                                 : loginController.selectUserId!}');
-                            await loginController.registerUser(
-                              userId: branchId?.isNotEmpty == true ? branchId! : loginController.selectUserId!,
-                              userType: branchId=="0"?Api.userInfo.read('userType'):loginController.selectedUserType!,
-                              fullName: loginController.fullNameController.text,
-                              martialStatus:loginController.selectedMartialStatus!,
-                              dob:loginController.dobController.text,
-                              mobile: loginController.mobileController.text,
-                              email:branchId=="0"?Api.userInfo.read('email'): loginController.emailController.text,
-                              confirmPassword: branchId=="0"?Api.userInfo.read('password'):loginController.confirmPasswordController.text,
-                              addressLine1: loginController.addressLine1Controller.text,
-                              addressLine2:  loginController.addressLine2Controller.text,
-                              taluk: loginController.selectedState ?? '',
-                              district: loginController.selectedDistrict ?? '',
-                              city: loginController.selectedTaluka ?? '',
-                              area: loginController.selectedVillage ?? '',
-                              pinCode: loginController.pinCodeController.text,
-                              typeName: loginController.typeNameController.text,
-                              image: imageBytes,
-                              //fileImages,
-                              certificate: certBytes,
-                              //fileCertificate,
-                              logoImage:logoBytes,
-                              //controller.logoImages ?? [],
-                              oldImageUrl:oldImageUrls ,
-                              oldCertificatesUrl: oldCertificateUrls,
-                              description: descriptionAbout,
-                              //loginController.descriptionController.text,
-                              // services: loginController.servicesOfferedController.text,
-                              location: loginController.locationController.text,
-                              website: loginController.websiteController.text,
-                                          adminId:branchId=="0"?Api.userInfo.read('userId'):loginController.selectUserId! ,
-                                          isAdmin: branchId=="0"?"true":"false",
-                                          latitude: loginController.latitude.toString()??"",
-                                          longitude: loginController.longitude.toString()??"",
-                              // specialisation: loginController.specialisationController.text,
-                              context: context,
-                            );
-                          }
-                        },
+                          },
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: AppColors.transparent,
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),),
-                              child:loginController.isLoading
-                                  ? const CircularProgressIndicator(color: Colors.white)
-                                  : Text(
-                                'Update',style: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),)
-
+                            backgroundColor: Colors.transparent,
+                            shadowColor: AppColors.transparent,
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 20,
+                            ),
+                          ),
+                          child: loginController.isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  'Update',
+                                  style: AppTextStyles.body(
+                                    context,
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
             ),
           );
-        }
+        },
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
   }
-    Map<String, int> getPlanLimits() {
-      if (loginController.userData.isEmpty) {
-        loginController.maxFilesImage = 2;
-        loginController.maxFilesVideo = 1;
-        loginController.filesImageSize = 0;
-        loginController.filesVideoSize = 0;
 
-        loginController.update();
-        return {};
+  Map<String, int> getPlanLimits() {
+    if (loginController.userData.isEmpty) {
+      loginController.maxFilesImage = 2;
+      loginController.maxFilesVideo = 1;
+      loginController.filesImageSize = 0;
+      loginController.filesVideoSize = 0;
+
+      loginController.update();
+      return {};
+    }
+
+    final userData = loginController.userData.first;
+
+    final planDetails = userData.details["plan"]?["basePlan"]?["details"];
+
+    loginController.maxFilesImage =
+        int.tryParse(planDetails?["imageCount"]?.toString() ?? "2") ?? 2;
+
+    loginController.maxFilesVideo =
+        int.tryParse(planDetails?["videoCount"]?.toString() ?? "1") ?? 1;
+
+    loginController.filesImageSize =
+        int.tryParse(planDetails?["imageSize"]?.toString() ?? "0") ?? 0;
+
+    loginController.filesVideoSize =
+        int.tryParse(planDetails?["videoSize"]?.toString() ?? "0") ?? 0;
+
+    loginController.update();
+
+    print('Max Images: ${loginController.maxFilesImage}');
+    print('Max Videos: ${loginController.maxFilesVideo}');
+
+    return {};
+  }
+
+  Future<void> pickMedia(String source, BuildContext context) async {
+    try {
+      //if (source == null) return;
+      final imageCount = loginController.editImages
+          .where((e) => !e.isVideo)
+          .length;
+      final videoCount = loginController.editImages
+          .where((e) => e.isVideo)
+          .length;
+      if (source == "image" && imageCount >= loginController.maxFilesImage) {
+        showCustomToast(
+          context,
+          "Maximum ${loginController.maxFilesImage} images allowed",
+        );
+        //Get.snackbar("Error", "Maximum ${loginController.maxFilesImage} images allowed");
+        return;
+      }
+      if (source == "video" && videoCount >= loginController.maxFilesVideo) {
+        showCustomToast(
+          context,
+          "Maximum ${loginController.maxFilesVideo} videos allowed",
+        );
+        return;
+      }
+      XFile? pickedFile;
+      if (source == "image") {
+        pickedFile = await _picker.pickImage(
+          source: ImageSource.gallery,
+          imageQuality: 80,
+        );
+      } else {
+        pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
       }
 
-      final userData = loginController.userData.first;
+      if (pickedFile == null) return;
 
-      final planDetails =
-      userData.details?["plan"]?["basePlan"]?["details"];
+      File selectedFile = File(pickedFile.path);
+      bool isVideo = source == "video";
 
-      loginController.maxFilesImage =
-          int.tryParse(planDetails?["imageCount"]?.toString() ?? "2") ?? 2;
+      Get.dialog(
+        const Center(child: CircularProgressIndicator()),
+        barrierDismissible: false,
+      );
+      if (isVideo) {
+        final compressed = await VideoCompress.compressVideo(
+          pickedFile.path,
+          quality: VideoQuality.MediumQuality,
+        );
 
-      loginController.maxFilesVideo =
-          int.tryParse(planDetails?["videoCount"]?.toString() ?? "1") ?? 1;
+        if (compressed?.file != null) {
+          selectedFile = compressed!.file!;
+        }
+      }
 
-      loginController.filesImageSize =
-          int.tryParse(planDetails?["imageSize"]?.toString() ?? "0") ?? 0;
+      int bytes = await selectedFile.length();
+      double mb = bytes / (1024 * 1024);
 
-      loginController.filesVideoSize =
-          int.tryParse(planDetails?["videoSize"]?.toString() ?? "0") ?? 0;
+      print("Final File Size: ${mb.toStringAsFixed(2)} MB");
+      if (!isVideo && mb > loginController.filesImageSize) {
+        Get.back();
+        showCustomToast(
+          context,
+          "Image must be less than ${loginController.filesImageSize}MB",
+        );
+        return;
+      }
+      if (mb > loginController.filesVideoSize) {
+        Get.back();
+        showCustomToast(
+          context,
+          "File must be less than ${loginController.filesVideoSize}MB",
+        );
+        return;
+      }
+      loginController.editImages.add(
+        AppImage(file: selectedFile, isVideo: isVideo),
+      );
 
       loginController.update();
 
-      print('Max Images: ${loginController.maxFilesImage}');
-      print('Max Videos: ${loginController.maxFilesVideo}');
-
-      return {};
+      Get.back();
+    } catch (e) {
+      if (Get.isDialogOpen ?? false) Get.back();
+      print("Pick media error: $e");
+      Get.snackbar("Error", "Failed to pick media");
     }
-    Future<void> pickMedia(String source,BuildContext context) async {
-      try {
-
-        //if (source == null) return;
-        final imageCount =
-            loginController.editImages.where((e) => !e.isVideo).length;
-        final videoCount =
-            loginController.editImages.where((e) => e.isVideo).length;
-        if (source == "image" && imageCount >= loginController.maxFilesImage) {
-          showCustomToast(context,"Maximum ${loginController.maxFilesImage} images allowed",);
-          //Get.snackbar("Error", "Maximum ${loginController.maxFilesImage} images allowed");
-          return;
-        }
-        if (source == "video" && videoCount >= loginController.maxFilesVideo) {
-          showCustomToast(context,"Maximum ${loginController.maxFilesVideo} videos allowed",);
-          return;
-        }
-        XFile? pickedFile;
-        if (source == "image") {
-          pickedFile = await _picker.pickImage(
-            source: ImageSource.gallery,
-            imageQuality: 80,
-          );
-        } else {
-          pickedFile = await _picker.pickVideo(
-            source: ImageSource.gallery,
-          );
-        }
-
-        if (pickedFile == null) return;
-
-        File selectedFile = File(pickedFile.path);
-        bool isVideo = source == "video";
-
-        Get.dialog(const Center(child: CircularProgressIndicator()),
-          barrierDismissible: false,);
-        if (isVideo) {
-          final compressed = await VideoCompress.compressVideo(
-            pickedFile.path,
-            quality: VideoQuality.MediumQuality,
-          );
-
-          if (compressed?.file != null) {
-            selectedFile = compressed!.file!;
-          }
-        }
-
-        int bytes = await selectedFile.length();
-        double mb = bytes / (1024 * 1024);
-
-        print("Final File Size: ${mb.toStringAsFixed(2)} MB");
-        if (!isVideo && mb > loginController.filesImageSize) {
-          Get.back();
-          showCustomToast(context,"Image must be less than ${loginController.filesImageSize}MB",);
-          return;
-        }
-        if (mb > loginController.filesVideoSize) {
-          Get.back();
-          showCustomToast(context,"File must be less than ${loginController.filesVideoSize}MB",);
-          return;
-        }
-        loginController.editImages.add(
-          AppImage(
-            file: selectedFile,
-            isVideo: isVideo,
-          ),
-        );
-
-        loginController.update();
-
-        Get.back();
-      } catch (e) {
-        if (Get.isDialogOpen ?? false) Get.back();
-        print("Pick media error: $e");
-        Get.snackbar("Error", "Failed to pick media");
-      }
-    }
+  }
 
   @override
   void dispose() {
@@ -1131,6 +1455,7 @@ import 'package:geocoding/geocoding.dart';
     super.dispose();
   }
 }
+
 String getCertificateFileName(cert) {
   if (cert.file != null) {
     // Use the local file path
@@ -1142,6 +1467,7 @@ String getCertificateFileName(cert) {
     return "Unknown file";
   }
 }
+
 Widget _buildCertificatePreview(cert, double size) {
   String fileName = getCertificateFileName(cert);
 
@@ -1150,10 +1476,13 @@ Widget _buildCertificatePreview(cert, double size) {
     if (filePath.endsWith(".pdf")) {
       return _pdfPlaceholder(size, fileName);
     }
-    return Image.file(cert.file!, fit: BoxFit.cover,
+    return Image.file(
+      cert.file!,
+      fit: BoxFit.cover,
 
       width: size * 0.3,
-      height: size * 0.3,);
+      height: size * 0.3,
+    );
   }
 
   if (cert.url != null && cert.url!.isNotEmpty) {
@@ -1161,12 +1490,17 @@ Widget _buildCertificatePreview(cert, double size) {
     if (url.endsWith(".pdf")) {
       return _pdfPlaceholder(size, fileName);
     }
-    return Image.network(cert.url!, fit: BoxFit.cover, width: size * 0.3,
-      height: size * 0.3,);
+    return Image.network(
+      cert.url!,
+      fit: BoxFit.cover,
+      width: size * 0.3,
+      height: size * 0.3,
+    );
   }
 
   return _errorPlaceholder(size);
 }
+
 Widget _pdfPlaceholder(double size, String fileName) {
   return Container(
     color: Colors.grey.shade300,
@@ -1175,30 +1509,40 @@ Widget _pdfPlaceholder(double size, String fileName) {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-         Icon(Icons.picture_as_pdf, color: Colors.red, size: size*0.15),
+        Icon(Icons.picture_as_pdf, color: Colors.red, size: size * 0.15),
         const SizedBox(height: 4),
         Text(
           fileName,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style:  TextStyle(fontSize: size*0.012,fontWeight: FontWeight.normal,color: AppColors.black),
+          style: TextStyle(
+            fontSize: size * 0.012,
+            fontWeight: FontWeight.normal,
+            color: AppColors.black,
+          ),
         ),
       ],
     ),
   );
 }
+
 Widget _errorPlaceholder(double size) {
   return Container(
     color: Colors.grey.shade200,
     width: size * 0.15,
     height: size * 0.15,
-    child:  Center(
-      child: Icon(Icons.broken_image, size: size*0.015, color: Colors.grey),
+    child: Center(
+      child: Icon(Icons.broken_image, size: size * 0.015, color: Colors.grey),
     ),
   );
 }
 
-Widget buildMediaItem(AppImage media, double size, VoidCallback onDelete, BuildContext context) {
+Widget buildMediaItem(
+  AppImage media,
+  double size,
+  VoidCallback onDelete,
+  BuildContext context,
+) {
   Widget content;
 
   if (media.isVideo) {
@@ -1211,34 +1555,28 @@ Widget buildMediaItem(AppImage media, double size, VoidCallback onDelete, BuildC
         child: const Center(child: Icon(Icons.play_circle_fill)),
       ),
     );
-  }
-
-  else if (media.bytes != null) {
+  } else if (media.bytes != null) {
     content = Image.memory(
       media.bytes!,
       width: size * 0.3,
       height: size * 0.3,
       fit: BoxFit.cover,
     );
-  }
-
-  else if (media.file != null) {
+  } else if (media.file != null) {
     content = Image.file(
       media.file!,
       width: size * 0.3,
       height: size * 0.3,
       fit: BoxFit.cover,
     );
-  }
-
-  else if (media.url != null && media.url!.isNotEmpty) {
-    content = Image.network(media.url!,
+  } else if (media.url != null && media.url!.isNotEmpty) {
+    content = Image.network(
+      media.url!,
       width: size * 0.3,
       height: size * 0.3,
-      fit: BoxFit.cover,);
-  }
-
-  else {
+      fit: BoxFit.cover,
+    );
+  } else {
     content = const Icon(Icons.broken_image);
   }
 
@@ -1251,15 +1589,16 @@ Widget buildMediaItem(AppImage media, double size, VoidCallback onDelete, BuildC
           onTap: onDelete,
           child: const Icon(Icons.cancel, color: Colors.red),
         ),
-      )
+      ),
     ],
   );
 }
+
 Widget buildAddButton(VoidCallback onTap, double size) {
   return GestureDetector(
     onTap: onTap,
     child: Container(
-      margin:  EdgeInsets.all(8),
+      margin: EdgeInsets.all(8),
       width: size * 0.3,
       height: size * 0.3,
       decoration: BoxDecoration(
@@ -1267,12 +1606,13 @@ Widget buildAddButton(VoidCallback onTap, double size) {
         border: Border.all(color: Colors.grey),
         color: Colors.grey.shade200,
       ),
-      child:  Center(
-        child: Icon(Icons.add, size: size*0.03, color: Colors.grey),
+      child: Center(
+        child: Icon(Icons.add, size: size * 0.03, color: Colors.grey),
       ),
     ),
   );
 }
+
 class MediaPreviewWidget extends StatefulWidget {
   final AppImage media;
   final double size;
@@ -1320,12 +1660,15 @@ class _MediaPreviewWidgetState extends State<MediaPreviewWidget> {
   }
 
   void _open() {
-    Get.toNamed('/viewImagePage', arguments: {
-      'url': widget.media.url,
-      'file': widget.media.file,
-      'bytes': widget.media.bytes,
-      'isVideo': widget.media.isVideo,
-    });
+    Get.toNamed(
+      '/viewImagePage',
+      arguments: {
+        'url': widget.media.url,
+        'file': widget.media.file,
+        'bytes': widget.media.bytes,
+        'isVideo': widget.media.isVideo,
+      },
+    );
   }
 
   @override
@@ -1352,42 +1695,37 @@ class _MediaPreviewWidgetState extends State<MediaPreviewWidget> {
 
           const Positioned.fill(
             child: Center(
-              child: Icon(Icons.play_circle_fill,
-                  color: Colors.white, size: 40),
+              child: Icon(
+                Icons.play_circle_fill,
+                color: Colors.white,
+                size: 40,
+              ),
             ),
           ),
         ],
       );
-    }
-
-    else if (kIsWeb && widget.media.bytes != null) {
+    } else if (kIsWeb && widget.media.bytes != null) {
       child = Image.memory(
         widget.media.bytes!,
         width: widget.size,
         height: widget.size,
         fit: BoxFit.cover,
       );
-    }
-
-    else if (!kIsWeb && widget.media.file != null) {
+    } else if (!kIsWeb && widget.media.file != null) {
       child = Image.file(
         widget.media.file!,
         width: widget.size,
         height: widget.size,
         fit: BoxFit.cover,
       );
-    }
-
-    else if (widget.media.url != null && widget.media.url!.isNotEmpty) {
+    } else if (widget.media.url != null && widget.media.url!.isNotEmpty) {
       child = Image.network(
         widget.media.url!,
         width: widget.size,
         height: widget.size,
         fit: BoxFit.cover,
       );
-    }
-
-    else {
+    } else {
       child = Container(
         width: widget.size,
         height: widget.size,
@@ -1398,10 +1736,7 @@ class _MediaPreviewWidgetState extends State<MediaPreviewWidget> {
 
     return GestureDetector(
       onTap: _open,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: child,
-      ),
+      child: ClipRRect(borderRadius: BorderRadius.circular(10), child: child),
     );
   }
 }

@@ -31,10 +31,10 @@ class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-            height:width>600? size * 0.35:size * 0.2,
+            height: width > 600 ? size * 0.35 : size * 0.2,
             autoPlay: true,
             enlargeCenterPage: true,
-            viewportFraction:width>600? 0.33:0.5,
+            viewportFraction: width > 600 ? 0.33 : 0.5,
             autoPlayInterval: const Duration(seconds: 3),
             onPageChanged: (index, reason) {
               setState(() {
@@ -50,17 +50,23 @@ class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: Colors.black.withValues(alpha: 0.15),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
-                  )
+                  ),
                 ],
               ),
               child: GestureDetector(
                 onTap: () async {
                   Get.toNamed('/viewImagePage', arguments: {'url': url});
-                  Api.userInfo.write('selectUId', planController.posterImage[0].userId.toString());
-                  await loginController.getProfileByUserId(planController.posterImage[0].userId.toString(), context);
+                  Api.userInfo.write(
+                    'selectUId',
+                    planController.posterImage[0].userId.toString(),
+                  );
+                  await loginController.getProfileByUserId(
+                    planController.posterImage[0].userId.toString(),
+                    context,
+                  );
                   Get.toNamed('/clinicProfileWebPage');
                 },
                 child: ClipRRect(
@@ -87,9 +93,7 @@ class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _currentIndex == entry.key
-                    ? Colors.black
-                    : Colors.grey,
+                color: _currentIndex == entry.key ? Colors.black : Colors.grey,
               ),
             );
           }).toList(),

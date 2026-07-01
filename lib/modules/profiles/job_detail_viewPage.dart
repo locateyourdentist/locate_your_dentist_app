@@ -34,14 +34,12 @@ class _ViewJobPageState extends State<ViewJobPage> {
       List<Map<String, dynamic>> delta = [];
 
       if (data == null) {
-        delta = [{"insert": "\n"}];
-      }
-
-      else if (data is List) {
+        delta = [
+          {"insert": "\n"},
+        ];
+      } else if (data is List) {
         delta = List<Map<String, dynamic>>.from(data);
-      }
-
-      else if (data is String) {
+      } else if (data is String) {
         delta = List<Map<String, dynamic>>.from(jsonDecode(data));
       }
 
@@ -58,35 +56,34 @@ class _ViewJobPageState extends State<ViewJobPage> {
       setState(() {});
     }
   }
+
   @override
   void initState() {
     super.initState();
     _controller = QuillController.basic(
       config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
-
+        clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
       ),
     );
     _refresh();
   }
+
   Future<void> _refresh() async {
     final selectJobId = Api.userInfo.read('selectJobId') ?? "";
     await jobController.getJobsById(selectJobId, context);
     await jobController.getAppliedJobsAdmin(selectJobId, context);
-    await jobController.getJobSeekersAppliedLists(Api.userInfo.read('userId') ?? "", context);
+    await jobController.getJobSeekersAppliedLists(
+      Api.userInfo.read('userId') ?? "",
+      context,
+    );
     _controller = QuillController.basic(
       config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
-
+        clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
       ),
     );
-    loadJobDescription(
-        jobController.jobDescriptionData);
+    loadJobDescription(jobController.jobDescriptionData);
   }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -108,78 +105,28 @@ class _ViewJobPageState extends State<ViewJobPage> {
               //   return const Center(child: CircularProgressIndicator());
               // }
               // final job = controller.job.isNotEmpty ? controller.job[0] : null;
-             // if (job == null) {
+              // if (job == null) {
               if (controller.job.isEmpty) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
               final job = controller.job.first;
               final String targetJobId = job.jobId ?? "";
 
               print("targetid: $targetJobId");
 
-              final bool isJobApplied = controller.jobSeekersAppliedLists
-                  .any((j) => j.jobId.toString() == targetJobId);
+              final bool isJobApplied = controller.jobSeekersAppliedLists.any(
+                (j) => j.jobId.toString() == targetJobId,
+              );
 
               print("Is job applied? $isJobApplied");
-              if (job == null) {
-                return                       Column(
-                  children: [
-                    shimmerBox(height: size * 0.35, radius: 0),
-
-                    SizedBox(height: size * 0.02),
-
-                    shimmerBox(
-                      height: 20,
-                      width: size * 0.5,
-                    ),
-
-                    SizedBox(height: 10),
-
-                    shimmerBox(
-                      height: 16,
-                      width: size * 0.3,
-                    ),
-
-                    SizedBox(height: size * 0.03),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        shimmerBox(height: 50, width: 90),
-                        shimmerBox(height: 50, width: 90),
-                        shimmerBox(height: 50, width: 90),
-                      ],
-                    ),
-
-                    SizedBox(height: size * 0.03),
-
-                    ListView.builder(
-                      itemCount: 3,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (_, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: shimmerBox(
-                            height: size * 0.25,
-                            radius: 12,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
-
-              //const Center(child: Text("No job data available"));
-              }
               final url = loginController.jobFileImages.isNotEmpty
-                  ? loginController.jobFileImages.first.url.toString() : "";
+                  ? loginController.jobFileImages.first.url.toString()
+                  : "";
               String getPlainText(List<Map<String, dynamic>>? delta) {
                 if (delta == null) return "";
                 return delta.map((e) => e['insert'] ?? "").join();
               }
+
               return SingleChildScrollView(
                 child: SafeArea(
                   child: Column(
@@ -193,15 +140,24 @@ class _ViewJobPageState extends State<ViewJobPage> {
                               height: size * 0.75,
                               width: double.infinity,
                               child: GestureDetector(
-                                onTap: (){
-                                  Get.toNamed('/viewImagePage',arguments: {"url":url});
-                                  },
+                                onTap: () {
+                                  Get.toNamed(
+                                    '/viewImagePage',
+                                    arguments: {"url": url},
+                                  );
+                                },
                                 child: FadeInImage(
                                   image: NetworkImage(url.toString()),
-                                  placeholder: const AssetImage('assets/images/Dental_clinic.jpg'),
+                                  placeholder: const AssetImage(
+                                    'assets/images/Dental_clinic.jpg',
+                                  ),
                                   fit: BoxFit.cover,
-                                  fadeInDuration: const Duration(milliseconds: 400),
-                                  fadeOutDuration: const Duration(milliseconds: 200),
+                                  fadeInDuration: const Duration(
+                                    milliseconds: 400,
+                                  ),
+                                  fadeOutDuration: const Duration(
+                                    milliseconds: 200,
+                                  ),
                                   imageErrorBuilder: (_, __, ___) {
                                     return Container(
                                       decoration: BoxDecoration(
@@ -227,52 +183,70 @@ class _ViewJobPageState extends State<ViewJobPage> {
                             ),
                           ),
                           Positioned(
-                              left: 10,
-                              top: 5,
-                              child: IconButton(
-                                icon:  Icon(Icons.arrow_back_ios,size: size*0.06, color: Colors.black),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
+                            left: 10,
+                            top: 5,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.arrow_back_ios,
+                                size: size * 0.06,
+                                color: Colors.black,
                               ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
                           ),
                           Positioned(
-                              right: 35,
-                              top: 10,
-                              child: PopupMenuButton<String>(
-                            onSelected: (String isActive)async {
-                              print("Selected Status: $isActive");
-                              print('jobid${job.jobId}');
-                              await  jobController.updateApplicationStatusAdmin(
-                                job.jobId.toString(), isActive.toString(),
-                                context,
-                              );
-                              // jobController.getJobsById(
-                              //     seeker.jobSeekerId.toString(),
-                              //     seeker.isActive.toString(), context);
-                             await  jobController.getJobsById(job.jobId.toString(), context);
-                             await   jobController.getAppliedJobsAdmin(job.jobId.toString(),context);
-                           jobController.update();
-                            },
-                                itemBuilder: (BuildContext context) {
-                              return [
-                                // PopupMenuItem(
-                                //   value: "true",
-                                //   child: Text("Open",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
-                                // ),
-                                PopupMenuItem(
-                                  value: "false",
-                                  child: Text("Close",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal)),
-                                ),
-                              ];
-                            },
+                            right: 35,
+                            top: 10,
+                            child: PopupMenuButton<String>(
+                              onSelected: (String isActive) async {
+                                print("Selected Status: $isActive");
+                                print('jobid${job.jobId}');
+                                await jobController
+                                    .updateApplicationStatusAdmin(
+                                      job.jobId.toString(),
+                                      isActive.toString(),
+                                      context,
+                                    );
+                                // jobController.getJobsById(
+                                //     seeker.jobSeekerId.toString(),
+                                //     seeker.isActive.toString(), context);
+                                await jobController.getJobsById(
+                                  job.jobId.toString(),
+                                  context,
+                                );
+                                await jobController.getAppliedJobsAdmin(
+                                  job.jobId.toString(),
+                                  context,
+                                );
+                                jobController.update();
+                              },
+                              itemBuilder: (BuildContext context) {
+                                return [
+                                  // PopupMenuItem(
+                                  //   value: "true",
+                                  //   child: Text("Open",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
+                                  // ),
+                                  PopupMenuItem(
+                                    value: "false",
+                                    child: Text(
+                                      "Close",
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                  ),
+                                ];
+                              },
 
-                            child: const Icon(
-                              Icons.more_vert,
-                              color: Colors.black,
+                              child: const Icon(
+                                Icons.more_vert,
+                                color: Colors.black,
+                              ),
                             ),
-                          )
-                          )
+                          ),
                         ],
                       ),
 
@@ -293,16 +267,19 @@ class _ViewJobPageState extends State<ViewJobPage> {
                           children: [
                             // Job Title
                             Row(
-                              mainAxisAlignment:MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Center(
                                   child: Expanded(
                                     child: Text(
-                                      job.jobTitle ?? '',softWrap: true,maxLines: 2,
+                                      job.jobTitle ?? '',
+                                      softWrap: true,
+                                      maxLines: 2,
                                       style: AppTextStyles.caption(
-                                          context,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.black),
+                                        context,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.black,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -310,40 +287,54 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: Text(
-                                      job.isActive.toString()=='true' ? ". Open" :". Close",
+                                      job.isActive.toString() == 'true'
+                                          ? ". Open"
+                                          : ". Close",
                                       style: AppTextStyles.caption(
-                                          context,
-                                          fontWeight: FontWeight.bold,
-                                          color: job.isActive.toString()=='true' ?Colors.green:Colors.redAccent),
+                                        context,
+                                        fontWeight: FontWeight.bold,
+                                        color: job.isActive.toString() == 'true'
+                                            ? Colors.green
+                                            : Colors.redAccent,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 4),
-                          Center(
+                            Center(
                               child: Text(
-                               job.orgName ?? '',
+                                job.orgName ?? '',
                                 style: AppTextStyles.body(
-                                    context,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.black),
-                              ),),
+                                  context,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.black,
+                                ),
+                              ),
+                            ),
                             const SizedBox(height: 4),
                             // Location
                             Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                              Icon(Icons.place,color: AppColors.grey,size: size*0.05,),
-                            Center(
-                              child: Text(
-                                "${job.city ?? ''}, ${job.district ?? ''}, ${job.state ?? ''}",
-                                style: AppTextStyles.caption(
-                                    context,
-                                    fontWeight: FontWeight.normal,
-                                    color: AppColors.grey),
-                              ),
-                            ),]),
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.place,
+                                  color: AppColors.grey,
+                                  size: size * 0.05,
+                                ),
+                                Center(
+                                  child: Text(
+                                    "${job.city ?? ''}, ${job.district ?? ''}, ${job.state ?? ''}",
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      fontWeight: FontWeight.normal,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 10),
                             Row(
                               children: [
@@ -351,30 +342,36 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                   "Posted: ${job.createdDate != null ? DateFormat('MMM dd, yyyy').format(job.createdDate!) : ''}",
                                   softWrap: true,
                                   style: AppTextStyles.caption(
-                                      context,
-                                      fontWeight: FontWeight.normal,
-                                      color: AppColors.grey),
+                                    context,
+                                    fontWeight: FontWeight.normal,
+                                    color: AppColors.grey,
+                                  ),
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
                                   "Applicants: ${job.totalApplicants ?? 0}",
                                   style: AppTextStyles.caption(
-                                      context,
-                                      fontWeight: FontWeight.normal,
-                                      color: AppColors.grey),
+                                    context,
+                                    fontWeight: FontWeight.normal,
+                                    color: AppColors.grey,
+                                  ),
                                 ),
                                 const SizedBox(width: 10),
                                 Container(
-                                  decoration: BoxDecoration(color: AppColors.primary,borderRadius: BorderRadius.circular(10)),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                   child: Center(
                                     child: Padding(
                                       padding: const EdgeInsets.all(5.0),
                                       child: Text(
                                         job.jobType ?? '',
                                         style: AppTextStyles.caption(
-                                            context,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
+                                          context,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -386,23 +383,25 @@ class _ViewJobPageState extends State<ViewJobPage> {
                               child: Text(
                                 "Salary :${job.salary ?? ''}",
                                 style: AppTextStyles.caption(
-                                    context,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.black),
+                                  context,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.black,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 16),
                             Center(
                               child: Text(
-                            "Job Timing : ${job.details?["startTime"] ?? 'N/A'} - ${job.details?["endTime"] ?? 'N/A'}",
+                                "Job Timing : ${job.details?["startTime"] ?? 'N/A'} - ${job.details?["endTime"] ?? 'N/A'}",
                                 style: AppTextStyles.caption(
-                                    context,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.black),
+                                  context,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.black,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 16),
-                             TabBar(
+                            TabBar(
                               // indicator: BoxDecoration(
                               //   color: AppColors.primary,
                               //   borderRadius: BorderRadius.circular(10),
@@ -413,131 +412,207 @@ class _ViewJobPageState extends State<ViewJobPage> {
                               unselectedLabelColor: AppColors.black,
                               tabs: [
                                 const Tab(text: 'Job Description'),
-                                Tab(text: Api.userInfo.read('userType').toString()=='Job Seekers'?'Clinic Description':"Applicants List"),
+                                Tab(
+                                  text:
+                                      Api.userInfo
+                                              .read('userType')
+                                              .toString() ==
+                                          'Job Seekers'
+                                      ? 'Clinic Description'
+                                      : "Applicants List",
+                                ),
                               ],
                             ),
 
                             SizedBox(
-                              height:Api.userInfo.read('userType').toString()=='Job Seekers'? size * 1 :800,
+                              height:
+                                  Api.userInfo.read('userType').toString() ==
+                                      'Job Seekers'
+                                  ? size * 1
+                                  : 800,
                               child: TabBarView(
                                 children: [
                                   Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child:  SingleChildScrollView(
-                                        child: IgnorePointer(
-                                          child: QuillEditor(
-                                            controller: _controller,
-                                            scrollController: _scrollController,
-                                            focusNode: FocusNode(),
-                                            config: const QuillEditorConfig(
-                                              showCursor: false,
-                                              expands: false,
-                                            ),
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SingleChildScrollView(
+                                      child: IgnorePointer(
+                                        child: QuillEditor(
+                                          controller: _controller,
+                                          scrollController: _scrollController,
+                                          focusNode: FocusNode(),
+                                          config: const QuillEditorConfig(
+                                            showCursor: false,
+                                            expands: false,
                                           ),
                                         ),
-                                      )
+                                      ),
+                                    ),
                                     //Text( getPlainText(job.jobDescription), style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
                                   ),
                                   Api.userInfo.read('userType') == 'Job Seekers'
                                       ? Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      job.companyDescription ??
-                                          'No clinic description available',
-                                      style: AppTextStyles.caption(
-                                          context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5),
-                                    ),
-                                  )
-                                      : jobController.jobIdListAdmin.isNotEmpty? ListView.builder(
-                                    itemCount: jobController.jobIdListAdmin.length,
-                                    padding: const EdgeInsets.all(12),
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemBuilder: (context, index) {
-                                      if(jobController.jobIdListAdmin.isEmpty) {
-                                        Text('No data found',style: AppTextStyles.caption(context,color: AppColors.black),);
-                                      }
-                                      //if(jobController.jobList.isNotEmpty)
-                                      final seekers = jobController.jobIdListAdmin[index];
-                                      totalApplies=jobController.jobIdListAdmin.length;
-                                      return AnimationLimiter(
-                                        child: AnimationConfiguration.staggeredList(
-                                          position: index,
-                                          duration: const Duration(milliseconds: 1300),
-                                          child: SlideAnimation(
-                                            verticalOffset: 120.0,
-                                            curve: Curves.easeOutBack,
-                                            child: FadeInAnimation(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(bottom: 12),
-                                                child: GestureDetector(
-                                                  onTap: ()async{
-                                                      if(seekers.status.toString().toLowerCase()=='applied') {
-                                                        await jobController.updateJobStatusAdmin(
-                                                          seekers.jobSeekerId.toString(), seekers.jobId.toString(), "Viewed",
-                                                          job.orgName??"", context,);
-                                                      }
-                                                      await loginController.getProfileByUserId(seekers.jobSeekerId ?? "", context);
-                                                      Get.toNamed('/jobSeekerViewProfilePage');
-                                                      print('jobid${seekers.jobSeekerId}');
-                                                     },
-                                                  child: JobSeekerAppliedCard(
-                                                    seeker: seekers,orgName:job.orgName,
-                                                    onCall: () {
-                                                    launchCall(seekers.mobileNumber.toString());
-                                                    },
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            job.companyDescription ??
+                                                'No clinic description available',
+                                            style: AppTextStyles.caption(
+                                              context,
+                                              fontWeight: FontWeight.normal,
+                                              color: AppColors.black,
+                                              height: 1.5,
+                                            ),
+                                          ),
+                                        )
+                                      : jobController.jobIdListAdmin.isNotEmpty
+                                      ? ListView.builder(
+                                          itemCount: jobController
+                                              .jobIdListAdmin
+                                              .length,
+                                          padding: const EdgeInsets.all(12),
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemBuilder: (context, index) {
+                                            if (jobController
+                                                .jobIdListAdmin
+                                                .isEmpty) {
+                                              Text(
+                                                'No data found',
+                                                style: AppTextStyles.caption(
+                                                  context,
+                                                  color: AppColors.black,
+                                                ),
+                                              );
+                                            }
+                                            //if(jobController.jobList.isNotEmpty)
+                                            final seekers = jobController
+                                                .jobIdListAdmin[index];
+                                            totalApplies = jobController
+                                                .jobIdListAdmin
+                                                .length;
+                                            return AnimationLimiter(
+                                              child: AnimationConfiguration.staggeredList(
+                                                position: index,
+                                                duration: const Duration(
+                                                  milliseconds: 1300,
+                                                ),
+                                                child: SlideAnimation(
+                                                  verticalOffset: 120.0,
+                                                  curve: Curves.easeOutBack,
+                                                  child: FadeInAnimation(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                            bottom: 12,
+                                                          ),
+                                                      child: GestureDetector(
+                                                        onTap: () async {
+                                                          if (seekers.status
+                                                                  .toString()
+                                                                  .toLowerCase() ==
+                                                              'applied') {
+                                                            await jobController
+                                                                .updateJobStatusAdmin(
+                                                                  seekers
+                                                                      .jobSeekerId
+                                                                      .toString(),
+                                                                  seekers.jobId
+                                                                      .toString(),
+                                                                  "Viewed",
+                                                                  job.orgName ??
+                                                                      "",
+                                                                  context,
+                                                                );
+                                                          }
+                                                          await loginController
+                                                              .getProfileByUserId(
+                                                                seekers.jobSeekerId ??
+                                                                    "",
+                                                                context,
+                                                              );
+                                                          Get.toNamed(
+                                                            '/jobSeekerViewProfilePage',
+                                                          );
+                                                          print(
+                                                            'jobid${seekers.jobSeekerId}',
+                                                          );
+                                                        },
+                                                        child: JobSeekerAppliedCard(
+                                                          seeker: seekers,
+                                                          orgName: job.orgName,
+                                                          onCall: () {
+                                                            launchCall(
+                                                              seekers
+                                                                  .mobileNumber
+                                                                  .toString(),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ): const SizedBox(),
+                                            );
+                                          },
+                                        )
+                                      : const SizedBox(),
                                 ],
                               ),
                             ),
 
-
                             const SizedBox(height: 14),
-                            if(Api.userInfo.read('userType').toString()=='Job Seekers')
+                            if (Api.userInfo.read('userType').toString() ==
+                                'Job Seekers')
                               GetBuilder<JobController>(
-                                  builder: (controller) {
-                                    return Center(
-                                  child: SizedBox(
-                                    width: size * 0.9,
-                                    child: ElevatedButton(
-                                      onPressed: ()async {
-                                      await  jobController.applyJobsJobSeekers(
-                                          job.jobId ?? '',
-                                          Api.userInfo.read('userId') ?? '',
-                                          job.userType ?? '',job.orgName??'',
-                                          context,
-                                        );
-                                       },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:isJobApplied==true? AppColors.white:AppColors.primary,
-                                        padding:
-                                        const EdgeInsets.symmetric(vertical: 16),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(30),
+                                builder: (controller) {
+                                  return Center(
+                                    child: SizedBox(
+                                      width: size * 0.9,
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          await jobController
+                                              .applyJobsJobSeekers(
+                                                job.jobId ?? '',
+                                                Api.userInfo.read('userId') ??
+                                                    '',
+                                                job.userType ?? '',
+                                                job.orgName ?? '',
+                                                context,
+                                              );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: isJobApplied == true
+                                              ? AppColors.white
+                                              : AppColors.primary,
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              30,
+                                            ),
+                                          ),
+                                          elevation: 5,
                                         ),
-                                        elevation: 5,
-                                      ),
-                                      child: Text(
-                                        isJobApplied==true?'Applied': "Apply Now",
-                                        style: AppTextStyles.caption(
+                                        child: Text(
+                                          isJobApplied == true
+                                              ? 'Applied'
+                                              : "Apply Now",
+                                          style: AppTextStyles.caption(
                                             context,
                                             fontWeight: FontWeight.bold,
-                                            color: isJobApplied==true? AppColors.primary:AppColors.white,),
+                                            color: isJobApplied == true
+                                                ? AppColors.primary
+                                                : AppColors.white,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }
-                            ),
+                                  );
+                                },
+                              ),
                             //if(isAlreadyApplied==false)
-                             // Center(child: TextButton(onPressed: (){}, child: Text('Applied',style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold),))),
+                            // Center(child: TextButton(onPressed: (){}, child: Text('Applied',style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold),))),
                             const SizedBox(height: 14),
                           ],
                         ),
@@ -555,7 +630,6 @@ class _ViewJobPageState extends State<ViewJobPage> {
   }
 }
 
-
 class JobSeekerAppliedCard extends StatelessWidget {
   final JobSeekerAppliedModel seeker;
   final String? orgName;
@@ -570,27 +644,31 @@ class JobSeekerAppliedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    final loginController=Get.put(LoginController());
-    final jobController=Get.put(JobController());
+    final loginController = Get.put(LoginController());
+    final jobController = Get.put(JobController());
     return GestureDetector(
-     //  onTap: ()async{
-     //    if(seeker.status.toString().toLowerCase()=='applied') {
-     //      await jobController.updateJobStatusAdmin(
-     //        seeker.jobSeekerId.toString(), seeker.jobId.toString(), "Viewed",
-     //        orgName ?? "", context,);
-     //      await loginController.getProfileByUserId(seeker.jobSeekerId ?? "", context);
-     //      Get.toNamed('/jobViewProfilePage');
-     //
-     //      print('jobid${seeker.jobSeekerId}');
-     //    }
-     // },
+      //  onTap: ()async{
+      //    if(seeker.status.toString().toLowerCase()=='applied') {
+      //      await jobController.updateJobStatusAdmin(
+      //        seeker.jobSeekerId.toString(), seeker.jobId.toString(), "Viewed",
+      //        orgName ?? "", context,);
+      //      await loginController.getProfileByUserId(seeker.jobSeekerId ?? "", context);
+      //      Get.toNamed('/jobViewProfilePage');
+      //
+      //      print('jobid${seeker.jobSeekerId}');
+      //    }
+      // },
       child: Container(
         width: width,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: const [
-            BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(0, 4)),
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 5,
+              offset: Offset(0, 4),
+            ),
           ],
         ),
         child: Padding(
@@ -635,42 +713,62 @@ class JobSeekerAppliedCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            seeker.name,softWrap: true,
-                            style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
+                            seeker.name,
+                            softWrap: true,
+                            style: AppTextStyles.caption(
+                              context,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         PopupMenuButton<String>(
-                          onSelected: (String status)async {
+                          onSelected: (String status) async {
                             print("Selected Status: $status");
                             print('jobid${seeker.jobSeekerId.toString()}');
 
-                            await  jobController.updateJobStatusAdmin(
-                              seeker.jobSeekerId.toString(), seeker.jobId.toString(),
-                              status,orgName??"",
+                            await jobController.updateJobStatusAdmin(
+                              seeker.jobSeekerId.toString(),
+                              seeker.jobId.toString(),
+                              status,
+                              orgName ?? "",
                               context,
                             );
-                          await  jobController.getJobsById(Api.userInfo.read('selectJobId')??"",  context);
-                            await   jobController.getAppliedJobsAdmin(Api.userInfo.read('selectJobId')??"",context);
-                           },
+                            await jobController.getJobsById(
+                              Api.userInfo.read('selectJobId') ?? "",
+                              context,
+                            );
+                            await jobController.getAppliedJobsAdmin(
+                              Api.userInfo.read('selectJobId') ?? "",
+                              context,
+                            );
+                          },
                           itemBuilder: (BuildContext context) {
                             return [
                               PopupMenuItem(
                                 value: "Shortlisted",
-                                child: Text("Shortlisted",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
+                                child: Text(
+                                  "Shortlisted",
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
                               ),
                               PopupMenuItem(
                                 value: "Rejected",
-                                child: Text("Rejected",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal)),
+                                child: Text(
+                                  "Rejected",
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
                               ),
                             ];
                           },
 
-                          child: Icon(
-                            Icons.more_vert,
-                            color: Colors.grey[700],
-                          ),
-                        )
-
+                          child: Icon(Icons.more_vert, color: Colors.grey[700]),
+                        ),
                       ],
                     ),
 
@@ -679,12 +777,22 @@ class JobSeekerAppliedCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("ID: ${seeker.jobSeekerId}",
-                            style: TextStyle(fontSize: width * 0.03, color: Colors.black87)),
+                        Text(
+                          "ID: ${seeker.jobSeekerId}",
+                          style: TextStyle(
+                            fontSize: width * 0.03,
+                            color: Colors.black87,
+                          ),
+                        ),
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 8,
+                          ),
                           decoration: BoxDecoration(
-                            color: getStatusColor(seeker.status.toString()).withOpacity(0.1),
+                            color: getStatusColor(
+                              seeker.status.toString(),
+                            ).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -698,18 +806,24 @@ class JobSeekerAppliedCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Text("Email: ${seeker.email}",softWrap: true,
-                        style: TextStyle(fontSize: width * 0.028, color: Colors.grey)),
+                    Text(
+                      "Email: ${seeker.email}",
+                      softWrap: true,
+                      style: TextStyle(
+                        fontSize: width * 0.028,
+                        color: Colors.grey,
+                      ),
+                    ),
+
                     // Text("JobId: ${seeker.jobId}",
                     //     style: TextStyle(fontSize: width * 0.035, color: Colors.grey)),
-
                     const SizedBox(height: 5),
                     SizedBox(
-                      height: width*0.06,
+                      height: width * 0.06,
                       child: Row(
                         children: [
                           SizedBox(
-                            width:width*0.08,
+                            width: width * 0.08,
                             child: Transform.rotate(
                               angle: 20 * 3.1415926535 / 180,
                               child: IconButton(
@@ -720,10 +834,12 @@ class JobSeekerAppliedCard extends StatelessWidget {
                                 ),
                                 onPressed: onCall,
                               ),
-                            )
+                            ),
                           ),
-                          Text(seeker.mobileNumber,
-                              style: TextStyle(fontSize: width * 0.035)),
+                          Text(
+                            seeker.mobileNumber,
+                            style: TextStyle(fontSize: width * 0.035),
+                          ),
                         ],
                       ),
                     ),

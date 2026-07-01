@@ -15,8 +15,10 @@ class ViewWebProfilePage extends StatefulWidget {
   @override
   State<ViewWebProfilePage> createState() => _ViewWebProfilePageState();
 }
+
 class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKeyProfile = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyProfile =
+      GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
   final ScrollController _scrollController = ScrollController();
   final ScrollController _quillScrollController = ScrollController();
@@ -27,14 +29,12 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
       List<Map<String, dynamic>> delta = [];
 
       if (data == null) {
-        delta = [{"insert": "\n"}];
-      }
-
-      else if (data is List) {
+        delta = [
+          {"insert": "\n"},
+        ];
+      } else if (data is List) {
         delta = List<Map<String, dynamic>>.from(data);
-      }
-
-      else if (data is String) {
+      } else if (data is String) {
         delta = List<Map<String, dynamic>>.from(jsonDecode(data));
       }
 
@@ -51,19 +51,19 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
       setState(() {});
     }
   }
+
   @override
   void initState() {
     super.initState();
     _controller = QuillController.basic(
       config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
+        clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
       ),
     );
 
     loadData();
   }
+
   Future<void> loadData() async {
     await loginController.getProfileByUserId(
       Api.userInfo.read('selectUId') ?? "",
@@ -75,6 +75,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
         : null;
     loadJobDescription(data);
   }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -83,12 +84,14 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     _controller.dispose();
     super.dispose();
   }
+
   bool getPlanActive() {
     final userData = loginController.userData;
     if (userData.isEmpty) return false;
-    final raw = userData.first.details["plan"]?["basePlan"]?["isActive"]??"";
+    final raw = userData.first.details["plan"]?["basePlan"]?["isActive"] ?? "";
     return raw == true || raw == "true";
   }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -97,20 +100,28 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
 
     final hasData = loginController.userData.isNotEmpty;
     final user = hasData ? loginController.userData.first : null;
-    final collegeDetails = (hasData) ? user!.details['collegeDetails'] ?? {} : {};
+    final collegeDetails = (hasData)
+        ? user!.details['collegeDetails'] ?? {}
+        : {};
     final ug = collegeDetails['ugDegree'] ?? {};
     final pg = collegeDetails['pgDegree'] ?? {};
-    final experiences = (hasData) ? user!.details['experienceDetails'] ?? [] : [];
+    final experiences = (hasData)
+        ? user!.details['experienceDetails'] ?? []
+        : [];
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     final planActive = getPlanActive();
-    String userType=Api.userInfo.read('userType')??"";
-    String userId=Api.userInfo.read('userId')??"";
-    String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
+    String userType = Api.userInfo.read('userType') ?? "";
+    String userId = Api.userInfo.read('userId') ?? "";
+    String editUserId = loginController.userData.isNotEmpty
+        ? loginController.userData.first.userId.toString()
+        : "";
     print('userIdfds$editUserId');
     final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
     return Scaffold(
       key: _scaffoldKeyProfile,
-      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: !isDesktop
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       backgroundColor: AppColors.scaffoldBg,
       appBar: CommonWebAppBar(
         height: isMobile ? 60 : 80,
@@ -119,155 +130,249 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
         onNotification: () {},
       ),
       body: GetBuilder<LoginController>(
-          builder: (controller) {
-            return Row(
+        builder: (controller) {
+          return Row(
             children: [
               if (isDesktop && isLoggedIn) const AdminSideBar(),
 
               Expanded(
-                child:GetBuilder<LoginController>(
-                    builder: (controller) {
-                      return Container(
+                child: GetBuilder<LoginController>(
+                  builder: (controller) {
+                    return Container(
                       color: AppColors.scaffoldBg,
                       child: Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 1200),
                           child: SingleChildScrollView(
-                            padding: EdgeInsets.symmetric(vertical: isMobile ? 15 : 30, horizontal: isMobile ? 10 : 20),
+                            padding: EdgeInsets.symmetric(
+                              vertical: isMobile ? 15 : 30,
+                              horizontal: isMobile ? 10 : 20,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 if (!isDesktop)
                                   IconButton(
-                                    icon: const Icon(Icons.menu,color: AppColors.black,),
-                                    onPressed: () => _scaffoldKeyProfile.currentState?.openDrawer(),
+                                    icon: const Icon(
+                                      Icons.menu,
+                                      color: AppColors.black,
+                                    ),
+                                    onPressed: () => _scaffoldKeyProfile
+                                        .currentState
+                                        ?.openDrawer(),
                                   ),
 
                                 _headerHero(user, width, context),
 
-                                 const SizedBox(height: 50),
+                                const SizedBox(height: 50),
 
                                 if (isMobile) ...[
-                                   _card(
+                                  _card(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         _sectionTitle("About", width, context),
                                         Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child:  IgnorePointer(
-                                              child: QuillEditor(
-                                                controller: _controller,
-                                                scrollController: _quillScrollController,
-                                                focusNode: _focusNode,
-                                                config: const QuillEditorConfig(
-                                                  showCursor: false,
-                                                  expands: false,
-                                                ),
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: IgnorePointer(
+                                            child: QuillEditor(
+                                              controller: _controller,
+                                              scrollController:
+                                                  _quillScrollController,
+                                              focusNode: _focusNode,
+                                              config: const QuillEditorConfig(
+                                                showCursor: false,
+                                                expands: false,
                                               ),
-                                            )
+                                            ),
+                                          ),
                                         ),
-                                        if(Api.userInfo.read('userType')=='Job Seekers')
+                                        if (Api.userInfo.read('userType') ==
+                                            'Job Seekers')
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              _sectionTitle("Resume", width, context),
+                                              _sectionTitle(
+                                                "Resume",
+                                                width,
+                                                context,
+                                              ),
                                               const SizedBox(height: 10),
                                               _resumeTile(user, width, context),
                                             ],
-                                          )
+                                          ),
                                       ],
                                     ),
                                   ),
                                   const SizedBox(height: 20),
                                   _card(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        _sectionTitle("Contact Info", width, context),
+                                        _sectionTitle(
+                                          "Contact Info",
+                                          width,
+                                          context,
+                                        ),
                                         const SizedBox(height: 10),
-                                        _contactTile(Icons.email, "Email", user?.email ?? "", width, context),
+                                        _contactTile(
+                                          Icons.email,
+                                          "Email",
+                                          user?.email ?? "",
+                                          width,
+                                          context,
+                                        ),
                                         _contactTile(
                                           Icons.call,
                                           "Mobile",
                                           ((planActive == true &&
-                                              user?.details["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-                                              isAdminUser ||
-                                              userId == editUserId)
+                                                      user?.details["plan"]?["basePlan"]?["details"]?["mobileNumber"] ==
+                                                          true) ||
+                                                  isAdminUser ||
+                                                  userId == editUserId)
                                               ? (user?.mobileNumber ?? "-")
                                               : "-",
                                           width,
                                           context,
                                         ),
-                                       // _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
-                                        _contactTile(Icons.cake, "DOB", user?.dob ?? "", width, context),
-                                        _contactTile(Icons.location_on, "Location",
-                                            "${user?.address['area'] ?? ''},${user?.address['city'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['state'] ?? ''}", width, context),
+                                        // _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
+                                        _contactTile(
+                                          Icons.cake,
+                                          "DOB",
+                                          user?.dob ?? "",
+                                          width,
+                                          context,
+                                        ),
+                                        _contactTile(
+                                          Icons.location_on,
+                                          "Location",
+                                          "${user?.address['area'] ?? ''},${user?.address['city'] ?? ''}, ${user?.address['district'] ?? ''},${user?.address['state'] ?? ''}",
+                                          width,
+                                          context,
+                                        ),
                                       ],
                                     ),
                                   ),
                                 ] else
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Flexible(
-                                      flex: 2,
-                                      child: _card(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            _sectionTitle("About", width, context),
-                                            Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child:  IgnorePointer(
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Flexible(
+                                        flex: 2,
+                                        child: _card(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              _sectionTitle(
+                                                "About",
+                                                width,
+                                                context,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(
+                                                  8.0,
+                                                ),
+                                                child: IgnorePointer(
                                                   child: QuillEditor(
                                                     controller: _controller,
-                                                    scrollController: _scrollController,
+                                                    scrollController:
+                                                        _scrollController,
                                                     focusNode: FocusNode(),
-                                                    config: const QuillEditorConfig(
-                                                      showCursor: false,
-                                                      expands: false,
-                                                    ),
+                                                    config:
+                                                        const QuillEditorConfig(
+                                                          showCursor: false,
+                                                          expands: false,
+                                                        ),
                                                   ),
-                                                )
-                                            ),
+                                                ),
+                                              ),
 
-                                            const SizedBox(height: 10),
-                                            if(Api.userInfo.read('userType')=='Job Seekers')
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                              _sectionTitle("Resume", width, context),
-                                            const SizedBox(height: 10),
-                                            _resumeTile(user, width, context),
-                          ])
-                                          ],
+                                              const SizedBox(height: 10),
+                                              if (Api.userInfo.read(
+                                                    'userType',
+                                                  ) ==
+                                                  'Job Seekers')
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    _sectionTitle(
+                                                      "Resume",
+                                                      width,
+                                                      context,
+                                                    ),
+                                                    const SizedBox(height: 10),
+                                                    _resumeTile(
+                                                      user,
+                                                      width,
+                                                      context,
+                                                    ),
+                                                  ],
+                                                ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    Expanded(
-                                      flex: 1,
-                                      child: _card(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            _sectionTitle("Contact Info", width, context),
-                                            const SizedBox(height: 10),
-                                            _contactTile(Icons.email, "Email", user?.email ?? "", width, context),
-                                            _contactTile(Icons.call, "Mobile", user?.mobileNumber ?? "", width, context),
-                                            _contactTile(Icons.cake, "DOB", user?.dob ?? "", width, context),
-                                            _contactTile(Icons.location_on, "Location",
-                                                loginController.userData.isNotEmpty && user?.address != null
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                        flex: 1,
+                                        child: _card(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              _sectionTitle(
+                                                "Contact Info",
+                                                width,
+                                                context,
+                                              ),
+                                              const SizedBox(height: 10),
+                                              _contactTile(
+                                                Icons.email,
+                                                "Email",
+                                                user?.email ?? "",
+                                                width,
+                                                context,
+                                              ),
+                                              _contactTile(
+                                                Icons.call,
+                                                "Mobile",
+                                                user?.mobileNumber ?? "",
+                                                width,
+                                                context,
+                                              ),
+                                              _contactTile(
+                                                Icons.cake,
+                                                "DOB",
+                                                user?.dob ?? "",
+                                                width,
+                                                context,
+                                              ),
+                                              _contactTile(
+                                                Icons.location_on,
+                                                "Location",
+                                                loginController
+                                                            .userData
+                                                            .isNotEmpty &&
+                                                        user?.address != null
                                                     ? "${user?.address['area'] ?? ''},${user?.address['city'] ?? ''},${user?.address['district'] ?? ''}, ${user?.address['state'] ?? ''}"
-                                                    : "", width, context),
-                                          ],
+                                                    : "",
+                                                width,
+                                                context,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
 
                                 const SizedBox(height: 20),
 
@@ -277,8 +382,10 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                                       child: _infoPanel(
                                         icon: Icons.school,
                                         title: "UG Degree",
-                                        desc: "${ug['degree']} - ${ug['name']}\n${ug['percentage']}%",
-                                        size: width, context: context
+                                        desc:
+                                            "${ug['degree']} - ${ug['name']}\n${ug['percentage']}%",
+                                        size: width,
+                                        context: context,
                                       ),
                                     ),
                                   const SizedBox(height: 20),
@@ -287,72 +394,87 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
                                       child: _infoPanel(
                                         icon: Icons.school,
                                         title: "PG Degree",
-                                        desc: "${pg['degree']} - ${pg['name']}\n${pg['percentage']}",
-                                        size: width, context: context
+                                        desc:
+                                            "${pg['degree']} - ${pg['name']}\n${pg['percentage']}",
+                                        size: width,
+                                        context: context,
                                       ),
                                     ),
                                 ] else
-                                Row(
-                                  children: [
-                                    if (ug.isNotEmpty)
-                                      Expanded(
-                                        child: _card(
-                                          child: _infoPanel(
-                                            icon: Icons.school,
-                                            title: "UG Degree",
-                                            desc: "${ug['degree']} - ${ug['name']}\n${ug['percentage']}%",
-                                            size: width, context: context
-                                          ),
-                                        ),
-                                      ),
-                                    const SizedBox(width: 20),
-                                    if (pg.isNotEmpty)
-                                      Expanded(
-                                        child: _card(
-                                          child: _infoPanel(
-                                            icon: Icons.school,
-                                            title: "PG Degree",
-                                            desc: "${pg['degree']} - ${pg['name']}\n${pg['percentage']}",
-                                            size: width, context: context
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 20),
-                              if(experiences.isNotEmpty)
-                                _card(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  Row(
                                     children: [
-                                      _sectionTitle("Experience", width, context),
-                                      const SizedBox(height: 10),
-                                      if (experiences.isNotEmpty)
-                                        ...experiences.map((exp) => _infoPanel(
-                                          icon: Icons.work_outline,
-                                          title: "Company Name: ${exp['companyName'] ?? ""}",
-                                          desc: "Experience(year): ${exp['experience']}\n\nJob Role:${exp['jobDescription']}",
-                                          size: width, context: context
-                                        ))
-                                      else
-                                        const Text("No experience available"),
+                                      if (ug.isNotEmpty)
+                                        Expanded(
+                                          child: _card(
+                                            child: _infoPanel(
+                                              icon: Icons.school,
+                                              title: "UG Degree",
+                                              desc:
+                                                  "${ug['degree']} - ${ug['name']}\n${ug['percentage']}%",
+                                              size: width,
+                                              context: context,
+                                            ),
+                                          ),
+                                        ),
+                                      const SizedBox(width: 20),
+                                      if (pg.isNotEmpty)
+                                        Expanded(
+                                          child: _card(
+                                            child: _infoPanel(
+                                              icon: Icons.school,
+                                              title: "PG Degree",
+                                              desc:
+                                                  "${pg['degree']} - ${pg['name']}\n${pg['percentage']}",
+                                              size: width,
+                                              context: context,
+                                            ),
+                                          ),
+                                        ),
                                     ],
                                   ),
-                                ),
 
+                                const SizedBox(height: 20),
+                                if (experiences.isNotEmpty)
+                                  _card(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        _sectionTitle(
+                                          "Experience",
+                                          width,
+                                          context,
+                                        ),
+                                        const SizedBox(height: 10),
+                                        if (experiences.isNotEmpty)
+                                          ...experiences.map(
+                                            (exp) => _infoPanel(
+                                              icon: Icons.work_outline,
+                                              title:
+                                                  "Company Name: ${exp['companyName'] ?? ""}",
+                                              desc:
+                                                  "Experience(year): ${exp['experience']}\n\nJob Role:${exp['jobDescription']}",
+                                              size: width,
+                                              context: context,
+                                            ),
+                                          )
+                                        else
+                                          const Text("No experience available"),
+                                      ],
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
                         ),
                       ),
                     );
-                  }
+                  },
                 ),
-              )
+              ),
             ],
           );
-        }
+        },
       ),
     );
   }
@@ -364,13 +486,23 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
         alignment: Alignment.centerLeft,
         child: Text(
           title,
-          style: AppTextStyles.body(context, fontWeight: FontWeight.bold, color: AppColors.primary),
+          style: AppTextStyles.body(
+            context,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+          ),
         ),
       ),
     );
   }
 
-  Widget _contactTile(IconData icon, String label, String value, double width, BuildContext context) {
+  Widget _contactTile(
+    IconData icon,
+    String label,
+    String value,
+    double width,
+    BuildContext context,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Row(
@@ -382,10 +514,23 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label,
-                    style: AppTextStyles.caption(context,color: Colors.black87, fontWeight: FontWeight.bold)),
+                Text(
+                  label,
+                  style: AppTextStyles.caption(
+                    context,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(value, style: AppTextStyles.caption(context,color: Colors.black87, fontWeight: FontWeight.normal)),
+                Text(
+                  value,
+                  style: AppTextStyles.caption(
+                    context,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
               ],
             ),
           ),
@@ -399,7 +544,7 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
     required String title,
     required String desc,
     required double size,
-    required BuildContext context
+    required BuildContext context,
   }) {
     return Container(
       width: double.infinity,
@@ -407,51 +552,61 @@ class _ViewWebProfilePageState extends State<ViewWebProfilePage> {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withValues(alpha: 0.9),
       ),
       child: Row(
         children: [
           Icon(icon, size: 24, color: Colors.black54),
           const SizedBox(width: 15),
           Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: AppTextStyles.caption(context,fontWeight: FontWeight.bold, color: Colors.black)),
-                  const SizedBox(height: 12),
-                  Text(desc, style: AppTextStyles.caption(context,fontWeight: FontWeight.normal, color: Colors.black,)),
-                ],
-              )),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.caption(
+                    context,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  desc,
+                  style: AppTextStyles.caption(
+                    context,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 }
+
 Widget _card({required Widget child}) {
   return Container(
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 8,
-        )
-      ],
+      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
     ),
     child: child,
   );
 }
+
 Widget _title(String text) {
   return Text(
     text,
-    style: const TextStyle(
-      fontSize: 18,
-      fontWeight: FontWeight.bold,
-    ),
+    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
   );
 }
+
 Widget _resumeTile(user, double width, context) {
   return GestureDetector(
     onTap: () {
@@ -460,18 +615,19 @@ Widget _resumeTile(user, double width, context) {
         Get.to(() => ViewPDFPage(pdfUrl: user.certificates[0]));
       }
     },
-    child:  Row(
+    child: Row(
       children: [
-        const Icon(Icons.picture_as_pdf, color: Colors.red, size: 24,),
+        const Icon(Icons.picture_as_pdf, color: Colors.red, size: 24),
         const SizedBox(width: 10),
-        Text("View Resume",style: AppTextStyles.caption(context),),
+        Text("View Resume", style: AppTextStyles.caption(context)),
       ],
     ),
   );
 }
+
 Widget _headerHero(user, double width, context) {
   final bool isMobile = width < 700;
-  final loginController=Get.put(LoginController());
+  final loginController = Get.put(LoginController());
   return SizedBox(
     height: isMobile ? 220 : 150,
     child: Stack(
@@ -492,18 +648,20 @@ Widget _headerHero(user, double width, context) {
                 color: Colors.black26,
                 blurRadius: 12,
                 offset: Offset(0, 6),
-              )
+              ),
             ],
           ),
-          padding:  const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-
               ElevatedButton.icon(
-                onPressed: () async{
+                onPressed: () async {
                   print('fwf${user.userId}');
-                  await loginController.getProfileByUserId(user?.userId??"", context);
+                  await loginController.getProfileByUserId(
+                    user?.userId ?? "",
+                    context,
+                  );
                   Get.toNamed('/registerPageWeb');
                 },
                 style: ElevatedButton.styleFrom(
@@ -512,10 +670,16 @@ Widget _headerHero(user, double width, context) {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                 ),
-                icon:  const Icon(Icons.edit, size: 18, color: AppColors.grey,),
-                label:  Text("Edit Profile",style: AppTextStyles.caption(context),),
+                icon: const Icon(Icons.edit, size: 18, color: AppColors.grey),
+                label: Text(
+                  "Edit Profile",
+                  style: AppTextStyles.caption(context),
+                ),
               ),
             ],
           ),
@@ -528,7 +692,6 @@ Widget _headerHero(user, double width, context) {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -547,7 +710,7 @@ Widget _headerHero(user, double width, context) {
                       ? NetworkImage(user.images[0])
                       : null,
                   child: (user?.images.isEmpty ?? true)
-                      ?  const Icon(Icons.person, size: 40)
+                      ? const Icon(Icons.person, size: 40)
                       : null,
                 ),
               ),
@@ -558,16 +721,22 @@ Widget _headerHero(user, double width, context) {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
-                  Text(user?.name ?? "",
-                      style: AppTextStyles.body(context,
-                        fontWeight: FontWeight.bold,
-                        color: isMobile ? AppColors.black : Colors.white,
-                      )),
-                  Text(user?.userId ?? "",
-                   style:   AppTextStyles.body(context,
-                          fontWeight: FontWeight.bold,
-                          color: isMobile ? AppColors.black : Colors.white
-                      )),
+                  Text(
+                    user?.name ?? "",
+                    style: AppTextStyles.body(
+                      context,
+                      fontWeight: FontWeight.bold,
+                      color: isMobile ? AppColors.black : Colors.white,
+                    ),
+                  ),
+                  Text(
+                    user?.userId ?? "",
+                    style: AppTextStyles.body(
+                      context,
+                      fontWeight: FontWeight.bold,
+                      color: isMobile ? AppColors.black : Colors.white,
+                    ),
+                  ),
                 ],
               ),
             ],

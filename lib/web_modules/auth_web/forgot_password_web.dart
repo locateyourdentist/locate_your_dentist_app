@@ -6,7 +6,6 @@ import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 
-
 class ForgotPasswordPageWeb extends StatefulWidget {
   const ForgotPasswordPageWeb({super.key});
 
@@ -18,7 +17,7 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
   final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
-  final loginController=Get.put(LoginController());
+  final loginController = Get.put(LoginController());
 
   final _formKeyForgotEmailWeb = GlobalKey<FormState>();
 
@@ -26,7 +25,7 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
   bool confirmPasswordVisible = false;
 
   Widget passwordField() {
-    return   CustomTextField(
+    return CustomTextField(
       hint: "",
       icon: Icons.email,
       //isPassword: true,
@@ -46,16 +45,20 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: () async{
+        onPressed: () async {
           if (_formKeyForgotEmailWeb.currentState!.validate()) {
             Api.userInfo.write('otpMail', loginController.emailController.text);
-            await loginController.forgotPassword(loginController.emailController.text,context);
-
+            await loginController.forgotPassword(
+              loginController.emailController.text,
+              context,
+            );
           }
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(0),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           backgroundColor: Colors.transparent,
           elevation: 5,
         ),
@@ -83,11 +86,14 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
       ),
     );
   }
+
   @override
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
   }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -98,7 +104,7 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.primary,AppColors.secondary],
+                  colors: [AppColors.primary, AppColors.secondary],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -111,105 +117,126 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
                 width: size > 800 ? 450 : size * 0.85,
                 padding: const EdgeInsets.all(40),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(25),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
                   ],
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
-                child:  GetBuilder<LoginController>(
-                    init: loginController,
-                    builder: (controller) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            width: size*0.3,
-                            height: size*0.3,
-                            child: ClipOval(
-                              child: loginController.appLogoUrl != null
-                                  ? Image.network(
-                                loginController.appLogoUrl!,
-                                fit: BoxFit.cover,
-                                width: size*0.3,
-                                height: size*0.3,
-                              )
-                                  : Container(
-                                color: Colors.white.withOpacity(0.3),
-                                child:  Icon(
-                                  Icons.medical_services,
-                                  size: size*0.2,
-                                  color: Colors.white,
+                child: GetBuilder<LoginController>(
+                  init: loginController,
+                  builder: (controller) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: size * 0.3,
+                          height: size * 0.3,
+                          child: ClipOval(
+                            child: loginController.appLogoUrl != null
+                                ? Image.network(
+                                    loginController.appLogoUrl!,
+                                    fit: BoxFit.cover,
+                                    width: size * 0.3,
+                                    height: size * 0.3,
+                                  )
+                                : Container(
+                                    color: Colors.white.withValues(alpha: 0.3),
+                                    child: Icon(
+                                      Icons.medical_services,
+                                      size: size * 0.2,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        Text(
+                          "Forgot Password",
+                          style: AppTextStyles.body(
+                            context,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        SizedBox(height: size * 0.01),
+                        Text(
+                          "Please Enter your Registered Email",
+                          style: AppTextStyles.caption(
+                            context,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        SizedBox(height: size * 0.01),
+
+                        passwordField(),
+                        SizedBox(height: size * 0.02),
+                        submitButton(),
+                        SizedBox(height: size * 0.01),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                color: Colors.white.withValues(alpha: 0.4),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                "OR",
+                                style: AppTextStyles.caption(
+                                  context,
+                                  color: Colors.white70,
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          Text(
-                            "Forgot Password",
-                            style: AppTextStyles.body(context,color: AppColors.white),),
-                           SizedBox(height: size*0.01),
-                          Text(
-                            "Please Enter your Registered Email",
-                            style: AppTextStyles.caption(context,color: AppColors.white),),
-                          SizedBox(height: size*0.01),
-
-                          passwordField(),
-                          SizedBox(height: size*0.02),
-                          submitButton(),
-                          SizedBox(height: size*0.01),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Divider(color: Colors.white.withOpacity(0.4))),
-                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: Text("OR",
-                                    style:
-                                    AppTextStyles.caption(context,color: Colors.white70,)),
+                            Expanded(
+                              child: Divider(
+                                color: Colors.white.withValues(alpha: 0.4),
                               ),
-                              Expanded(
-                                  child: Divider(color: Colors.white.withOpacity(0.4))),
-                            ],
-                          ),
-                          SizedBox(height: size*0.01),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: size * 0.01),
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Don't have an account?",
-                                style: TextStyle(color: Colors.white70),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Don't have an account?",
+                              style: TextStyle(color: Colors.white70),
+                            ),
+                            SizedBox(height: size * 0.005),
+
+                            TextButton(
+                              onPressed: () {
+                                Get.offAllNamed('/registerPageWeb');
+                              },
+                              child: Text(
+                                "Sign Up",
+                                style: AppTextStyles.body(
+                                  context,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              SizedBox(height: size*0.005),
-
-                              TextButton(
-                                  onPressed: () {
-                                    Get.offAllNamed('/registerPageWeb');
-                                  },
-                                  child:  Text(
-                                    "Sign Up",
-                                    style: AppTextStyles.body(context,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                            ],
-                          ),
-                        ],
-                      );
-                    }
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

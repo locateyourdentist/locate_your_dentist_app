@@ -6,8 +6,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../modules/auth/login_screen/login_controller.dart';
 
 class GumDiseaseCard extends StatelessWidget {
- // const GumDiseaseCard({super.key});
   final loginController = Get.put(LoginController());
+
+  GumDiseaseCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class GumDiseaseCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -31,21 +32,27 @@ class GumDiseaseCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: isDesktop
             ? IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(flex: 5, child: _buildImageSection(isDesktop: true)),
-              Expanded(flex: 6, child: _buildDetailsSection(context)),
-            ],
-          ),
-        )
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: _buildImageSection(isDesktop: true),
+                    ),
+                    Expanded(flex: 6, child: _buildDetailsSection(context)),
+                  ],
+                ),
+              )
             : Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 260, child: _buildImageSection(isDesktop: false)),
-            _buildDetailsSection(context),
-          ],
-        ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 260,
+                    child: _buildImageSection(isDesktop: false),
+                  ),
+                  _buildDetailsSection(context),
+                ],
+              ),
       ),
     );
   }
@@ -60,7 +67,11 @@ class GumDiseaseCard extends StatelessWidget {
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 color: Colors.grey.shade50,
-                child: const Icon(Icons.health_and_safety_outlined, size: 50, color: Colors.redAccent),
+                child: const Icon(
+                  Icons.health_and_safety_outlined,
+                  size: 50,
+                  color: Colors.redAccent,
+                ),
               );
             },
           ),
@@ -72,8 +83,8 @@ class GumDiseaseCard extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.1),
-                  Colors.black.withOpacity(0.5),
+                  Colors.black.withValues(alpha: 0.1),
+                  Colors.black.withValues(alpha: 0.5),
                 ],
               ),
             ),
@@ -88,16 +99,26 @@ class GumDiseaseCard extends StatelessWidget {
             children: [
               Text(
                 '02 . HIGH RISK',
-                style: TextStyle(color: Colors.orangeAccent, fontWeight: FontWeight.bold, letterSpacing: 2, fontSize: 12),
+                style: TextStyle(
+                  color: Colors.orangeAccent,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                  fontSize: 12,
+                ),
               ),
               SizedBox(height: 8),
               Text(
                 'Understanding Gum Disease & Bleeding',
-                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold, height: 1.2),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -113,18 +134,26 @@ class GumDiseaseCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.08),
+              color: Colors.red.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(30),
             ),
             child: const Text(
               'Periodontitis',
-              style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 13),
+              style: TextStyle(
+                color: Colors.redAccent,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
             ),
           ),
           const SizedBox(height: 16),
           const Text(
             'Gum Disease (Gingivitis)',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
           ),
           const SizedBox(height: 12),
           const Text(
@@ -134,19 +163,37 @@ class GumDiseaseCard extends StatelessWidget {
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 16),
-          const Text('Common Symptoms', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          const Text(
+            'Common Symptoms',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 12),
-          _buildBulletItem('Gums that bleed easily during brushing or flossing routines.'),
+          _buildBulletItem(
+            'Gums that bleed easily during brushing or flossing routines.',
+          ),
           _buildBulletItem('Swollen, tender, or bright red/dusky purple gums.'),
-          _buildBulletItem('Persistent bad breath or a foul taste that will not leave.'),
+          _buildBulletItem(
+            'Persistent bad breath or a foul taste that will not leave.',
+          ),
           const SizedBox(height: 20),
-          const Text('Available Treatments', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          const Text(
+            'Available Treatments',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 12),
           _buildTreatmentChipRow([
             'Scaling & Root Planing',
             'Antimicrobial Rinses',
             'Laser Gum Therapy',
-            'Flap Surgery'
+            'Flap Surgery',
           ]),
           const SizedBox(height: 24),
           Center(
@@ -157,15 +204,18 @@ class GumDiseaseCard extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
-                onPressed: ()async {
+                onPressed: () async {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedTaluka,
+                    loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -175,10 +225,13 @@ class GumDiseaseCard extends StatelessWidget {
                   );
                   Get.toNamed('/userTypeListWeb');
                 },
-                child: const Text('Find Nearby Dental Clinics', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                child: const Text(
+                  'Find Nearby Dental Clinics',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -194,7 +247,16 @@ class GumDiseaseCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 6.0, right: 8.0),
             child: Icon(Icons.circle, size: 6, color: Colors.amber),
           ),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 13, color: Color(0xFF475569), height: 1.4))),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Color(0xFF475569),
+                height: 1.4,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -212,15 +274,19 @@ class GumDiseaseCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey.shade100),
           ),
-          child: Text(treatment, style: TextStyle(color: Colors.grey.shade800, fontSize: 12, fontWeight: FontWeight.w500)),
+          child: Text(
+            treatment,
+            style: TextStyle(
+              color: Colors.grey.shade800,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         );
       }).toList(),
     );
   }
 }
-
-
-
 
 class DentalServiceCard extends StatelessWidget {
   final String title;
@@ -252,28 +318,17 @@ class DentalServiceCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 8,
-            ),
-          ],
+          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              image,
-              height: 120,
-              width: 90,
-            ),
+            Image.asset(image, height: 120, width: 90),
             const SizedBox(height: 10),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -298,7 +353,7 @@ class BruxismCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -307,21 +362,27 @@ class BruxismCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: isDesktop
             ? IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(flex: 5, child: _buildImageSection(isDesktop: true)),
-              Expanded(flex: 6, child: _buildDetailsSection(context)),
-            ],
-          ),
-        )
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: _buildImageSection(isDesktop: true),
+                    ),
+                    Expanded(flex: 6, child: _buildDetailsSection(context)),
+                  ],
+                ),
+              )
             : Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 260, child: _buildImageSection(isDesktop: false)),
-            _buildDetailsSection(context),
-          ],
-        ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 260,
+                    child: _buildImageSection(isDesktop: false),
+                  ),
+                  _buildDetailsSection(context),
+                ],
+              ),
       ),
     );
   }
@@ -336,7 +397,11 @@ class BruxismCard extends StatelessWidget {
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 color: Colors.grey.shade50,
-                child: const Icon(Icons.gavel_rounded, size: 50, color: Colors.purple),
+                child: const Icon(
+                  Icons.gavel_rounded,
+                  size: 50,
+                  color: Colors.purple,
+                ),
               );
             },
           ),
@@ -348,8 +413,8 @@ class BruxismCard extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.1),
-                  Colors.black.withOpacity(0.5),
+                  Colors.black.withValues(alpha: 0.1),
+                  Colors.black.withValues(alpha: 0.5),
                 ],
               ),
             ),
@@ -364,16 +429,26 @@ class BruxismCard extends StatelessWidget {
             children: [
               Text(
                 '03 . STRESS RELATED',
-                style: TextStyle(color: Colors.purpleAccent, fontWeight: FontWeight.bold, letterSpacing: 2, fontSize: 12),
+                style: TextStyle(
+                  color: Colors.purpleAccent,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                  fontSize: 12,
+                ),
               ),
               SizedBox(height: 8),
               Text(
                 'Bruxism & Jaw Tension Damage',
-                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold, height: 1.2),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -389,18 +464,26 @@ class BruxismCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.purple.withOpacity(0.08),
+              color: Colors.purple.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(30),
             ),
             child: const Text(
               'Occlusal Trauma',
-              style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 13),
+              style: TextStyle(
+                color: Colors.purple,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
             ),
           ),
           const SizedBox(height: 16),
           const Text(
             'Teeth Grinding (Bruxism)',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
           ),
           const SizedBox(height: 12),
           const Text(
@@ -410,19 +493,39 @@ class BruxismCard extends StatelessWidget {
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 16),
-          const Text('Common Symptoms', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          const Text(
+            'Common Symptoms',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 12),
-          _buildBulletItem('Teeth that are flattened, fractured, chipped, or loose.'),
-          _buildBulletItem('Worn tooth enamel, exposing deeper layers of yellow dentin.'),
-          _buildBulletItem('Increased tooth pain, jaw soreness, or dull morning headaches.'),
+          _buildBulletItem(
+            'Teeth that are flattened, fractured, chipped, or loose.',
+          ),
+          _buildBulletItem(
+            'Worn tooth enamel, exposing deeper layers of yellow dentin.',
+          ),
+          _buildBulletItem(
+            'Increased tooth pain, jaw soreness, or dull morning headaches.',
+          ),
           const SizedBox(height: 20),
-          const Text('Available Treatments', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          const Text(
+            'Available Treatments',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 12),
           _buildTreatmentChipRow([
             'Custom Night Guards',
             'Occlusal Adjustment',
             'Stress Management',
-            'Muscle Relaxants'
+            'Muscle Relaxants',
           ]),
           const SizedBox(height: 24),
           Center(
@@ -431,20 +534,19 @@ class BruxismCard extends StatelessWidget {
               height: 50,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                  AppColors.primary,
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: () async{
+                onPressed: () async {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedTaluka,
+                    loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -454,11 +556,12 @@ class BruxismCard extends StatelessWidget {
                   );
                   Get.toNamed('/userTypeListWeb');
                 },
-                icon:  Icon(Icons.search,color: AppColors.white,size: 16,),
+                icon: Icon(Icons.search, color: AppColors.white, size: 16),
                 label: const Text(
                   "Find Nearby Dental Clinics",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,color: AppColors.white
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.white,
                   ),
                 ),
               ),
@@ -479,7 +582,16 @@ class BruxismCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 6.0, right: 8.0),
             child: Icon(Icons.circle, size: 6, color: Colors.amber),
           ),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 13, color: Color(0xFF475569), height: 1.4))),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Color(0xFF475569),
+                height: 1.4,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -497,13 +609,19 @@ class BruxismCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey.shade100),
           ),
-          child: Text(treatment, style: TextStyle(color: Colors.grey.shade800, fontSize: 12, fontWeight: FontWeight.w500)),
+          child: Text(
+            treatment,
+            style: TextStyle(
+              color: Colors.grey.shade800,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         );
       }).toList(),
     );
   }
 }
-
 
 class SensitivityCard extends StatelessWidget {
   const SensitivityCard({super.key});
@@ -521,7 +639,7 @@ class SensitivityCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -530,21 +648,27 @@ class SensitivityCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: isDesktop
             ? IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(flex: 5, child: _buildImageSection(isDesktop: true)),
-              Expanded(flex: 6, child: _buildDetailsSection(context)),
-            ],
-          ),
-        )
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: _buildImageSection(isDesktop: true),
+                    ),
+                    Expanded(flex: 6, child: _buildDetailsSection(context)),
+                  ],
+                ),
+              )
             : Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 260, child: _buildImageSection(isDesktop: false)),
-            _buildDetailsSection(context),
-          ],
-        ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 260,
+                    child: _buildImageSection(isDesktop: false),
+                  ),
+                  _buildDetailsSection(context),
+                ],
+              ),
       ),
     );
   }
@@ -559,7 +683,11 @@ class SensitivityCard extends StatelessWidget {
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 color: Colors.grey.shade50,
-                child: const Icon(Icons.ac_unit_rounded, size: 50, color: Colors.teal),
+                child: const Icon(
+                  Icons.ac_unit_rounded,
+                  size: 50,
+                  color: Colors.teal,
+                ),
               );
             },
           ),
@@ -571,8 +699,8 @@ class SensitivityCard extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.1),
-                  Colors.black.withOpacity(0.5),
+                  Colors.black.withValues(alpha: 0.1),
+                  Colors.black.withValues(alpha: 0.5),
                 ],
               ),
             ),
@@ -587,16 +715,26 @@ class SensitivityCard extends StatelessWidget {
             children: [
               Text(
                 '04 . NERVE ROOT SENSITIVE',
-                style: TextStyle(color: Colors.tealAccent, fontWeight: FontWeight.bold, letterSpacing: 2, fontSize: 12),
+                style: TextStyle(
+                  color: Colors.tealAccent,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                  fontSize: 12,
+                ),
               ),
               SizedBox(height: 8),
               Text(
                 'Managing Sharp Temperature Sensitivity',
-                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold, height: 1.2),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -612,18 +750,26 @@ class SensitivityCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.teal.withOpacity(0.08),
+              color: Colors.teal.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(30),
             ),
             child: const Text(
               'Dentin Hypersensitivity',
-              style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold, fontSize: 13),
+              style: TextStyle(
+                color: Colors.teal,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
             ),
           ),
           const SizedBox(height: 16),
           const Text(
             'Tooth Sensitivity',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
           ),
           const SizedBox(height: 12),
           const Text(
@@ -633,19 +779,39 @@ class SensitivityCard extends StatelessWidget {
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 16),
-          const Text('Common Symptoms', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          const Text(
+            'Common Symptoms',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 12),
-          _buildBulletItem('Sharp, sudden pain when consuming hot or cold foods/liquids.'),
-          _buildBulletItem('Discomfort when breathing in cold ambient air through the mouth.'),
-          _buildBulletItem('Pain when eating highly sweet or acidic foods and citrus.'),
+          _buildBulletItem(
+            'Sharp, sudden pain when consuming hot or cold foods/liquids.',
+          ),
+          _buildBulletItem(
+            'Discomfort when breathing in cold ambient air through the mouth.',
+          ),
+          _buildBulletItem(
+            'Pain when eating highly sweet or acidic foods and citrus.',
+          ),
           const SizedBox(height: 20),
-          const Text('Available Treatments', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          const Text(
+            'Available Treatments',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 12),
           _buildTreatmentChipRow([
             'Desensitizing Toothpaste',
             'Fluoride Varnish Gels',
             'Surgical Gum Grafts',
-            'Bonding Resin Seals'
+            'Bonding Resin Seals',
           ]),
           const SizedBox(height: 24),
           Center(
@@ -656,15 +822,18 @@ class SensitivityCard extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
-                onPressed: () async{
+                onPressed: () async {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedTaluka,
+                    loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -674,10 +843,13 @@ class SensitivityCard extends StatelessWidget {
                   );
                   Get.toNamed('/userTypeListWeb');
                 },
-                child: const Text('Find Nearby Dental Clinics', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                child: const Text(
+                  'Find Nearby Dental Clinics',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -693,7 +865,16 @@ class SensitivityCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 6.0, right: 8.0),
             child: Icon(Icons.circle, size: 6, color: Colors.amber),
           ),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 13, color: Color(0xFF475569), height: 1.4))),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Color(0xFF475569),
+                height: 1.4,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -711,13 +892,19 @@ class SensitivityCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey.shade100),
           ),
-          child: Text(treatment, style: TextStyle(color: Colors.grey.shade800, fontSize: 12, fontWeight: FontWeight.w500)),
+          child: Text(
+            treatment,
+            style: TextStyle(
+              color: Colors.grey.shade800,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         );
       }).toList(),
     );
   }
 }
-
 
 class WisdomTeethCard extends StatelessWidget {
   const WisdomTeethCard({super.key});
@@ -735,7 +922,7 @@ class WisdomTeethCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -744,21 +931,27 @@ class WisdomTeethCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: isDesktop
             ? IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(flex: 5, child: _buildImageSection(isDesktop: true)),
-              Expanded(flex: 6, child: _buildDetailsSection(context)),
-            ],
-          ),
-        )
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: _buildImageSection(isDesktop: true),
+                    ),
+                    Expanded(flex: 6, child: _buildDetailsSection(context)),
+                  ],
+                ),
+              )
             : Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 260, child: _buildImageSection(isDesktop: false)),
-            _buildDetailsSection(context),
-          ],
-        ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 260,
+                    child: _buildImageSection(isDesktop: false),
+                  ),
+                  _buildDetailsSection(context),
+                ],
+              ),
       ),
     );
   }
@@ -773,7 +966,11 @@ class WisdomTeethCard extends StatelessWidget {
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 color: Colors.grey.shade50,
-                child: const Icon(Icons.masks_rounded, size: 50, color: Colors.orange),
+                child: const Icon(
+                  Icons.masks_rounded,
+                  size: 50,
+                  color: Colors.orange,
+                ),
               );
             },
           ),
@@ -785,8 +982,8 @@ class WisdomTeethCard extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.1),
-                  Colors.black.withOpacity(0.5),
+                  Colors.black.withValues(alpha: 0.1),
+                  Colors.black.withValues(alpha: 0.5),
                 ],
               ),
             ),
@@ -801,16 +998,26 @@ class WisdomTeethCard extends StatelessWidget {
             children: [
               Text(
                 '05 . ORAL SURGERY',
-                style: TextStyle(color: Colors.orangeAccent, fontWeight: FontWeight.bold, letterSpacing: 2, fontSize: 12),
+                style: TextStyle(
+                  color: Colors.orangeAccent,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                  fontSize: 12,
+                ),
               ),
               SizedBox(height: 8),
               Text(
                 'Managing Third Molar Crowding & Pain',
-                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold, height: 1.2),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -826,18 +1033,26 @@ class WisdomTeethCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.08),
+              color: Colors.orange.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(30),
             ),
             child: const Text(
               'Molar Impaction',
-              style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 13),
+              style: TextStyle(
+                color: Colors.orange,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
             ),
           ),
           const SizedBox(height: 16),
           const Text(
             'Impacted Wisdom Teeth',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
           ),
           const SizedBox(height: 12),
           const Text(
@@ -847,19 +1062,39 @@ class WisdomTeethCard extends StatelessWidget {
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 16),
-          const Text('Common Symptoms', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          const Text(
+            'Common Symptoms',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 12),
-          _buildBulletItem('Red, swollen, or tender gums situated right behind your back molars.'),
-          _buildBulletItem('Jaw pain, facial swelling, or severe difficulty fully opening your mouth.'),
-          _buildBulletItem('Persistent bad breath or a strange, unpleasant taste when chewing nearby.'),
+          _buildBulletItem(
+            'Red, swollen, or tender gums situated right behind your back molars.',
+          ),
+          _buildBulletItem(
+            'Jaw pain, facial swelling, or severe difficulty fully opening your mouth.',
+          ),
+          _buildBulletItem(
+            'Persistent bad breath or a strange, unpleasant taste when chewing nearby.',
+          ),
           const SizedBox(height: 20),
-          const Text('Available Treatments', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          const Text(
+            'Available Treatments',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 12),
           _buildTreatmentChipRow([
             'Surgical Extraction',
             'Diagnostic 3D Imaging',
             'Antibiotic Therapy',
-            'Operculectomy'
+            'Operculectomy',
           ]),
           const SizedBox(height: 24),
           Center(
@@ -868,20 +1103,19 @@ class WisdomTeethCard extends StatelessWidget {
               height: 50,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                  AppColors.primary,
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: () async{
+                onPressed: () async {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedTaluka,
+                    loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -891,11 +1125,12 @@ class WisdomTeethCard extends StatelessWidget {
                   );
                   Get.toNamed('/userTypeListWeb');
                 },
-                icon:  Icon(Icons.search,color: AppColors.white,size: 16,),
+                icon: Icon(Icons.search, color: AppColors.white, size: 16),
                 label: const Text(
                   "Find Nearby Dental Clinics",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,color: AppColors.white
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.white,
                   ),
                 ),
               ),
@@ -916,7 +1151,16 @@ class WisdomTeethCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 6.0, right: 8.0),
             child: Icon(Icons.circle, size: 6, color: Colors.amber),
           ),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 13, color: Color(0xFF475569), height: 1.4))),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Color(0xFF475569),
+                height: 1.4,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -934,14 +1178,19 @@ class WisdomTeethCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey.shade100),
           ),
-          child: Text(treatment, style: TextStyle(color: Colors.grey.shade800, fontSize: 12, fontWeight: FontWeight.w500)),
+          child: Text(
+            treatment,
+            style: TextStyle(
+              color: Colors.grey.shade800,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         );
       }).toList(),
     );
   }
 }
-
-
 
 class AbscessCard extends StatelessWidget {
   const AbscessCard({super.key});
@@ -959,7 +1208,7 @@ class AbscessCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -968,21 +1217,27 @@ class AbscessCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: isDesktop
             ? IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(flex: 5, child: _buildImageSection(isDesktop: true)),
-              Expanded(flex: 6, child: _buildDetailsSection(context)),
-            ],
-          ),
-        )
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: _buildImageSection(isDesktop: true),
+                    ),
+                    Expanded(flex: 6, child: _buildDetailsSection(context)),
+                  ],
+                ),
+              )
             : Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 260, child: _buildImageSection(isDesktop: false)),
-            _buildDetailsSection(context),
-          ],
-        ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 260,
+                    child: _buildImageSection(isDesktop: false),
+                  ),
+                  _buildDetailsSection(context),
+                ],
+              ),
       ),
     );
   }
@@ -997,7 +1252,11 @@ class AbscessCard extends StatelessWidget {
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 color: Colors.grey.shade50,
-                child: const Icon(Icons.report_problem_outlined, size: 50, color: Colors.red),
+                child: const Icon(
+                  Icons.report_problem_outlined,
+                  size: 50,
+                  color: Colors.red,
+                ),
               );
             },
           ),
@@ -1009,8 +1268,8 @@ class AbscessCard extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.1),
-                  Colors.black.withOpacity(0.5),
+                  Colors.black.withValues(alpha: 0.1),
+                  Colors.black.withValues(alpha: 0.5),
                 ],
               ),
             ),
@@ -1025,16 +1284,26 @@ class AbscessCard extends StatelessWidget {
             children: [
               Text(
                 '06 . CRITICAL EMERGENCY',
-                style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, letterSpacing: 2, fontSize: 12),
+                style: TextStyle(
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                  fontSize: 12,
+                ),
               ),
               SizedBox(height: 8),
               Text(
                 'Urgent Care for Deep Bacterial Infestations',
-                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold, height: 1.2),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -1050,18 +1319,26 @@ class AbscessCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.08),
+              color: Colors.red.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(30),
             ),
             child: const Text(
               'Periapical Abscess',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 13),
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
             ),
           ),
           const SizedBox(height: 16),
           const Text(
             'Dental Abscess (Infection)',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
           ),
           const SizedBox(height: 12),
           const Text(
@@ -1071,19 +1348,39 @@ class AbscessCard extends StatelessWidget {
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 16),
-          const Text('Common Symptoms', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          const Text(
+            'Common Symptoms',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 12),
-          _buildBulletItem('Severe, throbbing toothache that radiates to the jawbone, neck, or ear.'),
-          _buildBulletItem('Fever, facial swelling, or tender, swollen lymph nodes under your jaw.'),
-          _buildBulletItem('A pimple-like bump on your gums that may rupture and leak fluid.'),
+          _buildBulletItem(
+            'Severe, throbbing toothache that radiates to the jawbone, neck, or ear.',
+          ),
+          _buildBulletItem(
+            'Fever, facial swelling, or tender, swollen lymph nodes under your jaw.',
+          ),
+          _buildBulletItem(
+            'A pimple-like bump on your gums that may rupture and leak fluid.',
+          ),
           const SizedBox(height: 20),
-          const Text('Available Treatments', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          const Text(
+            'Available Treatments',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
           const SizedBox(height: 12),
           _buildTreatmentChipRow([
             'Incision & Drainage',
             'Root Canal Therapy',
             'Emergency Extraction',
-            'Systemic Antibiotics'
+            'Systemic Antibiotics',
           ]),
           const SizedBox(height: 24),
           Center(
@@ -1092,20 +1389,19 @@ class AbscessCard extends StatelessWidget {
               height: 50,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                  AppColors.primary,
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: () async{
+                onPressed: () async {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedTaluka,
+                    loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -1115,11 +1411,12 @@ class AbscessCard extends StatelessWidget {
                   );
                   Get.toNamed('/userTypeListWeb');
                 },
-                icon:  Icon(Icons.search,color: AppColors.white,size: 16,),
+                icon: Icon(Icons.search, color: AppColors.white, size: 16),
                 label: const Text(
                   "Find Nearby Dental Clinics",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,color: AppColors.white
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.white,
                   ),
                 ),
               ),
@@ -1140,7 +1437,16 @@ class AbscessCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 6.0, right: 8.0),
             child: Icon(Icons.circle, size: 6, color: Colors.amber),
           ),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 13, color: Color(0xFF475569), height: 1.4))),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Color(0xFF475569),
+                height: 1.4,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -1158,7 +1464,14 @@ class AbscessCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey.shade100),
           ),
-          child: Text(treatment, style: TextStyle(color: Colors.grey.shade800, fontSize: 12, fontWeight: FontWeight.w500)),
+          child: Text(
+            treatment,
+            style: TextStyle(
+              color: Colors.grey.shade800,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         );
       }).toList(),
     );
@@ -1170,71 +1483,62 @@ class WhyChooseUsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final isMobile =
-        MediaQuery.of(context).size.width < 900;
+    final isMobile = MediaQuery.of(context).size.width < 900;
 
     return isMobile
-        ?  Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-      decoration:  BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary,
-            AppColors.secondary,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 1500),
-          padding: const EdgeInsets.all(20),
+        ? Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              gradient: LinearGradient(
+                colors: [AppColors.primary, AppColors.secondary],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 1500),
+                padding: const EdgeInsets.all(20),
                 child: Column(
-                      children: [
-                _image(),
-                const SizedBox(height: 30),
-                _content(context),
-                      ],
-                    ),
+                  children: [
+                    _image(),
+                    const SizedBox(height: 30),
+                    _content(context),
+                  ],
+                ),
               ),
             ),
           )
-        :  Center(
-          child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-                constraints: const BoxConstraints(maxWidth: 1500),
-                decoration:  BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          gradient: LinearGradient(
-            colors: [
-              AppColors.primary,
-              AppColors.secondary,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        : Center(
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+              constraints: const BoxConstraints(maxWidth: 1500),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                  colors: [AppColors.primary, AppColors.secondary],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-            child: Row(
-                  children: [
-            Expanded(flex: 5, child: _image()),
-            const SizedBox(width: 60),
-            Expanded(flex: 5, child: _content(context)),
-                  ],
-                ),
-          ),
-        );
+              ),
+              child: Row(
+                children: [
+                  Expanded(flex: 5, child: _image()),
+                  const SizedBox(width: 60),
+                  Expanded(flex: 5, child: _content(context)),
+                ],
+              ),
+            ),
+          );
   }
 
   Widget _image() {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-
         // Container(
         //   height: 450,
         //   decoration: BoxDecoration(
@@ -1248,64 +1552,47 @@ class WhyChooseUsSection extends StatelessWidget {
         //   ),
         // ),
         ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16),
           child: Image.asset(
-             height: 300,
-        "assets/images/welcomePage.png",
+            height: 300,
+            "assets/images/welcomePage.png",
             fit: BoxFit.cover,
-            ),
-      ),
+          ),
+        ),
       ],
     );
   }
 
   Widget _content(context) {
     return Column(
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Text(
           "WHY CHOOSE US",
-          style: TextStyle(
-            color: AppColors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: AppColors.white, fontWeight: FontWeight.bold),
         ),
 
         SizedBox(height: 15),
 
         Text(
           "Committed To Excellent Dental Care",
-          style: AppTextStyles.subtitle(context,color: AppColors.white)
+          style: AppTextStyles.subtitle(context, color: AppColors.white),
         ),
 
         SizedBox(height: 20),
 
         Text(
           "Connect with trusted dentists, dental clinics, and specialists. Book appointments, compare services, and receive quality dental care effortlessly.",
-          style: TextStyle(
-            height: 1.8,
-            color: Colors.white,
-          ),
+          style: TextStyle(height: 1.8, color: Colors.white),
         ),
 
         SizedBox(height: 30),
 
-        buildFeature(
-          Icons.verified,
-          "Verified Dentists",context
-        ),
+        buildFeature(Icons.verified, "Verified Dentists", context),
 
-        buildFeature(
-          Icons.local_hospital,
-          "Emergency Dental Care",context
-        ),
+        buildFeature(Icons.local_hospital, "Emergency Dental Care", context),
 
-        buildFeature(
-          Icons.support_agent,
-          "24/7 Support",context
-        ),
+        buildFeature(Icons.support_agent, "24/7 Support", context),
 
         // buildFeature(
         //   Icons.calendar_month,
@@ -1315,29 +1602,21 @@ class WhyChooseUsSection extends StatelessWidget {
     );
   }
 
-  Widget buildFeature(
-      IconData icon,
-      String title,dynamic context
-      ) {
+  Widget buildFeature(IconData icon, String title, dynamic context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Row(
         children: [
-
           CircleAvatar(
-            backgroundColor:
-            Colors.white.withOpacity(.1),
-            child: Icon(
-              icon,
-              color: Colors.white,
-            ),
+            backgroundColor: Colors.white.withValues(alpha: .1),
+            child: Icon(icon, color: Colors.white),
           ),
 
           const SizedBox(width: 15),
 
           Text(
             title,
-            style: AppTextStyles.caption(context,  color: Colors.white,)
+            style: AppTextStyles.caption(context, color: Colors.white),
           ),
         ],
       ),
@@ -1345,49 +1624,29 @@ class WhyChooseUsSection extends StatelessWidget {
   }
 }
 
-
-
-Widget stepCard(
-    String number,
-    String title,
-    IconData icon,
-    ) {
+Widget stepCard(String number, String title, IconData icon) {
   return Container(
     width: 180,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
-      boxShadow: const [
-        BoxShadow(
-          blurRadius: 10,
-          color: Colors.black12,
-        )
-      ],
+      boxShadow: const [BoxShadow(blurRadius: 10, color: Colors.black12)],
     ),
     child: Column(
       children: [
-        CircleAvatar(
-          radius: 28,
-          child: Icon(icon),
-        ),
+        CircleAvatar(radius: 28, child: Icon(icon)),
         const SizedBox(height: 10),
         Text(
           "Step $number",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        Text(
-          title,
-          textAlign: TextAlign.center,
-        ),
+        Text(title, textAlign: TextAlign.center),
       ],
     ),
   );
 }
-
 
 class BenefitCard extends StatelessWidget {
   final IconData icon;
@@ -1410,56 +1669,38 @@ class BenefitCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.06),
+            color: Colors.black.withValues(alpha: .06),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
         ],
       ),
       child: Column(
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           CircleAvatar(
             radius: 28,
-            backgroundColor:
-            const Color(0xff14B8A6).withOpacity(.1),
-            child: Icon(
-              icon,
-              color: const Color(0xff14B8A6),
-              size: 30,
-            ),
+            backgroundColor: const Color(0xff14B8A6).withValues(alpha: .1),
+            child: Icon(icon, color: const Color(0xff14B8A6), size: 30),
           ),
 
           const SizedBox(height: 20),
 
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 15),
 
           ...points.map(
-                (e) => Padding(
-              padding: const EdgeInsets.only(
-                bottom: 8,
-              ),
+            (e) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.check_circle,
-                    color: Colors.green,
-                    size: 18,
-                  ),
+                  const Icon(Icons.check_circle, color: Colors.green, size: 18),
                   const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(e),
-                  ),
+                  Expanded(child: Text(e)),
                 ],
               ),
             ),
@@ -1469,6 +1710,7 @@ class BenefitCard extends StatelessWidget {
     );
   }
 }
+
 Widget dentalTreatmentWidget() {
   final treatments = [
     {
@@ -1491,11 +1733,7 @@ Widget dentalTreatmentWidget() {
       "icon": Icons.architecture,
       "color": Colors.orange,
     },
-    {
-      "title": "Gum Treatment",
-      "icon": Icons.healing,
-      "color": Colors.purple,
-    },
+    {"title": "Gum Treatment", "icon": Icons.healing, "color": Colors.purple},
     {
       "title": "Brushing Technique",
       "icon": Icons.clean_hands,
@@ -1510,7 +1748,7 @@ Widget dentalTreatmentWidget() {
       borderRadius: BorderRadius.circular(25),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(.08),
+          color: Colors.black.withValues(alpha: .08),
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),
@@ -1521,19 +1759,14 @@ Widget dentalTreatmentWidget() {
       children: [
         const Text(
           "Popular Dental Treatments",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
 
         const SizedBox(height: 10),
 
         Text(
           "Find dental clinics based on your treatment needs",
-          style: TextStyle(
-            color: Colors.grey.shade600,
-          ),
+          style: TextStyle(color: Colors.grey.shade600),
         ),
 
         const SizedBox(height: 25),
@@ -1542,8 +1775,7 @@ Widget dentalTreatmentWidget() {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: treatments.length,
-          gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 15,
             mainAxisSpacing: 15,
@@ -1553,22 +1785,18 @@ Widget dentalTreatmentWidget() {
             final item = treatments[index];
 
             return InkWell(
-              onTap: () {
-
-              },
+              onTap: () {},
               borderRadius: BorderRadius.circular(15),
               child: Container(
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: (item["color"] as Color)
-                      .withOpacity(.1),
+                  color: (item["color"] as Color).withValues(alpha: .1),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Row(
                   children: [
                     CircleAvatar(
-                      backgroundColor:
-                      (item["color"] as Color),
+                      backgroundColor: (item["color"] as Color),
                       child: Icon(
                         item["icon"] as IconData,
                         color: Colors.white,
@@ -1578,11 +1806,9 @@ Widget dentalTreatmentWidget() {
                     Expanded(
                       child: Text(
                         item["title"] as String,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -1602,7 +1828,7 @@ Widget clinicSearchWidget() {
       borderRadius: BorderRadius.circular(25),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(.08),
+          color: Colors.black.withValues(alpha: .08),
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),
@@ -1613,10 +1839,7 @@ Widget clinicSearchWidget() {
       children: [
         const Text(
           "Find Dental Clinics",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
 
         const SizedBox(height: 20),
@@ -1626,12 +1849,11 @@ Widget clinicSearchWidget() {
             labelText: "State",
             border: OutlineInputBorder(),
           ),
-          items: ["Tamil Nadu", "Kerala", "Karnataka"]
-              .map((e) => DropdownMenuItem(
-            value: e,
-            child: Text(e),
-          ))
-              .toList(),
+          items: [
+            "Tamil Nadu",
+            "Kerala",
+            "Karnataka",
+          ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
           onChanged: (value) {},
         ),
 
@@ -1642,12 +1864,11 @@ Widget clinicSearchWidget() {
             labelText: "District",
             border: OutlineInputBorder(),
           ),
-          items: ["Madurai", "Chennai", "Coimbatore"]
-              .map((e) => DropdownMenuItem(
-            value: e,
-            child: Text(e),
-          ))
-              .toList(),
+          items: [
+            "Madurai",
+            "Chennai",
+            "Coimbatore",
+          ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
           onChanged: (value) {},
         ),
 
@@ -1685,76 +1906,72 @@ class BrushingTechniqueCard extends StatelessWidget {
     final isDesktop = MediaQuery.of(context).size.width > 900;
     final loginController = Get.put(LoginController());
     return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-        // decoration: const BoxDecoration(
-        //   gradient: LinearGradient(
-        //     colors: [
-        //       AppColors.primary,
-        //       AppColors.secondary,
-        //     ],
-        //     begin: Alignment.topLeft,
-        //     end: Alignment.bottomRight,
-        //   ),
-        // ),
-        child: Center(
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 1500),
-              padding: const EdgeInsets.all(20),
-              margin: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 20,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+      // decoration: const BoxDecoration(
+      //   gradient: LinearGradient(
+      //     colors: [
+      //       AppColors.primary,
+      //       AppColors.secondary,
+      //     ],
+      //     begin: Alignment.topLeft,
+      //     end: Alignment.bottomRight,
+      //   ),
+      // ),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1500),
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: .05),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(.05),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-      child: isDesktop
-          ? Row(
-        children: [
-          Expanded(
-            flex: 5,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(25),
-                bottomLeft: Radius.circular(25),
-              ),
-              child: Image.asset(
-                "assets/images/tooth_brush.jpg",
-                height: 500,
-                fit: BoxFit.cover,
-              ),
-            ),
+            ],
           ),
-          Expanded(
-            flex: 6,
-            child: _content(context),
-          ),
-        ],
-      )
-          : Column(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(25),
-            ),
-            child: Image.asset(
-              "assets/images/tooth_brush.jpg",
-              height: 250,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          _content(context),
-        ],
-      ),))
+          child: isDesktop
+              ? Row(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          bottomLeft: Radius.circular(25),
+                        ),
+                        child: Image.asset(
+                          "assets/images/tooth_brush.jpg",
+                          height: 500,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Expanded(flex: 6, child: _content(context)),
+                  ],
+                )
+              : Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(25),
+                      ),
+                      child: Image.asset(
+                        "assets/images/tooth_brush.jpg",
+                        height: 250,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    _content(context),
+                  ],
+                ),
+        ),
+      ),
     );
   }
 
@@ -1765,22 +1982,15 @@ class BrushingTechniqueCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 6,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.blue.shade50,
               borderRadius: BorderRadius.circular(30),
             ),
             child: const Text(
               "Dental Awareness",
-              style: TextStyle(
-                color: Colors.blue,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
             ),
           ),
 
@@ -1788,30 +1998,21 @@ class BrushingTechniqueCard extends StatelessWidget {
 
           const Text(
             "Proper Brushing Technique",
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 15),
 
           const Text(
             "Brushing correctly removes plaque, prevents cavities, reduces gum disease risk, and keeps your breath fresh. Dentists recommend brushing twice daily for at least two minutes.",
-            style: TextStyle(
-              height: 1.6,
-              color: Colors.black54,
-            ),
+            style: TextStyle(height: 1.6, color: Colors.black54),
           ),
 
           const SizedBox(height: 25),
 
           const Text(
             "Steps to Brush Properly",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 15),
@@ -1827,10 +2028,7 @@ class BrushingTechniqueCard extends StatelessWidget {
 
           const Text(
             "Benefits",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
 
           const SizedBox(height: 15),
@@ -1855,20 +2053,19 @@ class BrushingTechniqueCard extends StatelessWidget {
               height: 50,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                AppColors.primary,
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: () async{
+                onPressed: () async {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedTaluka,
+                    loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -1878,11 +2075,12 @@ class BrushingTechniqueCard extends StatelessWidget {
                   );
                   Get.toNamed('/userTypeListWeb');
                 },
-                icon:  Icon(Icons.search,color: AppColors.white,size: 16,),
+                icon: Icon(Icons.search, color: AppColors.white, size: 16),
                 label: const Text(
                   "Find Nearby Dental Clinics",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,color: AppColors.white
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.white,
                   ),
                 ),
               ),
@@ -1903,16 +2101,11 @@ class BrushingTechniqueCard extends StatelessWidget {
             backgroundColor: Colors.blue,
             child: Text(
               no,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: Colors.white, fontSize: 12),
             ),
           ),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(text),
-          ),
+          Expanded(child: Text(text)),
         ],
       ),
     );
@@ -1920,10 +2113,7 @@ class BrushingTechniqueCard extends StatelessWidget {
 
   Widget _chip(String title) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.green.shade50,
         borderRadius: BorderRadius.circular(30),
@@ -1945,19 +2135,15 @@ final treatments = [
     "image": "assets/images/rootcanal.jpg",
     "category": "Endodontics",
     "description":
-    "Root canal treatment removes infected pulp and saves the natural tooth from extraction.",
+        "Root canal treatment removes infected pulp and saves the natural tooth from extraction.",
     "symptoms": [
       "Severe tooth pain",
       "Sensitivity to hot & cold",
       "Swollen gums",
-      "Darkened tooth"
+      "Darkened tooth",
     ],
-    "treatments": [
-      "Root Canal Therapy",
-      "Crown Placement",
-      "Pain Management"
-    ],
-    "color": AppColors.primary
+    "treatments": ["Root Canal Therapy", "Crown Placement", "Pain Management"],
+    "color": AppColors.primary,
   },
 
   {
@@ -1965,39 +2151,25 @@ final treatments = [
     "image": "assets/images/dental_implant.jpg",
     "category": "Tooth Replacement",
     "description":
-    "Dental implants provide a permanent solution for missing teeth.",
+        "Dental implants provide a permanent solution for missing teeth.",
     "symptoms": [
       "Missing tooth",
       "Difficulty chewing",
       "Jaw bone loss",
-      "Speech issues"
+      "Speech issues",
     ],
-    "treatments": [
-      "Titanium Implant",
-      "Bone Grafting",
-      "Implant Crown"
-    ],
-    "color": AppColors.primary
+    "treatments": ["Titanium Implant", "Bone Grafting", "Implant Crown"],
+    "color": AppColors.primary,
   },
 
   {
     "title": "Clear Aligners",
     "image": "assets/images/aligners.jpg",
     "category": "Orthodontics",
-    "description":
-    "Invisible aligners gradually straighten teeth comfortably.",
-    "symptoms": [
-      "Crooked teeth",
-      "Spacing",
-      "Crowding",
-      "Misaligned bite"
-    ],
-    "treatments": [
-      "Clear Aligners",
-      "Digital Smile Planning",
-      "Retention"
-    ],
-    "color": AppColors.primary
+    "description": "Invisible aligners gradually straighten teeth comfortably.",
+    "symptoms": ["Crooked teeth", "Spacing", "Crowding", "Misaligned bite"],
+    "treatments": ["Clear Aligners", "Digital Smile Planning", "Retention"],
+    "color": AppColors.primary,
   },
 
   {
@@ -2005,19 +2177,15 @@ final treatments = [
     "image": "assets/images/orthodontic_appliances.jpg",
     "category": "Braces",
     "description":
-    "Braces and orthodontic appliances correct alignment and bite issues.",
+        "Braces and orthodontic appliances correct alignment and bite issues.",
     "symptoms": [
       "Overbite",
       "Underbite",
       "Crowded teeth",
-      "Jaw alignment issues"
+      "Jaw alignment issues",
     ],
-    "treatments": [
-      "Metal Braces",
-      "Ceramic Braces",
-      "Retainers"
-    ],
-    "color": AppColors.primary
+    "treatments": ["Metal Braces", "Ceramic Braces", "Retainers"],
+    "color": AppColors.primary,
   },
 
   {
@@ -2025,19 +2193,10 @@ final treatments = [
     "image": "assets/images/gum_treat.jpg",
     "category": "Periodontics",
     "description":
-    "Professional gum care helps prevent tooth loss and infections.",
-    "symptoms": [
-      "Bleeding gums",
-      "Bad breath",
-      "Swollen gums",
-      "Loose teeth"
-    ],
-    "treatments": [
-      "Scaling",
-      "Root Planing",
-      "Laser Therapy"
-    ],
-    "color": AppColors.primary
+        "Professional gum care helps prevent tooth loss and infections.",
+    "symptoms": ["Bleeding gums", "Bad breath", "Swollen gums", "Loose teeth"],
+    "treatments": ["Scaling", "Root Planing", "Laser Therapy"],
+    "color": AppColors.primary,
   },
 
   {
@@ -2045,21 +2204,18 @@ final treatments = [
     "image": "assets/images/tooth_brush.jpg",
     "category": "Preventive Care",
     "description":
-    "Regular dental checkups help identify problems before they become serious.",
+        "Regular dental checkups help identify problems before they become serious.",
     "symptoms": [
       "Routine care",
       "Tooth pain",
       "Sensitivity",
-      "Oral health assessment"
+      "Oral health assessment",
     ],
-    "treatments": [
-      "Oral Examination",
-      "X-Ray",
-      "Professional Cleaning"
-    ],
-    "color": AppColors.primary
+    "treatments": ["Oral Examination", "X-Ray", "Professional Cleaning"],
+    "color": AppColors.primary,
   },
 ];
+
 class TreatmentCard extends StatelessWidget {
   final Map treatment;
   final bool reverse;
@@ -2092,16 +2248,13 @@ class TreatmentCard extends StatelessWidget {
         child: Container(
           constraints: const BoxConstraints(maxWidth: 1500),
           padding: const EdgeInsets.all(20),
-          margin: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 20,
-          ),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(.05),
+                color: Colors.black.withValues(alpha: .05),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -2110,39 +2263,30 @@ class TreatmentCard extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: isDesktop
               ? IntrinsicHeight(
-            child: Row(
-              children: reverse
-                  ? [
-                Expanded(
-                  flex: 6,
-                  child: _buildDetailsSection(context),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: _buildImageSection(),
-                ),
-              ]
-                  : [
-                Expanded(
-                  flex: 5,
-                  child: _buildImageSection(),
-                ),
-                Expanded(
-                  flex: 6,
-                  child: _buildDetailsSection(context),
-                ),
-              ],
-            ),
-          )
+                  child: Row(
+                    children: reverse
+                        ? [
+                            Expanded(
+                              flex: 6,
+                              child: _buildDetailsSection(context),
+                            ),
+                            Expanded(flex: 5, child: _buildImageSection()),
+                          ]
+                        : [
+                            Expanded(flex: 5, child: _buildImageSection()),
+                            Expanded(
+                              flex: 6,
+                              child: _buildDetailsSection(context),
+                            ),
+                          ],
+                  ),
+                )
               : Column(
-            children: [
-              SizedBox(
-                height: 280,
-                child: _buildImageSection(),
-              ),
-              _buildDetailsSection(context),
-            ],
-          ),
+                  children: [
+                    SizedBox(height: 280, child: _buildImageSection()),
+                    _buildDetailsSection(context),
+                  ],
+                ),
         ),
       ),
     );
@@ -2154,10 +2298,7 @@ class TreatmentCard extends StatelessWidget {
         Positioned.fill(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              treatment["image"]??"",
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset(treatment["image"] ?? "", fit: BoxFit.cover),
           ),
         ),
 
@@ -2168,8 +2309,8 @@ class TreatmentCard extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(.1),
-                  Colors.black.withOpacity(.6),
+                  Colors.black.withValues(alpha: .1),
+                  Colors.black.withValues(alpha: .6),
                 ],
               ),
             ),
@@ -2184,9 +2325,9 @@ class TreatmentCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                treatment["category"]??"",
+                treatment["category"] ?? "",
                 style: TextStyle(
-                  color: treatment["color"]??"",
+                  color: treatment["color"] ?? "",
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
                   fontSize: 12,
@@ -2196,7 +2337,7 @@ class TreatmentCard extends StatelessWidget {
               const SizedBox(height: 10),
 
               Text(
-                treatment["title"]??"",
+                treatment["title"] ?? "",
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -2217,21 +2358,16 @@ class TreatmentCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 8,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color:
-              (treatment["color"] as Color).withOpacity(.1),
+              color: (treatment["color"] as Color).withValues(alpha: .1),
               borderRadius: BorderRadius.circular(30),
             ),
             child: Text(
-              treatment["category"]??"",
+              treatment["category"] ?? "",
               style: TextStyle(
-                color: treatment["color"]??"",
+                color: treatment["color"] ?? "",
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -2240,7 +2376,7 @@ class TreatmentCard extends StatelessWidget {
           const SizedBox(height: 18),
 
           Text(
-            treatment["title"]??"",
+            treatment["title"] ?? "",
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -2251,7 +2387,7 @@ class TreatmentCard extends StatelessWidget {
           const SizedBox(height: 14),
 
           Text(
-            treatment["description"]??"",
+            treatment["description"] ?? "",
             style: const TextStyle(
               height: 1.6,
               color: Colors.black54,
@@ -2267,51 +2403,44 @@ class TreatmentCard extends StatelessWidget {
 
           const Text(
             "Common Symptoms",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 17,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
           ),
 
           const SizedBox(height: 12),
 
-          ...(treatment["symptoms"]??"" as List)
+          ...(treatment["symptoms"] ?? "" as List)
               .map(
                 (e) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.circle,
-                    size: 8,
-                    color: treatment["color"]??"",
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      e,
-                      style: const TextStyle(
-                        color: Color(0xFF475569),
-                        height: 1.5,
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.circle,
+                        size: 8,
+                        color: treatment["color"] ?? "",
                       ),
-                    ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          e,
+                          style: const TextStyle(
+                            color: Color(0xFF475569),
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          )
+                ),
+              )
               .toList(),
 
           const SizedBox(height: 25),
 
           const Text(
             "Available Treatments",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 17,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
           ),
 
           const SizedBox(height: 12),
@@ -2319,24 +2448,29 @@ class TreatmentCard extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children:
-            (treatment["treatments"] as List).map(
+            children: (treatment["treatments"] as List)
+                .map(
                   (e) => Container(
-                padding:
-                const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 8,),
-                decoration: BoxDecoration(
-                  color: (treatment["color"] as Color).withOpacity(.08),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(e,
-                  style: TextStyle(
-                    color: treatment["color"]??"",
-                    fontWeight: FontWeight.w600,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: (treatment["color"] as Color).withValues(
+                        alpha: .08,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      e,
+                      style: TextStyle(
+                        color: treatment["color"] ?? "",
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ).toList(),
+                )
+                .toList(),
           ),
 
           const SizedBox(height: 25),
@@ -2347,20 +2481,19 @@ class TreatmentCard extends StatelessWidget {
               height: 50,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                  treatment["color"]??"",
+                  backgroundColor: treatment["color"] ?? "",
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: ()async {
+                onPressed: () async {
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,
+                    loginController.selectedTaluka,
+                    loginController.selectedVillages,
                     "true",
                     '',
                     '',
@@ -2370,11 +2503,12 @@ class TreatmentCard extends StatelessWidget {
                   );
                   Get.toNamed('/userTypeListWeb');
                 },
-                icon: const Icon(Icons.search,color: AppColors.white),
+                icon: const Icon(Icons.search, color: AppColors.white),
                 label: const Text(
                   "Find Nearby Dental Clinics",
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,color: AppColors.white
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.white,
                   ),
                 ),
               ),
@@ -2385,4 +2519,3 @@ class TreatmentCard extends StatelessWidget {
     );
   }
 }
-

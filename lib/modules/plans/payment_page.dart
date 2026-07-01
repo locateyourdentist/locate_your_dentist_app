@@ -26,11 +26,14 @@ String formatDate(String date) {
   }
 }
 
- class CheckoutScreen extends StatefulWidget {
+class CheckoutScreen extends StatefulWidget {
+  const CheckoutScreen({super.key});
+
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
- }
- class _CheckoutScreenState extends State<CheckoutScreen> {
+}
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
   bool isPaymentComplete = false;
   late Razorpay _razorpay;
   late final String userId;
@@ -47,52 +50,56 @@ String formatDate(String date) {
   late final String videoCount;
   late final String videoSize;
 
-  final PlanController planController=Get.put(PlanController());
+  final PlanController planController = Get.put(PlanController());
   bool isProcessingPayment = false;
   @override
   void initState() {
     super.initState();
     final args = Get.arguments as Map<String, dynamic>;
-     amount = args['amount'] ?? '';
-     name = args['name'] ?? '';
-     planName = args['planName'] ?? '';
-     mobileNumber = args['mobileNumber'] ?? '';
-     email = args['email'] ?? '';
-     startDate = args['startDate'] ?? '';
-     endDate = args['endDate'] ?? '';
-     userId = args['userId'] ?? '';
-     planId = args['planId'] ?? '';
+    amount = args['amount'] ?? '';
+    name = args['name'] ?? '';
+    planName = args['planName'] ?? '';
+    mobileNumber = args['mobileNumber'] ?? '';
+    email = args['email'] ?? '';
+    startDate = args['startDate'] ?? '';
+    endDate = args['endDate'] ?? '';
+    userId = args['userId'] ?? '';
+    planId = args['planId'] ?? '';
     imageCount = args['imageCount'] ?? '';
     imageSize = args['imageSize'] ?? '';
     videoCount = args['videoCount'] ?? '';
     videoSize = args['videoSize'] ?? '';
-     print('name$name');
+    print('name$name');
     loadData();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
+
   @override
   void dispose() {
     super.dispose();
     _razorpay.clear();
   }
-  void loadData()async{
-   await planController.getCompanyDetails();
-   await planController.getGstDetails(context);
+
+  void loadData() async {
+    await planController.getCompanyDetails();
+    await planController.getGstDetails(context);
   }
+
   void _openRazorpay() async {
     var options = {
       'key': AppConstants.razorPayKey,
       // 'order_id': orderId, ->
-      'amount': amount*100,
+      'amount': amount * 100,
       'name': 'Razorpay Inc.',
       'description': 'Thank you for shopping with us!',
-      'prefill': {'contact':Api.userInfo.read('mobileNumber')??"" , 'email': Api.userInfo.read('email')??""},
-      'theme': {
-        'color': '#004958',
-      }
+      'prefill': {
+        'contact': Api.userInfo.read('mobileNumber') ?? "",
+        'email': Api.userInfo.read('email') ?? "",
+      },
+      'theme': {'color': '#004958'},
     };
     try {
       _razorpay.open(options);
@@ -122,105 +129,158 @@ String formatDate(String date) {
                 SizedBox(height: 20),
                 Text(
                   "Processing Payment...",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 8),
-                Text(
-                  "Please wait",
-                  textAlign: TextAlign.center,
-                ),
+                Text("Please wait", textAlign: TextAlign.center),
               ],
             ),
           ),
         ),
       );
     }
+
     showLoadingDialog();
     void hideLoadingDialog() {
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
     }
+
     try {
-    if(name=='basePlan'){
-      await planController.createUserPlans(userId,planId.toString(), planName.toString(),amount.toString(), startDate, endDate,imageCount,imageSize,videoCount,videoSize, context);
+      if (name == 'basePlan') {
+        await planController.createUserPlans(
+          userId,
+          planId.toString(),
+          planName.toString(),
+          amount.toString(),
+          startDate,
+          endDate,
+          imageCount,
+          imageSize,
+          videoCount,
+          videoSize,
+          context,
+        );
 
-      await generateInvoice(
-        amount: double.parse(amount.toString()),
-        planName: planName.toString(),planType: name.toString(),startDate: startDate,endDate: endDate
-      );
-    }
-    if(name=='addonsPlan'){
-      await  generateInvoice(
-        amount: double.parse(amount.toString()),
-        planName: planName.toString(),planType: name.toString(),startDate: startDate,endDate: endDate
-      );
-      await  planController.createUserAddonsPlans(userId, planId.toString(), planName.toString(),amount.toString(),  startDate,endDate, context,);
-      // await PdfGenerator.generatePriceSummary(
-      //   userName:Api.userInfo.read('name') ?? "",
-      //   planName: planName.toString(),
-      //   finalAmount: amount,
-      //   mobileNumber: Api.userInfo.read('mobileNumber') ?? "",
-      //   email: Api.userInfo.read('email') ?? "",
-      // );
+        await generateInvoice(
+          amount: double.parse(amount.toString()),
+          planName: planName.toString(),
+          planType: name.toString(),
+          startDate: startDate,
+          endDate: endDate,
+        );
+      }
+      if (name == 'addonsPlan') {
+        await generateInvoice(
+          amount: double.parse(amount.toString()),
+          planName: planName.toString(),
+          planType: name.toString(),
+          startDate: startDate,
+          endDate: endDate,
+        );
+        await planController.createUserAddonsPlans(
+          userId,
+          planId.toString(),
+          planName.toString(),
+          amount.toString(),
+          startDate,
+          endDate,
+          context,
+        );
+        // await PdfGenerator.generatePriceSummary(
+        //   userName:Api.userInfo.read('name') ?? "",
+        //   planName: planName.toString(),
+        //   finalAmount: amount,
+        //   mobileNumber: Api.userInfo.read('mobileNumber') ?? "",
+        //   email: Api.userInfo.read('email') ?? "",
+        // );
+      }
+      if (name == 'jobPlan') {
+        await planController.createUserJobPlans(
+          userId,
+          planId.toString(),
+          planName.toString(),
+          amount.toString(),
+          startDate,
+          endDate,
+          context,
+        );
+        await generateInvoice(
+          amount: double.parse(amount.toString()),
+          planName: planName.toString(),
+          planType: name,
+          startDate: startDate,
+          endDate: endDate,
+        );
+      }
+      if (name == 'webinarPlan') {
+        await planController.createUserWebinarPlans(
+          userId,
+          planId.toString(),
+          planName.toString(),
+          amount.toString(),
+          startDate,
+          endDate,
+          context,
+        );
+        await generateInvoice(
+          amount: double.parse(amount.toString()),
+          planName: planName.toString(),
+          planType: name.toString(),
+          startDate: startDate,
+          endDate: endDate,
+        );
+      }
+      if (name == 'postPlan') {
+        await planController.createUserPostImagePlans(
+          userId,
+          planId.toString(),
+          planName.toString(),
+          amount.toString(),
+          startDate,
+          endDate,
+          context,
+        );
+        await generateInvoice(
+          amount: double.parse(amount.toString()),
+          planName: planName.toString(),
+          planType: name.toString(),
+          startDate: startDate,
+          endDate: endDate,
+        );
+      }
+      hideLoadingDialog();
 
-    }
-    if(name=='jobPlan'){
-      await planController.createUserJobPlans(userId, planId.toString(), planName.toString(),amount.toString(),  startDate,endDate, context,);
-      await generateInvoice(
-        amount: double.parse(amount.toString()),
-        planName: planName.toString(),planType: name,startDate:startDate,endDate: endDate
-      );
-    }
-    if(name=='webinarPlan'){
-      await planController.createUserWebinarPlans(userId, planId.toString(), planName.toString(),amount.toString(),  startDate,endDate, context,);
-      await generateInvoice(
-        amount: double.parse(amount.toString()),
-        planName: planName.toString(),planType: name.toString(),startDate: startDate,endDate: endDate
-      );
-    }
-    if(name=='postPlan'){
-      await  planController.createUserPostImagePlans(userId, planId.toString(), planName.toString(),amount.toString(),  startDate,endDate, context,);
-      await  generateInvoice(
-        amount: double.parse(amount.toString()),
-        planName: planName.toString(),planType: name.toString(),startDate: startDate,endDate: endDate
-      );
-    }
-    hideLoadingDialog();
+      showPaymentPopupMessage(context, true, 'Payment Successful!');
+    } catch (e) {
+      hideLoadingDialog();
 
-    showPaymentPopupMessage(
-      context,
-      true,
-      'Payment Successful!',
-    );
-  } catch (e) {
-  hideLoadingDialog();
-
-  showPaymentPopupMessage(
-  context,
-  false,
-  'Something went wrong',
-  );
-  }
+      showPaymentPopupMessage(context, false, 'Something went wrong');
+    }
     showPaymentPopupMessage(context, true, 'Payment Successful!');
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     showPaymentPopupMessage(context, false, 'Payment Failed!');
   }
+
   void _handleExternalWallet(ExternalWalletResponse response) {
-    print('You have chosen to pay via : ${response.walletName}. It will take some time to reflect your payment.');
+    print(
+      'You have chosen to pay via : ${response.walletName}. It will take some time to reflect your payment.',
+    );
   }
+
   void showPaymentPopupMessage(
-      BuildContext ctx, bool isPaymentSuccess, String message) {
+    BuildContext ctx,
+    bool isPaymentSuccess,
+    String message,
+  ) {
     showGeneralDialog(
       context: ctx,
       barrierDismissible: false,
       barrierLabel: "PaymentDialog",
-      barrierColor: Colors.black.withOpacity(0.4),
+      barrierColor: Colors.black.withValues(alpha: 0.4),
       transitionDuration: const Duration(milliseconds: 400),
       pageBuilder: (_, __, ___) {
         return Center(
@@ -248,10 +308,7 @@ String formatDate(String date) {
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.elasticOut,
                     builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: value,
-                        child: child,
-                      );
+                      return Transform.scale(scale: value, child: child);
                     },
                     child: CircleAvatar(
                       radius: 35,
@@ -270,8 +327,9 @@ String formatDate(String date) {
                   Text(
                     isPaymentSuccess ? 'Payment Successful' : 'Payment Failed',
                     style: AppTextStyles.body(
-                        context,
-                        color: AppColors.black,fontWeight: FontWeight.bold
+                      context,
+                      color: AppColors.black,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -279,8 +337,9 @@ String formatDate(String date) {
                     message,
                     textAlign: TextAlign.center,
                     style: AppTextStyles.body(
-                        context,
-                        color: Colors.grey.shade700,fontWeight: FontWeight.normal
+                      context,
+                      color: Colors.grey.shade700,
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                   const SizedBox(height: 25),
@@ -291,15 +350,15 @@ String formatDate(String date) {
                         Navigator.of(ctx).pop();
                         if (isPaymentSuccess) {
                           Get.offAllNamed('/viewPlanPage');
-                        }
-                        else{
+                        } else {
                           Get.back();
                         }
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        backgroundColor:
-                        isPaymentSuccess ? Colors.green : Colors.red,
+                        backgroundColor: isPaymentSuccess
+                            ? Colors.green
+                            : Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -307,8 +366,9 @@ String formatDate(String date) {
                       child: Text(
                         isPaymentSuccess ? 'CONTINUE' : 'TRY AGAIN',
                         style: AppTextStyles.body(
-                            context,
-                            color: AppColors.white,fontWeight: FontWeight.bold
+                          context,
+                          color: AppColors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -320,8 +380,10 @@ String formatDate(String date) {
         );
       },
       transitionBuilder: (_, animation, __, child) {
-        final curved =
-        CurvedAnimation(parent: animation, curve: Curves.easeOutBack);
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack,
+        );
         return FadeTransition(
           opacity: curved,
           child: SlideTransition(
@@ -336,208 +398,221 @@ String formatDate(String date) {
     );
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,backgroundColor: AppColors.white,
+        centerTitle: true,
+        backgroundColor: AppColors.white,
         iconTheme: const IconThemeData(color: AppColors.black),
-        title: Text('Payment',style: AppTextStyles.subtitle(context,color: AppColors.black),),
+        title: Text(
+          'Payment',
+          style: AppTextStyles.subtitle(context, color: AppColors.black),
+        ),
       ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              // if (isProcessingPayment)
-              //
-              //   Container(
-              //     color: Colors.black45,
-              //     child: const Center(
-              //       child: Column(
-              //         mainAxisSize: MainAxisSize.min,
-              //         children: [
-              //           CircularProgressIndicator(),
-              //           SizedBox(height: 20),
-              //           Text(
-              //             "Processing payment...",
-              //             style: TextStyle(
-              //               color: Colors.white,
-              //               fontSize: 16,
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Plan Summary",
-                        style: AppTextStyles.body(
-                          context,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // if (isProcessingPayment)
+            //
+            //   Container(
+            //     color: Colors.black45,
+            //     child: const Center(
+            //       child: Column(
+            //         mainAxisSize: MainAxisSize.min,
+            //         children: [
+            //           CircularProgressIndicator(),
+            //           SizedBox(height: 20),
+            //           Text(
+            //             "Processing payment...",
+            //             style: TextStyle(
+            //               color: Colors.white,
+            //               fontSize: 16,
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Plan Summary",
+                      style: AppTextStyles.body(
+                        context,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
                       ),
-                      const SizedBox(height: 20),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
-                            )
-                          ],
-                        ),
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-
-                            /// Plan Badge
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: AppColors.secondary.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(30),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          /// Plan Badge
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondary.withValues(
+                                alpha: 0.15,
                               ),
-                              child: Text(
-                                planName,
-                                style: const TextStyle(
-                                  color: AppColors.secondary,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Text(
+                              planName,
+                              style: const TextStyle(
+                                color: AppColors.secondary,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
+                          ),
 
-                            const SizedBox(height: 25),
+                          const SizedBox(height: 25),
 
-                            _modernRow("Start Date", formatDate(startDate)),
-                            _modernRow("End Date", formatDate(endDate)),
-                            _modernRow("User ID", userId),
+                          _modernRow("Start Date", formatDate(startDate)),
+                          _modernRow("End Date", formatDate(endDate)),
+                          _modernRow("User ID", userId),
 
-                            const SizedBox(height: 30),
+                          const SizedBox(height: 30),
 
-                            /// Amount Highlight
-                            Container(
-                              padding: const EdgeInsets.all(18),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    AppColors.primary,
-                                    AppColors.secondary
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "Total Amount",
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.8),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    "₹ ${amount.toStringAsFixed(2)}",
-                                      style:AppTextStyles.body(color: Colors.white,fontWeight: FontWeight.bold,context)
-                                  ),
+                          /// Amount Highlight
+                          Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  AppColors.primary,
+                                  AppColors.secondary,
                                 ],
                               ),
+                              borderRadius: BorderRadius.circular(16),
                             ),
-
-                            const SizedBox(height: 20),
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children:  [
-                                const Icon(Icons.lock, size: 16, color: Colors.grey),
-                                const SizedBox(width: 6),
+                            child: Column(
+                              children: [
                                 Text(
-                                  "Secure payment via Razorpay",
-                                  style:AppTextStyles.caption(color: Colors.grey,context)
+                                  "Total Amount",
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.8),
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  "₹ ${amount.toStringAsFixed(2)}",
+                                  style: AppTextStyles.body(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    context,
+                                  ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                          ),
 
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primary, AppColors.secondary],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                          const SizedBox(height: 20),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.lock,
+                                size: 16,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                "Secure payment via Razorpay",
+                                style: AppTextStyles.caption(
+                                  color: Colors.grey,
+                                  context,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                  ],
+                ),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [AppColors.primary, AppColors.secondary],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  child: ElevatedButton(
-                    onPressed: _openRazorpay,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.transparent,shadowColor: AppColors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 5,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ElevatedButton(
+                  onPressed: _openRazorpay,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.transparent,
+                    shadowColor: AppColors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child:  Text(
-                      "Proceed to Checkout",
-                      style: AppTextStyles.caption(
-                        fontWeight: FontWeight.bold,context,color: AppColors.white
-                      ),
+                    elevation: 5,
+                  ),
+                  child: Text(
+                    "Proceed to Checkout",
+                    style: AppTextStyles.caption(
+                      fontWeight: FontWeight.bold,
+                      context,
+                      color: AppColors.white,
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-        )
+            ),
+          ],
+        ),
+      ),
     );
   }
+
   Widget _modernRow(String title, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: const TextStyle(color: Colors.grey),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          Text(title, style: const TextStyle(color: Colors.grey)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),
     );
   }
+
   Future<void> generateInvoice({
     required double amount,
     required String planName,
     required String planType,
     required String startDate,
     required String endDate,
-
   }) async {
-
     final apiCompany = await planController.getCompanyDetails();
     if (apiCompany == null) {
       print("Company details not found");
@@ -553,7 +628,6 @@ String formatDate(String date) {
     );
 
     if (planController.getGstList.isNotEmpty) {
-
       final gstData = planController.getGstList.first;
       final double totalPaid = amount;
 
@@ -570,9 +644,7 @@ String formatDate(String date) {
       double totalAmount = totalPaid;
 
       if (isShowGst) {
-
-        final double totalGstPercent =
-            cgstPercent + sgstPercent + igstPercent;
+        final double totalGstPercent = cgstPercent + sgstPercent + igstPercent;
 
         if (totalGstPercent > 0) {
           baseAmount = totalPaid / (1 + totalGstPercent / 100);
@@ -589,15 +661,15 @@ String formatDate(String date) {
         cgst: cgst,
         sgst: sgst,
         igst: igst,
-        cgstPercentage:cgstPercent ,
-        sgstPercentage:sgstPercent ,
+        cgstPercentage: cgstPercent,
+        sgstPercentage: sgstPercent,
         igstPercentage: igstPercent,
         totalAmount: totalAmount,
       );
-     await planController.saveInvoicePdf(
+      await planController.saveInvoicePdf(
         userId: userId,
         planId: planId,
-        planType:planType,
+        planType: planType,
         planName: planName,
         startDate: startDate,
         endDate: endDate,
@@ -606,21 +678,24 @@ String formatDate(String date) {
         company: pdfCompany,
         context: context,
       );
-      final invoiceId = (planController.invoiceId ?? "").isNotEmpty ? planController.invoiceId! : "";
+      final invoiceId = (planController.invoiceId ?? "").isNotEmpty
+          ? planController.invoiceId!
+          : "";
       print('invf$invoiceId$planName');
       String name = Api.userInfo.read('orgName') ?? "";
       print('org name$name');
       final pdfFile = await PdfGenerator.generateInvoicePdf(
         userName: name,
         planName: planName,
-        planType:planType,startDate: startDate,
+        planType: planType,
+        startDate: startDate,
         endDate: endDate,
         taxSummary: finalTaxSummary,
         company: pdfCompany,
         invoiceId: invoiceId,
       );
 
-   //   await OpenFilex.open(pdfFile.path);
+      //   await OpenFilex.open(pdfFile.path);
     }
   }
- }
+}

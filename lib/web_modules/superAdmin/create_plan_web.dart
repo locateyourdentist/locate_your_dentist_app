@@ -18,7 +18,8 @@ class CreatePlanWeb extends StatefulWidget {
 }
 
 class _CreatePlanWebState extends State<CreatePlanWeb> {
-  final GlobalKey<ScaffoldState> _scaffoldKeyCreatePlan = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyCreatePlan =
+      GlobalKey<ScaffoldState>();
   final planController = Get.put(PlanController());
   final _formKeyPlanProfileWeb = GlobalKey<FormState>();
   String? planId;
@@ -34,7 +35,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
     postImagePlanId = (planController.selectPostImageId ?? "").isNotEmpty
         ? planController.selectPostImageId!
         : "0";
-    webinarPlanId=(planController.selectWebinarId ?? "").isNotEmpty
+    webinarPlanId = (planController.selectWebinarId ?? "").isNotEmpty
         ? planController.selectWebinarId!
         : "0";
     jobPlanId = (planController.selectJobId ?? "").isNotEmpty
@@ -42,8 +43,11 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
         : "0";
 
     addOnsId = (planController.selectAddOnsId ?? "").isNotEmpty
-        ? planController.selectAddOnsId! : "0";
-    planId = (planController.selectPlanId ?? "").isNotEmpty ? planController.selectPlanId! : "0";
+        ? planController.selectAddOnsId!
+        : "0";
+    planId = (planController.selectPlanId ?? "").isNotEmpty
+        ? planController.selectPlanId!
+        : "0";
     if ((args['selectedString'] ?? "") == "BasePlan") {
       loadBasePlanData(args);
     }
@@ -60,6 +64,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
       loadPostImagePlanData(args);
     }
   }
+
   void loadBasePlanData(Map<String, dynamic> args) {
     setState(() {
       planController.planNameController.text = args['planName'] ?? "";
@@ -77,21 +82,24 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
       planController.isLocationAndroid = details['location'] ?? false;
       planController.isMobileNumber = details['mobileNumber'] ?? false;
       planController.isServices = details['services'] ?? false;
-      planController.imageCountController.text =
-          (details['imageCount'] ?? "").toString();
+      planController.imageCountController.text = (details['imageCount'] ?? "")
+          .toString();
 
-      planController.imageSizeController.text =
-          (details['imageSize'] ?? "").toString();
+      planController.imageSizeController.text = (details['imageSize'] ?? "")
+          .toString();
 
-      planController.videoCountController.text =
-          (details['videoCount'] ?? "").toString();
+      planController.videoCountController.text = (details['videoCount'] ?? "")
+          .toString();
 
-      planController.videoSizeController.text =
-          (details['videoSize'] ?? "").toString();
+      planController.videoSizeController.text = (details['videoSize'] ?? "")
+          .toString();
 
-      planId = (planController.selectPlanId ?? "").isNotEmpty ? planController.selectPlanId! : "0";
+      planId = (planController.selectPlanId ?? "").isNotEmpty
+          ? planController.selectPlanId!
+          : "0";
     });
   }
+
   void loadAddOnsPlanData(Map<String, dynamic> args) {
     setState(() {
       planController.planNameController.text = args['addOnsPlanName'] ?? "";
@@ -109,19 +117,24 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
       planController.isCityWise = details['city'] ?? false;
       planController.isAreaWise = details['area'] ?? false;
       addOnsId = (planController.selectAddOnsId ?? "").isNotEmpty
-          ? planController.selectAddOnsId! : "0";
+          ? planController.selectAddOnsId!
+          : "0";
     });
   }
+
   void loadJobPlanData(Map<String, dynamic> args) {
     setState(() {
       planController.planNameController.text =
           args['planName'] ?? args['jobPlanName'] ?? "";
       planController.selectJobId =
-          args['jobPlansId']?.toString() ?? args['jobPlansId']?.toString() ?? "";
+          args['jobPlansId']?.toString() ??
+          args['jobPlansId']?.toString() ??
+          "";
       planController.priceController.text = args['price'] ?? "";
       planController.durationDaysController.text = args['duration'] ?? "";
-      planController.selectedFeatures =
-      List<String>.from(args['features'] ?? []);
+      planController.selectedFeatures = List<String>.from(
+        args['features'] ?? [],
+      );
       planController.selectedString = args['selectedString'] ?? "";
       planController.selectedUserType = args['userType'] ?? "";
       final details = Map<String, dynamic>.from(args['details'] ?? {});
@@ -138,16 +151,21 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
       //     : "0";
     });
   }
+
   void loadWebinarPlanData(Map<String, dynamic> args) {
     setState(() {
       print('fdsgf');
       planController.planNameController.text =
           args['webinarPlanName'] ?? args['webinarPlanName'] ?? "";
       planController.selectJobId =
-          args['webinarPlanId']?.toString() ?? args['webinarPlanId']?.toString() ?? "";
+          args['webinarPlanId']?.toString() ??
+          args['webinarPlanId']?.toString() ??
+          "";
       planController.priceController.text = args['price'] ?? "";
       planController.durationDaysController.text = args['duration'] ?? "";
-      planController.selectedFeatures = List<String>.from(args['features'] ?? []);
+      planController.selectedFeatures = List<String>.from(
+        args['features'] ?? [],
+      );
       planController.selectedString = args['selectedString'] ?? "";
       planController.selectedUserType = args['userType'] ?? "";
       final details = Map<String, dynamic>.from(args['details'] ?? {});
@@ -156,32 +174,37 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
       planController.isDistrictWise = details['district'] ?? false;
       planController.isCityWise = details['city'] ?? false;
       planController.isAreaWise = details['area'] ?? false;
-      webinarPlanId=(planController.selectWebinarId ?? "").isNotEmpty
+      webinarPlanId = (planController.selectWebinarId ?? "").isNotEmpty
           ? planController.selectWebinarId!
           : "0";
     });
   }
+
   void loadPostImagePlanData(Map<String, dynamic> args) {
     setState(() {
       planController.planNameController.text =
           args['postPlanName'] ?? args['postPlanName'] ?? "";
       planController.selectPostImageId =
           args['postImagesPlanId']?.toString() ??
-              args['postImagesPlanId']?.toString() ?? "";
+          args['postImagesPlanId']?.toString() ??
+          "";
       planController.priceController.text = args['price'] ?? "";
       planController.durationDaysController.text = args['duration'] ?? "";
-      planController.selectedFeatures =
-      List<String>.from(args['features'] ?? []);
+      planController.selectedFeatures = List<String>.from(
+        args['features'] ?? [],
+      );
       planController.selectedString = args['selectedString'] ?? "";
       planController.selectedUserType = args['userType'] ?? "";
       final details = Map<String, dynamic>.from(args['details'] ?? {});
       postImagePlanId = (planController.selectPostImageId ?? "").isNotEmpty
           ? planController.selectPostImageId!
           : "0";
-      print('pricer${args['price'] ?? ""}duratt${args['duration'] ??
-          ""}name${args['postPlanName'] ?? ""}');
+      print(
+        'pricer${args['price'] ?? ""}duratt${args['duration'] ?? ""}name${args['postPlanName'] ?? ""}',
+      );
     });
   }
+
   Future<void> _refresh() async {
     final args = Get.arguments ?? {};
     if ((args['selectedString'] ?? "") == "BasePlan") {
@@ -200,6 +223,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
       loadPostImagePlanData(args);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -209,7 +233,9 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
     return Scaffold(
       key: _scaffoldKeyCreatePlan,
       backgroundColor: Colors.white,
-      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: !isDesktop
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       appBar: CommonWebAppBar(
         height: isMobile ? 60 : 80,
         title: "LOCATE YOUR DENTIST",
@@ -217,495 +243,776 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
         onNotification: () {},
       ),
       body: GetBuilder<PlanController>(
-          builder: (controller) {
-            return  RefreshIndicator(
-              onRefresh: _refresh,
-              child: Row(
-                children: [
-                  if (isDesktop && isLoggedIn) const AdminSideBar(),
-                  Expanded(
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(isMobile ? 10 : 20),
-                        child:ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 700),
-                          child: Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: const [
-                                BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
-                              ],
-                            ),
-                            child: Stack(
-                              children: [
-                                if (isLoggedIn && !isDesktop)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10, left: 10),
-                                    child:    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: IconButton(
-                                        icon: const Icon(Icons.menu,color: AppColors.black,),
-                                        onPressed: () => _scaffoldKeyCreatePlan.currentState?.openDrawer(),
+        builder: (controller) {
+          return RefreshIndicator(
+            onRefresh: _refresh,
+            child: Row(
+              children: [
+                if (isDesktop && isLoggedIn) const AdminSideBar(),
+                Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(isMobile ? 10 : 20),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 700),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Stack(
+                            children: [
+                              if (isLoggedIn && !isDesktop)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 10,
+                                    left: 10,
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.menu,
+                                        color: AppColors.black,
                                       ),
+                                      onPressed: () => _scaffoldKeyCreatePlan
+                                          .currentState
+                                          ?.openDrawer(),
                                     ),
                                   ),
-                                SingleChildScrollView(
-                                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: isMobile ? 10 : 30),
-                                  child: Column(
-                                    children: [
-                                       const SizedBox(height: 20,),
-                                      // if(planController.selectedString=="BasePlan")
-                                      Wrap(
-                                        alignment: WrapAlignment.center,
-                                        spacing: 12,
-                                        runSpacing: 8,
-                                        children: [
-                
-                                          radioItem("BasePlan", "Base Plan"),
-                                          radioItem("AddOnsPlan", "AddOns Plan"),
-                                          radioItem("JobPlan", "Job Plan"),
-                                          radioItem("WebinarPlan", "Webinar Plan"),
-                                          radioItem("PostImagePlan", "Scrolling Ads Plan"),
-                
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-                
-                                      Form(
-                                        key: _formKeyPlanProfileWeb,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text('Add Plan Details', style: AppTextStyles.subtitle(
-                                              context, color: AppColors.black,)),
-                                            const SizedBox(height: 10,),
-                                            Text('Add/edit user Plan details',
-                                                style: AppTextStyles.caption(
-                                                  context, color: AppColors.grey,)),
-                                            const SizedBox(height: 15,),
-                                            CustomDropdownField(
-                                              hint: "Select User Type",
-                                              items: const [
-                                                "Dental Clinic",
-                                                "Dental Lab",
-                                                "Dental Shop",
-                                                "Dental Mechanic",
-                                                "Dental Consultant",
+                                ),
+                              SingleChildScrollView(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 20,
+                                  horizontal: isMobile ? 10 : 30,
+                                ),
+                                child: Column(
+                                  children: [
+                                    const SizedBox(height: 20),
+                                    // if(planController.selectedString=="BasePlan")
+                                    Wrap(
+                                      alignment: WrapAlignment.center,
+                                      spacing: 12,
+                                      runSpacing: 8,
+                                      children: [
+                                        radioItem("BasePlan", "Base Plan"),
+                                        radioItem("AddOnsPlan", "AddOns Plan"),
+                                        radioItem("JobPlan", "Job Plan"),
+                                        radioItem(
+                                          "WebinarPlan",
+                                          "Webinar Plan",
+                                        ),
+                                        radioItem(
+                                          "PostImagePlan",
+                                          "Scrolling Ads Plan",
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
 
-                                              ],
-                                              selectedValue: planController.selectedUserType?.isEmpty == true
-                                                  ? null
-                                                  : planController.selectedUserType,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  planController.selectedUserType = value;
-                                                });
-                                              },
+                                    Form(
+                                      key: _formKeyPlanProfileWeb,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Add Plan Details',
+                                            style: AppTextStyles.subtitle(
+                                              context,
+                                              color: AppColors.black,
                                             ),
-                
-                                            const SizedBox(height: 15,),
-                                            CustomTextField(
-                                              hint: "Plan Name",
-                                              controller: planController.planNameController,
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            'Add/edit user Plan details',
+                                            style: AppTextStyles.caption(
+                                              context,
+                                              color: AppColors.grey,
                                             ),
-                                            const SizedBox(height: 15,),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Expanded(
-                                                  child: CustomTextField(
-                                                    hint: "Price",
-                                                    controller: planController.priceController,
-                                                    keyboardType: TextInputType.number,
-                                                    maxLength: 4,
-                                                  ),
+                                          ),
+                                          const SizedBox(height: 15),
+                                          CustomDropdownField(
+                                            hint: "Select User Type",
+                                            items: const [
+                                              "Dental Clinic",
+                                              "Dental Lab",
+                                              "Dental Shop",
+                                              "Dental Mechanic",
+                                              "Dental Consultant",
+                                            ],
+                                            selectedValue:
+                                                planController
+                                                        .selectedUserType
+                                                        ?.isEmpty ==
+                                                    true
+                                                ? null
+                                                : planController
+                                                      .selectedUserType,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                planController
+                                                        .selectedUserType =
+                                                    value;
+                                              });
+                                            },
+                                          ),
+
+                                          const SizedBox(height: 15),
+                                          CustomTextField(
+                                            hint: "Plan Name",
+                                            controller: planController
+                                                .planNameController,
+                                          ),
+                                          const SizedBox(height: 15),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: CustomTextField(
+                                                  hint: "Price",
+                                                  controller: planController
+                                                      .priceController,
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  maxLength: 4,
                                                 ),
-                                                const SizedBox(width: 15,),
-                                                Expanded(
-                                                  child: CustomTextField(
-                                                    hint: "Mark Price",
-                                                    controller: planController.markPriceController,
-                                                    keyboardType: TextInputType.number,
-                                                    maxLength: 4,
-                                                  ),
+                                              ),
+                                              const SizedBox(width: 15),
+                                              Expanded(
+                                                child: CustomTextField(
+                                                  hint: "Mark Price",
+                                                  controller: planController
+                                                      .markPriceController,
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  maxLength: 4,
                                                 ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 15,),
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: CustomTextField(
-                                                    hint: "Duration months",
-                                                    controller: planController.durationMonthsController,
-                                                    maxLength: 2,
-                                                    keyboardType: TextInputType.number,
-                                                  ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 15),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: CustomTextField(
+                                                  hint: "Duration months",
+                                                  controller: planController
+                                                      .durationMonthsController,
+                                                  maxLength: 2,
+                                                  keyboardType:
+                                                      TextInputType.number,
                                                 ),
-                                                const SizedBox(width: 15,),
-                                                Expanded(
-                                                  child: CustomTextField(
-                                                    hint: "Duration Days",
-                                                    controller: planController.durationDaysController,
-                                                    maxLength: 3,
-                                                    keyboardType: TextInputType.number,
-                                                  ),
+                                              ),
+                                              const SizedBox(width: 15),
+                                              Expanded(
+                                                child: CustomTextField(
+                                                  hint: "Duration Days",
+                                                  controller: planController
+                                                      .durationDaysController,
+                                                  maxLength: 3,
+                                                  keyboardType:
+                                                      TextInputType.number,
                                                 ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 15,),
-                                            if(planController.selectedString=="BasePlan")
-                                              GetBuilder<PlanController>(
-                                                  builder: (controller) {
-                                                    return Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 15),
+                                          if (planController.selectedString ==
+                                              "BasePlan")
+                                            GetBuilder<PlanController>(
+                                              builder: (controller) {
+                                                return Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Expanded(
-                                                              child: CustomTextField(
-                                                                hint: "Number of Image",
-                                                                controller: planController.imageCountController,
-                                                                maxLength: 1,
-                                                                keyboardType: TextInputType.number,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(width: 15,),
-                                                            Expanded(
-                                                              child: CustomTextField(
-                                                                hint: "Image Size (MB)",
-                                                                controller: planController.imageSizeController,
-                                                                maxLength: 3,
-                                                                keyboardType: TextInputType.number,
-                                                              ),
-                                                            ),
-                                                          ],
+                                                        Expanded(
+                                                          child: CustomTextField(
+                                                            hint:
+                                                                "Number of Image",
+                                                            controller:
+                                                                planController
+                                                                    .imageCountController,
+                                                            maxLength: 1,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                          ),
                                                         ),
-                                                        const SizedBox(height: 10,),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Expanded(
-                                                              child: CustomTextField(
-                                                                hint: "Number Of Video",
-                                                                controller: planController.videoCountController,
-                                                                maxLength: 1,
-                                                                keyboardType: TextInputType.number,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(width: 15,),
-                                                            Expanded(
-                                                              child: CustomTextField(
-                                                                hint: "Video Size (MB)",
-                                                                controller: planController.videoSizeController,
-                                                                maxLength: 3,
-                                                                keyboardType: TextInputType.number,
-                                                              ),
-                                                            ),
-                                                          ],
+                                                        const SizedBox(
+                                                          width: 15,
+                                                        ),
+                                                        Expanded(
+                                                          child: CustomTextField(
+                                                            hint:
+                                                                "Image Size (MB)",
+                                                            controller:
+                                                                planController
+                                                                    .imageSizeController,
+                                                            maxLength: 3,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                          ),
                                                         ),
                                                       ],
-                                                    );
-                                                  }
-                                              ),
-                                            const SizedBox(height: 15,),
-                                            if (planController.selectedString == "JobPlan")
-                                              CustomTextField(
-                                                hint: "Job Count",
-                                                controller: planController.countDaysController,
-                                                maxLength: 3,
-                                                keyboardType: TextInputType.number,
-                                              ),
-                                            const SizedBox(height: 15,),
-                
-                                            if(planController.selectedString=="BasePlan")
-                                              Column(
-                                                children: [
-                
-                                                  buildSwitchRow(
-                                                    label: "Show Image",
-                                                    value: planController.isImageAndroid,
-                                                    onChanged: (val) => setState((){
-                                                      planController.isImageAndroid = val;
+                                                    ),
+                                                    const SizedBox(height: 10),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Expanded(
+                                                          child: CustomTextField(
+                                                            hint:
+                                                                "Number Of Video",
+                                                            controller:
+                                                                planController
+                                                                    .videoCountController,
+                                                            maxLength: 1,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 15,
+                                                        ),
+                                                        Expanded(
+                                                          child: CustomTextField(
+                                                            hint:
+                                                                "Video Size (MB)",
+                                                            controller:
+                                                                planController
+                                                                    .videoSizeController,
+                                                            maxLength: 3,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                          const SizedBox(height: 15),
+                                          if (planController.selectedString ==
+                                              "JobPlan")
+                                            CustomTextField(
+                                              hint: "Job Count",
+                                              controller: planController
+                                                  .countDaysController,
+                                              maxLength: 3,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                            ),
+                                          const SizedBox(height: 15),
+
+                                          if (planController.selectedString ==
+                                              "BasePlan")
+                                            Column(
+                                              children: [
+                                                buildSwitchRow(
+                                                  label: "Show Image",
+                                                  value: planController
+                                                      .isImageAndroid,
+                                                  onChanged: (val) => setState(
+                                                    () {
+                                                      planController
+                                                              .isImageAndroid =
+                                                          val;
                                                       planController.update();
-                
-                                                    }),
+                                                    },
                                                   ),
-                                                  buildSwitchRow(
-                                                    label: "Show Video",
-                                                    value: planController.isVideoAndroid,
-                                                    onChanged: (val) => setState((){
-                                                      planController.isVideoAndroid = val;
-                                                      planController.update();
-                
-                                                    }),
-                                                  ),
-                                                  buildSwitchRow(
-                                                    label: "Show Location",
-                                                    value: planController.isLocationAndroid,
-                                                    onChanged: (val) => setState(() {
-                                                      planController.isLocationAndroid = val;
-                                                      planController.update();
-                                                    }),
-                                                  ),
-                                                  buildSwitchRow(
-                                                    label: "Show MobileNumber",
-                                                    value: planController.isMobileNumber,
-                                                    onChanged: (val) => setState(() {
-                                                      planController.isMobileNumber = val;
-                                                      planController.update();
-                                                    }),
-                                                  ),
-                                                  buildSwitchRow(
-                                                    label: "Show Services",
-                                                    value: planController.isServices,
-                                                    onChanged: (val) => setState(() {
-                                                      planController.isServices = val;
-                                                      planController.update();
-                                                    }),
-                                                  ),
-                                                ],
-                                              ),
-                                            if(planController.selectedString=="AddOnsPlan"||planController.selectedString=="JobPlan")
-                                              Column(
-                                                children: [
-                                                  buildSwitchRow(
-                                                    label: "Show State",
-                                                    value: planController.isStateWise,
-                                                    onChanged: (val) => setState((){
-                                                      planController.isStateWise = val;
-                                                      planController.update();
-                
-                                                    }),
-                                                  ),
-                                                  buildSwitchRow(
-                                                    label: "Show District",
-                                                    value: planController.isDistrictWise,
-                                                    onChanged: (val) => setState(() {
-                                                      planController.isDistrictWise = val;
-                                                      planController.update();
-                                                    }),
-                                                  ),
-                                                  buildSwitchRow(
-                                                    label: "Show City",
-                                                    value: planController.isCityWise,
-                                                    onChanged: (val) => setState(() {
-                                                      planController.isCityWise = val;
-                                                      planController.update();
-                                                    }),
-                                                  ),
-                                                  buildSwitchRow(
-                                                    label: "Show Area",
-                                                    value: planController.isAreaWise,
-                                                    onChanged: (val) => setState(() {
-                                                      planController.isAreaWise = val;
-                                                      planController.update();
-                                                    }),
-                                                  ),
-                                                ],
-                                              ),
-                                            const SizedBox(height: 40,),
-                                            Center(
-                                              child: Container(
-                                                width: double.infinity,
-                                                height: 50,
-                                                decoration: BoxDecoration(
-                                                  gradient: const LinearGradient(
-                                                    colors: [AppColors.primary, AppColors.secondary],
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
-                                                  ),
-                                                  borderRadius: BorderRadius.circular(12),
                                                 ),
-                                                child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: AppColors.transparent,shadowColor: AppColors.transparent,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10),
-                                                    ),
+                                                buildSwitchRow(
+                                                  label: "Show Video",
+                                                  value: planController
+                                                      .isVideoAndroid,
+                                                  onChanged: (val) => setState(
+                                                    () {
+                                                      planController
+                                                              .isVideoAndroid =
+                                                          val;
+                                                      planController.update();
+                                                    },
                                                   ),
-                                                  onPressed: () async {
-                                                    if (!_formKeyPlanProfileWeb.currentState!.validate()) return;
-                                                    int days = int.tryParse(planController.durationDaysController.text) ?? 0;
-                                                    int months = int.tryParse(planController.durationMonthsController.text) ?? 0;
-                
-                                                    int duration = days + (months * 30);
-                
-                                                    String durationDays = duration.toString();
-                                                    if (planController.selectedUserType == null ||
-                                                        planController.selectedUserType!.isEmpty) {
-                                                      showCustomToast(context, "Please select user type");
-                                                      return;
-                                                    }
-                                                    List<String> features = [];
-                                                    if (planController.selectedString == "BasePlan") {
-                                                      if (planController.isImageAndroid) {
-                                                        features.add("Display clinic photos");
-                                                      }
-                                                      if (planController.isVideoAndroid) {
-                                                        features.add("Display clinic  videos");
-                                                      }
-                                                      if (planController.isLocationAndroid) {
-                                                        features.add("Show clinic location on map");
-                                                      }
-                                                      if (planController.isMobileNumber) {
-                                                        features.add("Show clinic contact number");
-                                                      }
-                                                      if (planController.isServices) {
-                                                        features.add("Display list of offered services");
-                                                      }
-                                                      await planController.createPlans(
-                                                        planController.selectedUserType!,
-                                                        planId!,
-                                                        planController.planNameController.text,
-                                                        planController.priceController.text,
-                                                        planController.markPriceController.text,durationDays,
-                                                        //planController.durationDaysController.text,
-                                                        planController.isImageAndroid,
-                                                        planController.isVideoAndroid,
-                                                        planController.isLocationAndroid,
-                                                        planController.isMobileNumber,
-                                                        planController.isServices,
-                                                        planController.imageCountController.text,
-                                                        planController.imageSizeController.text,
-                                                        planController.videoCountController.text,
-                                                        planController.videoCountController.text,
-                                                        features.toSet().toList(),
-                                                        context,
-                                                      );
-                
-                                                      await planController.getBasePlanList(Api.userInfo.read('userType') ?? "", context);
-                                                    }
-                                                    else if (planController.selectedString == "AddOnsPlan") {
-                                                      if (planController.isStateWise) {
-                                                        features.add("Display preferences based on State");
-                                                      }
-                                                      if (planController.isDistrictWise) {
-                                                        features.add("Display preferences based on District");
-                                                      }
-                                                      if (planController.isCityWise) {
-                                                        features.add("Display preferences based on City");
-                                                      }
-                                                      if (planController.isAreaWise) {
-                                                        features.add("Display  preferences based on Area");
-                                                      }
-                                                      await planController.createAddonsPlans(
-                                                        planController.selectedUserType!,
-                                                        addOnsId!,
-                                                        planController.planNameController.text,
-                                                        planController.priceController.text,planController.markPriceController.text,
-                                                        durationDays,
-                                                        //planController.durationDaysController.text,
-                                                        planController.isStateWise,
-                                                        planController.isDistrictWise,
-                                                        planController.isCityWise,
-                                                        planController.isAreaWise,
-                                                        features.toSet().toList(),
-                                                        context,
-                                                      );
-                
-                                                      await planController.getAddOnPlansList(
-                                                          planController.selectedUserType!, context);
-                                                    }
-                                                    else if (planController.selectedString == "JobPlan") {
-                                                      if (planController.isStateWise) {
-                                                        features.add("Display job posts based on State");
-                                                      }
-                                                      if (planController.isDistrictWise) {
-                                                        features.add("Display job posts based on District");
-                                                      }
-                                                      if (planController.isCityWise) {
-                                                        features.add("Display job posts based on City");
-                                                      }
-                                                      if (planController.isAreaWise) {
-                                                        features.add("Display job posts based on Area");
-                                                      }
-                                                      await planController.createJobPlans(
-                                                        planController.selectedUserType!,
-                                                        jobPlanId!,
-                                                        planController.planNameController.text,
-                                                        planController.priceController.text,planController.markPriceController.text,
-                                                        durationDays,
-                                                        //planController.durationDaysController.text,
-                                                        planController.isStateWise,
-                                                        planController.isDistrictWise,
-                                                        planController.isCityWise,
-                                                        planController.isAreaWise,
-                                                        planController.countDaysController.text,
-                                                        features.toSet().toList(),
-                                                        context,
-                                                      );
-                
-                                                      await planController.getJobPlansList(
-                                                          planController.selectedUserType!, context);
-                                                    }
-                                                    else if (planController.selectedString == "WebinarPlan") {
-                                                      await planController.createWebinarPlans(
-                                                        planController.selectedUserType!,
-                                                        webinarPlanId!,
-                                                        planController.planNameController.text,
-                                                        planController.priceController.text,planController.markPriceController.text,
-                                                        durationDays,
-                                                        //planController.durationDaysController.text,
-                                                        planController.isStateWise,
-                                                        planController.isDistrictWise,
-                                                        planController.isCityWise,
-                                                        planController.isAreaWise,
-                                                        context,
-                                                      );
-                                                    }
-                                                    else if (planController.selectedString == "PostImagePlan") {
-                
-                
-                                                      await planController.createPostImagesPlans(
-                                                        planController.selectedUserType!,
-                                                        postImagePlanId!,
-                                                        planController.planNameController.text,
-                                                        planController.priceController.text,planController.markPriceController.text,
-                                                        durationDays,
-                                                        //planController.durationDaysController.text,
-                                                        context,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Text(
-                                                    'Create Plan',
-                                                    style: AppTextStyles.body(
+                                                ),
+                                                buildSwitchRow(
+                                                  label: "Show Location",
+                                                  value: planController
+                                                      .isLocationAndroid,
+                                                  onChanged: (val) => setState(
+                                                    () {
+                                                      planController
+                                                              .isLocationAndroid =
+                                                          val;
+                                                      planController.update();
+                                                    },
+                                                  ),
+                                                ),
+                                                buildSwitchRow(
+                                                  label: "Show MobileNumber",
+                                                  value: planController
+                                                      .isMobileNumber,
+                                                  onChanged: (val) => setState(
+                                                    () {
+                                                      planController
+                                                              .isMobileNumber =
+                                                          val;
+                                                      planController.update();
+                                                    },
+                                                  ),
+                                                ),
+                                                buildSwitchRow(
+                                                  label: "Show Services",
+                                                  value:
+                                                      planController.isServices,
+                                                  onChanged: (val) =>
+                                                      setState(() {
+                                                        planController
+                                                                .isServices =
+                                                            val;
+                                                        planController.update();
+                                                      }),
+                                                ),
+                                              ],
+                                            ),
+                                          if (planController.selectedString ==
+                                                  "AddOnsPlan" ||
+                                              planController.selectedString ==
+                                                  "JobPlan")
+                                            Column(
+                                              children: [
+                                                buildSwitchRow(
+                                                  label: "Show State",
+                                                  value: planController
+                                                      .isStateWise,
+                                                  onChanged: (val) =>
+                                                      setState(() {
+                                                        planController
+                                                                .isStateWise =
+                                                            val;
+                                                        planController.update();
+                                                      }),
+                                                ),
+                                                buildSwitchRow(
+                                                  label: "Show District",
+                                                  value: planController
+                                                      .isDistrictWise,
+                                                  onChanged: (val) => setState(
+                                                    () {
+                                                      planController
+                                                              .isDistrictWise =
+                                                          val;
+                                                      planController.update();
+                                                    },
+                                                  ),
+                                                ),
+                                                buildSwitchRow(
+                                                  label: "Show City",
+                                                  value:
+                                                      planController.isCityWise,
+                                                  onChanged: (val) =>
+                                                      setState(() {
+                                                        planController
+                                                                .isCityWise =
+                                                            val;
+                                                        planController.update();
+                                                      }),
+                                                ),
+                                                buildSwitchRow(
+                                                  label: "Show Area",
+                                                  value:
+                                                      planController.isAreaWise,
+                                                  onChanged: (val) =>
+                                                      setState(() {
+                                                        planController
+                                                                .isAreaWise =
+                                                            val;
+                                                        planController.update();
+                                                      }),
+                                                ),
+                                              ],
+                                            ),
+                                          const SizedBox(height: 40),
+                                          Center(
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 50,
+                                              decoration: BoxDecoration(
+                                                gradient: const LinearGradient(
+                                                  colors: [
+                                                    AppColors.primary,
+                                                    AppColors.secondary,
+                                                  ],
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      AppColors.transparent,
+                                                  shadowColor:
+                                                      AppColors.transparent,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  if (!_formKeyPlanProfileWeb
+                                                      .currentState!
+                                                      .validate())
+                                                    return;
+                                                  int days =
+                                                      int.tryParse(
+                                                        planController
+                                                            .durationDaysController
+                                                            .text,
+                                                      ) ??
+                                                      0;
+                                                  int months =
+                                                      int.tryParse(
+                                                        planController
+                                                            .durationMonthsController
+                                                            .text,
+                                                      ) ??
+                                                      0;
+
+                                                  int duration =
+                                                      days + (months * 30);
+
+                                                  String durationDays = duration
+                                                      .toString();
+                                                  if (planController
+                                                              .selectedUserType ==
+                                                          null ||
+                                                      planController
+                                                          .selectedUserType!
+                                                          .isEmpty) {
+                                                    showCustomToast(
                                                       context,
-                                                      color: AppColors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
+                                                      "Please select user type",
+                                                    );
+                                                    return;
+                                                  }
+                                                  List<String> features = [];
+                                                  if (planController
+                                                          .selectedString ==
+                                                      "BasePlan") {
+                                                    if (planController
+                                                        .isImageAndroid) {
+                                                      features.add(
+                                                        "Display clinic photos",
+                                                      );
+                                                    }
+                                                    if (planController
+                                                        .isVideoAndroid) {
+                                                      features.add(
+                                                        "Display clinic  videos",
+                                                      );
+                                                    }
+                                                    if (planController
+                                                        .isLocationAndroid) {
+                                                      features.add(
+                                                        "Show clinic location on map",
+                                                      );
+                                                    }
+                                                    if (planController
+                                                        .isMobileNumber) {
+                                                      features.add(
+                                                        "Show clinic contact number",
+                                                      );
+                                                    }
+                                                    if (planController
+                                                        .isServices) {
+                                                      features.add(
+                                                        "Display list of offered services",
+                                                      );
+                                                    }
+                                                    await planController.createPlans(
+                                                      planController
+                                                          .selectedUserType!,
+                                                      planId!,
+                                                      planController
+                                                          .planNameController
+                                                          .text,
+                                                      planController
+                                                          .priceController
+                                                          .text,
+                                                      planController
+                                                          .markPriceController
+                                                          .text,
+                                                      durationDays,
+                                                      //planController.durationDaysController.text,
+                                                      planController
+                                                          .isImageAndroid,
+                                                      planController
+                                                          .isVideoAndroid,
+                                                      planController
+                                                          .isLocationAndroid,
+                                                      planController
+                                                          .isMobileNumber,
+                                                      planController.isServices,
+                                                      planController
+                                                          .imageCountController
+                                                          .text,
+                                                      planController
+                                                          .imageSizeController
+                                                          .text,
+                                                      planController
+                                                          .videoCountController
+                                                          .text,
+                                                      planController
+                                                          .videoCountController
+                                                          .text,
+                                                      features.toSet().toList(),
+                                                      context,
+                                                    );
+
+                                                    await planController
+                                                        .getBasePlanList(
+                                                          Api.userInfo.read(
+                                                                'userType',
+                                                              ) ??
+                                                              "",
+                                                          context,
+                                                        );
+                                                  } else if (planController
+                                                          .selectedString ==
+                                                      "AddOnsPlan") {
+                                                    if (planController
+                                                        .isStateWise) {
+                                                      features.add(
+                                                        "Display preferences based on State",
+                                                      );
+                                                    }
+                                                    if (planController
+                                                        .isDistrictWise) {
+                                                      features.add(
+                                                        "Display preferences based on District",
+                                                      );
+                                                    }
+                                                    if (planController
+                                                        .isCityWise) {
+                                                      features.add(
+                                                        "Display preferences based on City",
+                                                      );
+                                                    }
+                                                    if (planController
+                                                        .isAreaWise) {
+                                                      features.add(
+                                                        "Display  preferences based on Area",
+                                                      );
+                                                    }
+                                                    await planController
+                                                        .createAddonsPlans(
+                                                          planController
+                                                              .selectedUserType!,
+                                                          addOnsId!,
+                                                          planController
+                                                              .planNameController
+                                                              .text,
+                                                          planController
+                                                              .priceController
+                                                              .text,
+                                                          planController
+                                                              .markPriceController
+                                                              .text,
+                                                          durationDays,
+                                                          //planController.durationDaysController.text,
+                                                          planController
+                                                              .isStateWise,
+                                                          planController
+                                                              .isDistrictWise,
+                                                          planController
+                                                              .isCityWise,
+                                                          planController
+                                                              .isAreaWise,
+                                                          features
+                                                              .toSet()
+                                                              .toList(),
+                                                          context,
+                                                        );
+
+                                                    await planController
+                                                        .getAddOnPlansList(
+                                                          planController
+                                                              .selectedUserType!,
+                                                          context,
+                                                        );
+                                                  } else if (planController
+                                                          .selectedString ==
+                                                      "JobPlan") {
+                                                    if (planController
+                                                        .isStateWise) {
+                                                      features.add(
+                                                        "Display job posts based on State",
+                                                      );
+                                                    }
+                                                    if (planController
+                                                        .isDistrictWise) {
+                                                      features.add(
+                                                        "Display job posts based on District",
+                                                      );
+                                                    }
+                                                    if (planController
+                                                        .isCityWise) {
+                                                      features.add(
+                                                        "Display job posts based on City",
+                                                      );
+                                                    }
+                                                    if (planController
+                                                        .isAreaWise) {
+                                                      features.add(
+                                                        "Display job posts based on Area",
+                                                      );
+                                                    }
+                                                    await planController.createJobPlans(
+                                                      planController
+                                                          .selectedUserType!,
+                                                      jobPlanId!,
+                                                      planController
+                                                          .planNameController
+                                                          .text,
+                                                      planController
+                                                          .priceController
+                                                          .text,
+                                                      planController
+                                                          .markPriceController
+                                                          .text,
+                                                      durationDays,
+                                                      //planController.durationDaysController.text,
+                                                      planController
+                                                          .isStateWise,
+                                                      planController
+                                                          .isDistrictWise,
+                                                      planController.isCityWise,
+                                                      planController.isAreaWise,
+                                                      planController
+                                                          .countDaysController
+                                                          .text,
+                                                      features.toSet().toList(),
+                                                      context,
+                                                    );
+
+                                                    await planController
+                                                        .getJobPlansList(
+                                                          planController
+                                                              .selectedUserType!,
+                                                          context,
+                                                        );
+                                                  } else if (planController
+                                                          .selectedString ==
+                                                      "WebinarPlan") {
+                                                    await planController
+                                                        .createWebinarPlans(
+                                                          planController
+                                                              .selectedUserType!,
+                                                          webinarPlanId!,
+                                                          planController
+                                                              .planNameController
+                                                              .text,
+                                                          planController
+                                                              .priceController
+                                                              .text,
+                                                          planController
+                                                              .markPriceController
+                                                              .text,
+                                                          durationDays,
+                                                          //planController.durationDaysController.text,
+                                                          planController
+                                                              .isStateWise,
+                                                          planController
+                                                              .isDistrictWise,
+                                                          planController
+                                                              .isCityWise,
+                                                          planController
+                                                              .isAreaWise,
+                                                          context,
+                                                        );
+                                                  } else if (planController
+                                                          .selectedString ==
+                                                      "PostImagePlan") {
+                                                    await planController
+                                                        .createPostImagesPlans(
+                                                          planController
+                                                              .selectedUserType!,
+                                                          postImagePlanId!,
+                                                          planController
+                                                              .planNameController
+                                                              .text,
+                                                          planController
+                                                              .priceController
+                                                              .text,
+                                                          planController
+                                                              .markPriceController
+                                                              .text,
+                                                          durationDays,
+                                                          //planController.durationDaysController.text,
+                                                          context,
+                                                        );
+                                                  }
+                                                },
+                                                child: Text(
+                                                  'Create Plan',
+                                                  style: AppTextStyles.body(
+                                                    context,
+                                                    color: AppColors.white,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(height: 40,),
-                                          ],
-                                        ),
+                                          ),
+                                          const SizedBox(height: 40),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
-            );
-          }
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
-
 
   Widget buildSwitchRow({
     required String label,
@@ -713,30 +1020,30 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
     required ValueChanged<bool> onChanged,
   }) {
     return GetBuilder<PlanController>(
-        builder: (controller) {
-          double s=MediaQuery.of(context).size.width;
+      builder: (controller) {
+        double s = MediaQuery.of(context).size.width;
 
-          return  Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
-                ),
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
               ),
-              Switch(
-                activeColor: AppColors.white,
-                activeTrackColor: AppColors.primary,
-                inactiveThumbColor: Colors.blueGrey.shade600,
-                inactiveTrackColor: Colors.grey.shade400,
-                splashRadius: s*0.005,
-                value: value,
-                onChanged: onChanged,
-              ),
-            ],
-          );
-        }
+            ),
+            Switch(
+              activeThumbColor: AppColors.white,
+              activeTrackColor: AppColors.primary,
+              inactiveThumbColor: Colors.blueGrey.shade600,
+              inactiveTrackColor: Colors.grey.shade400,
+              splashRadius: s * 0.005,
+              value: value,
+              onChanged: onChanged,
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -754,8 +1061,9 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
     planController.isLocationAndroid = false;
     planController.isMobileNumber = false;
     planController.isServices = false;
-    planController.selectJobId='';
+    planController.selectJobId = '';
   }
+
   Widget radioItem(String value, String label) {
     return GetBuilder<PlanController>(
       builder: (controller) {
@@ -766,7 +1074,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
               value: value,
               groupValue: controller.selectedString,
               activeColor: AppColors.primary,
-              fillColor: MaterialStateProperty.all(AppColors.primary),
+              fillColor: WidgetStateProperty.all(AppColors.primary),
               onChanged: (val) {
                 controller.selectedString = val.toString();
                 resetPlanFields();
@@ -782,5 +1090,4 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
       },
     );
   }
-
 }

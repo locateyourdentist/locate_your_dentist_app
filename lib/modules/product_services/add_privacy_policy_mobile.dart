@@ -18,7 +18,6 @@ class PrivacyPolicyMobile extends StatefulWidget {
 }
 
 class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
-
   final JobController jobController = Get.put(JobController());
   final PlanController planController = Get.put(PlanController());
   final TextEditingController nameController = TextEditingController();
@@ -42,7 +41,9 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
     try {
       List<Map<String, dynamic>> delta = [];
       if (data == null || data.toString().trim().isEmpty) {
-        delta = [{"insert": "\n"}];
+        delta = [
+          {"insert": "\n"},
+        ];
       } else {
         dynamic decoded = data;
 
@@ -52,7 +53,9 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
         if (decoded is List) {
           delta = List<Map<String, dynamic>>.from(decoded);
         } else {
-          delta = [{"insert": "\n"}];
+          delta = [
+            {"insert": "\n"},
+          ];
         }
       }
       _focusNode.unfocus();
@@ -60,14 +63,11 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
         document: Document.fromJson(delta),
         selection: const TextSelection.collapsed(offset: 0),
         config: const QuillControllerConfig(
-          clipboardConfig: QuillClipboardConfig(
-            enableExternalRichPaste: true,
-          ),
+          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
         ),
       );
 
       if (mounted) setState(() {});
-
     } catch (e) {
       print("Quill load error: $e");
 
@@ -75,19 +75,19 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
       if (mounted) setState(() {});
     }
   }
+
+  @override
   void initState() {
     super.initState();
-    jobController.selectedTitle="Privacy Policy";
+    jobController.selectedTitle = "Privacy Policy";
     _controller = QuillController.basic(
       config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
-
+        clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
       ),
     );
     loadInitialData();
   }
+
   Future<void> loadInitialData() async {
     final data = await serviceController.getPrivacyPolicyDetails(
       jobController.selectedTitle!,
@@ -96,6 +96,7 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
     _controller.clear();
     loadDescription(data);
   }
+
   Widget buildTitleSidebar() {
     double s = MediaQuery.of(context).size.width;
     return Container(
@@ -104,7 +105,7 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
         ],
       ),
       child: GetBuilder<JobController>(
@@ -124,8 +125,7 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
                   jobController.selectedTitle = value;
                   jobController.update();
 
-                  final data =
-                  await serviceController.getPrivacyPolicyDetails(
+                  final data = await serviceController.getPrivacyPolicyDetails(
                     value!,
                     context,
                   );
@@ -138,14 +138,21 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
         },
       ),
     );
-  }  @override
+  }
+
+  @override
   @override
   Widget build(BuildContext context) {
-    double s=MediaQuery.of(context).size.width;
+    double s = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: Center(child: Text("Policies",style: AppTextStyles.subtitle(context,color: AppColors.black),)),
+        title: Center(
+          child: Text(
+            "Policies",
+            style: AppTextStyles.subtitle(context, color: AppColors.black),
+          ),
+        ),
         backgroundColor: AppColors.white,
       ),
       body: GetBuilder<JobController>(
@@ -157,9 +164,8 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   DropdownButtonFormField<String>(
-                    value: jobController.selectedTitle,
+                    initialValue: jobController.selectedTitle,
                     decoration: InputDecoration(
                       labelText: "Select Policy Type",
                       labelStyle: AppTextStyles.caption(context),
@@ -170,7 +176,10 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
                     items: typesPolicy.map((type) {
                       return DropdownMenuItem(
                         value: type,
-                        child: Text(type,style:AppTextStyles.caption(context),),
+                        child: Text(
+                          type,
+                          style: AppTextStyles.caption(context),
+                        ),
                       );
                     }).toList(),
                     onChanged: (value) async {
@@ -211,7 +220,7 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
                   ),
 
                   Container(
-                    height: s*1.3,
+                    height: s * 1.3,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
                       borderRadius: const BorderRadius.only(
@@ -225,7 +234,7 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
                       focusNode: _focusNode,
                       config: QuillEditorConfig(
                         placeholder:
-                        "${jobController.selectedTitle ?? ""} description...",
+                            "${jobController.selectedTitle ?? ""} description...",
                         padding: const EdgeInsets.all(12),
                       ),
                     ),
@@ -240,7 +249,6 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
                       onPressed: () async {
                         if (_formKeyCreatePrivacyPolicy.currentState!
                             .validate()) {
-
                           if (jobController.selectedTitle == null) {
                             await showSuccessDialog(
                               context,
@@ -264,8 +272,9 @@ class _PrivacyPolicyMobileState extends State<PrivacyPolicyMobile> {
                             return;
                           }
 
-                          final description =
-                          jsonEncode(doc.toDelta().toJson());
+                          final description = jsonEncode(
+                            doc.toDelta().toJson(),
+                          );
 
                           planController.addPrivacyPolicyContent(
                             jobController.selectedTitle!,

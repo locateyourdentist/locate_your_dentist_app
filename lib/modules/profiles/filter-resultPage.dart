@@ -18,12 +18,13 @@ class FilterResultPage extends StatefulWidget {
   @override
   State<FilterResultPage> createState() => _FilterResultPageState();
 }
-class _FilterResultPageState extends State<FilterResultPage> {
 
-  final loginController=Get.put(LoginController());
+class _FilterResultPageState extends State<FilterResultPage> {
+  final loginController = Get.put(LoginController());
   List<ProfileModel> filteredProfiles = [];
-  final TextEditingController searchController=TextEditingController();
-  final GlobalKey<ScaffoldState> _scaffoldKeyFilter = GlobalKey<ScaffoldState>();
+  final TextEditingController searchController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKeyFilter =
+      GlobalKey<ScaffoldState>();
   final args = Get.arguments as Map<String, dynamic>?;
   // @override
   // void initState(){
@@ -37,10 +38,17 @@ class _FilterResultPageState extends State<FilterResultPage> {
       Api.userInfo.read('selectedUserType'),
       loginController.selectedState,
       loginController.selectedDistrict,
-      loginController.selectedArea,[],"true",'','','','',
+      loginController.selectedArea,
+      [],
+      "true",
+      '',
+      '',
+      '',
+      '',
       context,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -48,7 +56,6 @@ class _FilterResultPageState extends State<FilterResultPage> {
     print('userlist$selectedUserType');
     return WillPopScope(
       onWillPop: () async {
-
         // loginController.getProfileDetails(
         //   Api.userInfo.read('selectedUserType'),
         //   loginController.selectedState,
@@ -59,28 +66,33 @@ class _FilterResultPageState extends State<FilterResultPage> {
         // Get.toNamed('/userTypeListPage', arguments: {
         //   'userType': selectedUserType,
         // });
-         return true;
+        return true;
       },
       child: Scaffold(
-        key:_scaffoldKeyFilter,
+        key: _scaffoldKeyFilter,
         backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
-          centerTitle: true,automaticallyImplyLeading: true,
+          centerTitle: true,
+          automaticallyImplyLeading: true,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.primary,AppColors.primary],
+                colors: [AppColors.primary, AppColors.primary],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
           ),
-          title: Text('Search Dental Clinics',style: AppTextStyles.subtitle(context,color: AppColors.white),),
-        backgroundColor: AppColors.primary,iconTheme: const IconThemeData(color: AppColors.white),
+          title: Text(
+            'Search Dental Clinics',
+            style: AppTextStyles.subtitle(context, color: AppColors.white),
+          ),
+          backgroundColor: AppColors.primary,
+          iconTheme: const IconThemeData(color: AppColors.white),
         ),
         body: GetBuilder<LoginController>(
-            init: loginController,
-            builder: (controller) {
+          init: loginController,
+          builder: (controller) {
             return RefreshIndicator(
               onRefresh: _refresh,
               child: SingleChildScrollView(
@@ -93,12 +105,15 @@ class _FilterResultPageState extends State<FilterResultPage> {
                       //padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
-                          gradient: const LinearGradient(
-                            colors: [AppColors.primary,AppColors.secondary],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10)),
+                        gradient: const LinearGradient(
+                          colors: [AppColors.primary, AppColors.secondary],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
                         // boxShadow: [
                         //   BoxShadow(
                         //     color: Colors.grey.withOpacity(0.15),
@@ -108,28 +123,35 @@ class _FilterResultPageState extends State<FilterResultPage> {
                         //   ),
                         // ],
                       ),
-                      height: size*0.23,
+                      height: size * 0.23,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.15),
+                                color: Colors.grey.withValues(alpha: 0.15),
                                 spreadRadius: 2,
                                 blurRadius: 6,
                                 offset: const Offset(0, 3),
                               ),
                             ],
                           ),
-                          height: size*0.012,
+                          height: size * 0.012,
                           child: Row(
                             children: [
-                              const Icon(Icons.search, color: AppColors.primary, size: 24),
+                              const Icon(
+                                Icons.search,
+                                color: AppColors.primary,
+                                size: 24,
+                              ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: CommonSearchTextField(
@@ -141,18 +163,25 @@ class _FilterResultPageState extends State<FilterResultPage> {
                                       "Dental Clinic",
                                       '',
                                       '',
-                                      '',[],"true",
+                                      '',
+                                      [],
+                                      "true",
                                       searchController.text.toString(),
-                                      '','', '',context,
+                                      '',
+                                      '',
+                                      '',
+                                      context,
                                     );
                                     Get.toNamed('/filterResultPage');
                                   },
-                                )
-
+                                ),
                               ),
 
                               Container(
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: AppColors.white,),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: AppColors.white,
+                                ),
                                 child: Center(
                                   child: IconButton(
                                     onPressed: () {
@@ -164,60 +193,116 @@ class _FilterResultPageState extends State<FilterResultPage> {
                                           return FractionallySizedBox(
                                             heightFactor: 0.75,
                                             child: FilterDrawer(
-                                              onApply: () async{
-                                                print("Selected State: ${loginController.selectedState}");
-                                                print("Selected District: ${loginController.selectedDistrict}");
-                                                print("Selected Area: ${loginController.selectedArea}");
-                                                print("Selected distance: ${loginController.selectedDistance}");
-                                                print('latit${loginController.latitude.toString()} long ${loginController.longitude.toString()!}');
+                                              onApply: () async {
+                                                print(
+                                                  "Selected State: ${loginController.selectedState}",
+                                                );
+                                                print(
+                                                  "Selected District: ${loginController.selectedDistrict}",
+                                                );
+                                                print(
+                                                  "Selected Area: ${loginController.selectedArea}",
+                                                );
+                                                print(
+                                                  "Selected distance: ${loginController.selectedDistance}",
+                                                );
+                                                print(
+                                                  'latit${loginController.latitude.toString()} long ${loginController.longitude.toString()}',
+                                                );
                                                 //String userType=  Api.userInfo.read('sUserType');
                                                 //print("ssuser$userType");
                                                 String distance =
-                                                (loginController.selectedDistance1 ?? 0).toString();
+                                                    (loginController
+                                                                .selectedDistance1 ??
+                                                            0)
+                                                        .toString();
 
                                                 bool useLocation =
                                                     distance.isNotEmpty &&
-                                                        distance != "0" &&
-                                                        distance != "0.0";
+                                                    distance != "0" &&
+                                                    distance != "0.0";
                                                 if (useLocation) {
                                                   await getLocation();
                                                 } else {
-                                                  loginController.latitude = null;
-                                                  loginController.longitude = null;
+                                                  loginController.latitude =
+                                                      null;
+                                                  loginController.longitude =
+                                                      null;
                                                 }
-                                                String safeLat =
-                                                useLocation ? (loginController.latitude?.toString() ?? "") : "";
+                                                String safeLat = useLocation
+                                                    ? (loginController.latitude
+                                                              ?.toString() ??
+                                                          "")
+                                                    : "";
 
-                                                String safeLng =
-                                                useLocation ? (loginController.longitude?.toString() ?? "") : "";
-                                                filteredProfiles.map((e) => searchController.text.toString());
-                                                Api.userInfo.read('token')==null?
-                                                await loginController.getProfileDetails(
-                                                  "Dental Clinic",
-                                                  loginController.selectedState,
-                                                  loginController.selectedDistrict,
-                                                  loginController.selectedTaluka,loginController.selectedVillages,"true",
-                                                  safeLat,safeLng, distance,searchController.text.toString(),context,
-                                                ):
-                                                await loginController.getProfileDetails(
-                                                  "",
-                                                  loginController.selectedState,
-                                                  loginController.selectedDistrict,
-                                                  loginController.selectedTaluka,loginController.selectedVillages,"true",
-                                                  safeLat,safeLng, distance,searchController.text.toString(),context,
-                                                )
-
-                                                ;
+                                                String safeLng = useLocation
+                                                    ? (loginController.longitude
+                                                              ?.toString() ??
+                                                          "")
+                                                    : "";
+                                                filteredProfiles.map(
+                                                  (e) => searchController.text
+                                                      .toString(),
+                                                );
+                                                Api.userInfo.read('token') ==
+                                                        null
+                                                    ? await loginController
+                                                          .getProfileDetails(
+                                                            "Dental Clinic",
+                                                            loginController
+                                                                .selectedState,
+                                                            loginController
+                                                                .selectedDistrict,
+                                                            loginController
+                                                                .selectedTaluka,
+                                                            loginController
+                                                                .selectedVillages,
+                                                            "true",
+                                                            safeLat,
+                                                            safeLng,
+                                                            distance,
+                                                            searchController
+                                                                .text
+                                                                .toString(),
+                                                            context,
+                                                          )
+                                                    : await loginController
+                                                          .getProfileDetails(
+                                                            "",
+                                                            loginController
+                                                                .selectedState,
+                                                            loginController
+                                                                .selectedDistrict,
+                                                            loginController
+                                                                .selectedTaluka,
+                                                            loginController
+                                                                .selectedVillages,
+                                                            "true",
+                                                            safeLat,
+                                                            safeLng,
+                                                            distance,
+                                                            searchController
+                                                                .text
+                                                                .toString(),
+                                                            context,
+                                                          );
                                                 Navigator.pop(context);
                                               },
                                               onReset: () {
                                                 setState(() {
                                                   // loginController.selectedPlace = null;
                                                   // loginController.selectedDistrict = null;
-                                                  loginController.selectedArea = null;
-                                                  loginController.selectedUserType=null;
-                                                  loginController.selectedState=null;
-                                                  loginController.selectedDistrict=null;
+                                                  loginController.selectedArea =
+                                                      null;
+                                                  loginController
+                                                          .selectedUserType =
+                                                      null;
+                                                  loginController
+                                                          .selectedState =
+                                                      null;
+                                                  loginController
+                                                          .selectedDistrict =
+                                                      null;
                                                 });
                                               },
                                             ),
@@ -226,12 +311,15 @@ class _FilterResultPageState extends State<FilterResultPage> {
                                       );
                                       //_scaffoldKeyFilter.currentState!.openDrawer();
                                     },
-                                    icon:  Icon(Icons.location_on, color: AppColors.primary, size: size*0.06),
+                                    icon: Icon(
+                                      Icons.location_on,
+                                      color: AppColors.primary,
+                                      size: size * 0.06,
+                                    ),
                                     splashRadius: 22,
                                   ),
                                 ),
                               ),
-
                             ],
                           ),
                         ),
@@ -243,61 +331,90 @@ class _FilterResultPageState extends State<FilterResultPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-
-                          if(controller.profileList.isEmpty)
-                          Center(child: Text('No data found',style: AppTextStyles.caption(context),),),
-                          if(controller.isLoading==true)
-                            const Center(child: CircularProgressIndicator(),),
-                          Text('Total Profiles: ${controller.profileList.length}',style: AppTextStyles.body(context),),
-                          if(controller.profileList.isNotEmpty)
-                          AnimationLimiter(
-                            child: ListView.builder(
-                                itemCount:controller.profileList.length ,
+                          if (controller.profileList.isEmpty)
+                            Center(
+                              child: Text(
+                                'No data found',
+                                style: AppTextStyles.caption(context),
+                              ),
+                            ),
+                          if (controller.isLoading == true)
+                            const Center(child: CircularProgressIndicator()),
+                          Text(
+                            'Total Profiles: ${controller.profileList.length}',
+                            style: AppTextStyles.body(context),
+                          ),
+                          if (controller.profileList.isNotEmpty)
+                            AnimationLimiter(
+                              child: ListView.builder(
+                                itemCount: controller.profileList.length,
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context,index){
-                                  final profile=controller.profileList[index];
+                                itemBuilder: (context, index) {
+                                  final profile = controller.profileList[index];
                                   String firstImage = profile.images.firstWhere(
-                                        (img) =>
-                                    img.toLowerCase().endsWith('.jpg') ||
+                                    (img) =>
+                                        img.toLowerCase().endsWith('.jpg') ||
                                         img.toLowerCase().endsWith('.png'),
                                     orElse: () => "",
                                   );
                                   List<String> parts = [];
-                                  if ((profile.address["state"] ?? "").isNotEmpty) parts.add(profile.address["state"]);
-                                  if ((profile.address["district"] ?? "").isNotEmpty) parts.add(profile.address["district"]);
-                                  if ((profile.address["city"] ?? "").isNotEmpty) parts.add(profile.address["city"]);
+                                  if ((profile.address["state"] ?? "")
+                                      .isNotEmpty)
+                                    parts.add(profile.address["state"]);
+                                  if ((profile.address["district"] ?? "")
+                                      .isNotEmpty)
+                                    parts.add(profile.address["district"]);
+                                  if ((profile.address["city"] ?? "")
+                                      .isNotEmpty)
+                                    parts.add(profile.address["city"]);
                                   String address = parts.join(", ");
-                                  String userType=Api.userInfo.read('userType')??"";
+                                  String userType =
+                                      Api.userInfo.read('userType') ?? "";
 
                                   bool getPlanActive() {
-                                    final userData = loginController.profileList;
+                                    final userData =
+                                        loginController.profileList;
                                     if (userData.isEmpty) return false;
-                                    final raw = userData.first.details["plan"]?["basePlan"]?["isActive"]??"";
+                                    final raw =
+                                        userData
+                                            .first
+                                            .details["plan"]?["basePlan"]?["isActive"] ??
+                                        "";
                                     return raw == true || raw == "true";
                                   }
+
                                   final planActive = getPlanActive();
-                                  final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
-                                  String addOnsPlanStatus = profile.details?["plan"]?["addonsPlan"]?["isActive"]?.toString() ?? "";
-                                return AnimationConfiguration.staggeredList(
-                                  position: index,
-                                  duration: const Duration(milliseconds: 1300),
-                                  child: SlideAnimation(
-                                    verticalOffset: 120.0,
-                                    curve: Curves.easeOutBack,
-                                    child: FadeInAnimation(
-                                      child:DoctorCardWidget(
-                                      doctor: profile,
-                                      size: size,
-                                      planActive: planActive,
-                                      isAdminUser: isAdminUser,
-                                      addOnsPlanStatus: addOnsPlanStatus,
-                                                                          ),
+                                  final bool isAdminUser =
+                                      userType == 'admin' ||
+                                      userType == 'superAdmin';
+                                  String addOnsPlanStatus =
+                                      profile
+                                          .details["plan"]?["addonsPlan"]?["isActive"]
+                                          ?.toString() ??
+                                      "";
+                                  return AnimationConfiguration.staggeredList(
+                                    position: index,
+                                    duration: const Duration(
+                                      milliseconds: 1300,
                                     ),
-                                  ),
-                                );
-                            }),
-                          )
+                                    child: SlideAnimation(
+                                      verticalOffset: 120.0,
+                                      curve: Curves.easeOutBack,
+                                      child: FadeInAnimation(
+                                        child: DoctorCardWidget(
+                                          doctor: profile,
+                                          size: size,
+                                          planActive: planActive,
+                                          isAdminUser: isAdminUser,
+                                          addOnsPlanStatus: addOnsPlanStatus,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -305,7 +422,7 @@ class _FilterResultPageState extends State<FilterResultPage> {
                 ),
               ),
             );
-          }
+          },
         ),
         bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
       ),

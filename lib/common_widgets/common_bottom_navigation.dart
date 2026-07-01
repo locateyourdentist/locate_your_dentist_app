@@ -10,18 +10,16 @@ import 'common-alertdialog.dart';
 class CommonBottomNavigation extends StatefulWidget {
   final int currentIndex;
 
-  const CommonBottomNavigation({Key? key, this.currentIndex = 0})
-      : super(key: key);
+  const CommonBottomNavigation({super.key, this.currentIndex = 0});
 
   @override
-  _CommonBottomNavigationState createState() =>
-      _CommonBottomNavigationState();
+  _CommonBottomNavigationState createState() => _CommonBottomNavigationState();
 }
 
 class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
   late int selectedIndex;
   final loginController = Get.put(LoginController());
-  final notificationController=Get.put(NotificationController());
+  final notificationController = Get.put(NotificationController());
 
   @override
   void initState() {
@@ -31,7 +29,11 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
     selectedIndex = widget.currentIndex;
   }
 
-  void _handleTap(BuildContext context, int index, List<NavigationItem> items) async {
+  void _handleTap(
+    BuildContext context,
+    int index,
+    List<NavigationItem> items,
+  ) async {
     if (index >= items.length) return;
 
     setState(() {
@@ -69,7 +71,7 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
       return;
     }
     if (item.label == 'Notification') {
-      await  notificationController.getNotificationListAdmin(context);
+      await notificationController.getNotificationListAdmin(context);
       Get.toNamed('/notificationPage');
       return;
     }
@@ -99,10 +101,9 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
           label: token != null ? 'Profile' : 'Register',
         ),
       if (token != null)
-      NavigationItem(icon: Icons.notifications, label: 'Notification'),
+        NavigationItem(icon: Icons.notifications, label: 'Notification'),
 
-      if (token != null)
-        NavigationItem(icon: Icons.settings, label: 'Menu'),
+      if (token != null) NavigationItem(icon: Icons.settings, label: 'Menu'),
 
       token != null
           ? NavigationItem(icon: Icons.logout, label: 'LogOut')
@@ -135,11 +136,11 @@ class AnimatedBottomNavigation extends StatelessWidget {
   final ValueChanged<int> onTap;
 
   const AnimatedBottomNavigation({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.items,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +150,7 @@ class AnimatedBottomNavigation extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 20,
             spreadRadius: 2,
             offset: const Offset(0, 8),
@@ -214,7 +215,7 @@ class AnimatedBottomNavigation extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.primary.withOpacity(0.12)
+                    ? AppColors.primary.withValues(alpha: 0.12)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -223,20 +224,17 @@ class AnimatedBottomNavigation extends StatelessWidget {
                 children: [
                   Icon(
                     item.icon,
-                    color: isSelected
-                        ? AppColors.primary
-                        : Colors.grey,
+                    color: isSelected ? AppColors.primary : Colors.grey,
                     size: isSelected ? 30 : 24,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     item.label,
                     style: TextStyle(
-                      color: isSelected
-                          ? AppColors.primary
-                          : Colors.grey,
-                      fontWeight:
-                      isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: isSelected ? AppColors.primary : Colors.grey,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                       fontSize: 11,
                     ),
                   ),

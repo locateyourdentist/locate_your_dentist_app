@@ -54,7 +54,6 @@ class _FilterSidebarState extends State<FilterSidebar> {
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
                       children: [
-
                         _sectionTitle("Distance"),
 
                         Slider(
@@ -62,7 +61,8 @@ class _FilterSidebarState extends State<FilterSidebar> {
                           min: 0,
                           max: 30,
                           divisions: 6,
-                          label: "${(loginController.selectedDistance1 ?? 0).round()} Km",
+                          label:
+                              "${(loginController.selectedDistance1 ?? 0).round()} Km",
                           onChanged: (value) {
                             loginController.selectedDistance1 = value;
                             loginController.update();
@@ -84,9 +84,11 @@ class _FilterSidebarState extends State<FilterSidebar> {
 
                         _dropdown(
                           "State",
-                          loginController.states.map((e) => e.toString()).toList(),
+                          loginController.states
+                              .map((e) => e.toString())
+                              .toList(),
                           loginController.selectedState,
-                              (val) {
+                          (val) {
                             loginController.selectedState = val;
                             loginController.fetchDistricts(val ?? "");
                             loginController.update();
@@ -97,9 +99,11 @@ class _FilterSidebarState extends State<FilterSidebar> {
 
                         _dropdown(
                           "District",
-                          loginController.districts.map((e) => e.toString()).toList(),
+                          loginController.districts
+                              .map((e) => e.toString())
+                              .toList(),
                           loginController.selectedDistrict,
-                              (val) {
+                          (val) {
                             loginController.selectedDistrict = val;
                             loginController.fetchTalukas(val ?? "");
                             loginController.selectedTaluka = null;
@@ -110,9 +114,11 @@ class _FilterSidebarState extends State<FilterSidebar> {
 
                         _dropdown(
                           "Taluka",
-                          loginController.talukas.map((e) => e.toString()).toList(),
+                          loginController.talukas
+                              .map((e) => e.toString())
+                              .toList(),
                           loginController.selectedTaluka,
-                              (val) {
+                          (val) {
                             loginController.selectedTaluka = val;
                             loginController.fetchVillages(val ?? "");
                             loginController.selectedVillage = null;
@@ -139,10 +145,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: AppColors.grey,
-                              width: 1,
-                            ),
+                            border: Border.all(color: AppColors.grey, width: 1),
                           ),
                           child: MultiSelectDialogField<String>(
                             checkColor: AppColors.primary,
@@ -155,10 +158,10 @@ class _FilterSidebarState extends State<FilterSidebar> {
                                 .toSet()
                                 .map(
                                   (e) => MultiSelectItem<String>(
-                                e.toString(),
-                                e.toString(),
-                              ),
-                            )
+                                    e.toString(),
+                                    e.toString(),
+                                  ),
+                                )
                                 .toList(),
 
                             title: Center(
@@ -176,11 +179,13 @@ class _FilterSidebarState extends State<FilterSidebar> {
 
                             searchable: true,
                             dialogHeight: 400,
-                            dialogWidth:120,
+                            dialogWidth: 120,
                             initialValue: loginController.selectedVillages,
 
                             onConfirm: (values) {
-                              loginController.selectedVillages = values.map((e) => e.toString()).toList();
+                              loginController.selectedVillages = values
+                                  .map((e) => e.toString())
+                                  .toList();
                               loginController.update();
                             },
 
@@ -197,9 +202,9 @@ class _FilterSidebarState extends State<FilterSidebar> {
                         ),
                         const Divider(),
                         if (Api.userInfo.read('userType') == 'Job Seekers')
-                        // if (token == null ||
-                        //     token.toString().isEmpty ||
-                        //     Api.userInfo.read('userType') == 'Job Seekers')
+                          // if (token == null ||
+                          //     token.toString().isEmpty ||
+                          //     Api.userInfo.read('userType') == 'Job Seekers')
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -211,7 +216,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                               _checkboxList(
                                 ["Full Time", "Part Time", "Remote"],
                                 loginController.selectedJobType,
-                                    (val) {
+                                (val) {
                                   loginController.selectedJobType = val;
                                   loginController.update();
                                 },
@@ -241,7 +246,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                                       "Negotiable",
                                     ],
                                     loginController.selectedSalary,
-                                        (val) {
+                                    (val) {
                                       loginController.selectedSalary = val;
                                       loginController.update();
                                     },
@@ -287,6 +292,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
       child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
+
   Future<void> getLocation() async {
     final position = await LocationService.getCurrentLocation();
 
@@ -295,16 +301,16 @@ class _FilterSidebarState extends State<FilterSidebar> {
       loginController.longitude = position.longitude;
       print('latitude ${loginController.latitude}');
       print('longitude ${loginController.longitude}');
-
     } else {
       Get.snackbar('Location', 'Unable to get location');
     }
   }
+
   Widget _checkboxList(
-      List<String> options,
-      String? selected,
-      Function(String) onChanged,
-      ) {
+    List<String> options,
+    String? selected,
+    Function(String) onChanged,
+  ) {
     return Column(
       children: options.map((e) {
         return CheckboxListTile(
@@ -321,14 +327,10 @@ class _FilterSidebarState extends State<FilterSidebar> {
     return GetBuilder<JobController>(
       builder: (jobController) {
         return ExpansionTile(
-          title: Text(
-            "Job Categories",
-            style: AppTextStyles.caption(context),
-          ),
+          title: Text("Job Categories", style: AppTextStyles.caption(context)),
           children: jobController.jobCategoryAdmin.map((e) {
             final name = e.name;
-            final selected =
-            loginController.selectedCategories.contains(name);
+            final selected = loginController.selectedCategories.contains(name);
 
             return CheckboxListTile(
               value: selected,
@@ -340,7 +342,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 }
                 loginController.update();
               },
-              title: Text(name,style: AppTextStyles.caption(context),),
+              title: Text(name, style: AppTextStyles.caption(context)),
             );
           }).toList(),
         );
@@ -349,18 +351,19 @@ class _FilterSidebarState extends State<FilterSidebar> {
   }
 
   Widget _dropdown(
-      String hint,
-      List<String> list,
-      String? selectedValue,
-      Function(String?) onChanged,
-      ) {
+    String hint,
+    List<String> list,
+    String? selectedValue,
+    Function(String?) onChanged,
+  ) {
     final uniqueList = list.toSet().toList();
 
     return SizedBox(
       width: double.infinity,
       child: DropdownButtonFormField<String>(
         isExpanded: true,
-        value: (selectedValue != null && uniqueList.contains(selectedValue))
+        initialValue:
+            (selectedValue != null && uniqueList.contains(selectedValue))
             ? selectedValue
             : null,
 
@@ -368,12 +371,12 @@ class _FilterSidebarState extends State<FilterSidebar> {
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           border: OutlineInputBorder(),
         ),
-        hint: Text(hint,style: AppTextStyles.caption(context),),
+        hint: Text(hint, style: AppTextStyles.caption(context)),
 
         items: uniqueList.map((e) {
           return DropdownMenuItem<String>(
             value: e,
-            child: Text(e,style: AppTextStyles.caption(context),),
+            child: Text(e, style: AppTextStyles.caption(context)),
           );
         }).toList(),
 
@@ -381,12 +384,12 @@ class _FilterSidebarState extends State<FilterSidebar> {
       ),
     );
   }
+
   Widget _bottomButtons() {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Row(
         children: [
-
           // APPLY
           Expanded(
             child: ElevatedButton(
@@ -394,7 +397,6 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 backgroundColor: AppColors.primary,
               ),
               onPressed: () async {
-
                 await jobController.getJobListJobSeekers(
                   search: "",
                   state: loginController.selectedState,
@@ -405,8 +407,9 @@ class _FilterSidebarState extends State<FilterSidebar> {
                   jobCategory: loginController.selectedCategories,
                   context: context,
                 );
-                String userType=  Api.userInfo.read('sUserType')??"";
-                String distance = loginController.selectedDistance1.toString() ?? "0";
+                String userType = Api.userInfo.read('sUserType') ?? "";
+                String distance =
+                    loginController.selectedDistance1.toString() ?? "0";
                 if (distance != "0") {
                   await getLocation();
                 } else {
@@ -415,29 +418,54 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 }
 
                 String safeLat =
-                (distance != "0" && loginController.latitude != null)
+                    (distance != "0" && loginController.latitude != null)
                     ? loginController.latitude.toString()
                     : "";
 
                 String safeLng =
-                (distance != "0" && loginController.longitude != null)
+                    (distance != "0" && loginController.longitude != null)
                     ? loginController.longitude.toString()
                     : "";
-                if( Api.userInfo.read('userType')=="superAdmin") {
-                  await   loginController.getProfileDetails('',  loginController.selectedState,
-                      loginController.selectedDistrict,
-                      loginController.selectedTaluka, loginController.selectedVillages,'',safeLat,safeLng, distance,searchController.text.toString(),  context);
-                }
-                else if( Api.userInfo.read('userType')=="admin") {
-                  await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict,
-                      loginController.selectedTaluka,  loginController.selectedVillages,'',safeLat,safeLng, distance,searchController.text.toString(), context);
-                }
-                else{
-                  await  loginController.getProfileDetails(
+                if (Api.userInfo.read('userType') == "superAdmin") {
+                  await loginController.getProfileDetails(
+                    '',
+                    loginController.selectedState,
+                    loginController.selectedDistrict,
+                    loginController.selectedTaluka,
+                    loginController.selectedVillages,
+                    '',
+                    safeLat,
+                    safeLng,
+                    distance,
+                    searchController.text.toString(),
+                    context,
+                  );
+                } else if (Api.userInfo.read('userType') == "admin") {
+                  await loginController.getProfileDetails(
+                    '',
+                    Api.userInfo.read('state') ?? "",
+                    loginController.selectedDistrict,
+                    loginController.selectedTaluka,
+                    loginController.selectedVillages,
+                    '',
+                    safeLat,
+                    safeLng,
+                    distance,
+                    searchController.text.toString(),
+                    context,
+                  );
+                } else {
+                  await loginController.getProfileDetails(
                     userType,
                     loginController.selectedState,
                     loginController.selectedDistrict,
-                    loginController.selectedTaluka,loginController.selectedVillages,'true',safeLat,safeLng, distance, searchController.text.toString(),
+                    loginController.selectedTaluka,
+                    loginController.selectedVillages,
+                    'true',
+                    safeLat,
+                    safeLng,
+                    distance,
+                    searchController.text.toString(),
                     context,
                   );
                 }
@@ -469,7 +497,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 loginController.selectedDistance1 = 0.0;
                 loginController.latitude = null;
                 loginController.longitude = null;
-                  loginController.selectedVillages.clear();
+                loginController.selectedVillages.clear();
                 loginController.update();
               },
               child: Text(

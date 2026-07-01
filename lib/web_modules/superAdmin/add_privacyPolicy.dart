@@ -11,7 +11,6 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
-
 class PrivacyPolicyWeb extends StatefulWidget {
   const PrivacyPolicyWeb({super.key});
 
@@ -20,7 +19,6 @@ class PrivacyPolicyWeb extends StatefulWidget {
 }
 
 class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
-
   final JobController jobController = Get.put(JobController());
   final PlanController planController = Get.put(PlanController());
   final TextEditingController nameController = TextEditingController();
@@ -45,7 +43,9 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
       List<Map<String, dynamic>> delta = [];
 
       if (data == null || data.toString().trim().isEmpty) {
-        delta = [{"insert": "\n"}];
+        delta = [
+          {"insert": "\n"},
+        ];
       } else {
         dynamic decoded = data;
 
@@ -56,7 +56,9 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
         if (decoded is List) {
           delta = List<Map<String, dynamic>>.from(decoded);
         } else {
-          delta = [{"insert": "\n"}];
+          delta = [
+            {"insert": "\n"},
+          ];
         }
       }
       _focusNode.unfocus();
@@ -64,9 +66,7 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
         document: Document.fromJson(delta),
         selection: const TextSelection.collapsed(offset: 0),
         config: const QuillControllerConfig(
-          clipboardConfig: QuillClipboardConfig(
-            enableExternalRichPaste: true,
-          ),
+          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
         ),
       );
       if (mounted) setState(() {});
@@ -76,25 +76,28 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
       if (mounted) setState(() {});
     }
   }
+
   @override
   void initState() {
     super.initState();
-    jobController.selectedTitle="Privacy Policy";
+    jobController.selectedTitle = "Privacy Policy";
     _controller = QuillController.basic(
       config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
-
+        clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
       ),
     );
     loadInitialData();
   }
+
   Future<void> loadInitialData() async {
-    final data = await serviceController.getPrivacyPolicyDetails(jobController.selectedTitle!, context,);
+    final data = await serviceController.getPrivacyPolicyDetails(
+      jobController.selectedTitle!,
+      context,
+    );
     _controller.clear();
     loadDescription(data);
   }
+
   Widget buildTitleSidebar() {
     double s = MediaQuery.of(context).size.width;
     return Container(
@@ -103,7 +106,7 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
         ],
       ),
       child: GetBuilder<JobController>(
@@ -123,8 +126,7 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
                   jobController.selectedTitle = value;
                   jobController.update();
 
-                  final data =
-                  await serviceController.getPrivacyPolicyDetails(
+                  final data = await serviceController.getPrivacyPolicyDetails(
                     value!,
                     context,
                   );
@@ -138,6 +140,7 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
       ),
     );
   }
+
   void showPolicyPopup() {
     Get.dialog(
       AlertDialog(
@@ -161,8 +164,7 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
                   jobController.selectedTitle = value;
                   jobController.update();
 
-                  final data =
-                  await serviceController.getPrivacyPolicyDetails(
+                  final data = await serviceController.getPrivacyPolicyDetails(
                     value!,
                     context,
                   );
@@ -176,18 +178,18 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
       ),
     );
   }
+
   Widget buildTitleSection() {
     final isMobile = MediaQuery.of(context).size.width < 600;
     return isMobile
         ? ElevatedButton.icon(
-      onPressed: showPolicyPopup,
-      icon: const Icon(Icons.list),
-      label: Text(
-        jobController.selectedTitle ?? "Select Policy",
-      ),
-    )
+            onPressed: showPolicyPopup,
+            icon: const Icon(Icons.list),
+            label: Text(jobController.selectedTitle ?? "Select Policy"),
+          )
         : buildTitleSidebar();
   }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -202,65 +204,63 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
         onLogout: () {},
         onNotification: () {},
       ),
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(
-        width: 250, child: AdminSideBar(),) : null,
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       body: GetBuilder<JobController>(
         builder: (_) {
           return Row(
             children: [
-              if (isDesktop && isLoggedIn)
-                const AdminSideBar(),
+              if (isDesktop && isLoggedIn) const AdminSideBar(),
 
-              if (!isMobile)
-                buildTitleSidebar(),
+              if (!isMobile) buildTitleSidebar(),
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: 1200,
-                      ),
+                      constraints: const BoxConstraints(maxWidth: 1200),
                       child: Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
                           boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 8,
-                            )
+                            BoxShadow(color: Colors.black12, blurRadius: 8),
                           ],
                         ),
                         child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (isMobile)
                               DropdownButtonFormField<String>(
-                                value: jobController.selectedTitle,
+                                initialValue: jobController.selectedTitle,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                 ),
-                                items: typesPolicy.map((e) => DropdownMenuItem(
-                                    value: e, child: Text(e,style:AppTextStyles.caption(context)),
-                                  ),
-                                ).toList(),
+                                items: typesPolicy
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Text(
+                                          e,
+                                          style: AppTextStyles.caption(context),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                                 onChanged: (value) async {
                                   jobController.selectedTitle = value;
                                   jobController.update();
-                                  final data = await serviceController.getPrivacyPolicyDetails(
-                                    value!, context,);
+                                  final data = await serviceController
+                                      .getPrivacyPolicyDetails(value!, context);
                                   loadDescription(data);
                                 },
                               ),
 
-                            if (isMobile)
-                              const SizedBox(height: 20),
+                            if (isMobile) const SizedBox(height: 20),
 
                             Text(
                               jobController.selectedTitle ?? "",
@@ -273,47 +273,38 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
                             const SizedBox(height: 20),
                             if (!isMobile)
                               Container(
-                                height: width*0.4,
+                                height: width * 0.4,
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade100,
-                                  borderRadius:
-                                  const BorderRadius.only(
-                                    topLeft:
-                                    Radius.circular(10),
-                                    topRight:
-                                    Radius.circular(10),
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10),
                                   ),
                                 ),
                                 child: QuillSimpleToolbar(
                                   controller: _controller,
-                                  config:
-                                  const QuillSimpleToolbarConfig(
+                                  config: const QuillSimpleToolbarConfig(
                                     embedButtons: [],
-                                    showBackgroundColorButton:
-                                    false,
+                                    showBackgroundColorButton: false,
                                   ),
                                 ),
                               ),
 
                             Container(
-                              height:
-                              isMobile ? 350 : 500,
+                              height: isMobile ? 350 : 500,
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade100,
-                                borderRadius:
-                                BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               child: QuillEditor(
                                 controller: _controller,
-                                scrollController:
-                                _scrollController,
+                                scrollController: _scrollController,
                                 focusNode: _focusNode,
                                 config: QuillEditorConfig(
-                                  padding:
-                                  const EdgeInsets.all(16),
+                                  padding: const EdgeInsets.all(16),
                                   placeholder:
-                                  "${jobController.selectedTitle} description...",
+                                      "${jobController.selectedTitle} description...",
                                 ),
                               ),
                             ),
@@ -325,21 +316,14 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
                                 width: 150,
                                 height: 50,
                                 child: ElevatedButton(
-                                  style:
-                                  ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                    AppColors.primary,
-                                    shape:
-                                    RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(
-                                          10),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primary,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
                                   onPressed: () async {
-
-                                    final text =
-                                    _controller.document
+                                    final text = _controller.document
                                         .toPlainText()
                                         .trim();
 
@@ -351,27 +335,22 @@ class _PrivacyPolicyWebState extends State<PrivacyPolicyWeb> {
                                       return;
                                     }
 
-                                    final description =
-                                    jsonEncode(
-                                      _controller.document
-                                          .toDelta()
-                                          .toJson(),
+                                    final description = jsonEncode(
+                                      _controller.document.toDelta().toJson(),
                                     );
 
                                     await planController
                                         .addPrivacyPolicyContent(
-                                      jobController
-                                          .selectedTitle!,
-                                      description,
-                                      context,
-                                    );
+                                          jobController.selectedTitle!,
+                                          description,
+                                          context,
+                                        );
                                   },
                                   child: const Text(
                                     "Save Policy",
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontWeight:
-                                      FontWeight.bold,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),

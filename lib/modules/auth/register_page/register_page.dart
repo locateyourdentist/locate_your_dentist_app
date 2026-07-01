@@ -22,14 +22,15 @@ class RegisterPage extends StatefulWidget {
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
+
 class _RegisterPageState extends State<RegisterPage> {
   final _formKeyRegister = GlobalKey<FormState>();
-  final loginController=Get.put(LoginController());
+  final loginController = Get.put(LoginController());
   final ImagePicker _picker = ImagePicker();
   int? selectedStateId;
   String? selectedStateCode;
   Map<String, dynamic> data = {};
-  final jobController=Get.put(JobController());
+  final jobController = Get.put(JobController());
   final allItems = [
     "admin",
     "superAdmin",
@@ -38,7 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
     "Dental Shop",
     "Dental Mechanic",
     "Job Seekers",
-    "Dental Consultant"
+    "Dental Consultant",
   ];
   String uploadImages(String userType) {
     String imageText;
@@ -60,6 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     return imageText;
   }
+
   String userTypes(String userType) {
     String prefix;
     switch (userType) {
@@ -83,12 +85,18 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     return prefix;
   }
-  String? confirmPasswordValidator(String? value, TextEditingController passwordController) {
-    if (value == null || value.isEmpty) return "Confirm Password cannot be empty";
+
+  String? confirmPasswordValidator(
+    String? value,
+    TextEditingController passwordController,
+  ) {
+    if (value == null || value.isEmpty)
+      return "Confirm Password cannot be empty";
     if (value != passwordController.text) return "Passwords do not match";
     //if(passwordController.text.length>6) return "Password length must be 6 characters";
     return null;
   }
+
   final int maxFiles = 3;
   Future<void> pickImages() async {
     if (loginController.images.length >= maxFiles) {
@@ -98,30 +106,51 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       final source = await Get.dialog(
         SimpleDialog(
-          title: Center(child: Text("Pick Media",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),)),
+          title: Center(
+            child: Text(
+              "Pick Media",
+              style: AppTextStyles.caption(
+                context,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           children: [
             SimpleDialogOption(
               child: Row(
                 children: [
-                  const Icon(Icons.image,color: AppColors.grey,size:20,),
-                  const SizedBox(width: 10,),
-                  Text("Image",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
+                  const Icon(Icons.image, color: AppColors.grey, size: 20),
+                  const SizedBox(width: 10),
+                  Text(
+                    "Image",
+                    style: AppTextStyles.caption(
+                      context,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
                 ],
               ),
               onPressed: () => Get.back(result: "image"),
             ),
             const Padding(
               padding: EdgeInsets.all(8.0),
-              child: Divider(thickness: 0.3,color: AppColors.grey,),
+              child: Divider(thickness: 0.3, color: AppColors.grey),
             ),
             SimpleDialogOption(
               child: Row(
-                children: [const Icon(Icons.image,color: AppColors.grey,size:20,),
-                  const SizedBox(width: 10,),
-                  Text("Video",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
+                children: [
+                  const Icon(Icons.image, color: AppColors.grey, size: 20),
+                  const SizedBox(width: 10),
+                  Text(
+                    "Video",
+                    style: AppTextStyles.caption(
+                      context,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
                 ],
               ),
-              onPressed: () => Get.back(result: "video",),
+              onPressed: () => Get.back(result: "video"),
             ),
           ],
         ),
@@ -137,9 +166,7 @@ class _RegisterPageState extends State<RegisterPage> {
           imageQuality: 80,
         );
       } else if (source == "video") {
-        pickedFile = await _picker.pickVideo(
-          source: ImageSource.gallery,
-        );
+        pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
       }
 
       if (pickedFile == null) return;
@@ -160,12 +187,12 @@ class _RegisterPageState extends State<RegisterPage> {
       }
 
       loginController.images.add(selectedFile);
-
     } catch (e) {
       print("Pick media failed: $e");
       Get.snackbar("Error", "Failed to pick media $e");
     }
   }
+
   Future<void> pickCertificates() async {
     if (loginController.certificates.length >= 3) {
       Get.snackbar("Error", "Maximum three certificates allowed");
@@ -175,11 +202,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (Platform.isAndroid || Platform.isIOS || Platform.isWindows) {
       try {
-        final List<XFile>? selectedCertificates = await _picker.pickMultiImage();
+        final List<XFile> selectedCertificates = await _picker.pickMultiImage();
         if (selectedCertificates != null) {
           int currentCount = loginController.certificates.length;
           int remainingSlots = 3 - currentCount;
-          final limitedCertificates = selectedCertificates.take(remainingSlots).toList();
+          final limitedCertificates = selectedCertificates
+              .take(remainingSlots)
+              .toList();
           setState(() {
             loginController.certificates.addAll(
               limitedCertificates.map((x) => File(x.path)),
@@ -197,6 +226,7 @@ class _RegisterPageState extends State<RegisterPage> {
       print('pickMultiImage not supported on this platform');
     }
   }
+
   Future<void> pickSingleImage1() async {
     final XFile? pickedImage = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -210,14 +240,25 @@ class _RegisterPageState extends State<RegisterPage> {
       loginController.update();
     }
   }
+
   Widget _buildSingleImageWidget1({File? file, String? url}) {
     return Stack(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: file != null
-              ? Image.file(file, fit: BoxFit.cover, width: double.infinity, height: double.infinity)
-              : Image.network(url!, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+              ? Image.file(
+                  file,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                )
+              : Image.network(
+                  url!,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
         ),
         Positioned(
           right: 0,
@@ -228,7 +269,7 @@ class _RegisterPageState extends State<RegisterPage> {
               loginController.logoImage.clear();
               loginController.update();
             },
-            child: const Icon(Icons.cancel, color: Colors.white,),
+            child: const Icon(Icons.cancel, color: Colors.white),
           ),
         ),
         Positioned(
@@ -249,6 +290,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
     );
   }
+
   Future<String> getAddressFromLatLng(double lat, double lng) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
@@ -258,6 +300,7 @@ class _RegisterPageState extends State<RegisterPage> {
       return '';
     }
   }
+
   Future<void> getLocation() async {
     final position = await LocationService.getCurrentLocation();
 
@@ -266,45 +309,46 @@ class _RegisterPageState extends State<RegisterPage> {
       loginController.longitude = position.longitude;
       print('latitude ${loginController.latitude}');
       print('longitude ${loginController.longitude}');
-
     } else {
       Get.snackbar('Location', 'Unable to get location');
     }
   }
+
   @override
-  void initState(){
+  void initState() {
     loginController.clearProfileData();
     loginController.fetchStates();
-    jobController.getJobCategoryLists("",context);
-     getLocation();
+    jobController.getJobCategoryLists("", context);
+    getLocation();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
-    final userType=Api.userInfo.read('userType')??"";
+    final userType = Api.userInfo.read('userType') ?? "";
     print('dgsw$userType');
     //final adminItems = allItems;
-   // final otherItems = allItems.where((e) => e != "admin" && e != "superAdmin").toList();
+    // final otherItems = allItems.where((e) => e != "admin" && e != "superAdmin").toList();
     List<String> dropdownItems;
     if (userType == "superAdmin") {
       dropdownItems = allItems;
     } else if (userType == "admin") {
-      dropdownItems =
-          allItems.where((e) => e != "superAdmin").toList();
+      dropdownItems = allItems.where((e) => e != "superAdmin").toList();
     } else {
-      dropdownItems =
-          allItems.where((e) => e != "admin" && e != "superAdmin").toList();
+      dropdownItems = allItems
+          .where((e) => e != "admin" && e != "superAdmin")
+          .toList();
     }
     return Scaffold(
       backgroundColor: const Color(0xFFFDFDFD),
-      body:  Form(
-        key:_formKeyRegister ,
+      body: Form(
+        key: _formKeyRegister,
         child: GetBuilder<LoginController>(
           builder: (controller) {
             return LayoutBuilder(
-                builder: (context, constraints) {
-                  return  SingleChildScrollView(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       minHeight: constraints.maxHeight,
@@ -326,44 +370,56 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                   Text(
                                     "LYD",
-                                    style: AppTextStyles.headline1(context, color: AppColors.black),
+                                    style: AppTextStyles.headline1(
+                                      context,
+                                      color: AppColors.black,
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                   SizedBox(height: size * 0.01),
                                   Text(
                                     "Create an Account",
-                                    style: AppTextStyles.subtitle(context, color: AppColors.black),
+                                    style: AppTextStyles.subtitle(
+                                      context,
+                                      color: AppColors.black,
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                   SizedBox(height: size * 0.01),
                                   Text(
                                     "Let's get started by filling out the form below",
                                     textAlign: TextAlign.center,
-                                    style: AppTextStyles.caption(context, color: AppColors.grey),
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      color: AppColors.grey,
+                                    ),
                                   ),
                                   SizedBox(height: size * 0.04),
 
                                   CustomTextField(
                                     hint: "Name",
                                     icon: Icons.person,
-                                    controller: loginController.fullNameController,
+                                    controller:
+                                        loginController.fullNameController,
                                   ),
                                   SizedBox(height: size * 0.01),
                                   CustomTextField(
                                     hint: "Date of Birth",
-                                    controller: loginController.dobController,  fillColor: Colors.grey[100],
+                                    controller: loginController.dobController,
+                                    fillColor: Colors.grey[100],
                                     borderColor: AppColors.white,
                                     readOnly: true,
                                     onTap: () async {
-                                      DateTime? pickedDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime(2000),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime.now(),
-                                      );
+                                      DateTime? pickedDate =
+                                          await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime(2000),
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime.now(),
+                                          );
                                       if (pickedDate != null) {
                                         loginController.dobController.text =
-                                        "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                                            "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
                                       }
                                     },
                                   ),
@@ -372,21 +428,24 @@ class _RegisterPageState extends State<RegisterPage> {
                                     hint: "Email",
                                     icon: Icons.email,
                                     controller: loginController.emailController,
-                                    keyboardType: TextInputType.emailAddress
+                                    keyboardType: TextInputType.emailAddress,
                                   ),
                                   SizedBox(height: size * 0.03),
 
                                   CustomTextField(
                                     hint: "Mobile Number",
                                     icon: Icons.phone,
-                                    controller: loginController.mobileController,
+                                    controller:
+                                        loginController.mobileController,
                                     keyboardType: TextInputType.number,
                                     maxLength: 10,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return "Mobile Number cannot be empty";
                                       }
-                                      if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
+                                      if (!RegExp(
+                                        r'^[6-9]\d{9}$',
+                                      ).hasMatch(value)) {
                                         return "Enter a valid 10-digit mobile number starting with 6-9";
                                       }
                                       return null;
@@ -397,7 +456,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     hint: "Password",
                                     icon: Icons.lock,
                                     isPassword: true,
-                                    controller: loginController.passwordController,
+                                    controller:
+                                        loginController.passwordController,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return "Password cannot be empty";
@@ -419,7 +479,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                       //   return "Password must contain at least one number";
                                       // }
 
-                                      if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+                                      if (!RegExp(
+                                        r'[!@#$%^&*(),.?":{}|<>]',
+                                      ).hasMatch(value)) {
                                         return "Password must contain at least one special character";
                                       }
 
@@ -432,49 +494,75 @@ class _RegisterPageState extends State<RegisterPage> {
                                     hint: "Confirm Password",
                                     icon: Icons.lock,
                                     isPassword: true,
-                                    controller: loginController.confirmPasswordController,
-                                    validator: (value) => confirmPasswordValidator(value, loginController.passwordController),
+                                    controller: loginController
+                                        .confirmPasswordController,
+                                    validator: (value) =>
+                                        confirmPasswordValidator(
+                                          value,
+                                          loginController.passwordController,
+                                        ),
                                   ),
 
                                   SizedBox(height: size * 0.03),
-                                 // if(userType!='superAdmin')
-                                CustomDropdownField(
-                                  hint: "Select UserType",
-                                  fillColor: Colors.grey[100],
-                                  borderColor: AppColors.white,
-                                  items: dropdownItems,
-                                  selectedValue: loginController.selectedUserType,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      loginController.selectedUserType = value;
-                                      print('Selected UserType: ${loginController.selectedUserType}');
-                                    });
-                                  },
-                                ),
-                                  if (loginController.selectedUserType != null &&
-                                      loginController.selectedUserType!.isNotEmpty&&loginController.selectedUserType !='Job Seekers')
-                                    Column(children: [
-                                  SizedBox(height: size * 0.01),
-                                 // if(loginController.selectedUserType !='Job Seekers')
-                                  CustomTextField(
-                                    hint: loginController.selectedUserType == 'Dental Shop'? "College Name":"${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
-                                    icon: Icons.store,
-                                    controller: loginController.typeNameController,
+                                  // if(userType!='superAdmin')
+                                  CustomDropdownField(
+                                    hint: "Select UserType",
+                                    fillColor: Colors.grey[100],
+                                    borderColor: AppColors.white,
+                                    items: dropdownItems,
+                                    selectedValue:
+                                        loginController.selectedUserType,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        loginController.selectedUserType =
+                                            value;
+                                        print(
+                                          'Selected UserType: ${loginController.selectedUserType}',
+                                        );
+                                      });
+                                    },
                                   ),
-                                  ]),
+                                  if (loginController.selectedUserType !=
+                                          null &&
+                                      loginController
+                                          .selectedUserType!
+                                          .isNotEmpty &&
+                                      loginController.selectedUserType !=
+                                          'Job Seekers')
+                                    Column(
+                                      children: [
+                                        SizedBox(height: size * 0.01),
+                                        // if(loginController.selectedUserType !='Job Seekers')
+                                        CustomTextField(
+                                          hint:
+                                              loginController
+                                                      .selectedUserType ==
+                                                  'Dental Shop'
+                                              ? "College Name"
+                                              : "${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
+                                          icon: Icons.store,
+                                          controller: loginController
+                                              .typeNameController,
+                                        ),
+                                      ],
+                                    ),
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
-                                    hint: "Address Line 1 (House No, Street Name)",
+                                    hint:
+                                        "Address Line 1 (House No, Street Name)",
                                     icon: Icons.location_on,
-                                    controller: loginController.addressLine1Controller,
+                                    controller:
+                                        loginController.addressLine1Controller,
                                     // fillColor: AppColors.white,
                                     // borderColor: AppColors.grey,
                                   ),
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
-                                    hint: "Address Line 2 (Landmark, Area, Building)",
+                                    hint:
+                                        "Address Line 2 (Landmark, Area, Building)",
                                     icon: Icons.location_on,
-                                    controller: loginController.addressLine2Controller,
+                                    controller:
+                                        loginController.addressLine2Controller,
                                     // fillColor: AppColors.white,
                                     // borderColor: AppColors.grey,
                                   ),
@@ -495,13 +583,32 @@ class _RegisterPageState extends State<RegisterPage> {
                                             color: AppColors.primary,
                                             width: 1.5,
                                           ),
-                                          closedBorderRadius: BorderRadius.circular(10),
-                                          expandedBorderRadius: BorderRadius.circular(10),
-                                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
-                                        items: controller.states.map((s) => s.toString()).toList(),
-                                        initialItem: controller.states.contains(controller.selectedState) ? controller.selectedState : null,
+                                          closedBorderRadius:
+                                              BorderRadius.circular(10),
+                                          expandedBorderRadius:
+                                              BorderRadius.circular(10),
+                                          hintStyle: AppTextStyles.caption(
+                                            context,
+                                            color: AppColors.grey,
+                                          ),
+                                          headerStyle: AppTextStyles.caption(
+                                            context,
+                                            color: Colors.black,
+                                          ),
+                                          listItemStyle: AppTextStyles.caption(
+                                            context,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        items: controller.states
+                                            .map((s) => s.toString())
+                                            .toList(),
+                                        initialItem:
+                                            controller.states.contains(
+                                              controller.selectedState,
+                                            )
+                                            ? controller.selectedState
+                                            : null,
                                         onChanged: (val) {
                                           if (val != null) {
                                             controller.selectedState = val;
@@ -509,9 +616,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                             controller.selectedDistrict = null;
                                             controller.selectedTaluka = null;
                                             controller.selectedVillage = null;
-                                            final state = controller.states.firstWhere((s) => s == val);
+                                            final state = controller.states
+                                                .firstWhere((s) => s == val);
                                             print('state  selected$state');
-                                            controller.fetchDistricts(state.toString());
+                                            controller.fetchDistricts(
+                                              state.toString(),
+                                            );
                                             controller.update();
                                           }
                                         },
@@ -519,18 +629,34 @@ class _RegisterPageState extends State<RegisterPage> {
                                     },
                                   ),
 
-                                SizedBox(height: size * 0.03),
+                                  SizedBox(height: size * 0.03),
 
                                   GetBuilder<LoginController>(
                                     builder: (controller) {
                                       return CustomDropdown<String>.search(
                                         hintText: "Select District",
-                                        items: controller.districts.map((d) => d.toString()).toList(),
-                                        initialItem: controller.districts.contains(controller.selectedDistrict) ? controller.selectedDistrict : null,
+                                        items: controller.districts
+                                            .map((d) => d.toString())
+                                            .toList(),
+                                        initialItem:
+                                            controller.districts.contains(
+                                              controller.selectedDistrict,
+                                            )
+                                            ? controller.selectedDistrict
+                                            : null,
                                         decoration: CustomDropdownDecoration(
-                                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                                          hintStyle: AppTextStyles.caption(
+                                            context,
+                                            color: AppColors.grey,
+                                          ),
+                                          headerStyle: AppTextStyles.caption(
+                                            context,
+                                            color: Colors.black,
+                                          ),
+                                          listItemStyle: AppTextStyles.caption(
+                                            context,
+                                            color: Colors.black,
+                                          ),
                                           closedFillColor: Colors.grey[100],
                                           expandedFillColor: Colors.white,
                                           closedBorder: Border.all(
@@ -548,9 +674,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                             controller.talukas.clear();
                                             controller.selectedTaluka = null;
                                             controller.selectedVillage = null;
-                                            final district = controller.districts.firstWhere((d) => d == val);
-                                            print('sub district selected$district');
-                                            controller.fetchTalukas(district.toString());
+                                            final district = controller
+                                                .districts
+                                                .firstWhere((d) => d == val);
+                                            print(
+                                              'sub district selected$district',
+                                            );
+                                            controller.fetchTalukas(
+                                              district.toString(),
+                                            );
                                             controller.update();
                                           }
                                         },
@@ -561,286 +693,462 @@ class _RegisterPageState extends State<RegisterPage> {
                                   SizedBox(height: size * 0.03),
 
                                   GetBuilder<LoginController>(
-                                      builder: (controller) {
-                                        final items = loginController.talukas.map((t) => t.toString()).toList();
-                                        final initialItem = items.contains(loginController.selectedTaluka) ? loginController.selectedTaluka : null;
-                                        return  DefaultTextStyle(
-                                          style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
-                                          child: CustomDropdown<String>.search(
-                                            hintText: "Select  taluka/town",
-                                            items: items,
-                                            initialItem: initialItem,
+                                    builder: (controller) {
+                                      final items = loginController.talukas
+                                          .map((t) => t.toString())
+                                          .toList();
+                                      final initialItem =
+                                          items.contains(
+                                            loginController.selectedTaluka,
+                                          )
+                                          ? loginController.selectedTaluka
+                                          : null;
+                                      return DefaultTextStyle(
+                                        style: AppTextStyles.caption(
+                                          context,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                        child: CustomDropdown<String>.search(
+                                          hintText: "Select  taluka/town",
+                                          items: items,
+                                          initialItem: initialItem,
 
-                                            decoration: CustomDropdownDecoration(
-                                              hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                              headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                              listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                                              closedFillColor: Colors.grey[100],
-                                              expandedFillColor: Colors.white,
-                                              closedBorder: Border.all(
-                                                color: AppColors.white,
-                                                width: 1.5,
-                                              ),
-                                              expandedBorder: Border.all(
-                                                color: AppColors.primary,
-                                                width: 1.5,
-                                              ),
+                                          decoration: CustomDropdownDecoration(
+                                            hintStyle: AppTextStyles.caption(
+                                              context,
+                                              color: AppColors.grey,
                                             ),
-                                            onChanged: (val) {
-                                              setState(() => loginController.selectedTaluka = val);
-                                              if (val != null) {
-                                                final taluka = loginController.talukas.firstWhere((t) => t == val);
-                                                controller.villages.clear();
-                                                loginController.fetchVillages(taluka.toString());
-                                                loginController.update();
-                                                print('taluka${loginController.selectedTaluka}');
-                                              }
-                                            },
+                                            headerStyle: AppTextStyles.caption(
+                                              context,
+                                              color: Colors.black,
+                                            ),
+                                            listItemStyle:
+                                                AppTextStyles.caption(
+                                                  context,
+                                                  color: Colors.black,
+                                                ),
+                                            closedFillColor: Colors.grey[100],
+                                            expandedFillColor: Colors.white,
+                                            closedBorder: Border.all(
+                                              color: AppColors.white,
+                                              width: 1.5,
+                                            ),
+                                            expandedBorder: Border.all(
+                                              color: AppColors.primary,
+                                              width: 1.5,
+                                            ),
                                           ),
-                                        );
-                                      }
+                                          onChanged: (val) {
+                                            setState(
+                                              () =>
+                                                  loginController
+                                                          .selectedTaluka =
+                                                      val,
+                                            );
+                                            if (val != null) {
+                                              final taluka = loginController
+                                                  .talukas
+                                                  .firstWhere((t) => t == val);
+                                              controller.villages.clear();
+                                              loginController.fetchVillages(
+                                                taluka.toString(),
+                                              );
+                                              loginController.update();
+                                              print(
+                                                'taluka${loginController.selectedTaluka}',
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      );
+                                    },
                                   ),
 
                                   SizedBox(height: size * 0.03),
                                   GetBuilder<LoginController>(
-                                      builder: (controller) {
-                                        final items = controller.villages.map((v) => v.toString()).toList();
-                                        final initialItem = items.contains(controller.selectedVillage) ? controller.selectedVillage : null;
-                                        return DefaultTextStyle(
-                                          style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
-                                          child: CustomDropdown<String>.search(
-                                            hintText: "Select Area",
-                                            items: items,
-                                            initialItem: initialItem,
-                                            decoration: CustomDropdownDecoration(
-                                              hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                              headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                              listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                                              closedFillColor: Colors.grey[100],
-                                              expandedFillColor: Colors.white,
-                                              closedBorder: Border.all(
-                                                color: AppColors.white,
-                                                width: 1.5,
-                                              ),
-                                              expandedBorder: Border.all(
-                                                color: AppColors.primary,
-                                                width: 1.5,
-                                              ),
+                                    builder: (controller) {
+                                      final items = controller.villages
+                                          .map((v) => v.toString())
+                                          .toList();
+                                      final initialItem =
+                                          items.contains(
+                                            controller.selectedVillage,
+                                          )
+                                          ? controller.selectedVillage
+                                          : null;
+                                      return DefaultTextStyle(
+                                        style: AppTextStyles.caption(
+                                          context,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                        child: CustomDropdown<String>.search(
+                                          hintText: "Select Area",
+                                          items: items,
+                                          initialItem: initialItem,
+                                          decoration: CustomDropdownDecoration(
+                                            hintStyle: AppTextStyles.caption(
+                                              context,
+                                              color: AppColors.grey,
                                             ),
-                                            onChanged: (val) {
-                                              setState(() => loginController.selectedVillage = val);
-                                              loginController.update();
-                                              print('Area${loginController.selectedArea}');
-                                            },
+                                            headerStyle: AppTextStyles.caption(
+                                              context,
+                                              color: Colors.black,
+                                            ),
+                                            listItemStyle:
+                                                AppTextStyles.caption(
+                                                  context,
+                                                  color: Colors.black,
+                                                ),
+                                            closedFillColor: Colors.grey[100],
+                                            expandedFillColor: Colors.white,
+                                            closedBorder: Border.all(
+                                              color: AppColors.white,
+                                              width: 1.5,
+                                            ),
+                                            expandedBorder: Border.all(
+                                              color: AppColors.primary,
+                                              width: 1.5,
+                                            ),
                                           ),
-                                        );
-                                      }
+                                          onChanged: (val) {
+                                            setState(
+                                              () =>
+                                                  loginController
+                                                          .selectedVillage =
+                                                      val,
+                                            );
+                                            loginController.update();
+                                            print(
+                                              'Area${loginController.selectedArea}',
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
                                   ),
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
                                     hint: "PinCode",
                                     icon: Icons.pin,
-                                    controller: loginController.pinCodeController,
-                                    keyboardType: TextInputType.number,maxLength: 6,
+                                    controller:
+                                        loginController.pinCodeController,
+                                    keyboardType: TextInputType.number,
+                                    maxLength: 6,
                                   ),
-                                  if(loginController.selectedUserType=="Job Seekers")
-                                    Column(children: [
-                                  SizedBox(height: size * 0.03),
-                                  Text("Job Category Preferences",
-                                    style: AppTextStyles.caption(fontWeight: FontWeight.bold,context),),
-                                  SizedBox(height: size * 0.01),
-                                  GetBuilder<JobController>(
-                                    builder: (jobController) {
-                                      final List<MultiSelectItem<String>> categoryItems =
-                                      jobController!.jobCategoryAdmin
-                                          .map((e) => MultiSelectItem<String>(
-                                          e.name.trim(),
-                                          e.name.trim(),
-                                        ),
-                                      ).toList();
-                                      return MultiSelectDialogField<String>(
-                                        items: categoryItems,
-                                        selectedColor: AppColors.primary,
-                                        initialValue: loginController.selectedCategories,
-
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[100],
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(color: AppColors.grey, width: 0.1),
-                                        ),
-                                        buttonText: Text(
-                                          "Select Job Categories",
+                                  if (loginController.selectedUserType ==
+                                      "Job Seekers")
+                                    Column(
+                                      children: [
+                                        SizedBox(height: size * 0.03),
+                                        Text(
+                                          "Job Category Preferences",
                                           style: AppTextStyles.caption(
+                                            fontWeight: FontWeight.bold,
                                             context,
-                                            color: AppColors.grey,
-                                            fontWeight: FontWeight.normal,
                                           ),
                                         ),
-                                        onConfirm: (results) {
-                                          loginController.selectedCategories = results;
-                                          loginController.update();
-                                        },
-                                      );
-                                    },
-                                  ),
-                                   ]),
+                                        SizedBox(height: size * 0.01),
+                                        GetBuilder<JobController>(
+                                          builder: (jobController) {
+                                            final List<MultiSelectItem<String>>
+                                            categoryItems = jobController
+                                                .jobCategoryAdmin
+                                                .map(
+                                                  (e) =>
+                                                      MultiSelectItem<String>(
+                                                        e.name.trim(),
+                                                        e.name.trim(),
+                                                      ),
+                                                )
+                                                .toList();
+                                            return MultiSelectDialogField<
+                                              String
+                                            >(
+                                              items: categoryItems,
+                                              selectedColor: AppColors.primary,
+                                              initialValue: loginController
+                                                  .selectedCategories,
+
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[100],
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                  color: AppColors.grey,
+                                                  width: 0.1,
+                                                ),
+                                              ),
+                                              buttonText: Text(
+                                                "Select Job Categories",
+                                                style: AppTextStyles.caption(
+                                                  context,
+                                                  color: AppColors.grey,
+                                                  fontWeight: FontWeight.normal,
+                                                ),
+                                              ),
+                                              onConfirm: (results) {
+                                                loginController
+                                                        .selectedCategories =
+                                                    results;
+                                                loginController.update();
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   SizedBox(height: size * 0.01),
-                                  if(loginController.selectedUserType!="Job Seekers")
-                                  CustomTextField(
-                                    hint: "location Link",
-                                    icon: Icons.pin,
-                                    controller: loginController.locationController,
-                                  ),
+                                  if (loginController.selectedUserType !=
+                                      "Job Seekers")
+                                    CustomTextField(
+                                      hint: "location Link",
+                                      icon: Icons.pin,
+                                      controller:
+                                          loginController.locationController,
+                                    ),
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
                                     hint: "Website Link",
                                     icon: Icons.web,
-                                    controller: loginController.websiteController,
+                                    controller:
+                                        loginController.websiteController,
                                     // fillColor: AppColors.white,
                                     // borderColor: AppColors.grey,
                                   ),
                                   SizedBox(height: size * 0.01),
 
-                                  if (loginController.selectedUserType!=null&&loginController.selectedUserType != "Dental Mechanic") ...[
-                                   SizedBox(height: size * 0.02),
-                                    ElevatedButton(
-                                    onPressed: ()async {
-                                      //Get.toNamed('/registerPage');
-                                      pickCertificates();
-                                     // loginController.certificates.clear();
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      side: const BorderSide(
-                                          color:AppColors.primary,
-                                        width: 0.34,
-                                      ),
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5,),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.upload, color: AppColors.primary, size: size * 0.05),
-                                          const SizedBox(width: 5),
-                                          Flexible(
-                                            child: Text(userTypes(loginController.selectedUserType.toString()),
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.bold,color: AppColors.primary),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: size * 0.01),
-                                  ],
-                                  if (loginController.selectedUserType != null &&
-                                      loginController.selectedUserType != "Dental Mechanic") ...[
-
-                                SizedBox(
-                                    height: loginController.certificates.isNotEmpty? size*0.35:30,
-                                    child: loginController.certificates.isEmpty
-                                        ?  Center(child: Text("No certificate selected",style: AppTextStyles.caption(context,color: AppColors.black),))
-                                        : GridView.builder(
-                                      padding: const EdgeInsets.all(10),
-                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        crossAxisSpacing: 10,
-                                        mainAxisSpacing: 10,
-                                      ),
-                                      itemCount: loginController.certificates.length,
-                                        itemBuilder: (context, index) {
-                                          final file = loginController.certificates[index];
-                                          final path = file.path;
-                                          final isPdf = path.toLowerCase().endsWith(".pdf");
-
-                                          return Stack(
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (_) => ViewPDFPage(pdfUrl: path),
-                                                    ),
-                                                  );
-                                                },
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  child: isPdf
-                                                      ? Container(
-                                                    color: Colors.grey[300],
-                                                    child: const Center(
-                                                      child: Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
-                                                    ),
-                                                  )
-                                                      : Image.file(
-                                                    file,
-                                                    fit: BoxFit.cover,
-                                                    width: double.infinity,
-                                                    height: double.infinity,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                right: 0,
-                                                top: 0,
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      loginController.certificates.removeAt(index);
-                                                    });
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.cancel,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        }
-                                        ),),
-                           Center(child: Text("** maximum 3 images/pdf allowed",
-                           style: TextStyle(color: Colors.redAccent,fontSize: size*0.019,fontWeight: FontWeight.normal),))
-                                  ],
-                                  //SizedBox(height: size * 0.03),
-                                  if (loginController.selectedUserType == 'Dental Clinic'||loginController.selectedUserType=='Dental Shop'||loginController.selectedUserType=='Dental Mechanic'||loginController.selectedUserType=='Dental Lab') ...[
+                                  if (loginController.selectedUserType !=
+                                          null &&
+                                      loginController.selectedUserType !=
+                                          "Dental Mechanic") ...[
                                     SizedBox(height: size * 0.02),
                                     ElevatedButton(
-                                      onPressed: ()async {
+                                      onPressed: () async {
                                         //Get.toNamed('/registerPage');
-                                        pickImages();
-                                        //loginController.images.clear();
-
+                                        pickCertificates();
+                                        // loginController.certificates.clear();
                                       },
                                       style: ElevatedButton.styleFrom(
                                         side: const BorderSide(
-                                          color:AppColors.primary,
+                                          color: AppColors.primary,
                                           width: 0.34,
                                         ),
                                         backgroundColor: Colors.white,
                                         foregroundColor: Colors.black,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(5,),
+                                          borderRadius: BorderRadius.circular(
+                                            5,
+                                          ),
                                         ),
                                       ),
                                       child: Center(
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
-                                            Icon(Icons.upload, color: AppColors.primary, size: size * 0.05),
+                                            Icon(
+                                              Icons.upload,
+                                              color: AppColors.primary,
+                                              size: size * 0.05,
+                                            ),
                                             const SizedBox(width: 5),
                                             Flexible(
                                               child: Text(
-                                                uploadImages(loginController.selectedUserType.toString()),
+                                                userTypes(
+                                                  loginController
+                                                      .selectedUserType
+                                                      .toString(),
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: size * 0.025,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.primary,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: size * 0.01),
+                                  ],
+                                  if (loginController.selectedUserType !=
+                                          null &&
+                                      loginController.selectedUserType !=
+                                          "Dental Mechanic") ...[
+                                    SizedBox(
+                                      height:
+                                          loginController
+                                              .certificates
+                                              .isNotEmpty
+                                          ? size * 0.35
+                                          : 30,
+                                      child:
+                                          loginController.certificates.isEmpty
+                                          ? Center(
+                                              child: Text(
+                                                "No certificate selected",
+                                                style: AppTextStyles.caption(
+                                                  context,
+                                                  color: AppColors.black,
+                                                ),
+                                              ),
+                                            )
+                                          : GridView.builder(
+                                              padding: const EdgeInsets.all(10),
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 3,
+                                                    crossAxisSpacing: 10,
+                                                    mainAxisSpacing: 10,
+                                                  ),
+                                              itemCount: loginController
+                                                  .certificates
+                                                  .length,
+                                              itemBuilder: (context, index) {
+                                                final file = loginController
+                                                    .certificates[index];
+                                                final path = file.path;
+                                                final isPdf = path
+                                                    .toLowerCase()
+                                                    .endsWith(".pdf");
+
+                                                return Stack(
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (_) =>
+                                                                ViewPDFPage(
+                                                                  pdfUrl: path,
+                                                                ),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10,
+                                                            ),
+                                                        child: isPdf
+                                                            ? Container(
+                                                                color: Colors
+                                                                    .grey[300],
+                                                                child: const Center(
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .picture_as_pdf,
+                                                                    size: 40,
+                                                                    color: Colors
+                                                                        .red,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : Image.file(
+                                                                file,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                width: double
+                                                                    .infinity,
+                                                                height: double
+                                                                    .infinity,
+                                                              ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      right: 0,
+                                                      top: 0,
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            loginController
+                                                                .certificates
+                                                                .removeAt(
+                                                                  index,
+                                                                );
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.cancel,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        "** maximum 3 images/pdf allowed",
+                                        style: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontSize: size * 0.019,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  //SizedBox(height: size * 0.03),
+                                  if (loginController.selectedUserType ==
+                                          'Dental Clinic' ||
+                                      loginController.selectedUserType ==
+                                          'Dental Shop' ||
+                                      loginController.selectedUserType ==
+                                          'Dental Mechanic' ||
+                                      loginController.selectedUserType ==
+                                          'Dental Lab') ...[
+                                    SizedBox(height: size * 0.02),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        //Get.toNamed('/registerPage');
+                                        pickImages();
+                                        //loginController.images.clear();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        side: const BorderSide(
+                                          color: AppColors.primary,
+                                          width: 0.34,
+                                        ),
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: Colors.black,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            5,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.upload,
+                                              color: AppColors.primary,
+                                              size: size * 0.05,
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Flexible(
+                                              child: Text(
+                                                uploadImages(
+                                                  loginController
+                                                      .selectedUserType
+                                                      .toString(),
+                                                ),
                                                 // "Upload Proof / Certificate / Resume",
                                                 overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.bold,color: AppColors.primary),
+                                                style: TextStyle(
+                                                  fontSize: size * 0.025,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.primary,
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -849,59 +1157,102 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                     SizedBox(height: size * 0.03),
                                   ],
-                                  if (loginController.selectedUserType == 'Dental Clinic'||loginController.selectedUserType=='Dental Shop'||loginController.selectedUserType=='Dental Mechanic'||loginController.selectedUserType=='Dental Lab') ...[
+                                  if (loginController.selectedUserType ==
+                                          'Dental Clinic' ||
+                                      loginController.selectedUserType ==
+                                          'Dental Shop' ||
+                                      loginController.selectedUserType ==
+                                          'Dental Mechanic' ||
+                                      loginController.selectedUserType ==
+                                          'Dental Lab') ...[
                                     SizedBox(
-                                      height: loginController.images.isNotEmpty? size*0.35:30,
+                                      height: loginController.images.isNotEmpty
+                                          ? size * 0.35
+                                          : 30,
                                       child: loginController.images.isEmpty
-                                          ?  Center(child: Text("No images selected",style: AppTextStyles.caption(context,color: AppColors.black),))
+                                          ? Center(
+                                              child: Text(
+                                                "No images selected",
+                                                style: AppTextStyles.caption(
+                                                  context,
+                                                  color: AppColors.black,
+                                                ),
+                                              ),
+                                            )
                                           : GridView.builder(
-                                        padding: const EdgeInsets.all(10),
-                                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 10,
-                                          mainAxisSpacing: 10,
-                                        ),
-                                        itemCount: loginController.images.length,
-                                        itemBuilder: (context, index) {
-                                          return Stack(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:BorderRadius.circular(10),
-                                                child: Image.file(
-                                                  loginController.images[index],
-                                                  fit: BoxFit.cover,
-                                                  width: double.infinity,
-                                                  height: double.infinity,
-                                                ),
-                                              ),
-                                              Positioned(
-                                                right: 0,
-                                                top: 0,
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      loginController.images.removeAt(index);
-                                                    });
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.cancel,
-                                                    color: Colors.white,
+                                              padding: const EdgeInsets.all(10),
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 3,
+                                                    crossAxisSpacing: 10,
+                                                    mainAxisSpacing: 10,
                                                   ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      ),
+                                              itemCount:
+                                                  loginController.images.length,
+                                              itemBuilder: (context, index) {
+                                                return Stack(
+                                                  children: [
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                      child: Image.file(
+                                                        loginController
+                                                            .images[index],
+                                                        fit: BoxFit.cover,
+                                                        width: double.infinity,
+                                                        height: double.infinity,
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      right: 0,
+                                                      top: 0,
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            loginController
+                                                                .images
+                                                                .removeAt(
+                                                                  index,
+                                                                );
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.cancel,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
                                     ),
-                                    if(loginController.selectedUserType != "Job Seekers")
-                                    Center(child: Text("** maximum 3 images allowed **",style: TextStyle(color: Colors.redAccent,fontSize: size*0.019,fontWeight: FontWeight.normal),))
+                                    if (loginController.selectedUserType !=
+                                        "Job Seekers")
+                                      Center(
+                                        child: Text(
+                                          "** maximum 3 images allowed **",
+                                          style: TextStyle(
+                                            color: Colors.redAccent,
+                                            fontSize: size * 0.019,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                      ),
                                   ],
                                   SizedBox(height: size * 0.03),
-                                  Text(loginController.selectedUserType == "Job Seekers"
-                                      ? "Upload Profile Image"
-                                      : "Upload Logo Image",
-                                    style: AppTextStyles.caption(fontWeight: FontWeight.bold,context),),
+                                  Text(
+                                    loginController.selectedUserType ==
+                                            "Job Seekers"
+                                        ? "Upload Profile Image"
+                                        : "Upload Logo Image",
+                                    style: AppTextStyles.caption(
+                                      fontWeight: FontWeight.bold,
+                                      context,
+                                    ),
+                                  ),
                                   SizedBox(height: size * 0.03),
 
                                   SizedBox(
@@ -909,24 +1260,37 @@ class _RegisterPageState extends State<RegisterPage> {
                                     child: GetBuilder<LoginController>(
                                       builder: (controller) {
                                         if (controller.logoImages.isNotEmpty) {
-                                          final File file = controller.logoImages.first;
-                                          return _buildSingleImageWidget1(file: file);
+                                          final File file =
+                                              controller.logoImages.first;
+                                          return _buildSingleImageWidget1(
+                                            file: file,
+                                          );
                                         }
                                         if (controller.logoImage.isNotEmpty) {
                                           //final AppImage img = controller.logoImage.first;
-                                          final  img = controller.logoImage.first;
-                                          return _buildSingleImageWidget1(url: img);
+                                          final img =
+                                              controller.logoImage.first;
+                                          return _buildSingleImageWidget1(
+                                            url: img,
+                                          );
                                         }
                                         return GestureDetector(
                                           onTap: () => pickSingleImage1(),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              border: Border.all(color: Colors.grey),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              border: Border.all(
+                                                color: Colors.grey,
+                                              ),
                                               color: Colors.grey.shade200,
                                             ),
                                             child: const Center(
-                                              child: Icon(Icons.add, size: 40, color: Colors.grey),
+                                              child: Icon(
+                                                Icons.add,
+                                                size: 40,
+                                                color: Colors.grey,
+                                              ),
                                             ),
                                           ),
                                         );
@@ -939,124 +1303,279 @@ class _RegisterPageState extends State<RegisterPage> {
                                     width: double.infinity,
                                     height: 50,
                                     child: Container(
-                                    decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    gradient: const LinearGradient(
-                                    colors: [AppColors.primary,AppColors.secondary],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    ),
-                                    ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            AppColors.primary,
+                                            AppColors.secondary,
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                      ),
                                       child: GetBuilder<LoginController>(
-                                          builder: (controller) {
-                                            return ElevatedButton(
-                                            onPressed:controller.isLoading?null: () async {
-                                              if (_formKeyRegister.currentState!.validate()) {
-                                              final position = await LocationService.getCurrentLocation();
-                                              if (position == null) {
-                                              return;
-                                              }
-                                              debugPrint('User location: Lat ${position.latitude}, Lng ${position.longitude}');
-                                              print("FULL NAME = ${loginController.fullNameController.text}");
-                                                print("MOBILE = ${loginController.mobileController.text}");
-                                                print("EMAIL = ${loginController.emailController.text}");
-                                                print("STATE = ${loginController.selectedState.toString()}");
-                                                print("DISTRICT = ${loginController.selectedDistrict.toString()}");
-                                                print("CITY = ${loginController.selectedTaluka.toString()}");
-                                                print("PINCODE = ${loginController.selectedVillage.toString()}");
-                                                print("LAB NAME = ${loginController.typeNameController.text}");
-                                                print("IMAGES = ${loginController.images}");
-                                                print('logo${loginController.logoImages}');
-                                                print("CERTIFICATES = ${loginController.certificates}");
-                                                print('dob ${loginController.dobController}');
-                                                if(loginController.selectedUserType==null){
-                                                  showCustomToast(context,"Please Select usertype",);
-                                                }
-                                              if(loginController.selectedState==null){
-                                                showCustomToast(context,"Please  Select State",);
-                                              }
-                                              if(loginController.selectedDistrict==null){
-                                                showCustomToast(context,"Please Select District",);
-                                              }
-                                              if(loginController.selectedTaluka==null){
-                                                showCustomToast(context,"Please Select Taluka",);
-                                              }
-                                              if(loginController.selectedVillage==null){
-                                                showCustomToast(context,"Please Select Village",);
-                                              }
-                                              Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
-                                                return await Future.wait(files.map((file) => file.readAsBytes()));
-                                              }
-                                              final imageBytes = loginController.selectedUserType == "Job Seekers"
-                                                  ? await convertFilesToBytes(controller.logoImages)
-                                                  : await convertFilesToBytes(loginController.images);
+                                        builder: (controller) {
+                                          return ElevatedButton(
+                                            onPressed: controller.isLoading
+                                                ? null
+                                                : () async {
+                                                    if (_formKeyRegister
+                                                        .currentState!
+                                                        .validate()) {
+                                                      final position =
+                                                          await LocationService.getCurrentLocation();
+                                                      if (position == null) {
+                                                        return;
+                                                      }
+                                                      debugPrint(
+                                                        'User location: Lat ${position.latitude}, Lng ${position.longitude}',
+                                                      );
+                                                      print(
+                                                        "FULL NAME = ${loginController.fullNameController.text}",
+                                                      );
+                                                      print(
+                                                        "MOBILE = ${loginController.mobileController.text}",
+                                                      );
+                                                      print(
+                                                        "EMAIL = ${loginController.emailController.text}",
+                                                      );
+                                                      print(
+                                                        "STATE = ${loginController.selectedState.toString()}",
+                                                      );
+                                                      print(
+                                                        "DISTRICT = ${loginController.selectedDistrict.toString()}",
+                                                      );
+                                                      print(
+                                                        "CITY = ${loginController.selectedTaluka.toString()}",
+                                                      );
+                                                      print(
+                                                        "PINCODE = ${loginController.selectedVillage.toString()}",
+                                                      );
+                                                      print(
+                                                        "LAB NAME = ${loginController.typeNameController.text}",
+                                                      );
+                                                      print(
+                                                        "IMAGES = ${loginController.images}",
+                                                      );
+                                                      print(
+                                                        'logo${loginController.logoImages}',
+                                                      );
+                                                      print(
+                                                        "CERTIFICATES = ${loginController.certificates}",
+                                                      );
+                                                      print(
+                                                        'dob ${loginController.dobController}',
+                                                      );
+                                                      if (loginController
+                                                              .selectedUserType ==
+                                                          null) {
+                                                        showCustomToast(
+                                                          context,
+                                                          "Please Select usertype",
+                                                        );
+                                                      }
+                                                      if (loginController
+                                                              .selectedState ==
+                                                          null) {
+                                                        showCustomToast(
+                                                          context,
+                                                          "Please  Select State",
+                                                        );
+                                                      }
+                                                      if (loginController
+                                                              .selectedDistrict ==
+                                                          null) {
+                                                        showCustomToast(
+                                                          context,
+                                                          "Please Select District",
+                                                        );
+                                                      }
+                                                      if (loginController
+                                                              .selectedTaluka ==
+                                                          null) {
+                                                        showCustomToast(
+                                                          context,
+                                                          "Please Select Taluka",
+                                                        );
+                                                      }
+                                                      if (loginController
+                                                              .selectedVillage ==
+                                                          null) {
+                                                        showCustomToast(
+                                                          context,
+                                                          "Please Select Village",
+                                                        );
+                                                      }
+                                                      Future<List<Uint8List>>
+                                                      convertFilesToBytes(
+                                                        List<File> files,
+                                                      ) async {
+                                                        return await Future.wait(
+                                                          files.map(
+                                                            (file) => file
+                                                                .readAsBytes(),
+                                                          ),
+                                                        );
+                                                      }
 
-                                              final logoBytes = loginController.selectedUserType != "Job Seekers"
-                                                  ? await convertFilesToBytes(controller.logoImages)
-                                                  : [];
-                                              final certBytes = await convertFilesToBytes(loginController.certificates);
+                                                      final imageBytes =
+                                                          loginController
+                                                                  .selectedUserType ==
+                                                              "Job Seekers"
+                                                          ? await convertFilesToBytes(
+                                                              controller
+                                                                  .logoImages,
+                                                            )
+                                                          : await convertFilesToBytes(
+                                                              loginController
+                                                                  .images,
+                                                            );
 
-                                                //print('usertype${loginController.selectedUserType} married${loginController.selectedMartialStatus!}');
-                                                await loginController.registerUser(
-                                                  userId: "0",
-                                                  userType: loginController.selectedUserType!,
-                                                  //martialStatus: loginController.selectedMartialStatus!,
-                                                  fullName: loginController.fullNameController.text,
-                                                  dob: loginController.dobController.text,
-                                                  mobile: loginController.mobileController.text,
-                                                  email: loginController.emailController.text,
-                                                  confirmPassword: loginController.confirmPasswordController.text,
-                                                  addressLine1: loginController.addressLine1Controller.text ?? '',
-                                                  addressLine2:  loginController.addressLine2Controller.text ?? '',
-                                                  taluk: loginController.selectedState ?? '',
-                                                  district: loginController.selectedDistrict ?? '',
-                                                  city: loginController.selectedTaluka ?? '',
-                                                  area: loginController.selectedVillage ?? '',
-                                                  pinCode: loginController.pinCodeController.text,
-                                                  typeName: loginController.typeNameController.text??"",
-                                                  //image: loginController.selectedUserType=="Job Seekers"?controller.logoImages ?? []:loginController.images ?? [],
-                                                  image: loginController.selectedUserType=="Job Seekers"?logoBytes ?? []:imageBytes ?? [],
-                                                  certificate: certBytes,
-                                                  //loginController.certificates ?? [],
-                                                  location: loginController.locationController.text,
-                                                  website: loginController.websiteController.text,
-                                                  description: loginController.descriptionController.text??"N/A",
-                                                  //logoImage: loginController.selectedUserType!="Job Seekers"?controller.logoImages ?? []:[],
-                                                  logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
-                                                  latitude: loginController.latitude.toString()??"",
-                                                  longitude: loginController.longitude.toString()??"",
-                                                  jobCategory:loginController.selectedCategories,
-                                                  isAdmin: "false",
-                                                  context: context,
-                                                );
+                                                      final logoBytes =
+                                                          loginController
+                                                                  .selectedUserType !=
+                                                              "Job Seekers"
+                                                          ? await convertFilesToBytes(
+                                                              controller
+                                                                  .logoImages,
+                                                            )
+                                                          : [];
+                                                      final certBytes =
+                                                          await convertFilesToBytes(
+                                                            loginController
+                                                                .certificates,
+                                                          );
 
-                                              }
-                                            },
+                                                      //print('usertype${loginController.selectedUserType} married${loginController.selectedMartialStatus!}');
+                                                      await loginController.registerUser(
+                                                        userId: "0",
+                                                        userType: loginController
+                                                            .selectedUserType!,
+                                                        //martialStatus: loginController.selectedMartialStatus!,
+                                                        fullName: loginController
+                                                            .fullNameController
+                                                            .text,
+                                                        dob: loginController
+                                                            .dobController
+                                                            .text,
+                                                        mobile: loginController
+                                                            .mobileController
+                                                            .text,
+                                                        email: loginController
+                                                            .emailController
+                                                            .text,
+                                                        confirmPassword:
+                                                            loginController
+                                                                .confirmPasswordController
+                                                                .text,
+                                                        addressLine1:
+                                                            loginController
+                                                                .addressLine1Controller
+                                                                .text ??
+                                                            '',
+                                                        addressLine2:
+                                                            loginController
+                                                                .addressLine2Controller
+                                                                .text ??
+                                                            '',
+                                                        taluk:
+                                                            loginController
+                                                                .selectedState ??
+                                                            '',
+                                                        district:
+                                                            loginController
+                                                                .selectedDistrict ??
+                                                            '',
+                                                        city:
+                                                            loginController
+                                                                .selectedTaluka ??
+                                                            '',
+                                                        area:
+                                                            loginController
+                                                                .selectedVillage ??
+                                                            '',
+                                                        pinCode: loginController
+                                                            .pinCodeController
+                                                            .text,
+                                                        typeName:
+                                                            loginController
+                                                                .typeNameController
+                                                                .text ??
+                                                            "",
+                                                        //image: loginController.selectedUserType=="Job Seekers"?controller.logoImages ?? []:loginController.images ?? [],
+                                                        image:
+                                                            loginController
+                                                                    .selectedUserType ==
+                                                                "Job Seekers"
+                                                            ? logoBytes ?? []
+                                                            : imageBytes ?? [],
+                                                        certificate: certBytes,
+                                                        //loginController.certificates ?? [],
+                                                        location: loginController
+                                                            .locationController
+                                                            .text,
+                                                        website: loginController
+                                                            .websiteController
+                                                            .text,
+                                                        description:
+                                                            loginController
+                                                                .descriptionController
+                                                                .text ??
+                                                            "N/A",
+                                                        //logoImage: loginController.selectedUserType!="Job Seekers"?controller.logoImages ?? []:[],
+                                                        logoImage:
+                                                            loginController
+                                                                    .selectedUserType !=
+                                                                "Job Seekers"
+                                                            ? logoBytes ?? []
+                                                            : [],
+                                                        latitude:
+                                                            loginController
+                                                                .latitude
+                                                                .toString() ??
+                                                            "",
+                                                        longitude:
+                                                            loginController
+                                                                .longitude
+                                                                .toString() ??
+                                                            "",
+                                                        jobCategory: loginController
+                                                            .selectedCategories,
+                                                        isAdmin: "false",
+                                                        context: context,
+                                                      );
+                                                    }
+                                                  },
                                             style: ElevatedButton.styleFrom(
                                               shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(12),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
                                               ),
-                                              backgroundColor: AppColors.transparent,
+                                              backgroundColor:
+                                                  AppColors.transparent,
                                             ),
-                                            child:  controller.isLoading
-                                            ? const SizedBox(
-                                            height: 22,
-                                              width: 22,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                color: Colors.white,
-                                              ),
-                                            )
+                                            child: controller.isLoading
+                                                ? const SizedBox(
+                                                    height: 22,
+                                                    width: 22,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                          strokeWidth: 2,
+                                                          color: Colors.white,
+                                                        ),
+                                                  )
                                                 : Text(
-                                            "Create Account",
-                                            style: AppTextStyles.body(
-                                            context,
-                                            color: AppColors.white,
-                                            fontWeight: FontWeight.bold,
-                                            ),
-                                            ),
+                                                    "Create Account",
+                                                    style: AppTextStyles.body(
+                                                      context,
+                                                      color: AppColors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
                                           );
-                                        }
+                                        },
                                       ),
                                     ),
                                   ),
@@ -1067,16 +1586,22 @@ class _RegisterPageState extends State<RegisterPage> {
                                     children: [
                                       Text(
                                         "Already have an account? ",
-                                        style: AppTextStyles.caption(context, color: Colors.black54),
+                                        style: AppTextStyles.caption(
+                                          context,
+                                          color: Colors.black54,
+                                        ),
                                       ),
                                       GestureDetector(
                                         onTap: () {
                                           Get.toNamed('/loginPage');
-
                                         },
-                                        child:  Text(
+                                        child: Text(
                                           "Sign in here",
-                                          style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold)
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: AppColors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -1091,9 +1616,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 );
-              }
+              },
             );
-          }
+          },
         ),
       ),
     );

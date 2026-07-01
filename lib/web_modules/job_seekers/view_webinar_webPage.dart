@@ -22,7 +22,8 @@ class WebinarViewWebPage extends StatefulWidget {
 }
 
 class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKeyWebinar = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyWebinar =
+      GlobalKey<ScaffoldState>();
   final jobController = Get.put(JobController());
   final loginController = Get.put(LoginController());
   final ScrollController _scrollController = ScrollController();
@@ -34,14 +35,12 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
       List<Map<String, dynamic>> delta = [];
 
       if (data == null) {
-        delta = [{"insert": "\n"}];
-      }
-
-      else if (data is List) {
+        delta = [
+          {"insert": "\n"},
+        ];
+      } else if (data is List) {
         delta = List<Map<String, dynamic>>.from(data);
-      }
-
-      else if (data is String) {
+      } else if (data is String) {
         delta = List<Map<String, dynamic>>.from(jsonDecode(data));
       }
 
@@ -57,24 +56,31 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
       _controller = QuillController.basic();
     }
   }
+
   @override
   void initState() {
     super.initState();
     _controller = QuillController.basic(
       config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
-
+        clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
       ),
     );
     _refresh();
   }
+
   Future<void> _refresh() async {
-    await jobController.getWebinarById(Api.userInfo.read('webinarId')??"", Api.userInfo.read('activeStatus1')??"", context);
-    await jobController.getAppliedWebinarsAdmin(Api.userInfo.read('webinarId')??"",context);
+    await jobController.getWebinarById(
+      Api.userInfo.read('webinarId') ?? "",
+      Api.userInfo.read('activeStatus1') ?? "",
+      context,
+    );
+    await jobController.getAppliedWebinarsAdmin(
+      Api.userInfo.read('webinarId') ?? "",
+      context,
+    );
     loadJobDescription(jobController.webDescriptionData);
   }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -84,12 +90,21 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
     return Scaffold(
       key: _scaffoldKeyWebinar,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: !isDesktop ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: !isDesktop
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       appBar: buildAppBar(context),
       body: GetBuilder<JobController>(
         builder: (controller) {
-          if (controller.isLoading) return const Center(child: CircularProgressIndicator());
-          if (controller.webinar.isEmpty) return Center(child: Text("No data found", style: AppTextStyles.caption(context)));
+          if (controller.isLoading)
+            return const Center(child: CircularProgressIndicator());
+          if (controller.webinar.isEmpty)
+            return Center(
+              child: Text(
+                "No data found",
+                style: AppTextStyles.caption(context),
+              ),
+            );
           final webinar = controller.webinar.first;
           return Row(
             children: [
@@ -105,7 +120,9 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                           SliverToBoxAdapter(
                             child: Center(
                               child: ConstrainedBox(
-                                constraints: const BoxConstraints(maxWidth: 1000),
+                                constraints: const BoxConstraints(
+                                  maxWidth: 1000,
+                                ),
                                 child: Padding(
                                   padding: EdgeInsets.fromLTRB(
                                     isMobile ? 10 : 30.0,
@@ -116,9 +133,15 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                                   child: Container(
                                     decoration: const BoxDecoration(
                                       color: AppColors.white,
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(12),
+                                      ),
                                       boxShadow: [
-                                        BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          blurRadius: 6,
+                                          offset: Offset(0, 3),
+                                        ),
                                       ],
                                     ),
                                     child: Column(
@@ -128,41 +151,79 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                                             alignment: Alignment.topLeft,
                                             child: IconButton(
                                               icon: const Icon(Icons.menu),
-                                              onPressed: () => _scaffoldKeyWebinar.currentState?.openDrawer(),
+                                              onPressed: () =>
+                                                  _scaffoldKeyWebinar
+                                                      .currentState
+                                                      ?.openDrawer(),
                                             ),
                                           ),
                                         SizedBox(
-                                          height: isMobile ? 200 : (width > 900 ? 350 : 220),
+                                          height: isMobile
+                                              ? 200
+                                              : (width > 900 ? 350 : 220),
                                           width: double.infinity,
                                           child: Stack(
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  if (loginController.webinarFileImages.isNotEmpty) {
-                                                    Get.toNamed('/viewImagePage', arguments: {
-                                                      'url': loginController.webinarFileImages.first.url.toString()
-                                                    });
+                                                  if (loginController
+                                                      .webinarFileImages
+                                                      .isNotEmpty) {
+                                                    Get.toNamed(
+                                                      '/viewImagePage',
+                                                      arguments: {
+                                                        'url': loginController
+                                                            .webinarFileImages
+                                                            .first
+                                                            .url
+                                                            .toString(),
+                                                      },
+                                                    );
                                                   }
                                                 },
                                                 child: Image.network(
-                                                  loginController.webinarFileImages.isNotEmpty
-                                                      ? loginController.webinarFileImages.first.url.toString()
+                                                  loginController
+                                                          .webinarFileImages
+                                                          .isNotEmpty
+                                                      ? loginController
+                                                            .webinarFileImages
+                                                            .first
+                                                            .url
+                                                            .toString()
                                                       : '',
                                                   width: double.infinity,
-                                                  height: isMobile ? 200 : (width > 900 ? 350 : 220),
+                                                  height: isMobile
+                                                      ? 200
+                                                      : (width > 900
+                                                            ? 350
+                                                            : 220),
                                                   fit: BoxFit.cover,
-                                                  errorBuilder: (_, __, ___) => Container(
-                                                    color: Colors.grey.shade200,
-                                                    alignment: Alignment.center,
-                                                    child: const Icon(Icons.image, color: AppColors.grey, size: 40),
-                                                  ),
+                                                  errorBuilder: (_, __, ___) =>
+                                                      Container(
+                                                        color: Colors
+                                                            .grey
+                                                            .shade200,
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: const Icon(
+                                                          Icons.image,
+                                                          color: AppColors.grey,
+                                                          size: 40,
+                                                        ),
+                                                      ),
                                                 ),
                                               ),
                                               Container(
                                                 decoration: BoxDecoration(
                                                   gradient: LinearGradient(
-                                                    colors: [Colors.black.withOpacity(0.6), Colors.transparent],
-                                                    begin: Alignment.bottomCenter,
+                                                    colors: [
+                                                      Colors.black.withValues(
+                                                        alpha: 0.6,
+                                                      ),
+                                                      Colors.transparent,
+                                                    ],
+                                                    begin:
+                                                        Alignment.bottomCenter,
                                                     end: Alignment.topCenter,
                                                   ),
                                                 ),
@@ -170,11 +231,16 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                                               Align(
                                                 alignment: Alignment.bottomLeft,
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(20),
+                                                  padding: const EdgeInsets.all(
+                                                    20,
+                                                  ),
                                                   child: Text(
                                                     webinar.webinarTitle ?? "",
-                                                    style: AppTextStyles.body(context,
-                                                      fontWeight: FontWeight.bold, color: AppColors.white,
+                                                    style: AppTextStyles.body(
+                                                      context,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppColors.white,
                                                     ),
                                                   ),
                                                 ),
@@ -188,9 +254,19 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                                           labelColor: AppColors.black,
                                           unselectedLabelColor: AppColors.black,
                                           tabs: [
-                                            const Tab(text: 'Webinar Description'),
+                                            const Tab(
+                                              text: 'Webinar Description',
+                                            ),
                                             Tab(
-                                              text: Api.userInfo.read('userType')!=null && Api.userInfo.read('userType').toString() == 'Job Seekers'
+                                              text:
+                                                  Api.userInfo.read(
+                                                            'userType',
+                                                          ) !=
+                                                          null &&
+                                                      Api.userInfo
+                                                              .read('userType')
+                                                              .toString() ==
+                                                          'Job Seekers'
                                                   ? 'Clinic Description'
                                                   : "Applicants List",
                                             ),
@@ -218,9 +294,15 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                             child: Container(
                               decoration: const BoxDecoration(
                                 color: AppColors.white,
-                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
+                                borderRadius: BorderRadius.vertical(
+                                  bottom: Radius.circular(12),
+                                ),
                                 boxShadow: [
-                                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 6,
+                                    offset: Offset(0, 3),
+                                  ),
                                 ],
                               ),
                               child: TabBarView(
@@ -228,7 +310,8 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                                   SingleChildScrollView(
                                     padding: EdgeInsets.all(isMobile ? 15 : 24),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         _leftSection(webinar, isMobile),
                                         const SizedBox(height: 20),
@@ -236,28 +319,41 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                                       ],
                                     ),
                                   ),
-                                  Api.userInfo.read('token') !=null &&Api.userInfo.read('userType') != 'Job Seekers'
+                                  Api.userInfo.read('token') != null &&
+                                          Api.userInfo.read('userType') !=
+                                              'Job Seekers'
                                       ? _buildApplicationsTab(
                                           jobController.appliedWebinarList,
                                           width,
                                           context,
                                         )
-                                      : (webinar.description != null && webinar.description.toString().isNotEmpty)
-                                          ? Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: IgnorePointer(
-                                                child: QuillEditor(
-                                                  controller: _controller,
-                                                  scrollController: _quillScrollController,
-                                                  focusNode: _focusNode,
-                                                  config: const QuillEditorConfig(
-                                                    showCursor: false,
-                                                    expands: false,
-                                                  ),
-                                                ),
+                                      : (webinar.description != null &&
+                                            webinar.description
+                                                .toString()
+                                                .isNotEmpty)
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: IgnorePointer(
+                                            child: QuillEditor(
+                                              controller: _controller,
+                                              scrollController:
+                                                  _quillScrollController,
+                                              focusNode: _focusNode,
+                                              config: const QuillEditorConfig(
+                                                showCursor: false,
+                                                expands: false,
                                               ),
-                                            )
-                                          :  Center(child: Text("No Description",style: AppTextStyles.caption(context),)),
+                                            ),
+                                          ),
+                                        )
+                                      : Center(
+                                          child: Text(
+                                            "No Description",
+                                            style: AppTextStyles.caption(
+                                              context,
+                                            ),
+                                          ),
+                                        ),
                                 ],
                               ),
                             ),
@@ -288,10 +384,20 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _iconText(Icons.business, webinar.orgName ?? "N/A",context, isMobile),
-        _iconText(Icons.location_on, webinar.place ?? "N/A",context, isMobile),
-        _iconText(Icons.calendar_today, formatDate(webinar.createdDate.toString()),context, isMobile),
-        _iconText(Icons.access_time, "${webinar.startTime} - ${webinar.endTime}",context, isMobile),
+        _iconText(Icons.business, webinar.orgName ?? "N/A", context, isMobile),
+        _iconText(Icons.location_on, webinar.place ?? "N/A", context, isMobile),
+        _iconText(
+          Icons.calendar_today,
+          formatDate(webinar.createdDate.toString()),
+          context,
+          isMobile,
+        ),
+        _iconText(
+          Icons.access_time,
+          "${webinar.startTime} - ${webinar.endTime}",
+          context,
+          isMobile,
+        ),
       ],
     );
   }
@@ -300,50 +406,63 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         Text("About Webinar", style: AppTextStyles.body(context, fontWeight: FontWeight.bold)),
-       // const SizedBox(height: 10),
+        Text(
+          "About Webinar",
+          style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+        ),
+        // const SizedBox(height: 10),
         Padding(
-            padding: const EdgeInsets.all(10.0),
-            child:  IgnorePointer(
-              child: QuillEditor(
-                controller: _controller,
-                scrollController: _quillScrollController,
-                focusNode: _focusNode,
-                config: const QuillEditorConfig(
-                  showCursor: false,
-                  expands: false,
-                ),
+          padding: const EdgeInsets.all(10.0),
+          child: IgnorePointer(
+            child: QuillEditor(
+              controller: _controller,
+              scrollController: _quillScrollController,
+              focusNode: _focusNode,
+              config: const QuillEditorConfig(
+                showCursor: false,
+                expands: false,
               ),
-            )
+            ),
+          ),
         ),
         //Text(webinar.webinarDescription ?? "", style:  AppTextStyles.body(context, color: Colors.black87)),
         const SizedBox(height: 10),
-         Text("Webinar Link", style:  AppTextStyles.caption(context,fontWeight: FontWeight.bold)),
+        Text(
+          "Webinar Link",
+          style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 10),
         InkWell(
           onTap: () {
-            Get.toNamed('/webViewProfilePage', arguments: {
-              "url": webinar.webinarLink ?? "",
-              "clinicName": webinar.webinarTitle ?? ""
-            });
+            Get.toNamed(
+              '/webViewProfilePage',
+              arguments: {
+                "url": webinar.webinarLink ?? "",
+                "clinicName": webinar.webinarTitle ?? "",
+              },
+            );
           },
           child: Text(
             webinar.webinarLink ?? "",
-            style:  AppTextStyles.caption(context,color: Colors.blue, fontWeight: FontWeight.bold,),
+            style: AppTextStyles.caption(
+              context,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _iconText(IconData icon, String text,dynamic context, bool isMobile) {
+  Widget _iconText(IconData icon, String text, dynamic context, bool isMobile) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
           Icon(icon, size: 20, color: Colors.grey),
           const SizedBox(width: 8),
-          Expanded(child: Text(text, style:AppTextStyles.body(context,))),
+          Expanded(child: Text(text, style: AppTextStyles.body(context))),
         ],
       ),
     );
@@ -359,13 +478,21 @@ String formatDate(String? isoDate) {
     return "N/A";
   }
 }
-Widget _buildApplicationsTab(List applicants, double width, BuildContext context) {
+
+Widget _buildApplicationsTab(
+  List applicants,
+  double width,
+  BuildContext context,
+) {
   if (applicants.isEmpty) {
     return Center(
       child: Text(
         'No data found',
-        style: AppTextStyles.caption(context,
-            color: AppColors.black, fontWeight: FontWeight.normal),
+        style: AppTextStyles.caption(
+          context,
+          color: AppColors.black,
+          fontWeight: FontWeight.normal,
+        ),
       ),
     );
   }
@@ -373,7 +500,9 @@ Widget _buildApplicationsTab(List applicants, double width, BuildContext context
   return SingleChildScrollView(
     child: Padding(
       padding: EdgeInsets.symmetric(
-          horizontal: width > 900 ? width * 0.1 : 16, vertical: 20),
+        horizontal: width > 900 ? width * 0.1 : 16,
+        vertical: 20,
+      ),
       child: Wrap(
         spacing: 20,
         runSpacing: 20,
@@ -394,7 +523,10 @@ Widget _applicationCard(dynamic applier, double width, BuildContext context) {
     cursor: SystemMouseCursors.click,
     child: GestureDetector(
       onTap: () async {
-        await loginController.getProfileByUserId(applier.jobSeekerId ?? "", context);
+        await loginController.getProfileByUserId(
+          applier.jobSeekerId ?? "",
+          context,
+        );
         Get.to(() => const ViewWebProfilePage());
       },
       child: Container(
@@ -405,7 +537,7 @@ Widget _applicationCard(dynamic applier, double width, BuildContext context) {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 15,
               offset: const Offset(0, 5),
             ),
@@ -417,7 +549,7 @@ Widget _applicationCard(dynamic applier, double width, BuildContext context) {
             Row(
               children: [
                 CircleAvatar(
-                  radius: screenWidth*0.14,
+                  radius: screenWidth * 0.14,
                   backgroundColor: AppColors.primary,
                   child: ClipOval(
                     child: FadeInImage.assetNetwork(
@@ -431,8 +563,10 @@ Widget _applicationCard(dynamic applier, double width, BuildContext context) {
                           width: 60,
                           height: 60,
                           color: Colors.grey.shade200,
-                          child: const Icon(Icons.image_outlined,
-                              color: Colors.grey),
+                          child: const Icon(
+                            Icons.image_outlined,
+                            color: Colors.grey,
+                          ),
                         );
                       },
                     ),
@@ -443,11 +577,21 @@ Widget _applicationCard(dynamic applier, double width, BuildContext context) {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(applier.name ?? "",
-                      style: AppTextStyles.caption(context,fontWeight: FontWeight.normal)),
-                      SizedBox(height: screenWidth*0.01,),
-                      Text("Email: ${applier.email ?? ""}",
-                          style: AppTextStyles.caption(context,fontWeight: FontWeight.normal)),
+                      Text(
+                        applier.name ?? "",
+                        style: AppTextStyles.caption(
+                          context,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      SizedBox(height: screenWidth * 0.01),
+                      Text(
+                        "Email: ${applier.email ?? ""}",
+                        style: AppTextStyles.caption(
+                          context,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
                       // Text("JobId: ${applier.webinarId ?? ""}",
                       //     style: AppTextStyles.caption(context,fontWeight: FontWeight.normal)),
                     ],
@@ -459,19 +603,34 @@ Widget _applicationCard(dynamic applier, double width, BuildContext context) {
             Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.call, color: Colors.green,size: screenWidth*0.012,),
+                  icon: Icon(
+                    Icons.call,
+                    color: Colors.green,
+                    size: screenWidth * 0.012,
+                  ),
                   onPressed: () {
                     launchCall(applier.mobileNumber ?? "");
                   },
                 ),
-                Text(applier.mobileNumber ?? "",
-                    style: AppTextStyles.caption(context,fontWeight: FontWeight.normal)),
+                Text(
+                  applier.mobileNumber ?? "",
+                  style: AppTextStyles.caption(
+                    context,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
                 const Spacer(),
                 IconButton(
-                  icon: Icon(Icons.arrow_forward, color: AppColors.grey,size: screenWidth*0.012,),
+                  icon: Icon(
+                    Icons.arrow_forward,
+                    color: AppColors.grey,
+                    size: screenWidth * 0.012,
+                  ),
                   onPressed: () async {
                     await loginController.getProfileByUserId(
-                        applier.jobSeekerId ?? "", context);
+                      applier.jobSeekerId ?? "",
+                      context,
+                    );
                     Get.toNamed('/viewProfilePageWeb');
                     // Navigator.push(context,
                     //     MaterialPageRoute(builder: (_) => const JobSeekerProfilePage()));

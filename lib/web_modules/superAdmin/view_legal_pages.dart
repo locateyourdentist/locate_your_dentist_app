@@ -9,7 +9,6 @@ import '../../common_widgets/color_code.dart';
 import '../../common_widgets/common_textstyles.dart';
 import '../common/common_side_bar.dart';
 
-
 class LegalPagesWebView extends StatefulWidget {
   const LegalPagesWebView({super.key});
 
@@ -45,21 +44,25 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
     controller = QuillController.basic();
     loadInitialData();
   }
+
   Future<void> loadInitialData() async {
     final data = await serviceController.getPrivacyPolicyDetails(
-      selectedTitle!,
+      selectedTitle,
       context,
     );
 
     controller.clear();
     loadDescription(data);
   }
+
   void loadDescription(dynamic data) {
     try {
       List<Map<String, dynamic>> delta = [];
 
       if (data == null || data.toString().trim().isEmpty) {
-        delta = [{"insert": "\n"}];
+        delta = [
+          {"insert": "\n"},
+        ];
       } else {
         dynamic decoded = data;
 
@@ -70,7 +73,9 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
         if (decoded is List) {
           delta = List<Map<String, dynamic>>.from(decoded);
         } else {
-          delta = [{"insert": "\n"}];
+          delta = [
+            {"insert": "\n"},
+          ];
         }
       }
 
@@ -80,14 +85,11 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
         document: Document.fromJson(delta),
         selection: const TextSelection.collapsed(offset: 0),
         config: const QuillControllerConfig(
-          clipboardConfig: QuillClipboardConfig(
-            enableExternalRichPaste: true,
-          ),
+          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
         ),
       );
 
       if (mounted) setState(() {});
-
     } catch (e) {
       print("Quill load error: $e");
 
@@ -95,6 +97,7 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
       if (mounted) setState(() {});
     }
   }
+
   @override
   void dispose() {
     controller.dispose();
@@ -102,6 +105,7 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
     _scrollController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -119,28 +123,31 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
         return CommonHeader();
       }
     }
+
     return Scaffold(
       key: _scaffoldKeyLegal,
       appBar: buildAppBar(),
       backgroundColor: Colors.grey.shade100,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       body: Row(
         children: [
-        if (isDesktop && isLoggedIn) const AdminSideBar(),
+          if (isDesktop && isLoggedIn) const AdminSideBar(),
           Expanded(
             child: Column(
               children: [
                 Container(
                   width: double.infinity,
-                  padding:  EdgeInsets.symmetric(vertical: 40, horizontal: 60),
-                  decoration:  BoxDecoration(
+                  padding: EdgeInsets.symmetric(vertical: 40, horizontal: 60),
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [AppColors.primary,AppColors.secondary],
+                      colors: [AppColors.primary, AppColors.secondary],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                   ),
-                  child:  Column(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -148,14 +155,21 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: IconButton(
-                            icon: const Icon(Icons.menu, color: AppColors.white),
-                            onPressed: () => _scaffoldKeyLegal.currentState?.openDrawer(),
+                            icon: const Icon(
+                              Icons.menu,
+                              color: AppColors.white,
+                            ),
+                            onPressed: () =>
+                                _scaffoldKeyLegal.currentState?.openDrawer(),
                           ),
                         ),
                       Center(
                         child: Text(
-                            selectedTitle,
-                            style: AppTextStyles.subtitle(context,color: AppColors.white)
+                          selectedTitle,
+                          style: AppTextStyles.subtitle(
+                            context,
+                            color: AppColors.white,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -197,8 +211,7 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
 
                         const SizedBox(height: 60),
 
-                        if (!isLoggedIn)
-                          const CommonFooter(),
+                        if (!isLoggedIn) const CommonFooter(),
                       ],
                     ),
                   ),
@@ -206,7 +219,6 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
               ],
             ),
           ),
-
         ],
       ),
     );

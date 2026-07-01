@@ -8,7 +8,7 @@ import 'package:locate_your_dentist/modules/product_services/images_scroll_viewi
 import 'package:locate_your_dentist/modules/product_services/service_controller.dart';
 
 class ServiceDetailPage extends StatefulWidget {
-  const ServiceDetailPage({Key? key}) : super(key: key);
+  const ServiceDetailPage({super.key});
 
   @override
   State<ServiceDetailPage> createState() => _ServiceDetailPageState();
@@ -16,7 +16,6 @@ class ServiceDetailPage extends StatefulWidget {
 
 class _ServiceDetailPageState extends State<ServiceDetailPage>
     with SingleTickerProviderStateMixin {
-
   final serviceController = Get.put(ServiceController());
   final loginController = Get.put(LoginController());
 
@@ -63,15 +62,13 @@ class _ServiceDetailPageState extends State<ServiceDetailPage>
       ),
     );
 
-    _titleSlide = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.25, curve: Curves.easeOut),
-      ),
-    );
+    _titleSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.0, 0.25, curve: Curves.easeOut),
+          ),
+        );
 
     /// Image Animation
     _imageFade = Tween<double>(begin: 0, end: 1).animate(
@@ -81,15 +78,13 @@ class _ServiceDetailPageState extends State<ServiceDetailPage>
       ),
     );
 
-    _imageSlide = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.25, 0.5, curve: Curves.easeOut),
-      ),
-    );
+    _imageSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.25, 0.5, curve: Curves.easeOut),
+          ),
+        );
 
     /// Price Animation
     _priceFade = Tween<double>(begin: 0, end: 1).animate(
@@ -99,15 +94,13 @@ class _ServiceDetailPageState extends State<ServiceDetailPage>
       ),
     );
 
-    _priceSlide = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.5, 0.7, curve: Curves.easeOut),
-      ),
-    );
+    _priceSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.5, 0.7, curve: Curves.easeOut),
+          ),
+        );
 
     /// Description Animation
     _descFade = Tween<double>(begin: 0, end: 1).animate(
@@ -117,15 +110,13 @@ class _ServiceDetailPageState extends State<ServiceDetailPage>
       ),
     );
 
-    _descSlide = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.7, 1.0, curve: Curves.easeOut),
-      ),
-    );
+    _descSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.7, 1.0, curve: Curves.easeOut),
+          ),
+        );
 
     _controller.forward();
   }
@@ -194,7 +185,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage>
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.06),
+                                color: Colors.black.withValues(alpha: 0.06),
                                 blurRadius: 20,
                                 offset: const Offset(0, 10),
                               ),
@@ -207,8 +198,8 @@ class _ServiceDetailPageState extends State<ServiceDetailPage>
                           child: NetworkImageCarousel(
                             services: loginController.serviceFileImages
                                 .map((e) => e.url ?? "")
-                                .toList(),                                    ),
-
+                                .toList(),
+                          ),
                         ),
                       ),
                     ),
@@ -222,9 +213,11 @@ class _ServiceDetailPageState extends State<ServiceDetailPage>
                           alignment: Alignment.centerRight,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: Text(

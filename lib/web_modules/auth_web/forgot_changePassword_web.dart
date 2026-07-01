@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,19 +8,19 @@ import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 
-
 class ForgotChangePasswordPage extends StatefulWidget {
   const ForgotChangePasswordPage({super.key});
 
   @override
-  State<ForgotChangePasswordPage> createState() => _ForgotChangePasswordPageState();
+  State<ForgotChangePasswordPage> createState() =>
+      _ForgotChangePasswordPageState();
 }
 
 class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
   final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
-  final loginController=Get.put(LoginController());
+  final loginController = Get.put(LoginController());
 
   final _formKeyForgotWeb = GlobalKey<FormState>();
 
@@ -29,15 +28,18 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
   bool confirmPasswordVisible = false;
 
   String? confirmPasswordValidator(
-      String? value, TextEditingController passwordController) {
-    if (value == null || value.isEmpty) return "Confirm Password cannot be empty";
+    String? value,
+    TextEditingController passwordController,
+  ) {
+    if (value == null || value.isEmpty)
+      return "Confirm Password cannot be empty";
     if (value != passwordController.text) return "Passwords do not match";
     return null;
   }
 
   // Common Password Field
   Widget passwordField() {
-    return   CustomTextField(
+    return CustomTextField(
       hint: "",
       icon: Icons.lock,
       isPassword: true,
@@ -56,15 +58,18 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
       },
     );
   }
+
   Widget confirmPasswordField() {
     return CustomTextField(
       hint: "",
       icon: Icons.lock,
       isPassword: true,
       controller: loginController.confirmPasswordController,
-      validator: (value) => confirmPasswordValidator(value, loginController.passwordController),
+      validator: (value) =>
+          confirmPasswordValidator(value, loginController.passwordController),
     );
   }
+
   Widget submitButton() {
     return SizedBox(
       width: double.infinity,
@@ -81,7 +86,9 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(0),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           backgroundColor: Colors.transparent,
           elevation: 5,
         ),
@@ -103,17 +110,20 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
-              ),
+            ),
           ),
         ),
       ),
     );
   }
+
   @override
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
   }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     String platform = kIsWeb
@@ -131,7 +141,7 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.primary,AppColors.secondary],
+                  colors: [AppColors.primary, AppColors.secondary],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -144,24 +154,24 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
                 width: size > 800 ? 450 : size * 0.85,
                 padding: const EdgeInsets.all(40),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(25),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
                   ],
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
-                child:  GetBuilder<LoginController>(
-                    init: loginController,
-                    builder: (controller) {
-                      return Column(
+                child: GetBuilder<LoginController>(
+                  init: loginController,
+                  builder: (controller) {
+                    return Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,30 +183,37 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
                             child: ClipOval(
                               child: loginController.appLogoUrl != null
                                   ? Image.network(
-                                loginController.appLogoUrl!,
-                                fit: BoxFit.cover,
-                                width: 80,
-                                height: 80,
-                              )
+                                      loginController.appLogoUrl!,
+                                      fit: BoxFit.cover,
+                                      width: 80,
+                                      height: 80,
+                                    )
                                   : Container(
-                                color: Colors.white.withOpacity(0.3),
-                                child: const Icon(
-                                  Icons.medical_services,
-                                  size: 50,
-                                  color: Colors.white,
-                                ),
-                              ),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                      child: const Icon(
+                                        Icons.medical_services,
+                                        size: 50,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                             ),
                           ),
                         ),
                         const SizedBox(height: 20),
 
-                         Center(
-                           child: Text(
+                        Center(
+                          child: Text(
                             "Change Password",
-                            style: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),),
-                         ),
-                        SizedBox(height: size*0.01),
+                            style: AppTextStyles.body(
+                              context,
+                              color: AppColors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: size * 0.01),
                         //  Text(
                         //   "Forgot Password",
                         // style: AppTextStyles.caption(context,color: AppColors.white),),
@@ -204,26 +221,33 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
                         //  SizedBox(height: size*0.01),
                         Text(
                           "New Password",
-                          style: AppTextStyles.caption(context,color: AppColors.white),),
-                        SizedBox(height: size*0.005),
+                          style: AppTextStyles.caption(
+                            context,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        SizedBox(height: size * 0.005),
 
                         passwordField(),
-                        SizedBox(height: size*0.01),
+                        SizedBox(height: size * 0.01),
                         Text(
                           "Confirm Password",
-                          style: AppTextStyles.caption(context,color: AppColors.white),),
-                        SizedBox(height: size*0.005),
+                          style: AppTextStyles.caption(
+                            context,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        SizedBox(height: size * 0.005),
                         confirmPasswordField(),
-                        SizedBox(height: size*0.08),
+                        SizedBox(height: size * 0.08),
                         submitButton(),
-                        SizedBox(height: size*0.01),
-
+                        SizedBox(height: size * 0.01),
                       ],
                     );
-                  }
+                  },
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

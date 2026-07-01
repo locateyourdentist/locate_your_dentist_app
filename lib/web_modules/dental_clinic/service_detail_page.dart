@@ -10,7 +10,7 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 
 class ServiceDetailPageWeb extends StatefulWidget {
-  const ServiceDetailPageWeb({Key? key}) : super(key: key);
+  const ServiceDetailPageWeb({super.key});
 
   @override
   State<ServiceDetailPageWeb> createState() => _ServiceDetailPageWebState();
@@ -18,7 +18,8 @@ class ServiceDetailPageWeb extends StatefulWidget {
 
 class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKeyServiceDetail = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyServiceDetail =
+      GlobalKey<ScaffoldState>();
   final serviceController = Get.put(ServiceController());
   final loginController = Get.put(LoginController());
 
@@ -59,15 +60,13 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
       ),
     );
 
-    _titleSlide = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.25, curve: Curves.easeOut),
-      ),
-    );
+    _titleSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.0, 0.25, curve: Curves.easeOut),
+          ),
+        );
 
     /// Image Animation
     _imageFade = Tween<double>(begin: 0, end: 1).animate(
@@ -77,15 +76,13 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
       ),
     );
 
-    _imageSlide = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.25, 0.5, curve: Curves.easeOut),
-      ),
-    );
+    _imageSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.25, 0.5, curve: Curves.easeOut),
+          ),
+        );
 
     /// Price Animation
     _priceFade = Tween<double>(begin: 0, end: 1).animate(
@@ -95,15 +92,13 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
       ),
     );
 
-    _priceSlide = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.5, 0.7, curve: Curves.easeOut),
-      ),
-    );
+    _priceSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.5, 0.7, curve: Curves.easeOut),
+          ),
+        );
 
     /// Description Animation
     _descFade = Tween<double>(begin: 0, end: 1).animate(
@@ -113,15 +108,13 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
       ),
     );
 
-    _descSlide = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.7, 1.0, curve: Curves.easeOut),
-      ),
-    );
+    _descSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.7, 1.0, curve: Curves.easeOut),
+          ),
+        );
 
     _controller.forward();
   }
@@ -148,7 +141,9 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
     return Scaffold(
       key: _scaffoldKeyServiceDetail,
       backgroundColor: AppColors.white,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       appBar: CommonWebAppBar(
         height: isMobile ? 60 : 80,
         title: "LOCATE YOUR DENTIST",
@@ -177,14 +172,21 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
                           left: 10,
                           child: IconButton(
                             icon: const Icon(Icons.menu),
-                            onPressed: () => _scaffoldKeyServiceDetail.currentState?.openDrawer(),
+                            onPressed: () => _scaffoldKeyServiceDetail
+                                .currentState
+                                ?.openDrawer(),
                           ),
                         ),
                       SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.fromLTRB(isMobile ? 10 : 25, isLoggedIn && !isDesktop ? 60 : 25, isMobile ? 10 : 25, 25),
+                        padding: EdgeInsets.fromLTRB(
+                          isMobile ? 10 : 25,
+                          isLoggedIn && !isDesktop ? 60 : 25,
+                          isMobile ? 10 : 25,
+                          25,
+                        ),
                         child: Center(
-                          child:ConstrainedBox(
+                          child: ConstrainedBox(
                             constraints: const BoxConstraints(maxWidth: 1200),
                             child: Container(
                               width: double.infinity,
@@ -192,7 +194,11 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: const [
-                                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 6,
+                                    offset: Offset(0, 3),
+                                  ),
                                 ],
                               ),
                               child: Column(
@@ -215,7 +221,7 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
                                       ),
                                     ),
                                   ),
-    
+
                                   const SizedBox(height: 10),
                                   SlideTransition(
                                     position: _imageSlide,
@@ -224,24 +230,30 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
                                       child: Container(
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withOpacity(0.06),
+                                              color: Colors.black.withValues(
+                                                alpha: 0.06,
+                                              ),
                                               blurRadius: 20,
                                               offset: const Offset(0, 10),
                                             ),
                                           ],
                                         ),
-                                        padding:  const EdgeInsets.all(16),
+                                        padding: const EdgeInsets.all(16),
                                         child: NetworkImageCarousel(
-                                          services: loginController.serviceFileImages
+                                          services: loginController
+                                              .serviceFileImages
                                               .map((e) => e.url ?? "")
-                                              .toList(),                                    ),
+                                              .toList(),
+                                        ),
                                       ),
                                     ),
                                   ),
-    
+
                                   const SizedBox(height: 10),
                                   SlideTransition(
                                     position: _priceSlide,
@@ -253,10 +265,14 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
                                           padding: const EdgeInsets.all(10.0),
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 8),
+                                              horizontal: 16,
+                                              vertical: 8,
+                                            ),
                                             decoration: BoxDecoration(
-                                              color: AppColors.primary.withOpacity(0.1),
-                                              borderRadius: BorderRadius.circular(30),
+                                              color: AppColors.primary
+                                                  .withValues(alpha: 0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
                                             ),
                                             child: Text(
                                               "₹ ${service.serviceCost}",
@@ -278,7 +294,8 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
                                       child: Padding(
                                         padding: const EdgeInsets.all(20.0),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'Description',
@@ -288,7 +305,7 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                             const SizedBox(height: 10),
+                                            const SizedBox(height: 10),
                                             Text(
                                               service.serviceDescription ?? "",
                                               style: AppTextStyles.caption(

@@ -12,7 +12,6 @@ import 'package:locate_your_dentist/web_modules/superAdmin/add_contact_details.d
 import 'package:locate_your_dentist/web_modules/superAdmin/add_gst_web.dart';
 import 'package:get/get.dart';
 
-
 class SettingsPageWeb extends StatefulWidget {
   const SettingsPageWeb({super.key});
 
@@ -23,22 +22,27 @@ class SettingsPageWeb extends StatefulWidget {
 class _SettingsPageWebState extends State<SettingsPageWeb> {
   @override
   final TextEditingController emailController = TextEditingController();
-  final GlobalKey<ScaffoldState> _scaffoldKeySetting = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeySetting =
+      GlobalKey<ScaffoldState>();
 
   final TextEditingController passwordController = TextEditingController();
-  final loginController=Get.put(LoginController());
+  final loginController = Get.put(LoginController());
   final _formKeyChangePasswordWeb1 = GlobalKey<FormState>();
   bool passwordVisible = false;
   bool confirmPasswordVisible = false;
 
   String? confirmPasswordValidator(
-      String? value, TextEditingController passwordController) {
-    if (value == null || value.isEmpty) return "Confirm Password cannot be empty";
+    String? value,
+    TextEditingController passwordController,
+  ) {
+    if (value == null || value.isEmpty)
+      return "Confirm Password cannot be empty";
     if (value != passwordController.text) return "Passwords do not match";
     return null;
   }
+
   Widget passwordField() {
-    return   CustomTextField(
+    return CustomTextField(
       hint: "Password",
       icon: Icons.lock,
       isPassword: true,
@@ -66,15 +70,18 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
       },
     );
   }
+
   Widget confirmPasswordField() {
     return CustomTextField(
       hint: "Confirm Password",
       icon: Icons.lock,
       isPassword: true,
       controller: loginController.confirmPasswordController,
-      validator: (value) => confirmPasswordValidator(value, loginController.passwordController),
+      validator: (value) =>
+          confirmPasswordValidator(value, loginController.passwordController),
     );
   }
+
   Widget submitButton() {
     return SizedBox(
       width: 100,
@@ -82,12 +89,19 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
       child: ElevatedButton(
         onPressed: () {
           if (_formKeyChangePasswordWeb1.currentState!.validate()) {
-            loginController.changePassword(Api.userInfo.read('userId')??"",loginController.oldPasswordController.text,loginController.confirmPasswordController.text,context);
+            loginController.changePassword(
+              Api.userInfo.read('userId') ?? "",
+              loginController.oldPasswordController.text,
+              loginController.confirmPasswordController.text,
+              context,
+            );
           }
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(0),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           backgroundColor: Colors.transparent,
           elevation: 5,
         ),
@@ -115,8 +129,10 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
       ),
     );
   }
+
+  @override
   Widget build(BuildContext context) {
-    double s=MediaQuery.of(context).size.width;
+    double s = MediaQuery.of(context).size.width;
     final double width = MediaQuery.of(context).size.width;
     final bool isMobile = width < 600;
     final bool isTablet = width >= 600 && width < 1024;
@@ -130,21 +146,19 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
         appBar: CommonWebAppBar(
           height: s * 0.03,
           title: "LYD",
-          onLogout: () {
-          },
-          onNotification: () {
-          },
-         ),
-        body:  Row(
+          onLogout: () {},
+          onNotification: () {},
+        ),
+        body: Row(
           children: [
             if (isDesktop) const AdminSideBar(),
 
             Expanded(
               child: Padding(
-                padding:  const EdgeInsets.all(30.0),
-                child:Center(
+                padding: const EdgeInsets.all(30.0),
+                child: Center(
                   child: ConstrainedBox(
-                    constraints:  const BoxConstraints(maxWidth: 900),
+                    constraints: const BoxConstraints(maxWidth: 900),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,12 +167,19 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: IconButton(
-                              icon: const Icon(Icons.menu, color: AppColors.black),
-                              onPressed: () => _scaffoldKeySetting.currentState?.openDrawer(),
+                              icon: const Icon(
+                                Icons.menu,
+                                color: AppColors.black,
+                              ),
+                              onPressed: () => _scaffoldKeySetting.currentState
+                                  ?.openDrawer(),
                             ),
                           ),
-                        Text('Settings',style: AppTextStyles.subtitle(context),),
-                         SizedBox(height: s*0.005,),
+                        Text(
+                          'Settings',
+                          style: AppTextStyles.subtitle(context),
+                        ),
+                        SizedBox(height: s * 0.005),
                         Text(
                           'Manage your account, company details and preferences',
                           style: AppTextStyles.caption(
@@ -166,44 +187,94 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
                             color: Colors.grey,
                           ),
                         ),
-                        SizedBox(height: s*0.01,),
+                        SizedBox(height: s * 0.01),
                         TabBar(
                           indicatorWeight: 3,
                           indicatorColor: AppColors.black,
                           labelColor: AppColors.black,
                           tabs: [
-                            Tab(child: SizedBox(
-                              width: s*0.07,
-                              child: Center(child: Text("Change Password",style: AppTextStyles.caption(context,fontWeight: FontWeight.w500),)),
-                            )),
-                            Tab(child: SizedBox(
-                              width: s*0.07,
-                              child: Center(child: Text("Change Logo",style: AppTextStyles.caption(context,fontWeight: FontWeight.w500),)),
-                            )),
-                            Tab(child: SizedBox(
-                              width: s*0.07,
-                              child: Center(child: Text("Add GST",style: AppTextStyles.caption(context,fontWeight: FontWeight.w500),)),
-                            )),
-                            Tab(child: SizedBox(
-                              width: s*0.07,
-                              child: Center(child: Text("Add Company Details",style: AppTextStyles.caption(context,fontWeight: FontWeight.w500))),
-                            )),
-                            Tab(child: SizedBox(
-                              width: s*0.07,
-                              child: Center(child: Text("Add Contact Details",style: AppTextStyles.caption(context,fontWeight: FontWeight.w500))),
-                            )),
+                            Tab(
+                              child: SizedBox(
+                                width: s * 0.07,
+                                child: Center(
+                                  child: Text(
+                                    "Change Password",
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Tab(
+                              child: SizedBox(
+                                width: s * 0.07,
+                                child: Center(
+                                  child: Text(
+                                    "Change Logo",
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Tab(
+                              child: SizedBox(
+                                width: s * 0.07,
+                                child: Center(
+                                  child: Text(
+                                    "Add GST",
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Tab(
+                              child: SizedBox(
+                                width: s * 0.07,
+                                child: Center(
+                                  child: Text(
+                                    "Add Company Details",
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Tab(
+                              child: SizedBox(
+                                width: s * 0.07,
+                                child: Center(
+                                  child: Text(
+                                    "Add Contact Details",
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                          Expanded(
+                        Expanded(
                           child: TabBarView(
                             children: [
                               //ChangePasswordTab(),
-                            // ChangePasswordWebPage(),
+                              // ChangePasswordWebPage(),
                               Container(
                                 width: double.infinity,
                                 //color: Colors.grey[100],
                                 decoration: BoxDecoration(
-                                  color:AppColors.white,
+                                  color: AppColors.white,
                                   borderRadius: BorderRadius.circular(12),
                                   // boxShadow: const [
                                   //   BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
@@ -220,22 +291,28 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
                                             Container(
                                               decoration: const BoxDecoration(
                                                 gradient: LinearGradient(
-                                                  colors: [ AppColors.scaffoldBg, AppColors.scaffoldBg,],
+                                                  colors: [
+                                                    AppColors.scaffoldBg,
+                                                    AppColors.scaffoldBg,
+                                                  ],
                                                   begin: Alignment.topLeft,
                                                   end: Alignment.bottomRight,
                                                 ),
                                               ),
                                             ),
-                                  
+
                                             Center(
                                               child: Container(
                                                 width: double.infinity,
                                                 //width: size.width > 800 ? 450 : size.width * 0.85,
-                                                padding: const EdgeInsets.all(40),
+                                                padding: const EdgeInsets.all(
+                                                  40,
+                                                ),
                                                 decoration: BoxDecoration(
                                                   color: AppColors.white,
                                                   //.withOpacity(0.15),
-                                                  borderRadius: BorderRadius.circular(0),
+                                                  borderRadius:
+                                                      BorderRadius.circular(0),
                                                   // boxShadow: [
                                                   //   BoxShadow(
                                                   //     color: Colors.black.withOpacity(0.2),
@@ -249,70 +326,107 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
                                                     width: 1,
                                                   ),
                                                 ),
-                                                child:  GetBuilder<LoginController>(
-                                                    init: loginController,
-                                                    builder: (controller) {
-                                                      return Column(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: [
-                                                          SizedBox(
-                                                            height: 80,
-                                                            width: 80,
-                                                            child: ClipOval(
-                                                              child: loginController.appLogoUrl != null
-                                                                  ? Image.network(
-                                                                loginController.appLogoUrl!,
-                                                                fit: BoxFit.cover,
-                                                                width: 80,
-                                                                height: 80,
-                                                              )
-                                                                  : Container(
-                                                                color: Colors.white.withOpacity(0.3),
-                                                                child: const Icon(
-                                                                  Icons.medical_services,
-                                                                  size: 50,
-                                                                  color: Colors.white,
-                                                                ),
+                                                child: GetBuilder<LoginController>(
+                                                  init: loginController,
+                                                  builder: (controller) {
+                                                    return Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 80,
+                                                          width: 80,
+                                                          child: ClipOval(
+                                                            child:
+                                                                loginController
+                                                                        .appLogoUrl !=
+                                                                    null
+                                                                ? Image.network(
+                                                                    loginController
+                                                                        .appLogoUrl!,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    width: 80,
+                                                                    height: 80,
+                                                                  )
+                                                                : Container(
+                                                                    color: Colors
+                                                                        .white
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.3,
+                                                                        ),
+                                                                    child: const Icon(
+                                                                      Icons
+                                                                          .medical_services,
+                                                                      size: 50,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                  ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+
+                                                        Text(
+                                                          "Change Password",
+                                                          style:
+                                                              AppTextStyles.body(
+                                                                context,
+                                                                color: AppColors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 20),
-                                  
-                                                          Text(
-                                                            "Change Password",
-                                                            style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                                                          //const SizedBox(height: 10),
-                                                          // Text(
-                                                          //   "Forgot Password",
-                                                          //   style: AppTextStyles.caption(context,color: AppColors.white),),
-                                                          // const SizedBox(height: 30),
-                                                          const SizedBox(height: 20),
-                                  
-                                                          CustomTextField(
-                                                            hint: "Old Password",
-                                                            icon: Icons.lock,
-                                                            isPassword: true,
-                                                            controller: loginController.oldPasswordController,
-                                                            validator: (value) {
-                                                              if (value == null || value.isEmpty) return "Password cannot be empty";
-                                                              // if (value.length < 6) return "Password must be at least 6 characters";
-                                                              return null;
-                                                            },
-                                                          ),
-                                                          const SizedBox(height: 20),
-                                                          passwordField(),
-                                                          const SizedBox(height: 20),
-                                                          confirmPasswordField(),
-                                                          const SizedBox(height: 30),
-                                                          submitButton(),
-                                                          const SizedBox(height: 20),
-                                  
-                                                        ],
-                                                      );
-                                                    }
+                                                        ),
+                                                        //const SizedBox(height: 10),
+                                                        // Text(
+                                                        //   "Forgot Password",
+                                                        //   style: AppTextStyles.caption(context,color: AppColors.white),),
+                                                        // const SizedBox(height: 30),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+
+                                                        CustomTextField(
+                                                          hint: "Old Password",
+                                                          icon: Icons.lock,
+                                                          isPassword: true,
+                                                          controller:
+                                                              loginController
+                                                                  .oldPasswordController,
+                                                          validator: (value) {
+                                                            if (value == null ||
+                                                                value.isEmpty)
+                                                              return "Password cannot be empty";
+                                                            // if (value.length < 6) return "Password must be at least 6 characters";
+                                                            return null;
+                                                          },
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        passwordField(),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        confirmPasswordField(),
+                                                        const SizedBox(
+                                                          height: 30,
+                                                        ),
+                                                        submitButton(),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
                                                 ),
                                               ),
-                                            )
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -325,7 +439,7 @@ class _SettingsPageWebState extends State<SettingsPageWeb> {
                               const AddGstDetailsWeb(),
                               const CompanyFormWeb(),
 
-                              AddContactFormWeb()
+                              AddContactFormWeb(),
                             ],
                           ),
                         ),
