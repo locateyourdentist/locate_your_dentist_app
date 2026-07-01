@@ -517,7 +517,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                               ),
                           SizedBox(
                             width: double.infinity,
-                            height: isMobile?300:1200,
+                            height: isMobile?600:1200,
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [
@@ -549,7 +549,10 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                   bottom: 30,
                                   child: Center(
                                       child: Container(
-                                        width:isMobile?300: 1500,
+                                         // width:1500,
+                                        width: isMobile
+                                            ? MediaQuery.of(context).size.width * 0.92
+                                            : 1500,
                                         margin: const EdgeInsets.symmetric(horizontal: 20),
                                         padding: const EdgeInsets.all(25),
                                         decoration: BoxDecoration(
