@@ -44,7 +44,7 @@ class _NetworkImageCarouselState extends State<NetworkImageCarousel> {
 
     String imageUrl = (img ?? "").replaceAll("\\", "/");
     return SizedBox(
-      height: width * 0.6,
+      height: width * 0.35,
       width: width,
       child: Stack(
         alignment: Alignment.center,

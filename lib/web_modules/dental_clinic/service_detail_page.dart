@@ -149,12 +149,13 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
       key: _scaffoldKeyServiceDetail,
       backgroundColor: AppColors.white,
       drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
-      appBar: CommonWebAppBar(
-        height: isMobile ? 60 : 80,
-        title: "LOCATE YOUR DENTIST",
-        onLogout: () {},
-        onNotification: () {},
-      ),
+      appBar: isLoggedIn ? CommonWebAppBar(height: isMobile ? 60 : 80, title: "LYD") : const CommonHeader(),
+      // appBar: CommonWebAppBar(
+      //   height: isMobile ? 60 : 80,
+      //   title: "LOCATE YOUR DENTIST",
+      //   onLogout: () {},
+      //   onNotification: () {},
+      // ),
       body: GetBuilder<ServiceController>(
         builder: (_) {
           if (serviceController.serviceDetails.isEmpty) {
@@ -165,153 +166,164 @@ class _ServiceDetailPageWebState extends State<ServiceDetailPageWeb>
           final service = serviceController.serviceDetails.first;
           return RefreshIndicator(
             onRefresh: _refresh,
-            child: Row(
-              children: [
-                if (isLoggedIn && isDesktop) const AdminSideBar(),
-                Expanded(
-                  child: Stack(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
                     children: [
-                      if (!isDesktop)
-                        Positioned(
-                          top: 10,
-                          left: 10,
-                          child: IconButton(
-                            icon: const Icon(Icons.menu),
-                            onPressed: () => _scaffoldKeyServiceDetail.currentState?.openDrawer(),
-                          ),
-                        ),
-                      SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.fromLTRB(isMobile ? 10 : 25, isLoggedIn && !isDesktop ? 60 : 25, isMobile ? 10 : 25, 25),
-                        child: Center(
-                          child:ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 1200),
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: const [
-                                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
-                                ],
+                      if (isLoggedIn && isDesktop) const AdminSideBar(),
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            if (!isDesktop)
+                              Positioned(
+                                top: 10,
+                                left: 10,
+                                child: IconButton(
+                                  icon: const Icon(Icons.menu),
+                                  onPressed: () => _scaffoldKeyServiceDetail.currentState?.openDrawer(),
+                                ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SlideTransition(
-                                    position: _titleSlide,
-                                    child: FadeTransition(
-                                      opacity: _titleFade,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Text(
-                                          service.serviceTitle ?? "",
-                                          style: AppTextStyles.body(
-                                            context,
-                                            color: AppColors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
+                            SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              padding: EdgeInsets.fromLTRB(isMobile ? 10 : 25, isLoggedIn && !isDesktop ? 60 : 25, isMobile ? 10 : 25, 25),
+                              child: Center(
+                                child:ConstrainedBox(
+                                  constraints: const BoxConstraints(maxWidth: 1200),
+                                  child: Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: const [
+                                        BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                                      ],
                                     ),
-                                  ),
-    
-                                  const SizedBox(height: 10),
-                                  SlideTransition(
-                                    position: _imageSlide,
-                                    child: FadeTransition(
-                                      opacity: _imageFade,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(20),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withOpacity(0.06),
-                                              blurRadius: 20,
-                                              offset: const Offset(0, 10),
-                                            ),
-                                          ],
-                                        ),
-                                        padding:  const EdgeInsets.all(16),
-                                        child: NetworkImageCarousel(
-                                          services: loginController.serviceFileImages
-                                              .map((e) => e.url ?? "")
-                                              .toList(),                                    ),
-                                      ),
-                                    ),
-                                  ),
-    
-                                  const SizedBox(height: 10),
-                                  SlideTransition(
-                                    position: _priceSlide,
-                                    child: FadeTransition(
-                                      opacity: _priceFade,
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 8),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.primary.withOpacity(0.1),
-                                              borderRadius: BorderRadius.circular(30),
-                                            ),
-                                            child: Text(
-                                              "₹ ${service.serviceCost}",
-                                              style: AppTextStyles.subtitle(
-                                                context,
-                                                color: AppColors.primary,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SlideTransition(
+                                          position: _titleSlide,
+                                          child: FadeTransition(
+                                            opacity: _titleFade,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(12.0),
+                                              child: Center(
+                                                child: Text(
+                                                  service.serviceTitle ?? "",
+                                                  style: AppTextStyles.body(
+                                                    context,
+                                                    color: AppColors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  SlideTransition(
-                                    position: _descSlide,
-                                    child: FadeTransition(
-                                      opacity: _descFade,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Description',
-                                              style: AppTextStyles.body(
-                                                context,
-                                                color: AppColors.black,
-                                                fontWeight: FontWeight.bold,
+              
+                                        const SizedBox(height: 10),
+                                        SlideTransition(
+                                          position: _imageSlide,
+                                          child: FadeTransition(
+                                            opacity: _imageFade,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withOpacity(0.06),
+                                                    blurRadius: 20,
+                                                    offset: const Offset(0, 10),
+                                                  ),
+                                                ],
                                               ),
+                                              padding:  const EdgeInsets.all(16),
+                                              child: NetworkImageCarousel(
+                                                services: loginController.serviceFileImages
+                                                    .map((e) => e.url ?? "")
+                                                    .toList(),                                    ),
                                             ),
-                                             const SizedBox(height: 10),
-                                            Text(
-                                              service.serviceDescription ?? "",
-                                              style: AppTextStyles.caption(
-                                                context,
-                                                color: AppColors.black,
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
+              
+                                        const SizedBox(height: 10),
+                                        SlideTransition(
+                                          position: _priceSlide,
+                                          child: FadeTransition(
+                                            opacity: _priceFade,
+                                            child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: Container(
+                                                  padding: const EdgeInsets.symmetric(
+                                                      horizontal: 16, vertical: 8),
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.primary.withOpacity(0.1),
+                                                    borderRadius: BorderRadius.circular(30),
+                                                  ),
+                                                  child: Text(
+                                                    "Price: ₹ ${service.serviceCost}",
+                                                    style: AppTextStyles.subtitle(
+                                                      context,
+                                                      color: AppColors.primary,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        SlideTransition(
+                                          position: _descSlide,
+                                          child: FadeTransition(
+                                            opacity: _descFade,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(20.0),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Description',
+                                                    style: AppTextStyles.body(
+                                                      context,
+                                                      color: AppColors.black,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                   const SizedBox(height: 10),
+                                                  Text(
+                                                    service.serviceDescription ?? "",
+                                                    style: AppTextStyles.caption(
+                                                      context,
+                                                      color: AppColors.black,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+              
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(height: 20),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  const CommonFooter(),
+              
+                ],
+              ),
             ),
           );
         },

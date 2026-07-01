@@ -1,12 +1,14 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import '../common_widgets/color_code.dart';
 import '../common_widgets/common_textstyles.dart';
 import '../modules/auth/login_screen/login_controller.dart';
 import '../modules/dashboard/jobController.dart';
 import '../api/api.dart';
+import '../modules/notification_page/notificationController.dart';
 
 
 
@@ -26,6 +28,7 @@ class FilterDrawer extends StatefulWidget {
 class _FilterDrawerContentState extends State<FilterDrawer> {
   final loginController = Get.put(LoginController());
   final jobController = Get.put(JobController());
+  final notificationController=Get.put(NotificationController());
 
   @override
   void initState() {
@@ -101,6 +104,28 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                   },
                 ),
                 const SizedBox(height: 20),
+                if (Api.userInfo.read('userType') == 'superAdmin')
+                  CustomDropdownField(
+                    hint: "Select User Type",
+                    fillColor: AppColors.white,
+                    borderColor: Colors.grey.shade300,
+                    items: const [
+                      "All",
+                      "Dental Clinic",
+                      "Dental Lab",
+                      "Dental Shop",
+                      "Dental Mechanic",
+                      "Dental Consultant",
+                      "Job Seekers"
+                    ],
+                    selectedValue: notificationController.selectedUserType?.isEmpty == true ? null:
+                    notificationController.selectedUserType,
+                    onChanged: (value) {
+                      notificationController.selectedUserType = value;
+                      notificationController.update();
+                    },
+                  ),
+                const SizedBox(height: 20),
 
                 _sectionTitle("Select Location"),
                // Row(
@@ -156,8 +181,17 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                               style: AppTextStyles.body(context),
                             ),),
                           buttonText: Text(
-                            "district",
-                            style: AppTextStyles.caption(context,color: AppColors.grey),
+                            loginController.selectedDistricts.isEmpty
+                                ? "District"
+                                : loginController.selectedDistricts.first,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.caption(
+                              context,
+                              color: loginController.selectedDistricts.isEmpty
+                                  ? AppColors.grey
+                                  : AppColors.black,
+                            ),
                           ),
                           decoration: const BoxDecoration(),
                           searchable: true,
@@ -187,66 +221,6 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                   ],
                 ),
                 const SizedBox(height: 20),
-
-                // _talukaDropdown(),
-                // const SizedBox(height: 20),
-                // Container(
-                //   width: double.infinity,
-                //   padding: const EdgeInsets.symmetric(
-                //     horizontal: 12,
-                //     vertical: 8,
-                //   ),
-                //   decoration: BoxDecoration(
-                //     color: Colors.white,
-                //     borderRadius: BorderRadius.circular(8),
-                //     border: Border.all(
-                //      color:  Colors.grey.shade300,
-                //       width: 1,
-                //     ),
-                //   ),
-                //   child: MultiSelectDialogField<String>(
-                //     checkColor: AppColors.primary,buttonIcon: const Icon(
-                //     Icons.arrow_drop_down,
-                //     color: AppColors.white,
-                //     size: 2,
-                //   ),
-                //     items: loginController.villages
-                //         .toSet()
-                //         .map((e) => MultiSelectItem<String>(
-                //       e.toString(),
-                //       e.toString(),
-                //     ))
-                //         .toList(),
-                //
-                //     title:  Center(child: Text("Select Areas",style: AppTextStyles.body(context),)),
-                //     decoration: const BoxDecoration(),
-                //
-                //     buttonText:  Text("Select Areas",textAlign:TextAlign.center,style: AppTextStyles.caption(context,color: AppColors.grey),),
-                //     searchable: true,
-                //     dialogHeight: 200,
-                //     dialogWidth: 100,
-                //
-                //     initialValue: loginController.selectedVillages,
-                //
-                //     onConfirm: (values) {
-                //       loginController.selectedVillages =
-                //           values.map((e) => e.toString()).toList();
-                //
-                //       print(loginController.selectedVillage);
-                //
-                //       loginController.update();
-                //     },
-                //
-                //     chipDisplay: MultiSelectChipDisplay(
-                //       height: 130,
-                //       chipWidth: 100,textStyle: AppTextStyles.caption(context),
-                //       onTap: (value) {
-                //         loginController.selectedVillages.remove(value);
-                //         loginController.update();
-                //       },
-                //     ),
-                //   ),
-                // ),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
@@ -281,8 +255,17 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                         style: AppTextStyles.body(context),
                       ),),
                     buttonText: Text(
-                      "Taluka",
-                      style: AppTextStyles.caption(context,color: AppColors.grey),
+                      loginController.selectedTalukas.isEmpty
+                          ? "Taluka"
+                          : loginController.selectedTalukas.first,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.caption(
+                        context,
+                        color: loginController.selectedTalukas.isEmpty
+                            ? AppColors.grey
+                            : AppColors.black,
+                      ),
                     ),
                     decoration: const BoxDecoration(),
                     searchable: true,
@@ -338,8 +321,17 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                     ),
 
                     buttonText: Text(
-                      "Area",
-                      style: AppTextStyles.caption(context),
+                      loginController.selectedVillages.isEmpty
+                          ? "Areas"
+                          : loginController.selectedVillages.first,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.caption(
+                        context,
+                        color: loginController.selectedVillages.isEmpty
+                            ? AppColors.grey
+                            : AppColors.black,
+                      ),
                     ),
                     decoration: const BoxDecoration(),
 
@@ -503,7 +495,7 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
         return SizedBox(
           height: 55,
           child: CustomDropdown<String>.search(
-            hintText: "Select State",
+            hintText: "State",
             //items: loginController.states.map((s) => s['name'].toString()).toList(),
             items: loginController.states.map((s) => s.toString()).toList(),
             //initialItem: loginController.selectedState,

@@ -142,16 +142,6 @@ import '../../common_widgets/platform_helper.dart';
             ),
           ),
         ),
-        // leading: Padding(
-        //   padding:  const EdgeInsets.all(8.0),
-        //   child: CircleAvatar(
-        //     radius: size * 0.13,
-        //     child: ClipRRect(
-        //       borderRadius: BorderRadius.circular(50),
-        //       child: ProfileImageWidget(size: size),
-        //     ),
-        //   ),
-        // ),
         centerTitle: false,
         title: Column(
           mainAxisAlignment:MainAxisAlignment.start,

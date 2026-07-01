@@ -228,7 +228,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                       child: Padding(
                         padding: EdgeInsets.all(isMobile ? 10 : 20),
                         child:ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 700),
+                          constraints: const BoxConstraints(maxWidth: 900),
                           child: Container(
                             width: double.infinity,
                             decoration: BoxDecoration(

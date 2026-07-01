@@ -312,7 +312,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemCount: title.length,
                                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3, // 3 items per row
+                                  crossAxisCount: 3,
                                   crossAxisSpacing: 15,
                                   mainAxisSpacing: 15,
                                   childAspectRatio: 1.1,
@@ -327,7 +327,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                           'sUserType',
                                           title[index].toString(),
                                         );
-
+                                      print('title inx${title[index]}');
                                         await loginController.getProfileDetails(
                                           title[index],
                                           '',
@@ -340,7 +340,14 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                           '',
                                           context,
                                         );
-
+                                        void _clearAllFilters() async {
+                                          loginController.selectedCategories.clear();
+                                          loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedVillage = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
+                                          loginController.selectedVillages.clear();
+                                          loginController.update();
+                                          await loginController.getProfileDetails("", "", [], [],[] ,"", "", "", "", "", context);
+                                        }
+                                        _clearAllFilters();
                                         if (Get.currentRoute != '/userTypeListPage') {
                                           Get.toNamed('/userTypeListPage');
                                         }

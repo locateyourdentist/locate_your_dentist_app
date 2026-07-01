@@ -23,7 +23,55 @@ class ViewClinicPatients extends StatefulWidget {
 class _ViewClinicPatientsState extends State<ViewClinicPatients> {
   final GlobalKey<ScaffoldState> _scaffoldKeyPatients = GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
+  void _clearAllFilters() async {
+    loginController.selectedCategories.clear();
+    loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedVillage = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
+    loginController.selectedVillages.clear();
+    loginController.selectedDistricts.clear();
+    loginController.selectedTalukas.clear();
+    loginController.update();
+    await loginController.getProfileDetails("", "", [], [],[] ,"", "", "", "", "", context);
+  }
 
+  Widget _buildActiveFilters(bool isMobile) {
+    bool hasFilters = loginController.selectedDistance != null || loginController.selectedState != null || loginController.selectedDistrict != null || loginController.selectedTaluka != null || loginController.selectedJobType != null || loginController.selectedSalary != null || loginController.selectedCategories.isNotEmpty;
+    if (!hasFilters) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Wrap(
+        spacing: 8, runSpacing: 8,
+        children: [
+          if (loginController.selectedState != null) InputChip(label: Text(loginController.selectedState!), onDeleted: () { loginController.selectedState = null; loginController.update(); }),
+         // if (loginController.selectedDistricts != null) InputChip(label: Text(loginController.selectedDistrict!), onDeleted: () { loginController.selectedDistrict = null; loginController.update(); }),
+          //if (loginController.selectedTaluka != null) InputChip(label: Text(loginController.selectedTaluka!), onDeleted: () { loginController.selectedTaluka = null; loginController.update(); }),
+
+    ...loginController.selectedDistricts.map(
+    (village) => InputChip(
+    label: Text(village),
+    onDeleted: () {
+    loginController.selectedDistricts.remove(village);
+    loginController.update();
+    },)),
+          ...loginController.selectedTalukas.map(
+                  (village) => InputChip(
+                label: Text(village),
+                onDeleted: () {
+                  loginController.selectedTalukas.remove(village);
+                  loginController.update();
+                },)),
+          ...loginController.selectedVillages.map(
+                (village) => InputChip(
+              label: Text(village),
+              onDeleted: () {
+                loginController.selectedVillages.remove(village);
+                loginController.update();
+              },
+            ),
+          ),          TextButton(onPressed: () => _clearAllFilters(), child: const Text("Clear All", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
+        ],
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -114,29 +162,29 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
                                     child: FilterSidebar(),
                                   ),
                                 ),
-                              // if (isLoggedIn && !isDesktop)
-                              //   Positioned(
-                              //     top: 10,
-                              //     left: 10,
-                              //     child: IconButton(
-                              //       icon: const Icon(Icons.menu,color: AppColors.black,),
-                              //       onPressed: () => _scaffoldKeyPatients.currentState?.openDrawer(),
-                              //     ),
-                              //   ),
+
                               Expanded(
-                                child: controller.profileList.isEmpty
-                                    ? _buildEmptyState()
-                                    : ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: controller.profileList.length,
-                                  itemBuilder: (context, index) {
-                                    return _ClinicDashboardListCard(
-                                      clinic: controller.profileList[index],
-                                      loginController: controller,
-                                    );
-                                  },
-                                ),
+                                child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          _buildActiveFilters(isMobile),
+                                          if(controller.profileList.isEmpty)
+                                            _buildEmptyState(),
+                                          if(controller.profileList.isNotEmpty)
+                                            ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          itemCount: controller.profileList.length,
+                                          itemBuilder: (context, index) {
+                                          return _ClinicDashboardListCard(
+                                            clinic: controller.profileList[index],
+                                            loginController: controller,
+                                          );
+                                                                            },
+                                                                          ),
+                                        ],
+                                      ),
+                                    ),
                               ),
                             ],
                           ),
@@ -190,6 +238,7 @@ class _ClinicDashboardListCard extends StatefulWidget {
 
 class _ClinicDashboardListCardState extends State<_ClinicDashboardListCard> {
   bool _isHovered = false;
+  final loginController = Get.put(LoginController());
 
   bool get isBasePlanActive {
     final isActive = widget.clinic.details?["plan"]?["basePlan"]?["isActive"];
@@ -377,3 +426,4 @@ class _ClinicDashboardListCardState extends State<_ClinicDashboardListCard> {
     );
   }
 }
+
