@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/internal.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -307,7 +308,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                               borderRadius:  BorderRadius.vertical(top: Radius.circular(15)),
                               child: firstImage.isNotEmpty
                                   ? Image.network(
-                                  height:size < 700 ? (size * 0.65) : 300.0,
+                                  height:size < 700 ? (130) : 300.0,
                                   (firstImage.isNotEmpty && isAdminUser||
                                       ((planActive == true &&
                                           clinic.details["plan"]?["basePlan"]?["details"]?["images"] == true)))
@@ -516,7 +517,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                               ),
                           SizedBox(
                             width: double.infinity,
-                            height: 1200,
+                            height: isMobile?300:1200,
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [
@@ -533,7 +534,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                     color: Colors.black.withOpacity(.20),
                                   ),
                                 ),
-
+                                if(!isMobile)
                                 Positioned(
                                   right: 80,
                                   top: 0,
@@ -548,7 +549,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                   bottom: 30,
                                   child: Center(
                                       child: Container(
-                                        width: 1500,
+                                        width:isMobile?300: 1500,
                                         margin: const EdgeInsets.symmetric(horizontal: 20),
                                         padding: const EdgeInsets.all(25),
                                         decoration: BoxDecoration(
