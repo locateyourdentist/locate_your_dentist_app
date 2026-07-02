@@ -38,6 +38,7 @@ class _ExpensePageState extends State<ExpensePage> {
       state: selectedState,
     );
   }
+
   Color _getCategoryColor(String? category) {
     switch (category) {
       case "Salary":
@@ -51,6 +52,7 @@ class _ExpensePageState extends State<ExpensePage> {
         return Colors.grey.shade300;
     }
   }
+
   IconData _getCategoryIcon(String? category) {
     switch (category) {
       case "Salary":
@@ -64,6 +66,7 @@ class _ExpensePageState extends State<ExpensePage> {
         return Icons.category;
     }
   }
+
   void _showStatePickerDialog() {
     final states = ["Tamilnadu", "Karnataka", "Andhra"];
     String? tempSelectedState = selectedState;
@@ -75,9 +78,9 @@ class _ExpensePageState extends State<ExpensePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title:  Text(
+          title: Text(
             "Select State",
-            style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
+            style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
           ),
           content: SizedBox(
             width: double.maxFinite,
@@ -140,14 +143,18 @@ class _ExpensePageState extends State<ExpensePage> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
-    double size=MediaQuery.of(context).size.width;
+    double size = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         centerTitle: true,
-        title:  Text("Expense Details",style: AppTextStyles.body(context,fontWeight: FontWeight.bold),),
+        title: Text(
+          "Expense Details",
+          style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.white,
         actions: [
           IconButton(
@@ -157,7 +164,7 @@ class _ExpensePageState extends State<ExpensePage> {
               controller.categoryController.clear();
               Get.toNamed('/addExpensesPage');
             },
-            icon:  Icon(Icons.add,color: AppColors.primary,size: size*0.09,),
+            icon: Icon(Icons.add, color: AppColors.primary, size: size * 0.09),
           ),
         ],
       ),
@@ -214,18 +221,20 @@ class _ExpensePageState extends State<ExpensePage> {
                         borderRadius: BorderRadius.circular(18),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withValues(alpha: 0.08),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
                         ],
                       ),
                       child: Column(
-                        mainAxisSize: MainAxisSize.min, 
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           GetBuilder<LoginController>(
                             builder: (controller) {
-                              final items=controller.states.map((d) => d.toString()).toList();
+                              final items = controller.states
+                                  .map((d) => d.toString())
+                                  .toList();
                               return CustomDropdown<String>.search(
                                 hintText: "Select State",
                                 decoration: CustomDropdownDecoration(
@@ -240,13 +249,28 @@ class _ExpensePageState extends State<ExpensePage> {
                                     width: 1.5,
                                   ),
                                   closedBorderRadius: BorderRadius.circular(10),
-                                  expandedBorderRadius: BorderRadius.circular(10),
-                                  hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                  headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                  listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
-                                items: controller.states.map((s) => s.toString()).toList(),
+                                  expandedBorderRadius: BorderRadius.circular(
+                                    10,
+                                  ),
+                                  hintStyle: AppTextStyles.caption(
+                                    context,
+                                    color: AppColors.grey,
+                                  ),
+                                  headerStyle: AppTextStyles.caption(
+                                    context,
+                                    color: Colors.black,
+                                  ),
+                                  listItemStyle: AppTextStyles.caption(
+                                    context,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                items: controller.states
+                                    .map((s) => s.toString())
+                                    .toList(),
                                 //initialItem: controller.selectedState,
-                                initialItem: items.contains(controller.selectedState)
+                                initialItem:
+                                    items.contains(controller.selectedState)
                                     ? controller.selectedState
                                     : null,
                                 onChanged: (val) {
@@ -256,7 +280,9 @@ class _ExpensePageState extends State<ExpensePage> {
                                     controller.selectedDistrict = null;
                                     controller.selectedTaluka = null;
                                     controller.selectedVillage = null;
-                                    final state = controller.states.firstWhere((s) => s == val);
+                                    final state = controller.states.firstWhere(
+                                      (s) => s == val,
+                                    );
                                     print('state  selected$state');
                                     controller.fetchDistricts(state.toString());
                                     controller.update();
@@ -292,86 +318,84 @@ class _ExpensePageState extends State<ExpensePage> {
 
                     controller.expenses.isEmpty
                         ? const Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Text("No expenses found."),
-                    )
+                            padding: EdgeInsets.all(20),
+                            child: Text("No expenses found."),
+                          )
                         : ListView.builder(
-                      shrinkWrap: true,
-                      physics:
-                      const NeverScrollableScrollPhysics(),
-                      itemCount: controller.expenses.length,
-                      itemBuilder: (context, index) {
-                        final expense =
-                        controller.expenses[index];
-              
-                        return Container(
-                          margin:
-                          const EdgeInsets.symmetric(vertical: 8),
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.grey.shade50,
-                                Colors.grey.shade50,
-                              ],
-                            ),
-                            borderRadius:
-                            BorderRadius.circular(16),
-                          ),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 25,
-                                backgroundColor: _getCategoryColor(expense.category),
-                                child: Icon(
-                                  _getCategoryIcon(expense.category),
-                                  color: Colors.white,
-                                  size: 28,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: controller.expenses.length,
+                            itemBuilder: (context, index) {
+                              final expense = controller.expenses[index];
+
+                              return Container(
+                                margin: const EdgeInsets.symmetric(vertical: 8),
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.grey.shade50,
+                                      Colors.grey.shade50,
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                child: Row(
                                   children: [
-                                    Text(
-                                      expense.title,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: size * 0.04,
+                                    CircleAvatar(
+                                      radius: 25,
+                                      backgroundColor: _getCategoryColor(
+                                        expense.category,
+                                      ),
+                                      child: Icon(
+                                        _getCategoryIcon(expense.category),
+                                        color: Colors.white,
+                                        size: 28,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "${expense.category} • ${DateFormat('dd MMM yyyy').format(expense.createdDate)}",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Colors.grey.shade600,
-                                        fontSize: size * 0.03,
+                                    const SizedBox(width: 14),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            expense.title,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: size * 0.04,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "${expense.category} • ${DateFormat('dd MMM yyyy').format(expense.createdDate)}",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: Colors.grey.shade600,
+                                              fontSize: size * 0.03,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: Text(
+                                        "₹${expense.amount.toStringAsFixed(2)}",
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: size * 0.04,
+                                          color: Colors.green,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              const SizedBox(width: 8),
-                              Flexible(
-                                child: Text(
-                                  "₹${expense.amount.toStringAsFixed(2)}",
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: size * 0.04,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                              ),
-                            ],
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
                   ],
                 ),
               ),
@@ -379,10 +403,10 @@ class _ExpensePageState extends State<ExpensePage> {
           );
         },
       ),
-      bottomNavigationBar:
-      const CommonBottomNavigation(currentIndex: 0),
+      bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
   }
+
   Widget _modernFilterBox({
     required IconData icon,
     required String label,
@@ -398,7 +422,7 @@ class _ExpensePageState extends State<ExpensePage> {
           border: Border.all(color: Colors.grey.shade300),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 5,
               offset: const Offset(0, 2),
             ),
@@ -412,7 +436,10 @@ class _ExpensePageState extends State<ExpensePage> {
             Expanded(
               child: Text(
                 label,
-                style: AppTextStyles.caption(context,fontWeight: FontWeight.bold)
+                style: AppTextStyles.caption(
+                  context,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
@@ -421,8 +448,12 @@ class _ExpensePageState extends State<ExpensePage> {
       ),
     );
   }
+
   void _showMonthPickerDialog() {
-    final months = List.generate(12, (index) => DateFormat.MMMM().format(DateTime(0, index + 1)));
+    final months = List.generate(
+      12,
+      (index) => DateFormat.MMMM().format(DateTime(0, index + 1)),
+    );
     String? tempSelectedMonth = selectedMonthName; // temp selection
     String? tempMonthNumber = monthNumber;
 
@@ -433,9 +464,9 @@ class _ExpensePageState extends State<ExpensePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title:  Text(
+          title: Text(
             "Select Month",
-            style: AppTextStyles.caption(context,fontWeight: FontWeight.bold)
+            style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
           ),
           content: SizedBox(
             width: double.maxFinite,
@@ -455,7 +486,8 @@ class _ExpensePageState extends State<ExpensePage> {
                               : FontWeight.normal,
                           color: tempSelectedMonth == monthName
                               ? AppColors.primary
-                              : Colors.black,context
+                              : Colors.black,
+                          context,
                         ),
                       ),
                       value: monthName,
@@ -501,8 +533,12 @@ class _ExpensePageState extends State<ExpensePage> {
       },
     );
   }
+
   void _showYearPickerRadioDialog() {
-    final years = List.generate(10, (i) => DateTime.now().year - i); // last 10 years
+    final years = List.generate(
+      10,
+      (i) => DateTime.now().year - i,
+    ); // last 10 years
     String? tempSelectedYear = selectedYear; // temporary selection
 
     showDialog(
@@ -512,9 +548,9 @@ class _ExpensePageState extends State<ExpensePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title:  Text(
+          title: Text(
             "Select Year",
-            style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
+            style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
           ),
           content: SizedBox(
             width: double.minPositive,
@@ -533,7 +569,8 @@ class _ExpensePageState extends State<ExpensePage> {
                               : FontWeight.normal,
                           color: tempSelectedYear == yearStr
                               ? AppColors.primary
-                              : Colors.black,context
+                              : Colors.black,
+                          context,
                         ),
                       ),
                       value: yearStr,

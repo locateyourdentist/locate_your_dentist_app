@@ -31,7 +31,7 @@ class _UploadImagesState extends State<UploadImages> {
     "Dental Shop",
     "Dental Mechanic",
     "Dental Consultant",
-    "Job Seekers"
+    "Job Seekers",
   ];
 
   @override
@@ -56,7 +56,9 @@ class _UploadImagesState extends State<UploadImages> {
     String userType = Api.userInfo.read('userType') ?? "";
     String targetUserType = controller.selectedUserType ?? userType;
 
-    String userId = userType == 'superAdmin' ? "" : (Api.userInfo.read('userId') ?? "");
+    String userId = userType == 'superAdmin'
+        ? ""
+        : (Api.userInfo.read('userId') ?? "");
 
     await controller.getUploadImages(
       userId: userId,
@@ -82,14 +84,13 @@ class _UploadImagesState extends State<UploadImages> {
     );
 
     if (croppedBytes != null) {
-      controller.editUploadImage1.add(AppImage2(
-        bytes: croppedBytes,
-        isActive: true,
-        id: "0", 
-      ));
+      controller.editUploadImage1.add(
+        AppImage2(bytes: croppedBytes, isActive: true, id: "0"),
+      );
       controller.update();
     }
   }
+
   Future<void> saveAll() async {
     String userType = Api.userInfo.read('userType') ?? "";
     String targetUserType = controller.selectedUserType ?? userType;
@@ -148,22 +149,15 @@ class _UploadImagesState extends State<UploadImages> {
 
       // RESULT
       if (allSuccess) {
-        Get.snackbar(
-          "Success",
-          "All changes saved successfully.",
-        );
+        Get.snackbar("Success", "All changes saved successfully.");
 
         await refreshData();
       } else {
-        Get.snackbar(
-          "Partial Error",
-          "Some updates failed: $lastError",
-        );
+        Get.snackbar("Partial Error", "Some updates failed: $lastError");
 
         await refreshData();
       }
     } catch (e, stackTrace) {
-
       debugPrint("SAVE ERROR: $e");
       debugPrint("STACK: $stackTrace");
 
@@ -171,12 +165,10 @@ class _UploadImagesState extends State<UploadImages> {
         Get.back();
       }
 
-      Get.snackbar(
-        "Error",
-        "Failed to save: $e",
-      );
+      Get.snackbar("Error", "Failed to save: $e");
     }
   }
+
   @override
   Widget build(BuildContext context) {
     String userType = Api.userInfo.read('userType') ?? "";
@@ -203,7 +195,9 @@ class _UploadImagesState extends State<UploadImages> {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: const Center(child: Icon(Icons.arrow_back, color: AppColors.white)),
+              child: const Center(
+                child: Icon(Icons.arrow_back, color: AppColors.white),
+              ),
             ),
           ),
         ),
@@ -224,12 +218,19 @@ class _UploadImagesState extends State<UploadImages> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 20),
                             child: DropdownButtonFormField<String>(
-                              value: controller.selectedUserType,
+                              initialValue: controller.selectedUserType,
                               decoration: const InputDecoration(
                                 labelText: "Select User Type",
                                 border: OutlineInputBorder(),
                               ),
-                              items: userTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+                              items: userTypes
+                                  .map(
+                                    (t) => DropdownMenuItem(
+                                      value: t,
+                                      child: Text(t),
+                                    ),
+                                  )
+                                  .toList(),
                               onChanged: (val) {
                                 if (val != null) {
                                   controller.selectedUserType = val;
@@ -266,9 +267,17 @@ class _UploadImagesState extends State<UploadImages> {
                         onPressed: saveAll,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                        child: const Text("Save All Changes", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          "Save All Changes",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -324,7 +333,11 @@ class _UploadImagesState extends State<UploadImages> {
         borderRadius: BorderRadius.circular(12),
         color: AppColors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -335,24 +348,34 @@ class _UploadImagesState extends State<UploadImages> {
               Expanded(
                 child: DropdownButtonFormField<String>(
                   isExpanded: true,
-                  value: availablePlans.any((p) => p.id == img.planId) ? img.planId : null,
+                  initialValue: availablePlans.any((p) => p.id == img.planId)
+                      ? img.planId
+                      : null,
                   decoration: const InputDecoration(
                     hintText: "Select Plan",
                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
                     border: OutlineInputBorder(),
                   ),
                   items: availablePlans.map((p) {
-                    return DropdownMenuItem(value: p.id, child: Text("${p.postPlanName} (${p.duration} days)"));
+                    return DropdownMenuItem(
+                      value: p.id,
+                      child: Text("${p.postPlanName} (${p.duration} days)"),
+                    );
                   }).toList(),
                   onChanged: (val) {
                     if (val == null) return;
-                    final selected = controller.postImagePlanList.firstWhere((p) => p.id == val);
-                    final int duration = int.tryParse(selected.duration.toString()) ?? 0;
+                    final selected = controller.postImagePlanList.firstWhere(
+                      (p) => p.id == val,
+                    );
+                    final int duration =
+                        int.tryParse(selected.duration.toString()) ?? 0;
                     DateFormat formatter = DateFormat('dd-MM-yyyy');
                     DateTime now = DateTime.now();
                     img.planId = val;
                     img.startDate = formatter.format(now);
-                    img.endDate = formatter.format(now.add(Duration(days: duration)));
+                    img.endDate = formatter.format(
+                      now.add(Duration(days: duration)),
+                    );
                     controller.update();
                   },
                 ),
@@ -360,10 +383,13 @@ class _UploadImagesState extends State<UploadImages> {
               const SizedBox(width: 10),
               Column(
                 children: [
-                  const Text("Active", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                  const Text(
+                    "Active",
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
                   Switch(
                     value: img.isActive ?? true,
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
                     onChanged: (val) {
                       showDeactivateConfirmDialog(
                         context: context,
@@ -389,13 +415,21 @@ class _UploadImagesState extends State<UploadImages> {
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Row(
                 children: [
-                  const Icon(Icons.calendar_today, size: 14, color: Colors.blueGrey),
+                  const Icon(
+                    Icons.calendar_today,
+                    size: 14,
+                    color: Colors.blueGrey,
+                  ),
                   const SizedBox(width: 5),
                   Flexible(
                     child: Text(
                       "Validity: ${img.startDate} to ${img.endDate}",
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12, color: Colors.blueGrey, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.blueGrey,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],
@@ -409,19 +443,51 @@ class _UploadImagesState extends State<UploadImages> {
             child: Stack(
               children: [
                 img.bytes != null
-                    ? Image.memory(img.bytes!, height: 180, width: double.infinity, fit: BoxFit.cover)
+                    ? Image.memory(
+                        img.bytes!,
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
                     : (img.url != null && img.url!.isNotEmpty)
-                        ? Image.network(img.url!, height: 180, width: double.infinity, fit: BoxFit.cover)
-                        : Container(height: 180, width: double.infinity, color: Colors.grey.shade200, child: const Icon(Icons.image, size: 50, color: Colors.grey)),
-                
+                    ? Image.network(
+                        img.url!,
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        height: 180,
+                        width: double.infinity,
+                        color: Colors.grey.shade200,
+                        child: const Icon(
+                          Icons.image,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                      ),
+
                 if (img.id == "0")
                   Positioned(
                     top: 10,
                     left: 10,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(4)),
-                      child: const Text("NEW", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        "NEW",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
               ],
@@ -436,10 +502,14 @@ class _UploadImagesState extends State<UploadImages> {
     showDeleteDialog(
       context: context,
       title: "Remove Image?",
-      message: "Are you sure you want to remove this image? This action cannot be undone.",
+      message:
+          "Are you sure you want to remove this image? This action cannot be undone.",
       onConfirm: () async {
         if (img.url != null && img.url!.isNotEmpty) {
-          Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
+          Get.dialog(
+            const Center(child: CircularProgressIndicator()),
+            barrierDismissible: false,
+          );
           print('jkdfsf${img.url}');
           await loginController.deleteAwsFile(img.url!, 'postImage', context);
           String userType = Api.userInfo.read('userType') ?? "";
@@ -450,19 +520,19 @@ class _UploadImagesState extends State<UploadImages> {
             const Center(child: CircularProgressIndicator()),
             barrierDismissible: false,
           );
-             final String imageId = img.id ?? "0";
-              final String planId = img.planId ?? "0";
-              final String startDate = img.startDate ?? "";
-              final String endDate = img.endDate ?? "";
-              final String isActiveStr = (img.isActive ?? false).toString();
+          final String imageId = img.id ?? "0";
+          final String planId = img.planId ?? "0";
+          final String startDate = img.startDate ?? "";
+          final String endDate = img.endDate ?? "";
+          final String isActiveStr = (img.isActive ?? false).toString();
 
-              debugPrint("========== IMAGE SAVE ==========");
-              debugPrint("ID: $imageId");
-              debugPrint("PLAN ID: $planId");
-              debugPrint("START DATE: $startDate");
-              debugPrint("END DATE: $endDate");
-              debugPrint("ACTIVE: $isActiveStr");
-              debugPrint("BYTES NULL: ${img.bytes == null}");
+          debugPrint("========== IMAGE SAVE ==========");
+          debugPrint("ID: $imageId");
+          debugPrint("PLAN ID: $planId");
+          debugPrint("START DATE: $startDate");
+          debugPrint("END DATE: $endDate");
+          debugPrint("ACTIVE: $isActiveStr");
+          debugPrint("BYTES NULL: ${img.bytes == null}");
           await controller.api.uploadImagesUserType(
             currentUserId,
             targetUserType,

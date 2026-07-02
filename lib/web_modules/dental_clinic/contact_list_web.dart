@@ -24,7 +24,8 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
   final contactController = Get.put(ContactController());
   final loginController = Get.put(LoginController());
   final TextEditingController searchController = TextEditingController();
-  final GlobalKey<ScaffoldState> _scaffoldKeyContact = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyContact =
+      GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -35,7 +36,13 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
 
   Future<void> _refresh() async {
     final userId = Api.userInfo.read('userId') ?? "";
-    await contactController.getSenderContactFormLists(userId, '', '', '', context);
+    await contactController.getSenderContactFormLists(
+      userId,
+      '',
+      '',
+      '',
+      context,
+    );
   }
 
   @override
@@ -46,9 +53,11 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
     final bool isDesktop = width >= 1100;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
-    key: _scaffoldKeyContact,
+      key: _scaffoldKeyContact,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       appBar: CommonWebAppBar(
         height: width * 0.03 > 60 ? width * 0.03 : 60,
         title: "LOCATE YOUR DENTIST",
@@ -67,7 +76,12 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                     children: [
                       SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.fromLTRB(isMobile ? 15 : 30, isDesktop ? 30 : 60, isMobile ? 15 : 30, 30),
+                        padding: EdgeInsets.fromLTRB(
+                          isMobile ? 15 : 30,
+                          isDesktop ? 30 : 60,
+                          isMobile ? 15 : 30,
+                          30,
+                        ),
                         child: Center(
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(maxWidth: 1200),
@@ -82,9 +96,9 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                                         Icons.menu,
                                         color: AppColors.black,
                                       ),
-                                      onPressed: () {
-                                        _scaffoldKeyContact.currentState?.openDrawer();
-                                      },
+                                      onPressed: () => _scaffoldKeyContact
+                                          .currentState
+                                          ?.openDrawer(),
                                     ),
                                   ),
                                 _buildHeader(context, width, isMobile),
@@ -94,17 +108,31 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                                     color: AppColors.white,
                                     borderRadius: BorderRadius.circular(12),
                                     boxShadow: [
-                                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.05,
+                                        ),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
                                     ],
                                   ),
                                   child: Column(
                                     children: [
                                       if (controller.isLoading)
                                         _buildShimmer(context)
-                                      else if (controller.senderContactLists.isEmpty)
+                                      else if (controller
+                                          .senderContactLists
+                                          .isEmpty)
                                         _buildEmptyState(context)
                                       else
-                                        _buildContactTable(context, controller.senderContactLists, width, isMobile, isTablet),
+                                        _buildContactTable(
+                                          context,
+                                          controller.senderContactLists,
+                                          width,
+                                          isMobile,
+                                          isTablet,
+                                        ),
                                     ],
                                   ),
                                 ),
@@ -142,7 +170,12 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.grey.shade200),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 10,
+              ),
+            ],
           ),
           child: Row(
             children: [
@@ -161,7 +194,11 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.tune_rounded, color: AppColors.primary, size: 20),
+                icon: const Icon(
+                  Icons.tune_rounded,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
                 onPressed: () => showDateFilterPopup(context),
               ),
             ],
@@ -203,9 +240,16 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
         child: Center(
           child: Column(
             children: [
-              Icon(Icons.contact_mail_outlined, size: 60, color: Colors.grey.shade300),
+              Icon(
+                Icons.contact_mail_outlined,
+                size: 60,
+                color: Colors.grey.shade300,
+              ),
               const SizedBox(height: 15),
-              Text('No contacts found', style: AppTextStyles.caption(context, color: Colors.grey)),
+              Text(
+                'No contacts found',
+                style: AppTextStyles.caption(context, color: Colors.grey),
+              ),
             ],
           ),
         ),
@@ -213,7 +257,13 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
     );
   }
 
-  Widget _buildContactTable(BuildContext context, List contacts, double width, bool isMobile, bool isTablet) {
+  Widget _buildContactTable(
+    BuildContext context,
+    List contacts,
+    double width,
+    bool isMobile,
+    bool isTablet,
+  ) {
     return Column(
       children: [
         if (!isMobile)
@@ -239,23 +289,27 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
             itemCount: contacts.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            separatorBuilder: (context, index) => Divider(height: 1, color: Colors.grey.shade100),
+            separatorBuilder: (context, index) =>
+                Divider(height: 1, color: Colors.grey.shade100),
             itemBuilder: (context, index) {
               final contact = contacts[index];
               final formattedDate = DateFormat('MMM dd, yyyy').format(
-                DateTime.tryParse(contact.createdAt.toString()) ?? DateTime.now(),
+                DateTime.tryParse(contact.createdAt.toString()) ??
+                    DateTime.now(),
               );
 
               return AnimationConfiguration.staggeredList(
                 position: index,
                 duration: const Duration(milliseconds: 500),
                 child: FadeInAnimation(
-                  child: isMobile 
-                    ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: _buildMobileCard(context, contact, formattedDate),
-                    )
-                    : _buildDataRow(context, contact, formattedDate, isTablet),
+                  child: isMobile
+                      ? _buildMobileCard(context, contact, formattedDate)
+                      : _buildDataRow(
+                          context,
+                          contact,
+                          formattedDate,
+                          isTablet,
+                        ),
                 ),
               );
             },
@@ -268,20 +322,60 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
   Widget _headerCell(String text, double flex) {
     return Expanded(
       flex: (flex * 10).toInt(),
-      child: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 
-  Widget _buildDataRow(BuildContext context, dynamic contact, String date, bool isTablet) {
+  Widget _buildDataRow(
+    BuildContext context,
+    dynamic contact,
+    String date,
+    bool isTablet,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       child: Row(
         children: [
-          Expanded(flex: 20, child: Text(contact.orgName ?? "-", style: AppTextStyles.caption(context))),
-          Expanded(flex: 15, child: Text(contact.userType ?? "-", style: AppTextStyles.caption(context))),
-          Expanded(flex: 15, child: Text(contact.Name ?? "-", style: AppTextStyles.caption(context))),
-          if (!isTablet) Expanded(flex: 15, child: Text(contact.mobileNumber ?? "-", style: AppTextStyles.caption(context))),
-          if (!isTablet) Expanded(flex: 15, child: Text(date, style: AppTextStyles.caption(context))),
+          Expanded(
+            flex: 20,
+            child: Text(
+              contact.orgName ?? "-",
+              style: AppTextStyles.caption(context),
+            ),
+          ),
+          Expanded(
+            flex: 15,
+            child: Text(
+              contact.userType ?? "-",
+              style: AppTextStyles.caption(context),
+            ),
+          ),
+          Expanded(
+            flex: 15,
+            child: Text(
+              contact.Name ?? "-",
+              style: AppTextStyles.caption(context),
+            ),
+          ),
+          if (!isTablet)
+            Expanded(
+              flex: 15,
+              child: Text(
+                contact.mobileNumber ?? "-",
+                style: AppTextStyles.caption(context),
+              ),
+            ),
+          if (!isTablet)
+            Expanded(
+              flex: 15,
+              child: Text(date, style: AppTextStyles.caption(context)),
+            ),
           Expanded(
             flex: 10,
             child: TextButton(
@@ -289,7 +383,13 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                 Api.userInfo.write('contactId1', contact.id);
                 showContactDetailsDialog(context);
               },
-              child: const Text("View", style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+              child: const Text(
+                "View",
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ],
@@ -306,14 +406,28 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: Text(contact.orgName ?? "-", style: AppTextStyles.body(context, fontWeight: FontWeight.bold))),
-              Text(date, style: AppTextStyles.caption(context, color: Colors.grey)),
+              Expanded(
+                child: Text(
+                  contact.orgName ?? "-",
+                  style: AppTextStyles.body(
+                    context,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Text(
+                date,
+                style: AppTextStyles.caption(context, color: Colors.grey),
+              ),
             ],
           ),
           const SizedBox(height: 10),
           Text(contact.Name ?? "-", style: AppTextStyles.caption(context)),
           const SizedBox(height: 10),
-          Text(contact.mobileNumber ?? "-", style: AppTextStyles.caption(context, color: Colors.grey)),
+          Text(
+            contact.mobileNumber ?? "-",
+            style: AppTextStyles.caption(context, color: Colors.grey),
+          ),
           const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerRight,
@@ -322,7 +436,10 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                 Api.userInfo.write('contactId1', contact.id);
                 showContactDetailsDialog(context);
               },
-              child:  Text("View Details",style: AppTextStyles.caption(context,color: AppColors.primary),),
+              child: Text(
+                "View Details",
+                style: AppTextStyles.caption(context, color: AppColors.primary),
+              ),
             ),
           ),
         ],

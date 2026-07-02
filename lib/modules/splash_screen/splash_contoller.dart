@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import'package:get/get.dart';
+import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
@@ -10,14 +10,14 @@ import 'package:new_version_plus/new_version_plus.dart';
 import '../../common_widgets/common-alertdialog.dart';
 import '../auth/login_screen/service_locations.dart';
 
-class SplashController extends GetxController with GetSingleTickerProviderStateMixin {
+class SplashController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   @override
   late AnimationController animationController;
   late Animation<double> animation;
   Future<void> checkForUpdate() async {
     try {
-      final newVersion = NewVersionPlus(
-        androidId: 'com.kst.e_attendance',);
+      final newVersion = NewVersionPlus(androidId: 'com.kst.e_attendance');
       final status = await newVersion.getVersionStatus();
       if (status == null) return;
 
@@ -26,7 +26,6 @@ class SplashController extends GetxController with GetSingleTickerProviderStateM
         print("Current version: ${status.localVersion}");
         print("Store version: ${status.storeVersion}");
         showUpdateDialog("www.google.com");
-
       }
     } catch (e) {
       print("Version check failed: $e");
@@ -41,23 +40,33 @@ class SplashController extends GetxController with GetSingleTickerProviderStateM
       duration: const Duration(seconds: 15),
     );
     animation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: animationController,
-        curve: Curves.easeInOut,
-      ),);
+      CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
+    );
     animationController.repeat(reverse: true);
     //simulateLoading();
-    checkToken();
     //checkForUpdate();
   }
+
+  @override
+  void onReady() {
+    super.onReady();
+    // Navigation must run after the first frame, not during onInit (which
+    // fires while the SplashScreen is still building). onReady is scheduled
+    // via a post-frame callback, so Get.offAllNamed() is safe here.
+    checkToken();
+  }
+
   void simulateLoading() async {
     await Future.delayed(const Duration(seconds: 3));
     final position = await LocationService.getCurrentLocation();
     if (position != null) {
-      debugPrint('User location: Lat ${position.latitude}, Lng ${position.longitude}');
+      debugPrint(
+        'User location: Lat ${position.latitude}, Lng ${position.longitude}',
+      );
     }
   }
-  void checkToken()async{
+
+  void checkToken() async {
     String platform = kIsWeb
         ? "Web"
         : Platform.isAndroid
@@ -66,16 +75,20 @@ class SplashController extends GetxController with GetSingleTickerProviderStateM
         ? "iOS"
         : "Unknown";
     print("platform $platform");
-    String? token = await Api.userInfo.read('token');
+    String? token = Api.userInfo.read('token');
     print('spalsh token$token');
     if (token == null || token.isEmpty) {
-      platform == "Web" ?
-      Get.offAllNamed("/") :Get.offAllNamed("/patientDashboard") ;
+      platform == "Web"
+          ? Get.offAllNamed("/")
+          : Get.offAllNamed("/patientDashboard");
     } else {
-      String? userType = await Api.userInfo.read('userType');
-      platform == "Web" ? Get.offAllNamed('/${pageUserTypeWeb(userType ?? '')}'):  Get.offAllNamed('/${pageUserType(userType ?? '')}');
+      String? userType = Api.userInfo.read('userType');
+      platform == "Web"
+          ? Get.offAllNamed('/${pageUserTypeWeb(userType ?? '')}')
+          : Get.offAllNamed('/${pageUserType(userType ?? '')}');
     }
   }
+
   @override
   void onClose() {
     animationController.dispose();

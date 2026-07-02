@@ -38,41 +38,51 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
         });
       }
     });
-  }@override
+  }
+
+  @override
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
     _startTimer();
   }
+
   @override
   void dispose() {
     _timer.cancel();
     super.dispose();
   }
+
   Widget _resendButton() {
     return TextButton(
       onPressed: _canResend
           ? () async {
-        await loginController.forgotPassword(
-            Api.userInfo.read('otpMail') ?? "", context);
+              await loginController.forgotPassword(
+                Api.userInfo.read('otpMail') ?? "",
+                context,
+              );
 
-        _startTimer();
-      }
+              _startTimer();
+            }
           : null,
       child: Text(
         _canResend
             ? "Resend OTP"
             : "Resend OTP  in 00:${_secondsRemaining.toString().padLeft(2, '0')}",
-        style: AppTextStyles.caption(
-          context,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ).copyWith(
-          decoration: _canResend ? TextDecoration.underline : TextDecoration.none,
-        ),
+        style:
+            AppTextStyles.caption(
+              context,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ).copyWith(
+              decoration: _canResend
+                  ? TextDecoration.underline
+                  : TextDecoration.none,
+            ),
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -92,20 +102,20 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
             ),
             Center(
               child: Container(
-                width: size> 800 ? 450 : size * 0.85,
+                width: size > 800 ? 450 : size * 0.85,
                 padding: const EdgeInsets.all(40),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(25),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
                   ],
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -116,63 +126,76 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(
-                          width: size*0.05,
-                          height: size*0.05,
+                          width: size * 0.05,
+                          height: size * 0.05,
                           child: ClipOval(
-                            child:
-                                Image.network(
-                                  loginController.appLogoUrl != null? loginController.appLogoUrl!:"",
+                            child: Image.network(
+                              loginController.appLogoUrl != null
+                                  ? loginController.appLogoUrl!
+                                  : "",
                               fit: BoxFit.cover,
-                              width: size*0.15,
-                              height: size*0.12,
-                              errorBuilder: (_, __, ___) =>
-                                  Container(
-                              color: Colors.white.withOpacity(0.3),
-                              child:  Icon(
-                                Icons.medical_services,
-                                size: size*0.15,
-                                color: Colors.white,
+                              width: size * 0.15,
+                              height: size * 0.12,
+                              errorBuilder: (_, __, ___) => Container(
+                                color: Colors.white.withValues(alpha: 0.3),
+                                child: Icon(
+                                  Icons.medical_services,
+                                  size: size * 0.15,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
-                          )
-                          )
+                          ),
                         ),
                         const SizedBox(height: 20),
                         Text(
-                         "Verify OTP",
-                          style: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),
+                          "Verify OTP",
+                          style: AppTextStyles.body(
+                            context,
+                            color: AppColors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                         SizedBox(height: size*0.01),
+                        SizedBox(height: size * 0.01),
                         Text(
                           !isOtpSent
                               ? "Enter your received OTP"
                               : "Please enter the OTP sent to your email",
                           style: AppTextStyles.caption(
-                              context, color: AppColors.white),
+                            context,
+                            color: AppColors.white,
+                          ),
                           textAlign: TextAlign.center,
                         ),
-                        SizedBox(height: size*0.01),
+                        SizedBox(height: size * 0.01),
 
-                          OtpTextField(
-                            numberOfFields: 4,
-                            focusedBorderColor:AppColors.primary,
-                            borderColor: AppColors.primary,
-                            showFieldAsBox: true,
-                            textStyle: AppTextStyles.body(context,color: AppColors.white,fontWeight: FontWeight.bold),
-                            fieldWidth: size * 0.07,
-                            fieldHeight: size * 0.09,
-                            borderWidth: 3.0,
-                            borderRadius: BorderRadius.circular(20),
-                            onCodeChanged: (String code) {
-                            },
-                            onSubmit: (String verificationCode){
-                              Api.userInfo.read('otpMail',);
-                              loginController.verifyOtpPassword(Api.userInfo.read('otpMail')??"", verificationCode,context);
-                              },
+                        OtpTextField(
+                          numberOfFields: 4,
+                          focusedBorderColor: AppColors.primary,
+                          borderColor: AppColors.primary,
+                          showFieldAsBox: true,
+                          textStyle: AppTextStyles.body(
+                            context,
+                            color: AppColors.white,
+                            fontWeight: FontWeight.bold,
                           ),
+                          fieldWidth: size * 0.07,
+                          fieldHeight: size * 0.09,
+                          borderWidth: 3.0,
+                          borderRadius: BorderRadius.circular(20),
+                          onCodeChanged: (String code) {},
+                          onSubmit: (String verificationCode) {
+                            Api.userInfo.read('otpMail');
+                            loginController.verifyOtpPassword(
+                              Api.userInfo.read('otpMail') ?? "",
+                              verificationCode,
+                              context,
+                            );
+                          },
+                        ),
 
-                          const SizedBox(height: 10),
-                          _resendButton(),
+                        const SizedBox(height: 10),
+                        _resendButton(),
                       ],
                     );
                   },

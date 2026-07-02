@@ -14,13 +14,14 @@ class AddGstDetailsWeb extends StatefulWidget {
 }
 
 class _AddGstDetailsWebState extends State<AddGstDetailsWeb> {
-  final planController=Get.put(PlanController());
+  final planController = Get.put(PlanController());
   final _formKeyGstWeb = GlobalKey<FormState>();
   @override
-  void initState(){
+  void initState() {
     super.initState();
     planController.getGstDetails(context);
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -31,19 +32,27 @@ class _AddGstDetailsWebState extends State<AddGstDetailsWeb> {
           child: SingleChildScrollView(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 900),
-              child:  Container(
+              child: Container(
                 width: double.infinity,
                 //color: Colors.grey[100],
                 decoration: BoxDecoration(
-                  color:AppColors.white,
-                  borderRadius: BorderRadius.circular(12),),
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
-                      SizedBox(height: size*0.01,),
-                      Text('Add GST Details',style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                      SizedBox(height: size*0.02,),
+                      SizedBox(height: size * 0.01),
+                      Text(
+                        'Add GST Details',
+                        style: AppTextStyles.body(
+                          context,
+                          color: AppColors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: size * 0.02),
 
                       buildSwitchRow(
                         label: "Show GST",
@@ -86,7 +95,7 @@ class _AddGstDetailsWebState extends State<AddGstDetailsWeb> {
                       ),
                       SizedBox(height: size * 0.02),
                       Container(
-                        width: size*0.15,
+                        width: size * 0.15,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
                             colors: [AppColors.primary, AppColors.secondary],
@@ -96,36 +105,47 @@ class _AddGstDetailsWebState extends State<AddGstDetailsWeb> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: ElevatedButton(
-
-                          onPressed: () async{
+                          onPressed: () async {
                             if (_formKeyGstWeb.currentState!.validate()) {
-                              await  planController.addGstDetails(
-                                  Api.userInfo.read('userId') ?? "",
-                                  planController.selectedState.toString(),
-                                  planController.cgstController.text.toString(),
-                                  planController.sgstController.text.toString(),
-                                  planController.igstController.text.toString(),planController.isShowGst,
-                                  context);
+                              await planController.addGstDetails(
+                                Api.userInfo.read('userId') ?? "",
+                                planController.selectedState.toString(),
+                                planController.cgstController.text.toString(),
+                                planController.sgstController.text.toString(),
+                                planController.igstController.text.toString(),
+                                planController.isShowGst,
+                                context,
+                              );
                             }
                             planController.cgstController.clear();
                             planController.igstController.clear();
                             planController.sgstController.clear();
-                            planController.selectedState=='';
-                            planController.selectedState==null;
+                            planController.selectedState == '';
+                            planController.selectedState == null;
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:  Colors.transparent,shadowColor: Colors.transparent,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 16,
+                            ),
                             elevation: 3,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child:  Text("Save", style: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold)),
+                          child: Text(
+                            "Save",
+                            style: AppTextStyles.caption(
+                              context,
+                              color: AppColors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(height: size * 0.03),
-
                     ],
                   ),
                 ),
@@ -136,35 +156,36 @@ class _AddGstDetailsWebState extends State<AddGstDetailsWeb> {
       ),
     );
   }
+
   Widget buildSwitchRow({
     required String label,
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
     return GetBuilder<PlanController>(
-        builder: (controller) {
-          return  Row(
-            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
-                ),
+      builder: (controller) {
+        return Row(
+          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
               ),
-              Switch(
-                activeColor: AppColors.white,
-                activeTrackColor: AppColors.primary,
-                inactiveThumbColor: Colors.blueGrey.shade600,
-                inactiveTrackColor: Colors.grey.shade400,
-                splashRadius: 50.0,
-                value: value,
-                onChanged: onChanged,
-              ),
-            ],
-          );
-        }
+            ),
+            Switch(
+              activeThumbColor: AppColors.white,
+              activeTrackColor: AppColors.primary,
+              inactiveThumbColor: Colors.blueGrey.shade600,
+              inactiveTrackColor: Colors.grey.shade400,
+              splashRadius: 50.0,
+              value: value,
+              onChanged: onChanged,
+            ),
+          ],
+        );
+      },
     );
   }
 }

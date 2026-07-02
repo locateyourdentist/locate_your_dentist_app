@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../modules/auth/login_screen/login_controller.dart';
 
 class GumDiseaseCard extends StatelessWidget {
- // const GumDiseaseCard({super.key});
+  // const GumDiseaseCard({super.key});
   final loginController = Get.put(LoginController());
 
   @override
@@ -270,9 +270,9 @@ class DentalServiceCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              title,
-              textAlign: TextAlign.center,
-              style:AppTextStyles.caption(context,fontWeight: FontWeight.w500)
+                title,
+                textAlign: TextAlign.center,
+                style:AppTextStyles.caption(context,fontWeight: FontWeight.w500)
             ),
           ],
         ),
@@ -1192,22 +1192,22 @@ class WhyChooseUsSection extends StatelessWidget {
         child: Container(
           constraints: const BoxConstraints(maxWidth: 1500),
           padding: const EdgeInsets.all(20),
-                child: Column(
-                      children: [
-                _image(),
-                const SizedBox(height: 30),
-                _content(context),
-                      ],
-                    ),
-              ),
-            ),
-          )
+          child: Column(
+            children: [
+              _image(),
+              const SizedBox(height: 30),
+              _content(context),
+            ],
+          ),
+        ),
+      ),
+    )
         :  Center(
-          child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-                constraints: const BoxConstraints(maxWidth: 1500),
-                decoration:  BoxDecoration(
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+        constraints: const BoxConstraints(maxWidth: 1500),
+        decoration:  BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           gradient: LinearGradient(
             colors: [
@@ -1217,16 +1217,16 @@ class WhyChooseUsSection extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-                ),
-            child: Row(
-                  children: [
+        ),
+        child: Row(
+          children: [
             Expanded(flex: 5, child: _image()),
             const SizedBox(width: 60),
             Expanded(flex: 5, child: _content(context)),
-                  ],
-                ),
-          ),
-        );
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _image() {
@@ -1247,13 +1247,13 @@ class WhyChooseUsSection extends StatelessWidget {
         //   ),
         // ),
         ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16),
           child: Image.asset(
-             height: 300,
-        "assets/images/welcomePage.png",
+            height: 300,
+            "assets/images/welcomePage.png",
             fit: BoxFit.cover,
-            ),
-      ),
+          ),
+        ),
       ],
     );
   }
@@ -1275,8 +1275,8 @@ class WhyChooseUsSection extends StatelessWidget {
         SizedBox(height: 15),
 
         Text(
-          "Committed To Excellent Dental Care",
-          style: AppTextStyles.subtitle(context,color: AppColors.white)
+            "Committed To Excellent Dental Care",
+            style: AppTextStyles.subtitle(context,color: AppColors.white)
         ),
 
         SizedBox(height: 20),
@@ -1292,18 +1292,18 @@ class WhyChooseUsSection extends StatelessWidget {
         SizedBox(height: 30),
 
         buildFeature(
-          Icons.verified,
-          "Verified Dentists",context
+            Icons.verified,
+            "Verified Dentists",context
         ),
 
         buildFeature(
-          Icons.local_hospital,
-          "Emergency Dental Care",context
+            Icons.local_hospital,
+            "Emergency Dental Care",context
         ),
 
         buildFeature(
-          Icons.support_agent,
-          "24/7 Support",context
+            Icons.support_agent,
+            "24/7 Support",context
         ),
 
         // buildFeature(
@@ -1335,8 +1335,8 @@ class WhyChooseUsSection extends StatelessWidget {
           const SizedBox(width: 15),
 
           Text(
-            title,
-            style: AppTextStyles.caption(context,  color: Colors.white,)
+              title,
+              style: AppTextStyles.caption(context,  color: Colors.white,)
           ),
         ],
       ),
@@ -1715,45 +1715,45 @@ class BrushingTechniqueCard extends StatelessWidget {
                   ),
                 ],
               ),
-      child: isDesktop
-          ? Row(
-        children: [
-          Expanded(
-            flex: 5,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(25),
-                bottomLeft: Radius.circular(25),
-              ),
-              child: Image.asset(
-                "assets/images/tooth_brush.jpg",
-                height: 500,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 6,
-            child: _content(context),
-          ),
-        ],
-      )
-          : Column(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(25),
-            ),
-            child: Image.asset(
-              "assets/images/tooth_brush.jpg",
-              height: 250,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          _content(context),
-        ],
-      ),))
+              child: isDesktop
+                  ? Row(
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        bottomLeft: Radius.circular(25),
+                      ),
+                      child: Image.asset(
+                        "assets/images/tooth_brush.jpg",
+                        height: 500,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 6,
+                    child: _content(context),
+                  ),
+                ],
+              )
+                  : Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(25),
+                    ),
+                    child: Image.asset(
+                      "assets/images/tooth_brush.jpg",
+                      height: 250,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  _content(context),
+                ],
+              ),))
     );
   }
 
@@ -1855,7 +1855,7 @@ class BrushingTechniqueCard extends StatelessWidget {
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
-                AppColors.primary,
+                  AppColors.primary,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius:
@@ -2373,7 +2373,7 @@ class TreatmentCard extends StatelessWidget {
                 label: const Text(
                   "Find Nearby Dental Clinics",
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,color: AppColors.white
+                      fontWeight: FontWeight.bold,color: AppColors.white
                   ),
                 ),
               ),

@@ -22,7 +22,8 @@ class JobSeekerFilterWeb extends StatefulWidget {
 class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
   final jobController = Get.put(JobController());
   final TextEditingController searchController = TextEditingController();
-  final GlobalKey<ScaffoldState> _scaffoldKeyJobList = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyJobList =
+      GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
 
   @override
@@ -41,7 +42,7 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
     loginController.selectedTaluka = null;
     loginController.selectedJobType = null;
     loginController.selectedSalary = null;
-    
+
     await loginController.getProfileByUserId(
       Api.userInfo.read('userId') ?? "",
       context,
@@ -72,8 +73,12 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
     return Scaffold(
       key: _scaffoldKeyJobList,
       backgroundColor: AppColors.scaffoldBg,
-      drawer:( !isDesktop&&isLoggedIn) ? const Drawer(width: 250, child: AdminSideBar()) : null,
-      endDrawer: !isDesktop ? const Drawer(width: 300, child: FilterSidebar()) : null,
+      drawer: (!isDesktop && isLoggedIn)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
+      endDrawer: !isDesktop
+          ? const Drawer(width: 300, child: FilterSidebar())
+          : null,
       appBar: buildAppBar(context),
       body: Row(
         children: [
@@ -89,7 +94,8 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                         left: 15,
                         child: IconButton(
                           icon: const Icon(Icons.menu),
-                          onPressed: () => _scaffoldKeyJobList.currentState?.openDrawer(),
+                          onPressed: () =>
+                              _scaffoldKeyJobList.currentState?.openDrawer(),
                         ),
                       ),
                     SingleChildScrollView(
@@ -107,7 +113,11 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                               color: AppColors.white,
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: const [
-                                BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 3),
+                                ),
                               ],
                             ),
                             child: Padding(
@@ -120,7 +130,9 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                                   _buildActiveFilterChips(isMobile),
                                   if (jobController.isLoading)
                                     _buildJobShimmerList(isMobile)
-                                  else if (jobController.jobListJobSeekers.isEmpty)
+                                  else if (jobController
+                                      .jobListJobSeekers
+                                      .isEmpty)
                                     _buildEmptyJobState(context)
                                   else
                                     _buildJobList(isDesktop, isMobile, width),
@@ -150,7 +162,11 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
           color: Colors.grey.shade100,
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 3)),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
           ],
         ),
         child: Row(
@@ -158,7 +174,10 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
             Expanded(
               child: TextField(
                 controller: searchController,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
                 decoration: const InputDecoration(
                   hintText: "Search jobs by name, area...",
                   prefixIcon: Icon(Icons.search_rounded, color: AppColors.grey),
@@ -166,7 +185,10 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                   contentPadding: EdgeInsets.symmetric(vertical: 14),
                 ),
                 onSubmitted: (value) async {
-                  await jobController.getJobListJobSeekers(search: value, context: context);
+                  await jobController.getJobListJobSeekers(
+                    search: value,
+                    context: context,
+                  );
                 },
               ),
             ),
@@ -188,7 +210,8 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
   Widget _buildActiveFilterChips(bool isMobile) {
     return GetBuilder<LoginController>(
       builder: (_) {
-        bool hasFilters = loginController.selectedState != null ||
+        bool hasFilters =
+            loginController.selectedState != null ||
             loginController.selectedDistrict != null ||
             loginController.selectedTaluka != null ||
             loginController.selectedJobType != null ||
@@ -250,7 +273,13 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                     context: context,
                   );
                 },
-                child: const Text("Clear All", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                child: const Text(
+                  "Clear All",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
@@ -271,11 +300,7 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (isDesktop)
-          const SizedBox(
-            width: 250,
-            child: FilterSidebar(),
-          ),
+        if (isDesktop) const SizedBox(width: 250, child: FilterSidebar()),
         if (isDesktop) const SizedBox(width: 20),
         Expanded(
           child: AnimationLimiter(
@@ -290,9 +315,7 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                   duration: const Duration(milliseconds: 600),
                   child: SlideAnimation(
                     verticalOffset: 50.0,
-                    child: FadeInAnimation(
-                      child: _buildJobCard(job, isMobile),
-                    ),
+                    child: FadeInAnimation(child: _buildJobCard(job, isMobile)),
                   ),
                 );
               },
@@ -304,7 +327,9 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
   }
 
   Widget _buildJobCard(dynamic job, bool isMobile) {
-    final logoUrl = (job.logoImage != null && job.logoImage!.isNotEmpty) ? job.logoImage!.first : null;
+    final logoUrl = (job.logoImage != null && job.logoImage!.isNotEmpty)
+        ? job.logoImage!.first
+        : null;
     final double width = MediaQuery.of(context).size.width;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
 
@@ -312,9 +337,8 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
       onTap: () {
         Api.userInfo.write('selectJobId', job.jobId.toString());
         Api.userInfo.write('activeStatus', job.isActive.toString());
-      //  Get.toNamed('/viewJobDetailWebPage');
+        //  Get.toNamed('/viewJobDetailWebPage');
         Get.toNamed('/webLoginPage');
-
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
@@ -323,7 +347,13 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: Colors.grey.shade200),
-          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -337,20 +367,31 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                     children: [
                       Text(
                         job.orgName.toString(),
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
                       Text(
                         job.jobType.toString(),
-                        style: const TextStyle(fontSize: 13, color: Colors.grey),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                          color: getStatusColor(job.status ?? "").withOpacity(0.1),
+                          color: getStatusColor(
+                            job.status ?? "",
+                          ).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -378,7 +419,11 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.location_on_outlined, color: Colors.grey, size: 16),
+                const Icon(
+                  Icons.location_on_outlined,
+                  color: Colors.grey,
+                  size: 16,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
@@ -393,12 +438,19 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(Icons.currency_rupee_rounded, color: Colors.grey, size: 16),
+                const Icon(
+                  Icons.currency_rupee_rounded,
+                  color: Colors.grey,
+                  size: 16,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     "Salary: ${job.salary}",
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -415,27 +467,40 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ),
-    if(!isLoggedIn)
-    SizedBox(
-    width: width * 0.19,
-    child: ElevatedButton(
-    onPressed: () async {
-    Get.toNamed('/webLoginPage');
-    },
-    style: ElevatedButton.styleFrom(
-    backgroundColor: AppColors.primary,
-    padding: const EdgeInsets.symmetric(vertical: 16),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-    elevation: 5,
-    ),
-    child: Text( "Apply Now", style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: AppColors.white )),
-    ),
-    ),
-                if(isLoggedIn)
-                Text(
-                  '${job.totalApplicants} Applied',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.primary),
-                ),
+                if (!isLoggedIn)
+                  SizedBox(
+                    width: width * 0.19,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Get.toNamed('/webLoginPage');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 5,
+                      ),
+                      child: Text(
+                        "Apply Now",
+                        style: AppTextStyles.caption(
+                          context,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (isLoggedIn)
+                  Text(
+                    '${job.totalApplicants} Applied',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primary,
+                    ),
+                  ),
               ],
             ),
           ],
@@ -443,11 +508,12 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
       ),
     );
   }
+
   Widget _buildOrgLogo(dynamic job, String? logoUrl) {
     final hasLogo =
         logoUrl != null &&
-            logoUrl.trim().isNotEmpty &&
-            logoUrl.trim().toLowerCase() != "null";
+        logoUrl.trim().isNotEmpty &&
+        logoUrl.trim().toLowerCase() != "null";
 
     return Container(
       width: hasLogo ? 80 : 40,
@@ -461,31 +527,31 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
         borderRadius: BorderRadius.circular(10),
         child: hasLogo
             ? Image.network(
-          logoUrl,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Center(
-              child: Text(
-                getFirstLetter(job.orgName.toString()),
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: getRandomColor(job.orgName.toString()),
+                logoUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Center(
+                    child: Text(
+                      getFirstLetter(job.orgName.toString()),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: getRandomColor(job.orgName.toString()),
+                      ),
+                    ),
+                  );
+                },
+              )
+            : Center(
+                child: Text(
+                  getFirstLetter(job.orgName.toString()),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: getRandomColor(job.orgName.toString()),
+                  ),
                 ),
               ),
-            );
-          },
-        )
-            : Center(
-          child: Text(
-            getFirstLetter(job.orgName.toString()),
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: getRandomColor(job.orgName.toString()),
-            ),
-          ),
-        ),
       ),
     );
   }

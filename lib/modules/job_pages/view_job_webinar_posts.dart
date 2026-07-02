@@ -15,7 +15,6 @@ import 'package:flutter_quill/flutter_quill.dart';
 
 import '../../web_modules/job_seekers/view_jobWebinar_web.dart';
 
-
 class ViewJobWebinar extends StatefulWidget {
   const ViewJobWebinar({super.key});
 
@@ -24,8 +23,8 @@ class ViewJobWebinar extends StatefulWidget {
 }
 
 class _ViewJobWebinarState extends State<ViewJobWebinar> {
-  final jobController=Get.put(JobController());
-  final loginController=Get.put(LoginController());
+  final jobController = Get.put(JobController());
+  final loginController = Get.put(LoginController());
   final ScrollController _scrollController = ScrollController();
   late QuillController _controller;
   void loadJobDescription(dynamic data) {
@@ -33,14 +32,12 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
       List<Map<String, dynamic>> delta = [];
 
       if (data == null) {
-        delta = [{"insert": "\n"}];
-      }
-
-      else if (data is List) {
+        delta = [
+          {"insert": "\n"},
+        ];
+      } else if (data is List) {
         delta = List<Map<String, dynamic>>.from(data);
-      }
-
-      else if (data is String) {
+      } else if (data is String) {
         delta = List<Map<String, dynamic>>.from(jsonDecode(data));
       }
 
@@ -57,50 +54,83 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
       setState(() {});
     }
   }
+
   @override
   void initState() {
     _controller = QuillController.basic(
       config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
-
+        clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
       ),
     );
     _refresh();
     super.initState();
   }
+
   Future<void> _refresh() async {
     await jobController.getJobListAdmin(context);
     await jobController.getWebinarListAdmin(context);
-    loadJobDescription(
-        jobController.webDescriptionData);
+    loadJobDescription(jobController.webDescriptionData);
   }
+
   @override
   Widget build(BuildContext context) {
-    double size=MediaQuery.of(context).size.width;
-    final jobId = jobController.jobList.isNotEmpty ? jobController.jobList[0].jobId : null;
-     jobController.getAppliedJobsAdmin(jobId.toString(),context);
-    final totalApplicants = jobController.jobList.isNotEmpty ? jobController.jobList[0].totalApplicants : 0;
-    int shortlistedCount = jobController.jobIdListAdmin.where((e) => e.status == "Shortlisted").length;
-    int rejectedCount = jobController.jobIdListAdmin.where((e) => e.status == "Rejected").length;
+    double size = MediaQuery.of(context).size.width;
+    final jobId = jobController.jobList.isNotEmpty
+        ? jobController.jobList[0].jobId
+        : null;
+    jobController.getAppliedJobsAdmin(jobId.toString(), context);
+    final totalApplicants = jobController.jobList.isNotEmpty
+        ? jobController.jobList[0].totalApplicants
+        : 0;
+    int shortlistedCount = jobController.jobIdListAdmin
+        .where((e) => e.status == "Shortlisted")
+        .length;
+    int rejectedCount = jobController.jobIdListAdmin
+        .where((e) => e.status == "Rejected")
+        .length;
     print("Shortlisted: $shortlistedCount");
     print("Rejected: $rejectedCount");
-    Future<void> _refresh() async {
+    Future<void> refresh() async {
       jobController.getJobListAdmin(context);
       jobController.getWebinarListAdmin(context);
     }
+
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,backgroundColor: AppColors.primary,
+        centerTitle: true,
+        backgroundColor: AppColors.white,
         iconTheme: const IconThemeData(color: AppColors.white),
-        title: Text('Job Posts / Webinars',style: AppTextStyles.subtitle(context,color: AppColors.white),),
+        title: Text(
+          'Job Posts / Webinars',
+          style: AppTextStyles.subtitle(context, color: AppColors.black),
+        ),
         automaticallyImplyLeading: true,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [AppColors.primary, AppColors.secondary],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: const Center(
+                child: Icon(Icons.arrow_back, color: AppColors.white),
+              ),
+            ),
+          ),
+        ),
       ),
       body: GetBuilder<JobController>(
         builder: (controller) {
           return RefreshIndicator(
-            onRefresh: _refresh,
+            onRefresh: refresh,
             child: DefaultTabController(
               length: 2,
               child: Padding(
@@ -108,15 +138,24 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("My Lastest Job Posts",style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
+                    Text(
+                      "My Posts",
+                      style: TextStyle(
+                        fontSize: size * 0.035,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
                     Padding(
-                      padding:  const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Container(
-                        height: size*0.2,
+                        height: size * 0.2,
                         width: size,
                         decoration: BoxDecoration(
-                            color: AppColors.white,
-                            border: Border.all(color: AppColors.white,),borderRadius: BorderRadius.circular(10)),
+                          color: AppColors.white,
+                          border: Border.all(color: AppColors.white),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Row(
@@ -124,9 +163,23 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                             children: [
                               Column(
                                 children: [
-                                  Text("Total Applicants",style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.grey),),
-                                  const SizedBox(height: 10,),
-                                  Text(totalApplicants.toString(),style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
+                                  Text(
+                                    "Total Applicants",
+                                    style: TextStyle(
+                                      fontSize: size * 0.035,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    totalApplicants.toString(),
+                                    style: TextStyle(
+                                      fontSize: size * 0.035,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                                 ],
                               ),
                               const VerticalDivider(
@@ -136,9 +189,23 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                               ),
                               Column(
                                 children: [
-                                  Text("Shortlisted",style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.grey),),
-                                  const SizedBox(height: 10,),
-                                  Text(shortlistedCount.toString(),style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
+                                  Text(
+                                    "Shortlisted",
+                                    style: TextStyle(
+                                      fontSize: size * 0.035,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    shortlistedCount.toString(),
+                                    style: TextStyle(
+                                      fontSize: size * 0.035,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                                 ],
                               ),
                               const VerticalDivider(
@@ -148,11 +215,25 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                               ),
                               Column(
                                 children: [
-                                  Text("Rejected",style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.grey),),
-                                  const SizedBox(height: 10,),
-                                  Text(rejectedCount.toString(),style: TextStyle(fontSize: size*0.035,fontWeight: FontWeight.bold,color: Colors.black),),
+                                  Text(
+                                    "Rejected",
+                                    style: TextStyle(
+                                      fontSize: size * 0.035,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    rejectedCount.toString(),
+                                    style: TextStyle(
+                                      fontSize: size * 0.035,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -164,232 +245,205 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                         onPressed: () {
                           jobController.job.clear();
                           jobController.webinar.clear();
-                          loginController.selectedJobType="";
-                          jobController.selectedJobId='';
-                          jobController.selectedWebinarId='';
+                          loginController.selectedJobType = "";
+                          jobController.selectedJobId = '';
+                          jobController.selectedWebinarId = '';
                           loginController.typeNameController.clear();
                           loginController.jobTitleController.clear();
                           loginController.jobDescController.clear();
-                          loginController.selectedSalary="";
+                          loginController.selectedSalary = "";
                           loginController.qualificationJobController.clear();
-                          loginController.selectedExperience="";
-                          loginController.selectedJobType="";
-                          loginController.selectedExperience="";
-                          loginController.selectedSalary="";
+                          loginController.selectedExperience = "";
+                          loginController.selectedJobType = "";
+                          loginController.selectedExperience = "";
+                          loginController.selectedSalary = "";
                           loginController.webinarTitleJobController.clear();
-                          loginController.webinarDescriptionJobController.clear();
+                          loginController.webinarDescriptionJobController
+                              .clear();
                           loginController.webinarLinkController.clear();
                           loginController.webinarDateController.clear();
-                          loginController.startHour='';
-                          loginController.startMinutes="";
-                          loginController.startPeriod="";
-                          loginController.endHour="";
-                          loginController.endMinutes="";
-                          loginController.endPeriod="";
-                          jobController.webinarImage="";
-                          jobController.startHour='';
-                          jobController.startMinutes="";
-                          jobController.startPeriod="";
-                          jobController.endHour="";
-                          jobController.endMinutes="";
-                          jobController.endPeriod="";
-                          jobController.jobImage="";
-                         // loginController.jobFileImages="";
-                          jobController.selectedWebinarId="0";
-                          jobController.selectedJobId="0";
+                          loginController.startHour = '';
+                          loginController.startMinutes = "";
+                          loginController.startPeriod = "";
+                          loginController.endHour = "";
+                          loginController.endMinutes = "";
+                          loginController.endPeriod = "";
+                          jobController.webinarImage = "";
+                          jobController.startHour = '';
+                          jobController.startMinutes = "";
+                          jobController.startPeriod = "";
+                          jobController.endHour = "";
+                          jobController.endMinutes = "";
+                          jobController.endPeriod = "";
+                          jobController.jobImage = "";
+                          // loginController.jobFileImages="";
+                          jobController.selectedWebinarId = "0";
+                          jobController.selectedJobId = "0";
                           loginController.update();
                           jobController.update();
-                       Get.toNamed('/createJobAdminPage',arguments:{'job':'new'});
+                          Get.toNamed(
+                            '/createJobAdminPage',
+                            arguments: {'job': 'new'},
+                          );
                         },
-                        child: Text("Create Job/Webinars",style: TextStyle(fontSize: size*0.033,decoration:TextDecoration.underline,color:AppColors.primary,fontWeight: FontWeight.bold,),),
+                        child: Text(
+                          "Create Job/Webinars",
+                          style: TextStyle(
+                            fontSize: size * 0.033,
+                            decoration: TextDecoration.underline,
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
 
                     GetBuilder<JobController>(
-                        builder: (controller){
-                          return Container(
-                            height: size*0.12,
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
-                            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(10),),
-                                color: Colors.grey.shade100
+                      builder: (controller) {
+                        return Container(
+                          height: size * 0.12,
+                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
                             ),
-                            child: TabBar(
-                              indicatorSize: TabBarIndicatorSize.tab,
-                              dividerColor: Colors.transparent,
-                              indicator:
-                              BoxDecoration(borderRadius: BorderRadius.circular(10),
-                                gradient: const LinearGradient(
-                                  colors: [AppColors.primary,AppColors.secondary],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                              labelColor: AppColors.white,
-                              unselectedLabelColor: AppColors.black,
-                              tabs: const [
-                                Tab(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Jobs'),
-                                    ],
-                                  ),
-                                ),
-                                Tab(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Webinars',)
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        }
-                    ),
-                  if(jobController.jobList.isEmpty)
-                    Center(child: Column(
-                      children: [
-                        const SizedBox(height: 0.05,),
-                        buildShimmerEmptyWidget(size)
-                        // Text('No data found',style: AppTextStyles.caption(context,color: AppColors.black),),
-                      ],
-                    ),),
-                    if(jobController.jobList.isNotEmpty)
-
-                      Expanded(
-                          child: RefreshIndicator(
-                            onRefresh: _refresh,
-                            //height: MediaQuery.of(context).size.height * 1,
-                      child: TabBarView(
-                          children: [
-                           // const SizedBox(height: 0.02,),
-
-                            AnimationLimiter(
-                              child: ListView.builder(
-                                key: ValueKey(jobController.jobList.length),
-                                padding: const EdgeInsets.all(12),
-                                itemCount: jobController.jobList.length,
-                                itemBuilder: (context, index) {
-                                  final jobs = jobController.jobList[index];
-
-                                  return AnimationConfiguration.staggeredList(
-                                    position: index,
-                                    duration: const Duration(milliseconds: 1300),
-                                    child: SlideAnimation(
-                                      verticalOffset: 120.0,
-                                      curve: Curves.easeOutBack,
-                                      child: FadeInAnimation(
-                                        child: Padding(
-                                          padding:  const EdgeInsets.only(bottom: 12),
-                                          child: GestureDetector(
-                                            onTap: ()async {
-                                              Api.userInfo.write('selectJobId',jobs.jobId.toString());
-                                              Api.userInfo.write('activeStatus',jobs.isActive.toString());
-                                              print("nnn${Api.userInfo.read('selectJobId')}");
-                                              await  jobController.getJobsById(jobs.jobId.toString(), context);
-                                              await  jobController.getAppliedJobsAdmin(jobs.jobId.toString(),context);
-                                              Get.toNamed('/jobViewProfilePage');
-                                            },
-                                            child: JobCard(
-                                              title: jobs.jobTitle.toString(),
-                                              //description: jobs.jobDescription.toString(),
-                                              description:"Posted On: ${formatDate1("${jobs.createdDate}")}",
-                                              jobType: jobs.jobType.toString(),
-                                              appliedCount:
-                                              jobs.totalApplicants.toString(),
-                                              postedAgo: timeAgo(
-                                                DateTime.parse(jobs.createdDate.toString()),
-                                              ),
-                                              status: jobs.isActive == true
-                                                  ? "Open"
-                                                  : "Close",
-                                              statusColor: jobs.isActive == true
-                                                  ? Colors.lightGreen
-                                                  : Colors.redAccent,
-                                              jobId: jobs.jobId.toString(),
-                                              isActive: jobs.isActive.toString(),
-                                              size: size,
-                                                          onTap: ()async{
-                                                           await jobController.getJobsById(jobs.jobId.toString(), context);
-                                                            Get.toNamed('/createJobAdminPage');
-                                                          },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-
-                                if(jobController.webinarList.isEmpty)
-                              Center(child: Column(
-                                children: [
-                                  const SizedBox(height: 0.05,),
-                                  buildShimmerEmptyWidget(size)
-                                  //Text('No data found',style: AppTextStyles.caption(context,color: AppColors.black),),
+                            color: Colors.grey.shade100,
+                          ),
+                          child: TabBar(
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            dividerColor: Colors.transparent,
+                            indicator: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  AppColors.primary,
+                                  AppColors.secondary,
                                 ],
-                              ),),
-                            if(jobController.webinarList.isNotEmpty)
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                            labelColor: AppColors.white,
+                            unselectedLabelColor: AppColors.black,
+                            tabs: const [
+                              Tab(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [Text('Jobs')],
+                                ),
+                              ),
+                              Tab(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [Text('Webinars')],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    if (jobController.jobList.isEmpty)
+                      Center(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 0.05),
+                            buildShimmerEmptyWidget(size),
+                            // Text('No data found',style: AppTextStyles.caption(context,color: AppColors.black),),
+                          ],
+                        ),
+                      ),
+                    if (jobController.jobList.isNotEmpty)
+                      Expanded(
+                        child: RefreshIndicator(
+                          onRefresh: refresh,
+                          //height: MediaQuery.of(context).size.height * 1,
+                          child: TabBarView(
+                            children: [
+                              // const SizedBox(height: 0.02,),
                               AnimationLimiter(
                                 child: ListView.builder(
-                                  itemCount: jobController.webinarList.length,
-                                  key: ValueKey(jobController.webinarList.length),
-                                  shrinkWrap: true,
-                                  //physics: const NeverScrollableScrollPhysics(),
+                                  key: ValueKey(jobController.jobList.length),
                                   padding: const EdgeInsets.all(12),
-                                 // scrollDirection: ScrollDirection.vertical,
+                                  itemCount: jobController.jobList.length,
                                   itemBuilder: (context, index) {
-                                    final webinars=jobController.webinarList[index];
-                                    final created = DateTime.parse(webinars.createdDate.toString());
-                                    final postedAgo = timeAgo(created);
-                                    print(webinars.webinarTitle.toString());
-                                    return Padding(
-                                      padding: const EdgeInsets.only(bottom: 12),
-                                      child: GestureDetector(
-                                        onTap: ()async{
-                                          // Api.userInfo.write('selectWebinarId',webinars.webinarId.toString());
-                                          // Api.userInfo.write('activeStatus1', webinars.isActive.toString());
-                                          // jobController.getWebinarById(webinars.webinarId.toString(), webinars.isActive.toString(), context);
-                                          // Get.toNamed('/viewWebinarPage');
+                                    final jobs = jobController.jobList[index];
 
-                                          await jobController.getWebinarById(
-                                              webinars.webinarId.toString(),
-                                              webinars.isActive.toString(),
-                                              context);
-                                          await   jobController.getAppliedWebinarsAdmin(webinars.webinarId.toString(),context);
-                                          Api.userInfo.write('webinarId', webinars.webinarId.toString());
-                                          Api.userInfo.write('statusWebinar', webinars.isActive.toString());
-                                          Get.toNamed('/viewWebinarPage');
-                                          print("DATE => ${webinars.createdDate}");
-                                          },
-                                        child: AnimationConfiguration.staggeredList(
-                                          position: index,
-                                          duration: const Duration(milliseconds: 1300),
-                                          child: SlideAnimation(
-                                            verticalOffset: 120.0,
-                                            curve: Curves.easeOutBack,
-                                            child: FadeInAnimation(
+                                    return AnimationConfiguration.staggeredList(
+                                      position: index,
+                                      duration: const Duration(
+                                        milliseconds: 1300,
+                                      ),
+                                      child: SlideAnimation(
+                                        verticalOffset: 120.0,
+                                        curve: Curves.easeOutBack,
+                                        child: FadeInAnimation(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              bottom: 12,
+                                            ),
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                Api.userInfo.write(
+                                                  'selectJobId',
+                                                  jobs.jobId.toString(),
+                                                );
+                                                Api.userInfo.write(
+                                                  'activeStatus',
+                                                  jobs.isActive.toString(),
+                                                );
+                                                print(
+                                                  "nnn${Api.userInfo.read('selectJobId')}",
+                                                );
+                                                await jobController.getJobsById(
+                                                  jobs.jobId.toString(),
+                                                  context,
+                                                );
+                                                await jobController
+                                                    .getAppliedJobsAdmin(
+                                                      jobs.jobId.toString(),
+                                                      context,
+                                                    );
+                                                Get.toNamed(
+                                                  '/jobViewProfilePage',
+                                                );
+                                              },
                                               child: JobCard(
-                                                title: webinars.webinarTitle.toString(),
-                                                description:"Posted On: ${formatDate1("${webinars.createdDate}")}",
-                                                //description: webinars.webinarDescription.toString(),
-                                                jobType: "",
-                                                appliedCount: webinars.totalApplicants.toString()??'0',
-                                                postedAgo: postedAgo,
-                                                status:webinars.isActive.toString()=="true"? "Open": "Close",
-                                                statusColor: webinars.isActive.toString()=="true"?Colors.lightGreen:Colors.redAccent,
-                                                jobId:webinars.webinarId.toString(),
-                                                isActive: webinars.isActive.toString(),
+                                                title: jobs.jobTitle.toString(),
+                                                //description: jobs.jobDescription.toString(),
+                                                description:
+                                                    "Posted On: ${formatDate1("${jobs.createdDate}")}",
+                                                jobType: jobs.jobType
+                                                    .toString(),
+                                                appliedCount: jobs
+                                                    .totalApplicants
+                                                    .toString(),
+                                                postedAgo: timeAgo(
+                                                  DateTime.parse(
+                                                    jobs.createdDate.toString(),
+                                                  ),
+                                                ),
+                                                status: jobs.isActive == true
+                                                    ? "Open"
+                                                    : "Close",
+                                                statusColor:
+                                                    jobs.isActive == true
+                                                    ? Colors.lightGreen
+                                                    : Colors.redAccent,
+                                                jobId: jobs.jobId.toString(),
+                                                isActive: jobs.isActive
+                                                    .toString(),
                                                 size: size,
-                                                onTap: ()async{
-                                                  await jobController.getWebinarById(webinars.webinarId.toString(), webinars.isActive.toString(), context);
-                                                  Get.toNamed('/createJobAdminPage',arguments: {"selectedString":"Webinar"});
+                                                onTap: () async {
+                                                  await jobController
+                                                      .getJobsById(
+                                                        jobs.jobId.toString(),
+                                                        context,
+                                                      );
+                                                  Get.toNamed(
+                                                    '/createJobAdminPage',
+                                                  );
                                                 },
-
                                               ),
                                             ),
                                           ),
@@ -398,15 +452,145 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                                     );
                                   },
                                 ),
-                              )
-                          ]),
-                    )
-                      )],
+                              ),
+
+                              if (jobController.webinarList.isEmpty)
+                                Center(
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(height: 0.05),
+                                      buildShimmerEmptyWidget(size),
+                                      //Text('No data found',style: AppTextStyles.caption(context,color: AppColors.black),),
+                                    ],
+                                  ),
+                                ),
+                              if (jobController.webinarList.isNotEmpty)
+                                AnimationLimiter(
+                                  child: ListView.builder(
+                                    itemCount: jobController.webinarList.length,
+                                    key: ValueKey(
+                                      jobController.webinarList.length,
+                                    ),
+                                    shrinkWrap: true,
+                                    //physics: const NeverScrollableScrollPhysics(),
+                                    padding: const EdgeInsets.all(12),
+                                    // scrollDirection: ScrollDirection.vertical,
+                                    itemBuilder: (context, index) {
+                                      final webinars =
+                                          jobController.webinarList[index];
+                                      final created = DateTime.parse(
+                                        webinars.createdDate.toString(),
+                                      );
+                                      final postedAgo = timeAgo(created);
+                                      print(webinars.webinarTitle.toString());
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 12,
+                                        ),
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            // Api.userInfo.write('selectWebinarId',webinars.webinarId.toString());
+                                            // Api.userInfo.write('activeStatus1', webinars.isActive.toString());
+                                            // jobController.getWebinarById(webinars.webinarId.toString(), webinars.isActive.toString(), context);
+                                            // Get.toNamed('/viewWebinarPage');
+
+                                            await jobController.getWebinarById(
+                                              webinars.webinarId.toString(),
+                                              webinars.isActive.toString(),
+                                              context,
+                                            );
+                                            await jobController
+                                                .getAppliedWebinarsAdmin(
+                                                  webinars.webinarId.toString(),
+                                                  context,
+                                                );
+                                            Api.userInfo.write(
+                                              'webinarId',
+                                              webinars.webinarId.toString(),
+                                            );
+                                            Api.userInfo.write(
+                                              'statusWebinar',
+                                              webinars.isActive.toString(),
+                                            );
+                                            Get.toNamed('/viewWebinarPage');
+                                            print(
+                                              "DATE => ${webinars.createdDate}",
+                                            );
+                                          },
+                                          child: AnimationConfiguration.staggeredList(
+                                            position: index,
+                                            duration: const Duration(
+                                              milliseconds: 1300,
+                                            ),
+                                            child: SlideAnimation(
+                                              verticalOffset: 120.0,
+                                              curve: Curves.easeOutBack,
+                                              child: FadeInAnimation(
+                                                child: JobCard(
+                                                  title: webinars.webinarTitle
+                                                      .toString(),
+                                                  description:
+                                                      "Posted On: ${formatDate1("${webinars.createdDate}")}",
+                                                  //description: webinars.webinarDescription.toString(),
+                                                  jobType: "",
+                                                  appliedCount:
+                                                      webinars.totalApplicants
+                                                          .toString() ??
+                                                      '0',
+                                                  postedAgo: postedAgo,
+                                                  status:
+                                                      webinars.isActive
+                                                              .toString() ==
+                                                          "true"
+                                                      ? "Open"
+                                                      : "Close",
+                                                  statusColor:
+                                                      webinars.isActive
+                                                              .toString() ==
+                                                          "true"
+                                                      ? Colors.lightGreen
+                                                      : Colors.redAccent,
+                                                  jobId: webinars.webinarId
+                                                      .toString(),
+                                                  isActive: webinars.isActive
+                                                      .toString(),
+                                                  size: size,
+                                                  onTap: () async {
+                                                    await jobController
+                                                        .getWebinarById(
+                                                          webinars.webinarId
+                                                              .toString(),
+                                                          webinars.isActive
+                                                              .toString(),
+                                                          context,
+                                                        );
+                                                    Get.toNamed(
+                                                      '/createJobAdminPage',
+                                                      arguments: {
+                                                        "selectedString":
+                                                            "Webinar",
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
           );
-        }
+        },
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );

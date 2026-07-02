@@ -7,16 +7,17 @@ import '../../common_widgets/color_code.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-  class AddExpense extends StatefulWidget {
-   const AddExpense({super.key});
+class AddExpense extends StatefulWidget {
+  const AddExpense({super.key});
   @override
   State<AddExpense> createState() => _AddExpenseState();
-  }
-  class _AddExpenseState extends State<AddExpense> {
-  final planController=Get.put(PlanController());
+}
+
+class _AddExpenseState extends State<AddExpense> {
+  final planController = Get.put(PlanController());
   final _formKeyAddExpense = GlobalKey<FormState>();
   String? selectedMonthName;
-  String?  monthNumber;
+  String? monthNumber;
   String? selectState;
   String selectedYear = DateTime.now().year.toString();
   @override
@@ -24,14 +25,16 @@ import 'package:intl/intl.dart';
     super.initState();
     selectedMonthName = DateFormat.MMMM().format(DateTime.now());
     planController.selectedYear = DateTime.now().year.toString();
-    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    double size=MediaQuery.of(context).size.width;
+    double size = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: AppBar(centerTitle: true,backgroundColor: AppColors.white,
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: AppColors.white,
         automaticallyImplyLeading: true,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -49,22 +52,22 @@ import 'package:intl/intl.dart';
                 ),
               ),
               child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
+                child: Icon(Icons.arrow_back, color: AppColors.white),
               ),
             ),
           ),
         ),
         iconTheme: const IconThemeData(color: AppColors.black),
-        title: Text('Add Expense Details',style: AppTextStyles.subtitle(context,color: AppColors.black),),
+        title: Text(
+          'Add Expense Details',
+          style: AppTextStyles.subtitle(context, color: AppColors.black),
+        ),
       ),
       body: GetBuilder<PlanController>(
-          builder: (controller) {
-            return Form(
-              key: _formKeyAddExpense,
-              child: SingleChildScrollView(
+        builder: (controller) {
+          return Form(
+            key: _formKeyAddExpense,
+            child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Column(
@@ -72,11 +75,16 @@ import 'package:intl/intl.dart';
                     CustomDropdownField(
                       hint: "Select State",
                       // icon: Icons.place,
-                      fillColor: Colors.grey[100],borderColor: AppColors.white,
-                      items: const ["Tamilnadu","karnataka","Andhra"],
-                      selectedValue: (selectState != null &&
-                          ["Tamilnadu","karnataka","Andhra"]
-                              .contains(selectState))
+                      fillColor: Colors.grey[100],
+                      borderColor: AppColors.white,
+                      items: const ["Tamilnadu", "karnataka", "Andhra"],
+                      selectedValue:
+                          (selectState != null &&
+                              [
+                                "Tamilnadu",
+                                "karnataka",
+                                "Andhra",
+                              ].contains(selectState))
                           ? selectState
                           : null,
                       onChanged: (value) {
@@ -86,29 +94,30 @@ import 'package:intl/intl.dart';
                           planController.selectedState = value;
                         });
                         controller.getExpense(
-                            month: monthNumber,
-                            year: selectedYear,state: selectState
+                          month: monthNumber,
+                          year: selectedYear,
+                          state: selectState,
                         );
                       },
                     ),
-                    SizedBox(height: size*0.01,),
+                    SizedBox(height: size * 0.01),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
-                          width: size*0.44,
-                          child:   Expanded(
-                    child: _modernFilterBox(
-                    icon: Icons.calendar_month,
-                      label: selectedMonthName!,
-                      onTap: _showMonthPickerDialog,
-                    ),
-              ),
+                          width: size * 0.44,
+                          child: Expanded(
+                            child: _modernFilterBox(
+                              icon: Icons.calendar_month,
+                              label: selectedMonthName!,
+                              onTap: _showMonthPickerDialog,
+                            ),
+                          ),
                         ),
 
                         SizedBox(
-                          width: size*0.45,
-                          child:  Expanded(
+                          width: size * 0.45,
+                          child: Expanded(
                             child: _modernFilterBox(
                               icon: Icons.date_range,
                               label: selectedYear,
@@ -118,7 +127,7 @@ import 'package:intl/intl.dart';
                         ),
                       ],
                     ),
-                    SizedBox(height: size*0.03,),
+                    SizedBox(height: size * 0.03),
 
                     CustomTextField(
                       hint: "Title",
@@ -128,7 +137,8 @@ import 'package:intl/intl.dart';
                     SizedBox(height: size * 0.03),
                     CustomTextField(
                       hint: "Amount",
-                      icon: Icons.location_city,keyboardType: TextInputType.number,
+                      icon: Icons.location_city,
+                      keyboardType: TextInputType.number,
                       controller: planController.amountController,
                       maxLength: 5,
                     ),
@@ -141,7 +151,8 @@ import 'package:intl/intl.dart';
                         "Recharge",
                         "Others",
                       ],
-                      selectedValue: planController.selectedCategory?.isEmpty == true
+                      selectedValue:
+                          planController.selectedCategory?.isEmpty == true
                           ? null
                           : planController.selectedCategory,
                       onChanged: (value) {
@@ -151,18 +162,18 @@ import 'package:intl/intl.dart';
                         });
                       },
                     ),
-                    if(planController.selectedCategory=="Others")
-                    CustomTextField(
-                      hint: "Category",
-                      icon: Icons.pin,
-                      controller: planController.categoryController,
-                      // keyboardType: TextInputType.number,
-                      //fillColor: AppColors.white,
-                      //borderColor: AppColors.grey,
-                    ),
+                    if (planController.selectedCategory == "Others")
+                      CustomTextField(
+                        hint: "Category",
+                        icon: Icons.pin,
+                        controller: planController.categoryController,
+                        // keyboardType: TextInputType.number,
+                        //fillColor: AppColors.white,
+                        //borderColor: AppColors.grey,
+                      ),
                     SizedBox(height: size * 0.06),
-                  Center(
-                    child:  Container(
+                    Center(
+                      child: Container(
                         width: size,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
@@ -172,57 +183,84 @@ import 'package:intl/intl.dart';
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:  Colors.transparent,shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            if (_formKeyAddExpense.currentState!.validate())
+                              if (planController.selectedCategory == "Others") {
+                                if (selectedMonthName == "All") {
+                                  monthNumber = "";
+                                } else {
+                                  monthNumber = DateFormat.MMMM()
+                                      .parse(selectedMonthName!)
+                                      .month
+                                      .toString();
+                                }
+                                print('dff${planController.selectedState!}');
+                                planController.addExpenseDetail(
+                                  planController.selectedState ?? "",
+                                  planController.titleController.text,
+                                  planController.amountController.text,
+                                  planController.categoryController.text,
+                                  monthNumber!,
+                                  planController.selectedYear.toString(),
+                                  context,
+                                );
+                              } else {
+                                if (selectedMonthName == "All") {
+                                  monthNumber = "";
+                                } else {
+                                  monthNumber = DateFormat.MMMM()
+                                      .parse(selectedMonthName!)
+                                      .month
+                                      .toString();
+                                }
+                                print('dff${planController.selectedState}');
+
+                                planController.addExpenseDetail(
+                                  planController.selectedState ?? "",
+                                  planController.titleController.text,
+                                  planController.amountController.text,
+                                  planController.selectedCategory!,
+                                  monthNumber!,
+                                  planController.selectedYear.toString(),
+                                  context,
+                                );
+                              }
+                          },
+                          child: Text(
+                            'Add',
+                            style: AppTextStyles.caption(
+                              context,
+                              color: AppColors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      onPressed: () {
-                        if (_formKeyAddExpense.currentState!.validate())
-                          if (planController.selectedCategory == "Others") {
-                            if (selectedMonthName == "All") {
-                              monthNumber = "";
-                            } else {
-                              monthNumber = DateFormat.MMMM().parse(selectedMonthName!).month.toString();
-                            }
-                            print('dff${planController.selectedState!}');
-                            planController.addExpenseDetail(
-                                planController.selectedState??"",
-                                planController.titleController.text,
-                                planController.amountController.text,
-                                planController.categoryController.text,
-                                monthNumber!,  planController.selectedYear.toString(), context);
-                          }
-                        else {
-                            if (selectedMonthName == "All") {
-                              monthNumber = "";
-                            } else {
-                              monthNumber = DateFormat.MMMM().parse(selectedMonthName!).month.toString();
-                            }
-                            print('dff${planController.selectedState}');
-
-                            planController.addExpenseDetail(
-                              planController.selectedState??"",
-                                planController.titleController.text,
-                                planController.amountController.text,
-                                planController.selectedCategory!,
-                                monthNumber!,  planController.selectedYear.toString(), context);
-                          }
-                      },child: Text('Add',style: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold),),)))
+                      ),
+                    ),
                   ],
                 ),
               ),
-                        ),
-            );
-        }
+            ),
+          );
+        },
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
   }
+
   void _showMonthPickerDialog() {
-    final months = List.generate(12, (index) => DateFormat.MMMM().format(DateTime(0, index + 1)));
+    final months = List.generate(
+      12,
+      (index) => DateFormat.MMMM().format(DateTime(0, index + 1)),
+    );
     String? tempSelectedMonth = selectedMonthName; // temp selection
     String? tempMonthNumber = monthNumber;
 
@@ -233,9 +271,9 @@ import 'package:intl/intl.dart';
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title:  Text(
-              "Select Month",
-              style: AppTextStyles.caption(context,fontWeight: FontWeight.bold)
+          title: Text(
+            "Select Month",
+            style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
           ),
           content: SizedBox(
             width: double.maxFinite,
@@ -250,12 +288,13 @@ import 'package:intl/intl.dart';
                       title: Text(
                         monthName,
                         style: AppTextStyles.caption(
-                            fontWeight: tempSelectedMonth == monthName
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            color: tempSelectedMonth == monthName
-                                ? AppColors.primary
-                                : Colors.black,context
+                          fontWeight: tempSelectedMonth == monthName
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: tempSelectedMonth == monthName
+                              ? AppColors.primary
+                              : Colors.black,
+                          context,
                         ),
                       ),
                       value: monthName,
@@ -295,8 +334,12 @@ import 'package:intl/intl.dart';
       },
     );
   }
+
   void _showYearPickerRadioDialog() {
-    final years = List.generate(10, (i) => DateTime.now().year - i); // last 10 years
+    final years = List.generate(
+      10,
+      (i) => DateTime.now().year - i,
+    ); // last 10 years
     String? tempSelectedYear = selectedYear; // temporary selection
 
     showDialog(
@@ -306,9 +349,9 @@ import 'package:intl/intl.dart';
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title:  Text(
+          title: Text(
             "Select Year",
-            style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
+            style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
           ),
           content: SizedBox(
             width: double.minPositive,
@@ -322,12 +365,13 @@ import 'package:intl/intl.dart';
                       title: Text(
                         yearStr,
                         style: AppTextStyles.caption(
-                            fontWeight: tempSelectedYear == yearStr
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            color: tempSelectedYear == yearStr
-                                ? AppColors.primary
-                                : Colors.black,context
+                          fontWeight: tempSelectedYear == yearStr
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: tempSelectedYear == yearStr
+                              ? AppColors.primary
+                              : Colors.black,
+                          context,
                         ),
                       ),
                       value: yearStr,
@@ -367,42 +411,45 @@ import 'package:intl/intl.dart';
     );
   }
 
-Widget _modernFilterBox({
-  required IconData icon,
-  required String label,
-  required VoidCallback onTap,
-}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.grey[100], // light background
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Icon(icon, color: AppColors.primary, size: 22),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-                label,
-                style: AppTextStyles.caption(context,fontWeight: FontWeight.bold)
+  Widget _modernFilterBox({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.grey[100], // light background
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 5,
+              offset: const Offset(0, 2),
             ),
-          ),
-          const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
-        ],
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(icon, color: AppColors.primary, size: 22),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                label,
+                style: AppTextStyles.caption(
+                  context,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

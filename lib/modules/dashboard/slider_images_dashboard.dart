@@ -5,16 +5,15 @@ import 'package:shimmer/shimmer.dart';
 import '../../common_widgets/color_code.dart';
 import '../plans/plan_controller.dart';
 
-
 class DashboardCarousel extends StatefulWidget {
   final List<String> imageList;
   final Function(int index)? onIndexChanged;
 
   const DashboardCarousel({
-    Key? key,
+    super.key,
     required this.imageList,
     this.onIndexChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<DashboardCarousel> createState() => _DashboardCarouselState();
@@ -64,30 +63,28 @@ class _DashboardCarouselState extends State<DashboardCarousel> {
                 return GestureDetector(
                   onTap: () {
                     print('ffgdf$img');
-                    Get.toNamed('/viewImagePage', arguments: {
-                      'url': img,
-                    });
+                    Get.toNamed('/viewImagePage', arguments: {'url': img});
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: img.startsWith("http")
                         ? Image.network(
-                      img,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          'assets/images/job poster.png',
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    )
+                            img,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                'assets/images/job poster.png',
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          )
                         : Image.asset(
-                      'assets/images/job poster.png',
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
+                            'assets/images/job poster.png',
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 );
               }).toList(),

@@ -18,10 +18,10 @@ class JobCategoryScreenWeb extends StatefulWidget {
 }
 
 class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
-
   final JobController jobController = Get.put(JobController());
   final TextEditingController nameController = TextEditingController();
-  final GlobalKey<ScaffoldState> _scaffoldKeyJobCategory = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyJobCategory =
+      GlobalKey<ScaffoldState>();
 
   final List<String> userTypes = const [
     "All",
@@ -29,7 +29,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
     "Dental Lab",
     "Dental Shop",
     "Dental Mechanic",
-    "Dental Consultant"
+    "Dental Consultant",
   ];
 
   @override
@@ -41,13 +41,14 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
 
   Future<void> fetchCategories() async {
     await jobController.getJobCategoryLists(
-        jobController.selectedUserType == "All"
-            ? ""
-            : jobController.selectedUserType!,
-        context);
+      jobController.selectedUserType == "All"
+          ? ""
+          : jobController.selectedUserType!,
+      context,
+    );
   }
-  void openCategoryDialog({JobCategoryModel? model}) {
 
+  void openCategoryDialog({JobCategoryModel? model}) {
     if (model != null) {
       nameController.text = model.name;
       jobController.selectedUserType = model.userType;
@@ -59,14 +60,15 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
     showDialog(
       context: context,
       builder: (_) {
-        double s=MediaQuery.of(context).size.width;
+        double s = MediaQuery.of(context).size.width;
         final bool isDesktop = s >= 1100;
 
         return Dialog(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)),
+            borderRadius: BorderRadius.circular(15),
+          ),
           child: Container(
-            width:s*0.14 ,
+            width: s * 0.14,
             padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -77,41 +79,47 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                     alignment: Alignment.centerLeft,
                     child: IconButton(
                       icon: const Icon(Icons.menu),
-                      onPressed: () => _scaffoldKeyJobCategory.currentState?.openDrawer(),
+                      onPressed: () =>
+                          _scaffoldKeyJobCategory.currentState?.openDrawer(),
                     ),
                   ),
                 Center(
                   child: Text(
-                    model != null
-                        ? "Update Category"
-                        : "Add Category",
+                    model != null ? "Update Category" : "Add Category",
                     style: AppTextStyles.caption(
-                      context,fontWeight: FontWeight.bold
+                      context,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 const SizedBox(height: 10),
 
-                Text("Select User Type",style: AppTextStyles.caption(context,),),
+                Text("Select User Type", style: AppTextStyles.caption(context)),
                 const SizedBox(height: 10),
                 GetBuilder<JobController>(
-                    builder: (controller) {
-                      return CustomDropdownField(
+                  builder: (controller) {
+                    return CustomDropdownField(
                       hint: " ",
                       fillColor: Colors.grey[100],
                       borderColor: AppColors.grey,
                       //items:userTypes.map((e) => e!='All').toList(),
-                        items: userTypes.where((e) => e != "All").toList(),
-                        selectedValue: controller.selectedUserType,
+                      items: userTypes.where((e) => e != "All").toList(),
+                      selectedValue: controller.selectedUserType,
                       onChanged: (value) {
                         controller.selectedUserType = value;
                         controller.update();
                       },
                     );
-                  }
+                  },
                 ),
                 const SizedBox(height: 15),
-                Text("Enter Job Category",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
+                Text(
+                  "Enter Job Category",
+                  style: AppTextStyles.caption(
+                    context,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
                 const SizedBox(height: 10),
 
                 CustomTextField(
@@ -136,26 +144,33 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                       ),
                     ),
                     onPressed: () async {
-
                       if (model != null) {
                         await jobController.updateJobCategoryAdmin(
-                            model.id,
-                            nameController.text,
-                            jobController.isActive.toString(),
-                            context);
+                          model.id,
+                          nameController.text,
+                          jobController.isActive.toString(),
+                          context,
+                        );
                       } else {
                         await jobController.createJobCategoryAdmin(
-                            jobController.selectedUserType!,
-                            nameController.text,
-                            context);
+                          jobController.selectedUserType!,
+                          nameController.text,
+                          context,
+                        );
                       }
 
                       Navigator.pop(context);
                       fetchCategories();
                     },
-                    child: Text(model != null ? "Update" : "Add",style: AppTextStyles.caption(context,color: AppColors.white),),
+                    child: Text(
+                      model != null ? "Update" : "Add",
+                      style: AppTextStyles.caption(
+                        context,
+                        color: AppColors.white,
+                      ),
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -163,25 +178,29 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
       },
     );
   }
+
   void _showUserTypeDialog() {
     String? tempSelected = jobController.selectedUserType;
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title:  Center(child: Text("Select User Type",style: AppTextStyles.body(context,fontWeight: FontWeight.bold),)),
+          title: Center(
+            child: Text(
+              "Select User Type",
+              style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+            ),
+          ),
           content: SizedBox(
             width: 300,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: userTypes.map((type) {
-
                 return RadioListTile<String>(
                   value: type,
                   groupValue: tempSelected,
-                  title: Text(type,style: AppTextStyles.caption(context),),
+                  title: Text(type, style: AppTextStyles.caption(context)),
                   onChanged: (value) async {
-
                     tempSelected = value;
 
                     Navigator.pop(context);
@@ -189,8 +208,9 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                     jobController.selectedUserType = value;
 
                     await jobController.getJobCategoryLists(
-                        value == "All" ? "" : value!,
-                        context);
+                      value == "All" ? "" : value!,
+                      context,
+                    );
 
                     jobController.update();
                   },
@@ -202,6 +222,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
       },
     );
   }
+
   Widget _modernFilterBox({
     required IconData icon,
     required String label,
@@ -210,8 +231,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-            vertical: 14, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.grey[100],
           borderRadius: BorderRadius.circular(12),
@@ -219,7 +239,6 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
         ),
         child: Row(
           children: [
-
             Icon(icon, color: AppColors.primary),
 
             const SizedBox(width: 10),
@@ -234,12 +253,13 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
               ),
             ),
 
-            const Icon(Icons.keyboard_arrow_down)
+            const Icon(Icons.keyboard_arrow_down),
           ],
         ),
       ),
     );
   }
+
   Widget _categoryTable() {
     final size = MediaQuery.of(context).size.width;
 
@@ -251,18 +271,64 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.85),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                color: AppColors.primary.withValues(alpha: 0.85),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
+                ),
                 boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6,
+                    offset: Offset(0, 3),
+                  ),
                 ],
               ),
               child: Row(
                 children: [
-                  Expanded(flex: 1, child: Text("S.No", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold))),
-                  Expanded(flex: 3, child: Text("Category", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold))),
-                  Expanded(flex: 3, child: Text("User Type", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold))),
-                  Expanded(flex: 2, child: Text("Actions", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold))),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      "S.No",
+                      style: AppTextStyles.caption(
+                        context,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      "Category",
+                      style: AppTextStyles.caption(
+                        context,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      "User Type",
+                      style: AppTextStyles.caption(
+                        context,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      "Actions",
+                      style: AppTextStyles.caption(
+                        context,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -280,58 +346,74 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: isEven ? Colors.grey[100] : Colors.white,
-                    borderRadius: index == jobController.jobCategoryAdmin.length - 1
-                        ? const BorderRadius.vertical(bottom: Radius.circular(12))
+                    borderRadius:
+                        index == jobController.jobCategoryAdmin.length - 1
+                        ? const BorderRadius.vertical(
+                            bottom: Radius.circular(12),
+                          )
                         : null,
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 15,
+                  ),
 
                   child: Row(
                     children: [
-
                       Expanded(
                         flex: 1,
-                        child: Text("${index + 1}",
-                            style: AppTextStyles.caption(context)),
+                        child: Text(
+                          "${index + 1}",
+                          style: AppTextStyles.caption(context),
+                        ),
                       ),
 
                       Expanded(
                         flex: 3,
-                        child: Text(item.name,
-                            style: AppTextStyles.caption(context)),
+                        child: Text(
+                          item.name,
+                          style: AppTextStyles.caption(context),
+                        ),
                       ),
 
                       Expanded(
                         flex: 3,
-                        child: Text(item.userType,
-                            style: AppTextStyles.caption(context)),
+                        child: Text(
+                          item.userType,
+                          style: AppTextStyles.caption(context),
+                        ),
                       ),
                       Expanded(
                         flex: 2,
                         child: Row(
                           children: [
-
                             IconButton(
-                              icon: Icon(Icons.edit,
-                                  size: size * 0.012,
-                                  color: AppColors.primary),
+                              icon: Icon(
+                                Icons.edit,
+                                size: size * 0.012,
+                                color: AppColors.primary,
+                              ),
                               onPressed: () {
                                 openCategoryDialog(model: item);
                               },
                             ),
                             IconButton(
-                              icon: Icon(Icons.delete,
-                                  size: size * 0.012,
-                                  color: Colors.red),
+                              icon: Icon(
+                                Icons.delete,
+                                size: size * 0.012,
+                                color: Colors.red,
+                              ),
                               onPressed: () async {
                                 showDeleteDialog(
                                   context: context,
                                   title: "Delete Category",
                                   message:
-                                  "This category will be permanently removed.",
+                                      "This category will be permanently removed.",
                                   onConfirm: () async {
-                                    await jobController
-                                        .deleteJobCategoryLists(item.id, context);
+                                    await jobController.deleteJobCategoryLists(
+                                      item.id,
+                                      context,
+                                    );
 
                                     fetchCategories();
                                   },
@@ -351,10 +433,11 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
-    double s=MediaQuery.of(context).size.width;
-    double width=MediaQuery.of(context).size.width;
+    double s = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     final bool isDesktop = width >= 1100;
     final bool isTablet = width >= 700 && width < 1100;
@@ -362,14 +445,14 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
     return Scaffold(
       key: _scaffoldKeyJobCategory,
       backgroundColor: Colors.white,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       appBar: CommonWebAppBar(
         height: s * 0.03,
         title: "LYD",
-        onLogout: () {
-        },
-        onNotification: () {
-        },
+        onLogout: () {},
+        onNotification: () {},
       ),
 
       body: GetBuilder<JobController>(
@@ -380,8 +463,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
               Expanded(
                 child: Center(
                   child: ConstrainedBox(
-                    constraints:
-                    const BoxConstraints(maxWidth: 1200),
+                    constraints: const BoxConstraints(maxWidth: 1200),
                     child: Padding(
                       padding: const EdgeInsets.all(24),
                       child: Container(
@@ -389,39 +471,42 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: const [
-                            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
+                            ),
                           ],
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (!isDesktop)
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: IconButton(
                                     icon: const Icon(Icons.menu),
-                                    onPressed: () => _scaffoldKeyJobCategory.currentState?.openDrawer(),
+                                    onPressed: () => _scaffoldKeyJobCategory
+                                        .currentState
+                                        ?.openDrawer(),
                                   ),
                                 ),
                               Text(
                                 "Job Categories",
-                                style: AppTextStyles.subtitle(
-                                  context,
-                                ),
+                                style: AppTextStyles.subtitle(context),
                               ),
 
                               const SizedBox(height: 25),
 
                               Row(
                                 children: [
-
                                   Expanded(
                                     child: _modernFilterBox(
                                       icon: Icons.person_outline,
-                                      label: jobController.selectedUserType ??
+                                      label:
+                                          jobController.selectedUserType ??
                                           "Select User Type",
                                       onTap: _showUserTypeDialog,
                                     ),
@@ -430,22 +515,34 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                                   const SizedBox(width: 15),
 
                                   ElevatedButton.icon(
-                                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.transparent,shadowColor: AppColors.transparent,elevation: 16),
-                                    icon:  Icon(Icons.add,size: s*0.012,color:AppColors.black,),
-                                    label:
-                                     Text("Add Category",style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.transparent,
+                                      shadowColor: AppColors.transparent,
+                                      elevation: 16,
+                                    ),
+                                    icon: Icon(
+                                      Icons.add,
+                                      size: s * 0.012,
+                                      color: AppColors.black,
+                                    ),
+                                    label: Text(
+                                      "Add Category",
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     onPressed: () {
                                       openCategoryDialog();
                                     },
-                                  )
+                                  ),
                                 ],
                               ),
 
                               const SizedBox(height: 25),
 
-                              Expanded(
-                                child: _categoryTable(),
-                              ),
+                              Expanded(child: _categoryTable()),
                             ],
                           ),
                         ),

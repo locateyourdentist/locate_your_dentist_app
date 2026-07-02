@@ -9,7 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
-import 'package:locate_your_dentist/api/firebase_options.dart';
+import 'package:locate_your_dentist/firebase_options.dart';
 import 'package:locate_your_dentist/common_widgets/platform_helper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -85,14 +85,28 @@ Future<void> setupFCM() async {
   );
 
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    String? token;
-    token = await messaging.getToken();
-    print("FCM Token: $token");
+    try {
+      // On iOS, getToken() throws `apns-token-not-set` if the APNS token
+      // isn't available yet (always the case on the Simulator, which can't
+      // register for remote push). Guard on it so startup doesn't break.
+      if (Platform.isIOS) {
+        final apnsToken = await messaging.getAPNSToken();
+        if (apnsToken == null) {
+          print("APNS token not available (e.g. iOS Simulator); "
+              "skipping FCM token fetch.");
+          return;
+        }
+      }
 
-    if (token != null) {
-      Api.userInfo.write('fcmToken', token);
+      final token = await messaging.getToken();
+      print("FCM Token: $token");
+
+      if (token != null) {
+        Api.userInfo.write('fcmToken', token);
+      }
+    } catch (e) {
+      print("Failed to fetch FCM token: $e");
     }
-
   }
 
   FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
@@ -225,8 +239,15 @@ Future<void> main() async {
   const AndroidInitializationSettings androidInit =
   AndroidInitializationSettings('@mipmap/ic_launcher');
 
+  const DarwinInitializationSettings darwinInit =
+  DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  );
+
   const InitializationSettings initSettings =
-  InitializationSettings(android: androidInit);
+  InitializationSettings(android: androidInit, iOS: darwinInit, macOS: darwinInit);
   await flutterLocalNotificationsPlugin.initialize(
     settings: initSettings,
   );

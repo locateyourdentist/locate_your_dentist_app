@@ -14,6 +14,7 @@ import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/modules/product_services/service_controller.dart';
 import '../../common_widgets/color_code.dart';
 import 'package:get/get.dart';
+
 class AppImage {
   Uint8List? bytes;
   String? url;
@@ -35,7 +36,11 @@ class AppImage {
         color: const Color(0xFFF1F3F6),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Icon(Icons.image_outlined, color: Colors.grey.shade400, size: width * 0.5),
+      child: Icon(
+        Icons.image_outlined,
+        color: Colors.grey.shade400,
+        size: width * 0.5,
+      ),
     );
 
     if (kIsWeb) {
@@ -48,7 +53,13 @@ class AppImage {
       if (url != null && url!.isNotEmpty) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.network(url!, width: width, height: height, fit: fit, errorBuilder: (_, __, ___) => placeholder!),
+          child: Image.network(
+            url!,
+            width: width,
+            height: height,
+            fit: fit,
+            errorBuilder: (_, __, ___) => placeholder!,
+          ),
         );
       }
       return placeholder;
@@ -69,7 +80,13 @@ class AppImage {
     if (url != null && url!.isNotEmpty) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: Image.network(url!, width: width, height: height, fit: fit, errorBuilder: (_, __, ___) => placeholder!),
+        child: Image.network(
+          url!,
+          width: width,
+          height: height,
+          fit: fit,
+          errorBuilder: (_, __, ___) => placeholder!,
+        ),
       );
     }
     return placeholder;
@@ -81,6 +98,7 @@ class AddProduct extends StatefulWidget {
   @override
   State<AddProduct> createState() => _AddProductState();
 }
+
 class _AddProductState extends State<AddProduct> {
   final _formKeyAddProduct = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
@@ -110,7 +128,8 @@ class _AddProductState extends State<AddProduct> {
 
   Future<void> pickImage() async {
     final XFile? pickedFile = await _picker.pickImage(
-        source: ImageSource.gallery);
+      source: ImageSource.gallery,
+    );
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
@@ -125,20 +144,23 @@ class _AddProductState extends State<AddProduct> {
     selectedUserType = Api.userInfo.read('userType') ?? "";
     // loginController.getProfileByUserId(
     //     Api.userInfo.read('userId') ?? "", context);
-    serviceController.selectedServiceId
-        .toString()
-        .isNotEmpty ? serviceController.selectedServiceId.toString() : "0";
+    serviceController.selectedServiceId.toString().isNotEmpty
+        ? serviceController.selectedServiceId.toString()
+        : "0";
   }
 
   Future<void> _refresh() async {
     _updateFields();
     selectedUserType = Api.userInfo.read('userType') ?? "";
     loginController.getProfileByUserId(
-        Api.userInfo.read('userId') ?? "", context);
-    serviceController.selectedServiceId
-        .toString()
-        .isNotEmpty ? serviceController.selectedServiceId.toString() : "0";
+      Api.userInfo.read('userId') ?? "",
+      context,
+    );
+    serviceController.selectedServiceId.toString().isNotEmpty
+        ? serviceController.selectedServiceId.toString()
+        : "0";
   }
+
   // Future<void> pickImages() async {
   //   const maxImages = 3;
   //   final existingCount = loginController.serviceFileImages.length;
@@ -186,7 +208,7 @@ class _AddProductState extends State<AddProduct> {
     }
 
     try {
-      final List<XFile>? selected = await _picker.pickMultiImage();
+      final List<XFile> selected = await _picker.pickMultiImage();
 
       if (selected != null && selected.isNotEmpty) {
         final limited = selected.take(remaining).toList();
@@ -196,7 +218,9 @@ class _AddProductState extends State<AddProduct> {
             final bytes = await x.readAsBytes();
             loginController.serviceFileImages.add(AppImage2(bytes: bytes));
           } else {
-            loginController.serviceFileImages.add(AppImage2(file: File(x.path)));
+            loginController.serviceFileImages.add(
+              AppImage2(file: File(x.path)),
+            );
           }
         }
 
@@ -213,6 +237,7 @@ class _AddProductState extends State<AddProduct> {
       isPicking = false;
     }
   }
+
   Future<List<Uint8List>> getImageBytes() async {
     List<Uint8List> imageBytes = [];
 
@@ -226,25 +251,39 @@ class _AddProductState extends State<AddProduct> {
     }
     return imageBytes;
   }
+
   Future<void> confirmRemoveImage(BuildContext ctx, int index) async {
     showDialog(
       context: ctx,
       builder: (c) => AlertDialog(
-        title:  Text("Remove Image",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold)),
-        content:  Text("Are you sure you want to remove this image?",style: AppTextStyles.caption(context)),
+        title: Text(
+          "Remove Image",
+          style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          "Are you sure you want to remove this image?",
+          style: AppTextStyles.caption(context),
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(c), child:  Text("Cancel",style: AppTextStyles.caption(context))),
-          TextButton(onPressed: ()async {
-            serviceFileImages.removeAt(index);
-          //  await loginController.deleteAwsFile(loginController.appLogoUrl.toString(),'appLogo',context);
+          TextButton(
+            onPressed: () => Navigator.pop(c),
+            child: Text("Cancel", style: AppTextStyles.caption(context)),
+          ),
+          TextButton(
+            onPressed: () async {
+              serviceFileImages.removeAt(index);
+              //  await loginController.deleteAwsFile(loginController.appLogoUrl.toString(),'appLogo',context);
 
-            loginController.update();
-            Navigator.pop(c);
-          }, child:  Text("Remove",style: AppTextStyles.caption(context),)),
+              loginController.update();
+              Navigator.pop(c);
+            },
+            child: Text("Remove", style: AppTextStyles.caption(context)),
+          ),
         ],
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -276,10 +315,7 @@ class _AddProductState extends State<AddProduct> {
                 ),
               ),
               child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
+                child: Icon(Icons.arrow_back, color: AppColors.white),
               ),
             ),
           ),
@@ -288,238 +324,309 @@ class _AddProductState extends State<AddProduct> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: Form(
-            key: _formKeyAddProduct,
-            child: GetBuilder<LoginController>(
-                builder: (controller) {
-                  return SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 5),
+          key: _formKeyAddProduct,
+          child: GetBuilder<LoginController>(
+            builder: (controller) {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 5),
 
-                            //                        Text(
-                            //   selectedUserType == 'Dental Clinic'
-                            //       ? 'Service Details'
-                            //       : 'Product Details',
-                            //   style: AppTextStyles.subtitle(context, color: AppColors.black),
-                            // ),
-                            // SizedBox(height: size * 0.01),
-
-                            Text('Title',
-                              style: AppTextStyles.caption(
-                                  context, color: AppColors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: size * 0.02),
-
-                            CustomTextField(
-                              hint: addList.isNotEmpty
-                                  ? addList[0]["fieldName"]!
-                                  : "",
-                              controller: serviceController.titleController,
-                              borderColor: AppColors.white,
-                              fillColor: Colors.grey.shade100,
-                            ),
-                            SizedBox(height: size * 0.02),
-                            Text('Description',
-                              style: AppTextStyles.caption(
-                                  context, color: AppColors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: size * 0.02),
-                            CustomTextField(
-                              hint: addList.length > 1
-                                  ? addList[1]["fieldName"]!
-                                  : "",
-                              controller: serviceController
-                                  .descriptionController,
-                              borderColor: AppColors.white,
-                              fillColor: Colors.grey.shade100,
-                              maxLines: 4,
-                            ),
-                            SizedBox(height: size * 0.02),
-                            Text('Price',
-                              style: AppTextStyles.caption(
-                                  context, color: AppColors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: size * 0.02),
-                            CustomTextField(
-                              hint: addList.length > 2
-                                  ? addList[2]["fieldName"]!
-                                  : "",
-                              controller: serviceController.costController,
-                              borderColor: AppColors.white,
-                              fillColor: Colors.grey.shade100,
-                              keyboardType: TextInputType.number,
-                              maxLength: 6,
-                            ),
-                            SizedBox(height: size * 0.01),
-
-                            Text('Images',
-                              style: AppTextStyles.caption(
-                                  context, color: AppColors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: size * 0.02),
-                            Column(
-                                children: [
-                                  SizedBox(
-                                    height: size * 0.35,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: loginController.serviceFileImages.length<3?loginController.serviceFileImages.length+1 :loginController.serviceFileImages.length ,
-                                      itemBuilder: (context, index) {
-                                        if (index == loginController.serviceFileImages.length && loginController.serviceFileImages.length < 3) {
-                                          return GestureDetector(
-                                            onTap: pickImages,
-                                            child: Container(
-                                              margin: const EdgeInsets.all(8),
-                                              width: size * 0.35,
-                                              height: size * 0.3,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                border: Border.all(color: Colors.grey),
-                                                color: Colors.grey.shade200,
-                                              ),
-                                              child:  Center(
-                                                child: Icon(Icons.add, size: size*0.012, color: Colors.grey),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                        final img = loginController.serviceFileImages[index];
-                                        Widget imageWidget;
-                                        if (kIsWeb && img.bytes != null) {
-                                          imageWidget = Image.memory(img.bytes!, fit: BoxFit.cover,width: size * 0.35,
-                                            height: size * 0.3,);
-                                        } else if (img.file != null) {
-                                          imageWidget = Image.file(img.file!, fit: BoxFit.cover,width: size * 0.35,
-                                            height: size * 0.3,);
-                                        } else if (img.url != null && img.url!.isNotEmpty) {
-                                          imageWidget = Image.network(
-                                            img.url!,
-                                            fit: BoxFit.cover,width: size * 0.35,
-                                            height: size * 0.3,
-                                            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-                                          );
-                                        } else {
-                                          imageWidget =  Container(
-                                              height: size * 0.012,
-                                              child: Center(child: Icon(Icons.image_not_supported,color: Colors.red, size: size*0.02)));
-                                        }
-                                        return Container(
-                                          margin: const EdgeInsets.all(8),
-                                          width: size * 0.35,
-                                          height: size * 0.3,
-                                          child: Stack(
-                                            children: [
-                                              ClipRRect(borderRadius: BorderRadius.circular(12), child: imageWidget),
-                                              Positioned(
-                                                right: 0,
-                                                top: 0,
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    loginController.serviceFileImages.removeAt(index);
-                                                    loginController.update();
-                                                  },
-                                                  child:  Icon(Icons.cancel, color: Colors.grey, size: size*0.05),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  Center(child: Text(
-                                    "** maximum 3 images allowed",
-                                    style: TextStyle(color: Colors.redAccent,
-                                        fontSize: size * 0.019,
-                                        fontWeight: FontWeight.normal),)),
-
-                                  const SizedBox(height: 20),
-                                  Center(
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            AppColors.primary,
-                                            AppColors.secondary
-                                          ],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                        ),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: ElevatedButton(
-                                        onPressed: ()async {
-                                          if (_formKeyAddProduct.currentState!.validate()) {
-                                            final existingUrls = loginController.serviceFileImages
-                                                .where((img) => img.url != null && img.url!.isNotEmpty)
-                                                .map((img) => img.url!)
-                                                .toList();
-
-                                            print('new existingUrls img${existingUrls}');
-
-                                            final newImageFiles = serviceFileImages
-                                                .where((img) => img.file != null)
-                                                .map((img) => img.file!)
-                                                .toList();
-                                            final newImageBytes = await getImageBytes();
-
-                                            print("Uploading images count: ${newImageBytes.length}");
-                                           await serviceController
-                                                .createServiceAdmin(
-                                                serviceController.selectedServiceId.toString(),
-                                               Api.userInfo.read('userId') ?? "",
-                                                //loginController.selectUserId!,
-                                                loginController.selectedUserType.toString(),
-                                                serviceController.titleController.text.toString(),
-                                                serviceController.descriptionController.text.toString(),
-                                                serviceController.costController.text.toString(),
-                                               newImageBytes,
-                                               existingUrls,
-                                                context
-                                            );
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.transparent,
-                                          shadowColor: AppColors.transparent,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                10),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          selectedUserType == 'Dental Clinic'
-                                              ? 'Add Service'
-                                              : 'Add Product',
-                                          style: AppTextStyles.caption(
-                                            context,
-                                            color: AppColors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  // Buttons Row
-                                ]),
-                          ]
+                      //                        Text(
+                      //   selectedUserType == 'Dental Clinic'
+                      //       ? 'Service Details'
+                      //       : 'Product Details',
+                      //   style: AppTextStyles.subtitle(context, color: AppColors.black),
+                      // ),
+                      // SizedBox(height: size * 0.01),
+                      Text(
+                        'Title',
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),);
-                }
-            )),
+                      SizedBox(height: size * 0.02),
+
+                      CustomTextField(
+                        hint: addList.isNotEmpty
+                            ? addList[0]["fieldName"]!
+                            : "",
+                        controller: serviceController.titleController,
+                        borderColor: AppColors.white,
+                        fillColor: Colors.grey.shade100,
+                      ),
+                      SizedBox(height: size * 0.02),
+                      Text(
+                        'Description',
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: size * 0.02),
+                      CustomTextField(
+                        hint: addList.length > 1
+                            ? addList[1]["fieldName"]!
+                            : "",
+                        controller: serviceController.descriptionController,
+                        borderColor: AppColors.white,
+                        fillColor: Colors.grey.shade100,
+                        maxLines: 4,
+                      ),
+                      SizedBox(height: size * 0.02),
+                      Text(
+                        'Price',
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: size * 0.02),
+                      CustomTextField(
+                        hint: addList.length > 2
+                            ? addList[2]["fieldName"]!
+                            : "",
+                        controller: serviceController.costController,
+                        borderColor: AppColors.white,
+                        fillColor: Colors.grey.shade100,
+                        keyboardType: TextInputType.number,
+                        maxLength: 6,
+                      ),
+                      SizedBox(height: size * 0.01),
+
+                      Text(
+                        'Images',
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: size * 0.02),
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: size * 0.35,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount:
+                                  loginController.serviceFileImages.length < 3
+                                  ? loginController.serviceFileImages.length + 1
+                                  : loginController.serviceFileImages.length,
+                              itemBuilder: (context, index) {
+                                if (index ==
+                                        loginController
+                                            .serviceFileImages
+                                            .length &&
+                                    loginController.serviceFileImages.length <
+                                        3) {
+                                  return GestureDetector(
+                                    onTap: pickImages,
+                                    child: Container(
+                                      margin: const EdgeInsets.all(8),
+                                      width: size * 0.35,
+                                      height: size * 0.3,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: Colors.grey),
+                                        color: Colors.grey.shade200,
+                                      ),
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.add,
+                                          size: size * 0.012,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+                                final img =
+                                    loginController.serviceFileImages[index];
+                                Widget imageWidget;
+                                if (kIsWeb && img.bytes != null) {
+                                  imageWidget = Image.memory(
+                                    img.bytes!,
+                                    fit: BoxFit.cover,
+                                    width: size * 0.35,
+                                    height: size * 0.3,
+                                  );
+                                } else if (img.file != null) {
+                                  imageWidget = Image.file(
+                                    img.file!,
+                                    fit: BoxFit.cover,
+                                    width: size * 0.35,
+                                    height: size * 0.3,
+                                  );
+                                } else if (img.url != null &&
+                                    img.url!.isNotEmpty) {
+                                  imageWidget = Image.network(
+                                    img.url!,
+                                    fit: BoxFit.cover,
+                                    width: size * 0.35,
+                                    height: size * 0.3,
+                                    errorBuilder: (_, __, ___) =>
+                                        const Icon(Icons.broken_image),
+                                  );
+                                } else {
+                                  imageWidget = SizedBox(
+                                    height: size * 0.012,
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.image_not_supported,
+                                        color: Colors.red,
+                                        size: size * 0.02,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Container(
+                                  margin: const EdgeInsets.all(8),
+                                  width: size * 0.35,
+                                  height: size * 0.3,
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: imageWidget,
+                                      ),
+                                      Positioned(
+                                        right: 0,
+                                        top: 0,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            loginController.serviceFileImages
+                                                .removeAt(index);
+                                            loginController.update();
+                                          },
+                                          child: Icon(
+                                            Icons.cancel,
+                                            color: Colors.grey,
+                                            size: size * 0.05,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          Center(
+                            child: Text(
+                              "** maximum 3 images allowed",
+                              style: TextStyle(
+                                color: Colors.redAccent,
+                                fontSize: size * 0.019,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+                          Center(
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    AppColors.primary,
+                                    AppColors.secondary,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_formKeyAddProduct.currentState!
+                                      .validate()) {
+                                    final existingUrls = loginController
+                                        .serviceFileImages
+                                        .where(
+                                          (img) =>
+                                              img.url != null &&
+                                              img.url!.isNotEmpty,
+                                        )
+                                        .map((img) => img.url!)
+                                        .toList();
+
+                                    print('new existingUrls img$existingUrls');
+
+                                    final newImageFiles = serviceFileImages
+                                        .where((img) => img.file != null)
+                                        .map((img) => img.file!)
+                                        .toList();
+                                    final newImageBytes = await getImageBytes();
+
+                                    print(
+                                      "Uploading images count: ${newImageBytes.length}",
+                                    );
+                                    await serviceController.createServiceAdmin(
+                                      serviceController.selectedServiceId
+                                          .toString(),
+                                      Api.userInfo.read('userId') ?? "",
+                                      //loginController.selectUserId!,
+                                      loginController.selectedUserType
+                                          .toString(),
+                                      serviceController.titleController.text
+                                          .toString(),
+                                      serviceController
+                                          .descriptionController
+                                          .text
+                                          .toString(),
+                                      serviceController.costController.text
+                                          .toString(),
+                                      newImageBytes,
+                                      existingUrls,
+                                      context,
+                                    );
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: AppColors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  selectedUserType == 'Dental Clinic'
+                                      ? 'Add Service'
+                                      : 'Add Product',
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Buttons Row
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
   }
+
   Future<void> pickImages1() async {
     const maxImages = 3;
     int remaining = maxImages - loginController.serviceFileImages.length;
@@ -529,10 +636,12 @@ class _AddProductState extends State<AddProduct> {
     }
 
     try {
-      final List<XFile>? selected = await _picker.pickMultiImage();
+      final List<XFile> selected = await _picker.pickMultiImage();
       if (selected != null && selected.isNotEmpty) {
         final limited = selected.take(remaining).toList();
-        final newImages = limited.map((x) => AppImage2(file: File(x.path))).toList();
+        final newImages = limited
+            .map((x) => AppImage2(file: File(x.path)))
+            .toList();
         loginController.serviceFileImages.addAll(newImages);
         loginController.update();
         if (selected.length > remaining) {

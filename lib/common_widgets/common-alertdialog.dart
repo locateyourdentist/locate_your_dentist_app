@@ -11,45 +11,36 @@ import 'package:intl/intl.dart';
 
 import '../api/api.dart';
 
-
 void showLogoutDialog(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      final userInfo=GetStorage();
+      final userInfo = GetStorage();
       return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: Center(
-          child: Text(
-            "Logout",
-            style: AppTextStyles.subtitle(context, ),
-          ),
+          child: Text("Logout", style: AppTextStyles.subtitle(context)),
         ),
         content: Text(
           "Are you sure you want to logout?",
-          style: AppTextStyles.caption(context,),
+          style: AppTextStyles.caption(context),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
               "Cancel",
-              style: AppTextStyles.caption(context,color: Colors.redAccent),
+              style: AppTextStyles.caption(context, color: Colors.redAccent),
             ),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               userInfo.erase();
-              kIsWeb?  Get.toNamed('/webLoginPage'):  Get.toNamed('/loginPage');
+              kIsWeb ? Get.toNamed('/webLoginPage') : Get.toNamed('/loginPage');
             },
-            child: Text(
-              "LogOut",
-              style: AppTextStyles.caption(context),
-            ),
+            child: Text("LogOut", style: AppTextStyles.caption(context)),
           ),
         ],
       );
@@ -68,24 +59,19 @@ void showDeleteDialog({
     barrierDismissible: false,
     builder: (context) {
       return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child:ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: 400,
-          ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-
                 /// Icon
                 Container(
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1),
+                    color: Colors.red.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -112,7 +98,10 @@ void showDeleteDialog({
                 Text(
                   message,
                   textAlign: TextAlign.center,
-                  style:AppTextStyles.caption(context,fontWeight: FontWeight.normal)
+                  style: AppTextStyles.caption(
+                    context,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
 
                 const SizedBox(height: 25),
@@ -126,7 +115,14 @@ void showDeleteDialog({
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child:  Text("Cancel",style:AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: AppColors.black)),
+                        child: Text(
+                          "Cancel",
+                          style: AppTextStyles.caption(
+                            context,
+                            fontWeight: FontWeight.normal,
+                            color: AppColors.black,
+                          ),
+                        ),
                       ),
                     ),
 
@@ -143,14 +139,18 @@ void showDeleteDialog({
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child:  Text(
+                        child: Text(
                           "Delete",
-                          style:AppTextStyles.caption(context,fontWeight: FontWeight.normal,color: Colors.white)
+                          style: AppTextStyles.caption(
+                            context,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -167,30 +167,28 @@ class CommonDialog {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          title: Text('Exit Confirmation',
-            style: AppTextStyles.caption(context, ),),
-          content: Text('Press back again to exit',
-            style: AppTextStyles.caption(context,),),
+          title: Text(
+            'Exit Confirmation',
+            style: AppTextStyles.caption(context),
+          ),
+          content: Text(
+            'Press back again to exit',
+            style: AppTextStyles.caption(context),
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(
-                'No',
-                style: AppTextStyles.caption(
-                    context, ),
-              ),
+              child: Text('No', style: AppTextStyles.caption(context)),
             ),
             TextButton(
               onPressed: () {
-              Get.toNamed('/loginPage');
+                Get.toNamed('/loginPage');
               },
               child: Text(
                 'Yes',
-                style: AppTextStyles.caption(
-                    context, color: AppColors.primary),
-
+                style: AppTextStyles.caption(context, color: AppColors.primary),
               ),
             ),
           ],
@@ -201,23 +199,21 @@ class CommonDialog {
 }
 
 Future<void> showSuccessDialog(
-    BuildContext context, {
-      required String title,
-      required String message,
-      VoidCallback? onOkPressed,
-    }) async {
+  BuildContext context, {
+  required String title,
+  required String message,
+  VoidCallback? onOkPressed,
+}) async {
   return showDialog(
     context: context,
     barrierDismissible: false,
     builder: (context) {
       return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         title: Text(
           title,
           textAlign: TextAlign.center,
-          style: AppTextStyles.body(context,fontWeight: FontWeight.bold),
+          style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
         ),
         content: Text(
           message,
@@ -240,14 +236,16 @@ Future<void> showSuccessDialog(
                 onOkPressed();
               }
             },
-            child:  Text('OK',style: AppTextStyles.subtitle(context,color: AppColors.white),),
+            child: Text(
+              'OK',
+              style: AppTextStyles.subtitle(context, color: AppColors.white),
+            ),
           ),
         ],
       );
     },
   );
 }
-
 
 DateTime parseDate(String date) {
   final parts = date.split('-');
@@ -266,7 +264,6 @@ int getDaysLeft(String endDate) {
   return daysLeft;
 }
 
-
 String? getAlertMessage(String planName, String endDate) {
   int daysLeft = getDaysLeft(endDate);
   if (daysLeft > 7) return null;
@@ -274,15 +271,15 @@ String? getAlertMessage(String planName, String endDate) {
   if (daysLeft == 3) return "$planName will expire in 3 days.";
   if (daysLeft == 1) return "$planName will expire today.";
   if (daysLeft == 0) return "$planName has expired";
- // if (daysLeft < 0) return "$planName has expired.";
+  // if (daysLeft < 0) return "$planName has expired.";
   return null;
 }
 
 void showPlanAlerts(
-    String userId,
-    List<Map<String, dynamic>> dataList,
-    BuildContext context,
-    ) async {
+  String userId,
+  List<Map<String, dynamic>> dataList,
+  BuildContext context,
+) async {
   final box = GetStorage();
 
   final today = DateTime.now();
@@ -304,11 +301,7 @@ void showPlanAlerts(
     "webinarPlan": "Webinar Plan",
     "posterPlan": "Post Image Plan",
   };
-  final normalizedToday = DateTime(
-    today.year,
-    today.month,
-    today.day,
-  );
+  final normalizedToday = DateTime(today.year, today.month, today.day);
 
   // API format => 27-6-2026
   final formatter = DateFormat("d-M-yyyy");
@@ -329,8 +322,7 @@ void showPlanAlerts(
 
       try {
         // Parse date
-        DateTime endDate =
-        formatter.parse(endDateRaw.toString());
+        DateTime endDate = formatter.parse(endDateRaw.toString());
 
         final normalizedEndDate = DateTime(
           endDate.year,
@@ -338,8 +330,7 @@ void showPlanAlerts(
           endDate.day,
         );
 
-        final daysLeft =
-            normalizedEndDate.difference(normalizedToday).inDays;
+        final daysLeft = normalizedEndDate.difference(normalizedToday).inDays;
 
         // Add only plans within 7 days
         if (daysLeft <= 7) {
@@ -362,13 +353,9 @@ void showPlanAlerts(
     final plans = entry.value;
 
     if (daysLeft < 0) {
-      messages.add(
-        "Your ${plans.join(", ")} have expired!",
-      );
+      messages.add("Your ${plans.join(", ")} have expired!");
     } else if (daysLeft == 0) {
-      messages.add(
-        "Your ${plans.join(", ")} expire today!",
-      );
+      messages.add("Your ${plans.join(", ")} expire today!");
 
       await loginController.sentMailPlan(
         userId,
@@ -390,9 +377,7 @@ void showPlanAlerts(
         context,
       );
     } else {
-      messages.add(
-        "Your ${plans.join(", ")} will expire in $daysLeft days.",
-      );
+      messages.add("Your ${plans.join(", ")} will expire in $daysLeft days.");
     }
   }
 
@@ -404,26 +389,17 @@ void showPlanAlerts(
       title: Center(
         child: Text(
           "Plan Expiry Alert",
-          style: AppTextStyles.body(
-            context,
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
         ),
       ),
-      content: Text(
-        messages.join("\n"),
-        style: AppTextStyles.caption(context),
-      ),
+      content: Text(messages.join("\n"), style: AppTextStyles.caption(context)),
       actions: [
         Center(
           child: TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text(
-              "OK",
-              style: AppTextStyles.caption(context),
-            ),
+            child: Text("OK", style: AppTextStyles.caption(context)),
           ),
         ),
       ],
@@ -431,11 +407,9 @@ void showPlanAlerts(
   );
 
   // Save alert shown date
-  box.write(
-    "lastPlanAlertDate1_$userId",
-    todayString,
-  );
+  box.write("lastPlanAlertDate1_$userId", todayString);
 }
+
 void showDeactivateConfirmDialog({
   required BuildContext context,
   required bool isActivating,
@@ -444,7 +418,15 @@ void showDeactivateConfirmDialog({
   showDialog(
     context: context,
     builder: (_) => AlertDialog(
-      title: Text(isActivating ? "Activate User" : "Deactivate User",textAlign: TextAlign.center,style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold),),
+      title: Text(
+        isActivating ? "Activate User" : "Deactivate User",
+        textAlign: TextAlign.center,
+        style: AppTextStyles.body(
+          context,
+          color: AppColors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       content: Text(
         isActivating
             ? "Are you sure you want to activate this user?"
@@ -452,32 +434,57 @@ void showDeactivateConfirmDialog({
       ),
       actions: [
         TextButton(
-          onPressed: () =>  Navigator.of(context).pop(),
-          child:  Text("Cancel",style: AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold)),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            "Cancel",
+            style: AppTextStyles.caption(
+              context,
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.white,
-          ),
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.white),
           onPressed: () {
             Navigator.of(context).pop();
             onConfirm();
           },
-          child:  Text("Confirm",style: AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold)),
+          child: Text(
+            "Confirm",
+            style: AppTextStyles.caption(
+              context,
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ],
     ),
   );
 }
+
 void showUpdateDialog(String storeUrl) {
   Get.dialog(
     AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Center(
+        child: Text(
+          "Update Available",
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: AppColors.black,
+          ),
+        ),
       ),
-      title:  const Center(child: Text("Update Available",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: AppColors.black),)),
       content: const Text(
-        "A new version is available. Please update to continue.",style: TextStyle(fontSize: 12,fontWeight: FontWeight.normal,color: AppColors.black),
+        "A new version is available. Please update to continue.",
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: AppColors.black,
+        ),
       ),
       actions: [
         Center(
@@ -485,7 +492,14 @@ void showUpdateDialog(String storeUrl) {
             onPressed: () async {
               await launchUrl(Uri.parse(storeUrl));
             },
-            child: const Text("Update",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: AppColors.primary),),
+            child: const Text(
+              "Update",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
           ),
         ),
       ],

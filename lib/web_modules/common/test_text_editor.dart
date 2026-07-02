@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
-
 class EditorPage extends StatefulWidget {
- // const EditorPage({super.key});
+  const EditorPage({super.key});
+
+  // const EditorPage({super.key});
 
   @override
   State<EditorPage> createState() => _EditorPageState();
@@ -63,20 +64,22 @@ class _EditorPageState extends State<EditorPage> {
   }
 
   void saveDocument() {
-    final jsonData =
-    jsonEncode(_controller.document.toDelta().toJson());
+    final jsonData = jsonEncode(_controller.document.toDelta().toJson());
 
     debugPrint("Saved JSON: $jsonData");
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Document Saved")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("Document Saved")));
   }
 
   void loadDocument() {
     const sample = [
       {"insert": "Hello \n"},
-      {"insert": "This is rich text editor\n", "attributes": {"bold": true}}
+      {
+        "insert": "This is rich text editor\n",
+        "attributes": {"bold": true},
+      },
     ];
 
     _controller.document = Document.fromJson(sample);
@@ -88,14 +91,8 @@ class _EditorPageState extends State<EditorPage> {
       appBar: AppBar(
         title: const Text("Universal Text Editor"),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: saveDocument,
-          ),
-          IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: loadDocument,
-          ),
+          IconButton(icon: const Icon(Icons.save), onPressed: saveDocument),
+          IconButton(icon: const Icon(Icons.download), onPressed: loadDocument),
         ],
       ),
       body: Column(

@@ -56,7 +56,6 @@ import 'package:locate_your_dentist/routes/app_pages.dart';
 import 'package:locate_your_dentist/routes/middle_ware.dart';
 import 'package:locate_your_dentist/web_modules/auth_web/change_password_web.dart';
 import 'package:locate_your_dentist/web_modules/auth_web/forgot_changePassword_web.dart';
-import 'package:locate_your_dentist/web_modules/auth_web/forgot_password_web.dart';
 import 'package:locate_your_dentist/web_modules/auth_web/register_web.dart';
 import 'package:locate_your_dentist/web_modules/auth_web/verify_otp_page.dart';
 import 'package:locate_your_dentist/web_modules/auth_web/web_login_page.dart';
@@ -85,7 +84,6 @@ import 'package:locate_your_dentist/web_modules/job_seekers/view_webinar_list_we
 import 'package:locate_your_dentist/web_modules/job_seekers/view_webinar_webPage.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/add_app_logo_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/add_company_web.dart';
-import 'package:locate_your_dentist/web_modules/superAdmin/add_contact_details.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/add_expense_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/add_gst_web.dart';
 import 'package:locate_your_dentist/web_modules/superAdmin/add_jobCategory_web.dart';
@@ -110,14 +108,8 @@ import '../web_modules/dental_mechanic_lab_shop/dental_mechanic_dashboard.dart';
 
 class AppPages {
   static final List<GetPage> page = [
-  GetPage(
-      name: AppRoutes.splashScreen,
-      page:()=>const SplashScreen()
-    ),
-    GetPage(
-    name: AppRoutes.loginPage,
-    page: () => const LoginPage(),
-     ),
+    GetPage(name: AppRoutes.splashScreen, page: () => const SplashScreen()),
+    GetPage(name: AppRoutes.loginPage, page: () => const LoginPage()),
     GetPage(
       name: AppRoutes.forgotPasswordWebScreen,
       page: () => const ForgotChangePasswordPage(),
@@ -140,12 +132,9 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.viewPatientsListWeb,
-      page: () =>  ViewClinicPatients(),
+      page: () => ViewClinicPatients(),
     ),
-    GetPage(
-      name: AppRoutes.addLogoWeb,
-      page: () => const ChangeAppLogoWeb(),
-    ),
+    GetPage(name: AppRoutes.addLogoWeb, page: () => const ChangeAppLogoWeb()),
     GetPage(
       name: AppRoutes.addCompanyDetailsWeb,
       page: () => const CompanyFormWeb(),
@@ -202,10 +191,7 @@ class AppPages {
       name: AppRoutes.jobCategoryWeb,
       page: () => const JobCategoryScreenWeb(),
     ),
-    GetPage(
-      name: AppRoutes.aboutUsWebPage,
-      page: () =>  AboutUsWebPage(),
-    ),
+    GetPage(name: AppRoutes.aboutUsWebPage, page: () => AboutUsWebPage()),
     GetPage(
       name: AppRoutes.scrollingAdsWebPage,
       page: () => const UploadImagesWeb(),
@@ -213,18 +199,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.createPlanPageWeb,
       page: () => const CreatePlanWeb(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
+      middlewares: [SuperAdminMiddleware()],
     ),
-    GetPage(
-      name: AppRoutes.viewPlanPageWeb,
-      page: () => const ViewPlanWeb(),
-    ),
-    GetPage(
-      name: AppRoutes.addBranchesWeb,
-      page: () => const AddBranchesWeb(),
-    ),
+    GetPage(name: AppRoutes.viewPlanPageWeb, page: () => const ViewPlanWeb()),
+    GetPage(name: AppRoutes.addBranchesWeb, page: () => const AddBranchesWeb()),
     GetPage(
       name: AppRoutes.clinicProfileWebPage,
       page: () => const ClinicProfileWeb(),
@@ -265,10 +243,7 @@ class AppPages {
       name: AppRoutes.reportPageWeb,
       page: () => const FinanceDashboardPage(),
     ),
-    GetPage(
-      name: AppRoutes.addExpenseWeb,
-      page: () => const AddExpenseWeb(),
-    ),
+    GetPage(name: AppRoutes.addExpenseWeb, page: () => const AddExpenseWeb()),
     GetPage(
       name: AppRoutes.dentalClinicDashboardWeb,
       page: () => const DentalClinicDashboardWebPage(),
@@ -277,14 +252,8 @@ class AppPages {
       name: AppRoutes.verifyPasswordWeb,
       page: () => const VerifyWebPasswordPage(),
     ),
-    GetPage(
-      name: AppRoutes.registerPageWeb,
-      page: () =>  RegisterWebPage(),
-    ),
-    GetPage(
-      name: AppRoutes.registerPage,
-      page: () => const RegisterPage(),
-    ),
+    GetPage(name: AppRoutes.registerPageWeb, page: () => RegisterWebPage()),
+    GetPage(name: AppRoutes.registerPage, page: () => const RegisterPage()),
     GetPage(
       name: AppRoutes.patientDashboard,
       page: () => const PatientDashboard(),
@@ -293,293 +262,217 @@ class AppPages {
       name: AppRoutes.clinicProfilePage,
       page: () => const ClinicProfile(),
     ),
+    GetPage(name: AppRoutes.webViewProfilePage, page: () => const ClinicWeb()),
     GetPage(
-      name: AppRoutes.webViewProfilePage,
-      page: () => const ClinicWeb(),
+      name: AppRoutes.clinicEditProfile,
+      page: () => const ClinicEditProfile(),
     ),
     GetPage(
-        name: AppRoutes.clinicEditProfile,
-        page:()=> const ClinicEditProfile()),
-    GetPage(
-        name: AppRoutes.settingPageMobile,
-        page:()=>  const SettingsPageMobile()
+      name: AppRoutes.settingPageMobile,
+      page: () => const SettingsPageMobile(),
     ),
     GetPage(
-        name: AppRoutes.settingsWebPage,
-        page:()=>      const SettingsPageWeb()
+      name: AppRoutes.settingsWebPage,
+      page: () => const SettingsPageWeb(),
+    ),
+    GetPage(name: AppRoutes.labProfilePage, page: () => const LabProfile()),
+    GetPage(name: AppRoutes.labContactForm, page: () => const ContactForm()),
+    GetPage(name: AppRoutes.viewImagePage, page: () => const ViewImage()),
+    GetPage(
+      name: AppRoutes.createJobWebPage,
+      page: () => const CreateJobPostWeb(),
     ),
     GetPage(
-        name: AppRoutes.labProfilePage,
-        page:()=> const LabProfile()
+      name: AppRoutes.myInvoiceListWebPage,
+      page: () => InvoiceListPageWeb(),
+    ),
+    GetPage(name: AppRoutes.viewPlanPage, page: () => const ViewPlan()),
+    GetPage(name: AppRoutes.createPlanPage, page: () => const CreatePlan()),
+    GetPage(
+      name: AppRoutes.viewServiceList,
+      page: () => const ViewListServices(),
     ),
     GetPage(
-        name: AppRoutes.labContactForm,
-        page: ()=> const ContactForm()
+      name: AppRoutes.notificationPage,
+      page: () => const ViewNotification(),
     ),
     GetPage(
-        name: AppRoutes.viewImagePage,
-        page: ()=> const ViewImage()
+      name: AppRoutes.filterResultPage,
+      page: () => const FilterResultPage(),
+    ),
+    GetPage(name: AppRoutes.onBoardScreen, page: () => const OnBoardPage()),
+    GetPage(
+      name: AppRoutes.superAdminDashboard,
+      page: () => const SuperAdminDashboardPage(),
+      middlewares: [SuperAdminMiddleware()],
+    ),
+    GetPage(name: AppRoutes.userTypeListPage, page: () => const userTypeList()),
+    GetPage(
+      name: AppRoutes.dentalClinicDashboard,
+      page: () => const DentalClinicDashboard(),
     ),
     GetPage(
-        name: AppRoutes.createJobWebPage,
-        page: ()=> const CreateJobPostWeb()
+      name: AppRoutes.jobSeekerDashboard,
+      page: () => const JobSeekerDashboard(),
     ),
     GetPage(
-        name: AppRoutes.myInvoiceListWebPage,
-        page: ()=>  InvoiceListPageWeb(),
+      name: AppRoutes.jobViewProfilePage,
+      page: () => const ViewJobPage(),
     ),
     GetPage(
-        name: AppRoutes.viewPlanPage,
-        page:()=> const ViewPlan()
+      name: AppRoutes.jobSeekerViewProfilePage,
+      page: () => const JobSeekerProfilePage(),
     ),
     GetPage(
-        name: AppRoutes.createPlanPage,
-        page: ()=>const CreatePlan()
+      name: AppRoutes.filterPageJobSeekersPage,
+      page: () => const JobSeekerFilter(),
     ),
     GetPage(
-        name: AppRoutes.viewServiceList,
-        page: ()=>const ViewListServices()
+      name: AppRoutes.appliedJobListPage,
+      page: () => const AppliedJobLists(),
+    ),
+    GetPage(name: AppRoutes.aboutUsPage, page: () => const AboutUsPage()),
+    GetPage(
+      name: AppRoutes.createJobAdminPage,
+      page: () => const CreateJobPost(),
     ),
     GetPage(
-        name: AppRoutes.notificationPage,
-        page: ()=> const ViewNotification()
+      name: AppRoutes.jobSeekerEditProfilePage,
+      page: () => const EditProfilePage(),
     ),
     GetPage(
-        name: AppRoutes.filterResultPage,
-        page:   ()=> const FilterResultPage()
+      name: AppRoutes.viewJobWebinarPage,
+      page: () => const ViewJobWebinar(),
     ),
     GetPage(
-        name: AppRoutes.onBoardScreen,
-        page:   ()=> const OnBoardPage()
+      name: AppRoutes.viewWebinarPage,
+      page: () => const WebinarViewPage(),
     ),
     GetPage(
-        name: AppRoutes.superAdminDashboard,
-        page: ()=> const SuperAdminDashboardPage(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
+      name: AppRoutes.appliedJobsListAdmin,
+      page: () => const WebinarViewPage(),
     ),
     GetPage(
-        name: AppRoutes.userTypeListPage,
-        page:()=> const userTypeList()
+      name: AppRoutes.webinarApplicantsList,
+      page: () => const ViewWebinarApplications(),
     ),
     GetPage(
-        name: AppRoutes.dentalClinicDashboard,
-        page: ()=> const DentalClinicDashboard()
+      name: AppRoutes.addJobCategoryPage,
+      page: () => const JobCategoryScreen(),
+      middlewares: [SuperAdminMiddleware()],
+    ),
+    GetPage(name: AppRoutes.createServicesPage, page: () => const AddProduct()),
+    GetPage(
+      name: AppRoutes.viewServicePage,
+      page: () => const ServiceDetailPage(),
     ),
     GetPage(
-        name: AppRoutes.jobSeekerDashboard,
-        page: ()=> const JobSeekerDashboard()
+      name: AppRoutes.viewSenderContactList,
+      page: () => const ViewContactList(),
     ),
     GetPage(
-        name: AppRoutes.jobViewProfilePage,
-        page: ()=> const ViewJobPage()
+      name: AppRoutes.mechanicDashboard,
+      page: () => const MechanicDashboard(),
     ),
     GetPage(
-        name: AppRoutes.jobSeekerViewProfilePage,
-        page: ()=> const JobSeekerProfilePage()
+      name: AppRoutes.createPostImages,
+      page: () => const UploadImages(),
+      middlewares: [SuperAdminMiddleware()],
     ),
     GetPage(
-        name: AppRoutes.filterPageJobSeekersPage,
-        page: ()=> const JobSeekerFilter()
+      name: AppRoutes.createNotificationPage,
+      page: () => const CreateNotificationAdmin(),
+      middlewares: [SuperAdminMiddleware()],
     ),
     GetPage(
-        name: AppRoutes.appliedJobListPage,
-        page: ()=> const AppliedJobLists()
+      name: AppRoutes.viewIncomePage,
+      page: () => const IncomeDashboardPage(),
+      middlewares: [SuperAdminMiddleware()],
     ),
     GetPage(
-        name: AppRoutes.aboutUsPage,
-        page: ()=> const AboutUsPage()
+      name: AppRoutes.viewReportPage,
+      page: () => const ReportsDashboardPage(),
+      middlewares: [SuperAdminMiddleware()],
     ),
     GetPage(
-        name: AppRoutes.createJobAdminPage,
-        page: ()=> const CreateJobPost()
+      name: AppRoutes.viewExpensePage,
+      page: () => const ExpensePage(),
+      middlewares: [SuperAdminMiddleware()],
     ),
     GetPage(
-        name: AppRoutes.jobSeekerEditProfilePage,
-        page: ()=> const EditProfilePage()
+      name: AppRoutes.addExpensesPage,
+      page: () => const AddExpense(),
+      middlewares: [SuperAdminMiddleware()],
+    ),
+    GetPage(name: AppRoutes.paymentWebviewPage, page: () => const AddExpense()),
+    GetPage(name: AppRoutes.paymentPage, page: () => CheckoutScreen()),
+    GetPage(name: AppRoutes.viewInvoiceListPage, page: () => InvoiceListPage()),
+    GetPage(name: AppRoutes.paymentPageWeb, page: () => CheckoutScreenWeb()),
+    GetPage(
+      name: AppRoutes.changePasswordPage,
+      page: () => const ChangePassword(),
     ),
     GetPage(
-        name: AppRoutes.viewJobWebinarPage,
-        page: ()=> const ViewJobWebinar()
+      name: AppRoutes.forgotPasswordPage,
+      page: () => const ForgotPassword(),
+      // page: ()=>  const ForgotPasswordPageWeb()
     ),
     GetPage(
-        name: AppRoutes.viewWebinarPage,
-        page: ()=>  const WebinarViewPage()
+      name: AppRoutes.verifyPasswordPage,
+      page: () => const VerifyOtpPassword(),
     ),
     GetPage(
-        name: AppRoutes.appliedJobsListAdmin,
-        page: ()=>  const WebinarViewPage()
+      name: AppRoutes.forgotChangePasswordPage,
+      page: () => const ForgotChangePassword(),
     ),
+    GetPage(name: AppRoutes.webLoginPage, page: () => WebLoginPage()),
     GetPage(
-        name: AppRoutes.webinarApplicantsList,
-        page: ()=>  const ViewWebinarApplications()
+      name: AppRoutes.superAdminWebDashboard,
+      page: () => const AdminDashboard(),
     ),
+    GetPage(name: AppRoutes.userTypeListWeb, page: () => ModernUserTable()),
     GetPage(
-        name: AppRoutes.addJobCategoryPage,
-        page: ()=>  const JobCategoryScreen(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
-    ),
-    GetPage(
-        name: AppRoutes.createServicesPage,
-        page: ()=>  const AddProduct()
-    ),
-    GetPage(
-        name: AppRoutes.viewServicePage,
-        page: ()=>  const ServiceDetailPage()
-    ),
-    GetPage(
-        name: AppRoutes.viewSenderContactList,
-        page: ()=> const ViewContactList()
-    ),
-    GetPage(
-        name: AppRoutes.mechanicDashboard,
-        page: ()=> const MechanicDashboard()
-    ),
-    GetPage(
-        name: AppRoutes.createPostImages,
-        page: ()=> const UploadImages(),
-        middlewares: [
-        SuperAdminMiddleware(),
-      ],
-    ),
-    GetPage(
-        name: AppRoutes.createNotificationPage,
-        page: ()=> const CreateNotificationAdmin(),
-        middlewares: [
-        SuperAdminMiddleware(),
-      ],
-    ),
-    GetPage(
-        name: AppRoutes.viewIncomePage,
-        page: ()=> const IncomeDashboardPage(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
-    ),
-    GetPage(
-        name: AppRoutes.viewReportPage,
-        page: ()=>  const ReportsDashboardPage(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
-    ),
-    GetPage(
-        name: AppRoutes.viewExpensePage,
-        page: ()=> const ExpensePage(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
-    ),
-    GetPage(
-        name: AppRoutes.addExpensesPage,
-        page: ()=> const AddExpense(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
-    ),
-    GetPage(
-        name: AppRoutes.paymentWebviewPage,
-        page: ()=> const AddExpense()
-    ),
-    GetPage(
-        name: AppRoutes.paymentPage,
-        page: ()=>  CheckoutScreen()
-    ),
-    GetPage(
-        name: AppRoutes.viewInvoiceListPage,
-        page: ()=>  InvoiceListPage()
-    ),
-    GetPage(
-        name: AppRoutes.paymentPageWeb,
-        page: ()=>  CheckoutScreenWeb()
-    ),
-    GetPage(
-        name: AppRoutes.changePasswordPage,
-        page: ()=>  const ChangePassword(),
-    ),
-    GetPage(
-        name: AppRoutes.forgotPasswordPage,
-                page: ()=>  const ForgotPassword()
-       // page: ()=>  const ForgotPasswordPageWeb()
-    ),
-    GetPage(
-        name: AppRoutes.verifyPasswordPage,
-        page: ()=>  const VerifyOtpPassword()
-    ),
-    GetPage(
-        name: AppRoutes.forgotChangePasswordPage,
-        page: ()=>   const ForgotChangePassword()
-    ),
-    GetPage(
-        name: AppRoutes.webLoginPage,
-        page: ()=>   WebLoginPage()
-    ),
-    GetPage(
-        name: AppRoutes.superAdminWebDashboard,
-        page: ()=>   const AdminDashboard()
-    ),
-    GetPage(
-        name: AppRoutes.userTypeListWeb,
-        page: ()=>    ModernUserTable()
-    ),
-    GetPage(
-        name: AppRoutes.changLogoImagePage,
-        page: ()=>  const ChangeAppLogoImage(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
+      name: AppRoutes.changLogoImagePage,
+      page: () => const ChangeAppLogoImage(),
+      middlewares: [SuperAdminMiddleware()],
     ),
     GetPage(
       name: AppRoutes.landingPage,
       page: () => const LandingPage(),
       middlewares: [_LandingRedirect()],
     ),
+    GetPage(name: '/', page: () => const LandingPage()),
     GetPage(
-      name: '/',
-      page: () => const LandingPage(),
+      name: AppRoutes.viewJobDetailWebPage,
+      page: () => const ViewJobPageWeb(),
     ),
     GetPage(
-        name: AppRoutes.viewJobDetailWebPage,
-        page: ()=>  const ViewJobPageWeb()
+      name: AppRoutes.viewWebinarDetailWebPage,
+      page: () => const WebinarViewWebPage(),
     ),
     GetPage(
-        name: AppRoutes.viewWebinarDetailWebPage,
-        page: ()=>  const WebinarViewWebPage()
+      name: AppRoutes.dentalMechanicDashboardWebPage,
+      page: () => const DentalMechanicWebDashboard(),
     ),
     GetPage(
-        name: AppRoutes.dentalMechanicDashboardWebPage,
-        page: ()=>  const DentalMechanicWebDashboard()
+      name: AppRoutes.addGSTPage,
+      page: () => const AddGstDetails(),
+      middlewares: [SuperAdminMiddleware()],
     ),
     GetPage(
-        name: AppRoutes.addGSTPage,
-        page: ()=>  const AddGstDetails(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
+      name: AppRoutes.addCompanyPage,
+      page: () => const CompanyForm(),
+      middlewares: [SuperAdminMiddleware()],
+    ),
+    GetPage(name: AppRoutes.addBranchesPage, page: () => const AddBranches()),
+    GetPage(
+      name: AppRoutes.branchListPage,
+      page: () => const BranchSelectionPage(),
     ),
     GetPage(
-        name: AppRoutes.addCompanyPage,
-        page: ()=>  const CompanyForm(),
-      middlewares: [
-        SuperAdminMiddleware(),
-      ],
+      name: AppRoutes.viewWebinarListJobseekersPage,
+      page: () => WebinarCard(),
     ),
-    GetPage(
-        name: AppRoutes.addBranchesPage,
-        page: ()=>  const AddBranches()
-    ),
-    GetPage(
-        name: AppRoutes.branchListPage,
-        page: ()=>  const BranchSelectionPage()
-    ),
-    GetPage(
-        name: AppRoutes.viewWebinarListJobseekersPage,
-        page: ()=>  WebinarCard()
-    ),
-
   ];
 }
 

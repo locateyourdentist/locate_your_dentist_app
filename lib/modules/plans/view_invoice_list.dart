@@ -10,28 +10,33 @@ import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:get/get.dart';
 
 class InvoiceListPage extends StatefulWidget {
+  const InvoiceListPage({super.key});
+
   @override
   State<InvoiceListPage> createState() => _InvoiceListPageState();
 }
 
 class _InvoiceListPageState extends State<InvoiceListPage> {
-  final planController=Get.put(PlanController());
+  final planController = Get.put(PlanController());
   @override
   void initState() {
     super.initState();
     planController.getInvoiceDetails(context);
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.white,centerTitle: true,
+        backgroundColor: AppColors.white,
+        centerTitle: true,
         title: Text(
           'My Purchases',
           style: AppTextStyles.subtitle(context, color: AppColors.black),
         ),
-        automaticallyImplyLeading: true,iconTheme: IconThemeData(color: AppColors.black,size: size*0.05),
+        automaticallyImplyLeading: true,
+        iconTheme: IconThemeData(color: AppColors.black, size: size * 0.05),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
@@ -48,123 +53,160 @@ class _InvoiceListPageState extends State<InvoiceListPage> {
                 ),
               ),
               child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
+                child: Icon(Icons.arrow_back, color: AppColors.white),
               ),
             ),
           ),
         ),
       ),
-      body:GetBuilder<PlanController>(
-          builder: (controller) {
-            return planController.invoiceList.isEmpty
-              ?                  buildShimmerEmptyWidget(size)
+      body: GetBuilder<PlanController>(
+        builder: (controller) {
+          return planController.invoiceList.isEmpty
+              ? buildShimmerEmptyWidget(size)
               : ListView.builder(
-            padding:  const EdgeInsets.all(16),
-            itemCount: planController.invoiceList.length,
-            itemBuilder: (context, index) {
-              final invoice = planController.invoiceList[index];
-              return Card(
-                elevation: 4,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                child: Container(
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primary,AppColors.secondary],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                       "PlanType: ${invoice.planType}",
-                        style:AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white)
+                  itemCount: planController.invoiceList.length,
+                  itemBuilder: (context, index) {
+                    final invoice = planController.invoiceList[index];
+                    return Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                          "Plan Name: ${invoice.planName}",
-                          style:AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white)
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "Invoice: ${invoice.invoiceId}",
-                          style:AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white)
-
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              "Amount: ₹${invoice.amount.toStringAsFixed(2)}",
-                              overflow: TextOverflow.ellipsis,
-                              style:AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white)
-
-                            ),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [AppColors.primary, AppColors.secondary],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
-                          Text("${formatDate(invoice.createdAt.toString())}",
-                            //"${invoice.createdAt.day}-${invoice.createdAt.month}-${invoice.createdAt.year}",
-                            style: AppTextStyles.caption(context,color: AppColors.white),
-                          ),
-                        ],
-                      ),
-                       const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "PlanType: ${invoice.planType}",
+                              style: AppTextStyles.caption(
+                                context,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.white,
+                              ),
                             ),
-                            onPressed: ()async {
+                            const SizedBox(height: 4),
+                            Text(
+                              "Plan Name: ${invoice.planName}",
+                              style: AppTextStyles.caption(
+                                context,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "Invoice: ${invoice.invoiceId}",
+                              style: AppTextStyles.caption(
+                                context,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    "Amount: ₹${invoice.amount.toStringAsFixed(2)}",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  formatDate(invoice.createdAt.toString()),
+                                  //"${invoice.createdAt.day}-${invoice.createdAt.month}-${invoice.createdAt.year}",
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                ElevatedButton.icon(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    String name =
+                                        Api.userInfo.read('name') ?? "";
+                                    if (planController.invoiceList.isEmpty) {
+                                      Get.snackbar(
+                                        "No invoices",
+                                        "Invoice list is empty",
+                                      );
+                                      return;
+                                    }
 
-                              String name = Api.userInfo.read('name') ?? "";
-                              if (planController.invoiceList.isEmpty) {
-                                Get.snackbar("No invoices", "Invoice list is empty");
-                                return;
-                              }
+                                    //final invoice = planController.invoiceList[0];
+                                    // final invoice = planController.invoiceList.first;
+                                    await planController.getInvoiceById(
+                                      invoice.invoiceId.toString(),
+                                      context,
+                                    );
+                                    await planController.getInvoiceDetails(
+                                      context,
+                                    );
 
-                              //final invoice = planController.invoiceList[0];
-                             // final invoice = planController.invoiceList.first;
-                             await planController.getInvoiceById("${invoice.invoiceId.toString()}",context);
-                             await planController.getInvoiceDetails(context);
-
-                              final invoiceId = planController.invoiceDetails.first;
-                              final pdfFile = await PdfGenerator.generateInvoicePdf(
-                                userName: name,
-                                planName: invoiceId.planName,
-                                planType: invoiceId.planType,
-                                startDate: invoiceId.startDate,
-                                endDate: invoiceId.endDate,
-                                taxSummary: invoiceId.taxSummary,
-                                company: invoiceId.company,
-                                invoiceId: invoiceId.invoiceId,
-                              );
-                              //OpenFilex.open(pdfFile.path);
-                            },
-                            icon:  Icon(Icons.picture_as_pdf,color: AppColors.black,size: size*0.06,),
-                            label:  Text("View PDF",style: AppTextStyles.caption(context,color: AppColors.black),),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        }
+                                    final invoiceId =
+                                        planController.invoiceDetails.first;
+                                    final pdfFile =
+                                        await PdfGenerator.generateInvoicePdf(
+                                          userName: name,
+                                          planName: invoiceId.planName,
+                                          planType: invoiceId.planType,
+                                          startDate: invoiceId.startDate,
+                                          endDate: invoiceId.endDate,
+                                          taxSummary: invoiceId.taxSummary,
+                                          company: invoiceId.company,
+                                          invoiceId: invoiceId.invoiceId,
+                                        );
+                                    //OpenFilex.open(pdfFile.path);
+                                  },
+                                  icon: Icon(
+                                    Icons.picture_as_pdf,
+                                    color: AppColors.black,
+                                    size: size * 0.06,
+                                  ),
+                                  label: Text(
+                                    "View PDF",
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      color: AppColors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+        },
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );

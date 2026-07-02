@@ -14,7 +14,6 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import '../../common_widgets/color_code.dart';
 
-
 class AppImage {
   Uint8List? bytes;
   String? url;
@@ -36,7 +35,11 @@ class AppImage {
         color: const Color(0xFFF1F3F6),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Icon(Icons.image_outlined, color: Colors.grey.shade400, size: width * 0.5),
+      child: Icon(
+        Icons.image_outlined,
+        color: Colors.grey.shade400,
+        size: width * 0.5,
+      ),
     );
 
     if (kIsWeb) {
@@ -49,7 +52,13 @@ class AppImage {
       if (url != null && url!.isNotEmpty) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.network(url!, width: width, height: height, fit: fit, errorBuilder: (_, __, ___) => placeholder!),
+          child: Image.network(
+            url!,
+            width: width,
+            height: height,
+            fit: fit,
+            errorBuilder: (_, __, ___) => placeholder!,
+          ),
         );
       }
       return placeholder;
@@ -70,7 +79,13 @@ class AppImage {
     if (url != null && url!.isNotEmpty) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: Image.network(url!, width: width, height: height, fit: fit, errorBuilder: (_, __, ___) => placeholder!),
+        child: Image.network(
+          url!,
+          width: width,
+          height: height,
+          fit: fit,
+          errorBuilder: (_, __, ___) => placeholder!,
+        ),
       );
     }
     return placeholder;
@@ -87,7 +102,8 @@ class AddProductWebPage extends StatefulWidget {
 class _AddProductWebPageState extends State<AddProductWebPage> {
   final _formKeyAddProductWeb = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
-  final GlobalKey<ScaffoldState> _scaffoldKeyServiceAdd = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyServiceAdd =
+      GlobalKey<ScaffoldState>();
 
   final serviceController = Get.put(ServiceController());
   final loginController = Get.put(LoginController());
@@ -101,10 +117,16 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
     super.initState();
     _updateFields();
     selectedUserType = Api.userInfo.read('userType') ?? "";
-    loginController.getProfileByUserId(Api.userInfo.read('userId') ?? "", context);
-    serviceController.selectedServiceId.toString().isNotEmpty ? serviceController.selectedServiceId.toString() : "0";
+    loginController.getProfileByUserId(
+      Api.userInfo.read('userId') ?? "",
+      context,
+    );
+    serviceController.selectedServiceId.toString().isNotEmpty
+        ? serviceController.selectedServiceId.toString()
+        : "0";
     //serviceFileImages =serviceFileImages ?? <AppImage>[];
   }
+
   void _updateFields() {
     if (Api.userInfo.read('userType') == 'Dental Clinic') {
       addList = [
@@ -121,12 +143,16 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
     }
     setState(() {});
   }
+
   Future<void> _refresh() async {
     _updateFields();
     selectedUserType = Api.userInfo.read('userType') ?? "";
     //await loginController.getProfileByUserId(Api.userInfo.read('userId') ?? "", context);
-    serviceController.selectedServiceId.toString().isNotEmpty ? serviceController.selectedServiceId.toString() : "0";
+    serviceController.selectedServiceId.toString().isNotEmpty
+        ? serviceController.selectedServiceId.toString()
+        : "0";
   }
+
   bool isPicking = false;
 
   Future<void> pickImages() async {
@@ -144,7 +170,7 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
     }
 
     try {
-      final List<XFile>? selected = await _picker.pickMultiImage();
+      final List<XFile> selected = await _picker.pickMultiImage();
 
       if (selected != null && selected.isNotEmpty) {
         final limited = selected.take(remaining).toList();
@@ -154,7 +180,9 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
             final bytes = await x.readAsBytes();
             loginController.serviceFileImages.add(AppImage2(bytes: bytes));
           } else {
-            loginController.serviceFileImages.add(AppImage2(file: File(x.path)));
+            loginController.serviceFileImages.add(
+              AppImage2(file: File(x.path)),
+            );
           }
         }
 
@@ -171,23 +199,37 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
       isPicking = false;
     }
   }
+
   Future<void> confirmRemoveImage(BuildContext ctx, int index) async {
     showDialog(
       context: ctx,
       builder: (c) => AlertDialog(
-        title:  Text("Remove Image",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
-        content:  Text("Are you sure you want to remove this image?",style: AppTextStyles.caption(context),),
+        title: Text(
+          "Remove Image",
+          style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          "Are you sure you want to remove this image?",
+          style: AppTextStyles.caption(context),
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(c), child:  Text("Cancel",style: AppTextStyles.caption(context),)),
-          TextButton(onPressed: () {
-           serviceFileImages.removeAt(index);
-            loginController.update();
-            Navigator.pop(c);
-          }, child:  Text("Remove",style: AppTextStyles.caption(context,),)),
+          TextButton(
+            onPressed: () => Navigator.pop(c),
+            child: Text("Cancel", style: AppTextStyles.caption(context)),
+          ),
+          TextButton(
+            onPressed: () {
+              serviceFileImages.removeAt(index);
+              loginController.update();
+              Navigator.pop(c);
+            },
+            child: Text("Remove", style: AppTextStyles.caption(context)),
+          ),
         ],
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -200,7 +242,9 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
       key: _scaffoldKeyServiceAdd,
-      drawer:( !isDesktop&&isLoggedIn) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (!isDesktop && isLoggedIn)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       appBar: CommonWebAppBar(
         height: size * 0.03,
         title: "LOCATE YOUR DENTIST",
@@ -229,7 +273,13 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
-                                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 6,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(25.0),
@@ -238,48 +288,93 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
                                   children: [
                                     if (isLoggedIn && !isDesktop)
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 10, left: 10),
+                                        padding: const EdgeInsets.only(
+                                          top: 10,
+                                          left: 10,
+                                        ),
                                         child: IconButton(
-                                          icon:  Icon(Icons.menu,color: AppColors.black,size: 16,),
-                                          onPressed: () => _scaffoldKeyServiceAdd.currentState?.openDrawer(),
+                                          icon: Icon(
+                                            Icons.menu,
+                                            color: AppColors.black,
+                                            size: 16,
+                                          ),
+                                          onPressed: () =>
+                                              _scaffoldKeyServiceAdd
+                                                  .currentState
+                                                  ?.openDrawer(),
                                         ),
                                       ),
                                     Center(
                                       child: Text(
-                                        selectedUserType == 'Dental Clinic' ? 'Add Service Details' : 'Add Product Details',
-                                        style: AppTextStyles.subtitle(context, color: AppColors.black),
+                                        selectedUserType == 'Dental Clinic'
+                                            ? 'Add Service Details'
+                                            : 'Add Product Details',
+                                        style: AppTextStyles.subtitle(
+                                          context,
+                                          color: AppColors.black,
+                                        ),
                                       ),
                                     ),
-                                    SizedBox(height: size*0.01),
+                                    SizedBox(height: size * 0.01),
 
-                                    Text('Title', style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold)),
-                                    SizedBox(height: size*0.01),
+                                    Text(
+                                      'Title',
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: size * 0.01),
                                     CustomTextField(
-                                      hint: addList.isNotEmpty ? addList[0]["fieldName"]! : "",
-                                      controller: serviceController.titleController,
+                                      hint: addList.isNotEmpty
+                                          ? addList[0]["fieldName"]!
+                                          : "",
+                                      controller:
+                                          serviceController.titleController,
                                       borderColor: AppColors.white,
                                       fillColor: Colors.grey.shade100,
                                     ),
 
                                     // Description
-                                    SizedBox(height: size*0.01),
-                                    Text('Description', style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold)),
-                                    SizedBox(height: size*0.01),
+                                    SizedBox(height: size * 0.01),
+                                    Text(
+                                      'Description',
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: size * 0.01),
                                     CustomTextField(
-                                      hint: addList.length > 1 ? addList[1]["fieldName"]! : "",
-                                      controller: serviceController.descriptionController,
+                                      hint: addList.length > 1
+                                          ? addList[1]["fieldName"]!
+                                          : "",
+                                      controller: serviceController
+                                          .descriptionController,
                                       borderColor: AppColors.white,
                                       fillColor: Colors.grey.shade100,
                                       maxLines: 4,
                                     ),
 
                                     // Price
-                                    SizedBox(height: size*0.01),
-                                    Text('Price', style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold)),
-                                    SizedBox(height: size*0.01),
+                                    SizedBox(height: size * 0.01),
+                                    Text(
+                                      'Price',
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: size * 0.01),
                                     CustomTextField(
-                                      hint: addList.length > 2 ? addList[2]["fieldName"]! : "",
-                                      controller: serviceController.costController,
+                                      hint: addList.length > 2
+                                          ? addList[2]["fieldName"]!
+                                          : "",
+                                      controller:
+                                          serviceController.costController,
                                       borderColor: AppColors.white,
                                       fillColor: Colors.grey.shade100,
                                       keyboardType: TextInputType.number,
@@ -287,67 +382,133 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
                                     ),
 
                                     // Images
-                                    SizedBox(height: size*0.01),
-                                    Text('Images', style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold)),
+                                    SizedBox(height: size * 0.01),
+                                    Text(
+                                      'Images',
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     const SizedBox(height: 5),
                                     SizedBox(
                                       height: 150,
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: loginController.serviceFileImages.length<3?loginController.serviceFileImages.length+1 :loginController.serviceFileImages.length ,
+                                        itemCount:
+                                            loginController
+                                                    .serviceFileImages
+                                                    .length <
+                                                3
+                                            ? loginController
+                                                      .serviceFileImages
+                                                      .length +
+                                                  1
+                                            : loginController
+                                                  .serviceFileImages
+                                                  .length,
                                         itemBuilder: (context, index) {
-                                          if (index == loginController.serviceFileImages.length && loginController.serviceFileImages.length < 3) {
+                                          if (index ==
+                                                  loginController
+                                                      .serviceFileImages
+                                                      .length &&
+                                              loginController
+                                                      .serviceFileImages
+                                                      .length <
+                                                  3) {
                                             return GestureDetector(
                                               onTap: pickImages,
                                               child: Container(
                                                 margin: const EdgeInsets.all(8),
-                                                width:120,
+                                                width: 120,
                                                 height: 120,
                                                 decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  border: Border.all(color: Colors.grey),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  border: Border.all(
+                                                    color: Colors.grey,
+                                                  ),
                                                   color: Colors.grey.shade200,
                                                 ),
-                                                child:  Center(
-                                                  child: Icon(Icons.add, size:15, color: Colors.grey),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    size: 15,
+                                                    color: Colors.grey,
+                                                  ),
                                                 ),
                                               ),
                                             );
                                           }
-                                          final img = loginController.serviceFileImages[index];
+                                          final img = loginController
+                                              .serviceFileImages[index];
                                           Widget imageWidget;
                                           if (kIsWeb && img.bytes != null) {
-                                            imageWidget = Image.memory(img.bytes!, fit: BoxFit.cover, width:120,
-                                              height: 150,);
+                                            imageWidget = Image.memory(
+                                              img.bytes!,
+                                              fit: BoxFit.cover,
+                                              width: 120,
+                                              height: 150,
+                                            );
                                           } else if (img.file != null) {
-                                            imageWidget = Image.file(img.file!, fit: BoxFit.cover, width:120,
-                                              height: 150,);
-                                          } else if (img.url != null && img.url!.isNotEmpty) {
+                                            imageWidget = Image.file(
+                                              img.file!,
+                                              fit: BoxFit.cover,
+                                              width: 120,
+                                              height: 150,
+                                            );
+                                          } else if (img.url != null &&
+                                              img.url!.isNotEmpty) {
                                             imageWidget = Image.network(
                                               img.url!,
-                                              fit: BoxFit.cover, width:120,
+                                              fit: BoxFit.cover,
+                                              width: 120,
                                               height: 150,
-                                              errorBuilder: (_, __, ___) =>  Icon(Icons.broken_image,size: 15,color: AppColors.grey,),
+                                              errorBuilder: (_, __, ___) =>
+                                                  Icon(
+                                                    Icons.broken_image,
+                                                    size: 15,
+                                                    color: AppColors.grey,
+                                                  ),
                                             );
                                           } else {
-                                            imageWidget =  Container(child: Center(child: Icon(Icons.image_not_supported,color: Colors.red, size:15)));
+                                            imageWidget = Container(
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.image_not_supported,
+                                                  color: Colors.red,
+                                                  size: 15,
+                                                ),
+                                              ),
+                                            );
                                           }
                                           return Container(
                                             margin: const EdgeInsets.all(8),
-                                            width:120,
+                                            width: 120,
                                             height: 150,
                                             child: Stack(
                                               children: [
-                                                ClipRRect(borderRadius: BorderRadius.circular(12), child: imageWidget),
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  child: imageWidget,
+                                                ),
                                                 Positioned(
                                                   right: 0,
                                                   top: 0,
                                                   child: GestureDetector(
                                                     onTap: () {
-                                                      loginController.serviceFileImages.removeAt(index);
+                                                      loginController
+                                                          .serviceFileImages
+                                                          .removeAt(index);
                                                       loginController.update();
                                                     },
-                                                    child:  Icon(Icons.cancel, color: Colors.red, size: 14),
+                                                    child: Icon(
+                                                      Icons.cancel,
+                                                      color: Colors.red,
+                                                      size: 14,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -357,48 +518,100 @@ class _AddProductWebPageState extends State<AddProductWebPage> {
                                       ),
                                     ),
                                     const SizedBox(height: 5),
-                                    Center(child: Text("** maximum 3 images allowed", style: AppTextStyles.caption(context, color: Colors.red))),
+                                    Center(
+                                      child: Text(
+                                        "** maximum 3 images allowed",
+                                        style: AppTextStyles.caption(
+                                          context,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
 
                                     const SizedBox(height: 20),
                                     Center(
                                       child: ElevatedButton(
-                                        onPressed: ()async {
-                                          if (_formKeyAddProductWeb.currentState!.validate()) {
-                                            final existingUrls = loginController.serviceFileImages
-                                                .where((img) => img.url != null && img.url!.isNotEmpty)
+                                        onPressed: () async {
+                                          if (_formKeyAddProductWeb
+                                              .currentState!
+                                              .validate()) {
+                                            final existingUrls = loginController
+                                                .serviceFileImages
+                                                .where(
+                                                  (img) =>
+                                                      img.url != null &&
+                                                      img.url!.isNotEmpty,
+                                                )
                                                 .map((img) => img.url!)
                                                 .toList();
-                                            print('new existingUrls img${existingUrls}');
-                                            final newImageBytes = loginController.serviceFileImages
-                                                .where((img) => img.bytes != null)
-                                                .map((img) => img.bytes!)
-                                                .toList();
-                                            print('new service img${newImageBytes}');
-                                            final newImageFiles = serviceFileImages
-                                                .where((img) => img.file != null)
-                                                .map((img) => img.file!)
-                                                .toList();
-
-                                         await   serviceController.createServiceAdmin(
-                                              serviceController.selectedServiceId.toString(),
-                                              loginController.selectUserId!,
-                                              loginController.selectedUserType.toString(),
-                                              serviceController.titleController.text,
-                                              serviceController.descriptionController.text,
-                                              serviceController.costController.text,
-                                              newImageBytes,
-                                              existingUrls,
-                                              context,
+                                            print(
+                                              'new existingUrls img$existingUrls',
                                             );
+                                            final newImageBytes =
+                                                loginController
+                                                    .serviceFileImages
+                                                    .where(
+                                                      (img) =>
+                                                          img.bytes != null,
+                                                    )
+                                                    .map((img) => img.bytes!)
+                                                    .toList();
+                                            print(
+                                              'new service img$newImageBytes',
+                                            );
+                                            final newImageFiles =
+                                                serviceFileImages
+                                                    .where(
+                                                      (img) => img.file != null,
+                                                    )
+                                                    .map((img) => img.file!)
+                                                    .toList();
+
+                                            await serviceController
+                                                .createServiceAdmin(
+                                                  serviceController
+                                                      .selectedServiceId
+                                                      .toString(),
+                                                  loginController.selectUserId!,
+                                                  loginController
+                                                      .selectedUserType
+                                                      .toString(),
+                                                  serviceController
+                                                      .titleController
+                                                      .text,
+                                                  serviceController
+                                                      .descriptionController
+                                                      .text,
+                                                  serviceController
+                                                      .costController
+                                                      .text,
+                                                  newImageBytes,
+                                                  existingUrls,
+                                                  context,
+                                                );
                                           }
                                         },
-                                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary,
-                                          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.primary,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 50,
+                                            vertical: 15,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
                                         ),
                                         child: Text(
-                                          selectedUserType == 'Dental Clinic' ? 'Add Service' : 'Add Product',
-                                          style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold),
+                                          selectedUserType == 'Dental Clinic'
+                                              ? 'Add Service'
+                                              : 'Add Product',
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),

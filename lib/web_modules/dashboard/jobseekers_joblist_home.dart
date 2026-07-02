@@ -26,106 +26,99 @@ class JobSeekersDashboardGrid extends StatelessWidget {
       return _buildEmptyState();
     }
     return AnimationLimiter(
-      child:     Container(
+      child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
         child: Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 1500),
             padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
+            child: Column(
+              children: [
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: jobList.length > 10 ? 10 : jobList.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: width > 1200
+                        ? 3
+                        : width > 700
+                        ? 2
+                        : 1,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                    mainAxisExtent: 250,
+                  ),
+                  itemBuilder: (context, index) {
+                    final job = jobList[index];
 
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: jobList.length > 10 ? 10 : jobList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: width > 1200
+                    return AnimationConfiguration.staggeredGrid(
+                      columnCount: width > 1200
                           ? 3
                           : width > 700
                           ? 2
                           : 1,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                      mainAxisExtent: 250,
-                    ),
-                    itemBuilder: (context, index) {
-                      final job = jobList[index];
+                      position: index,
+                      duration: const Duration(milliseconds: 600),
+                      child: ScaleAnimation(
+                        child: FadeInAnimation(child: _JobSeekerCard(job: job)),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 30),
 
-                      return AnimationConfiguration.staggeredGrid(
-                        columnCount: width > 1200
-                            ? 3
-                            : width > 700
-                            ? 2
-                            : 1,
-                        position: index,
-                        duration: const Duration(milliseconds: 600),
-                        child: ScaleAnimation(
-                          child: FadeInAnimation(
-                            child: _JobSeekerCard(job: job),
+                //if (jobList.length > 10)
+                Column(
+                  children: [
+                    InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: () {
+                        Get.toNamed('/webLoginPage');
+                        //Get.toNamed('/jobListJobSeekersWebPage');
+                      },
+                      child: Container(
+                        height: 70,
+                        width: 70,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [AppColors.primary, AppColors.secondary],
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 30),
-
-                  //if (jobList.length > 10)
-                    Column(
-                      children: [
-
-                        InkWell(
-                          borderRadius: BorderRadius.circular(50),
-                          onTap: () {
-                            Get.toNamed('/webLoginPage');
-                            //Get.toNamed('/jobListJobSeekersWebPage');
-                          },
-                          child: Container(
-                            height: 70,
-                            width: 70,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.primary,
-                                  AppColors.secondary,
-                                ],
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primary.withOpacity(.3),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
-                                )
-                              ],
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: .3),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
                             ),
-                            child: const Icon(
-                              Icons.arrow_forward_rounded,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                          ),
+                          ],
                         ),
-
-                        const SizedBox(height: 12),
-
-                        const Text(
-                          "View All Jobs",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff334155),
-                          ),
+                        child: const Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Colors.white,
+                          size: 32,
                         ),
-                      ],
+                      ),
                     ),
-                ],
-              ),
+
+                    const SizedBox(height: 12),
+
+                    const Text(
+                      "View All Jobs",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff334155),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 
   Widget _buildLoadingShimmer(bool isDesktop) {
@@ -151,8 +144,15 @@ class JobSeekersDashboardGrid extends StatelessWidget {
           children: [
             Row(
               children: [
-                Container(width: 50, height: 50, decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(12))),
-                const SizedBox(width: 10),
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -160,11 +160,18 @@ class JobSeekersDashboardGrid extends StatelessWidget {
                     const SizedBox(height: 8),
                     Container(width: 90, height: 12, color: Colors.grey[200]),
                   ],
-                )
+                ),
               ],
             ),
-           SizedBox(height: 8,),
-            Container(width: double.infinity, height: 35, decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(8))),
+            SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              height: 35,
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
           ],
         ),
       ),
@@ -179,13 +186,24 @@ class JobSeekersDashboardGrid extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(color: Color(0xFFF1F5F9), shape: BoxShape.circle),
-              child: const Icon(Icons.business_center_outlined, size: 40, color: Color(0xFF94A3B8)),
+              decoration: const BoxDecoration(
+                color: Color(0xFFF1F5F9),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.business_center_outlined,
+                size: 40,
+                color: Color(0xFF94A3B8),
+              ),
             ),
             const SizedBox(height: 16),
             const Text(
               "No Openings Posted",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF334155)),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF334155),
+              ),
             ),
             const SizedBox(height: 4),
             const Text(
@@ -212,10 +230,14 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
 
   Color _getStatusColor(String status) {
     switch (status.trim().toLowerCase()) {
-      case 'applied': return const Color(0xFF0EA5E9);
-      case 'shortlisted': return const Color(0xFF10B981);
-      case 'rejected': return const Color(0xFFEF4444);
-      default: return const Color(0xFF64748B);
+      case 'applied':
+        return const Color(0xFF0EA5E9);
+      case 'shortlisted':
+        return const Color(0xFF10B981);
+      case 'rejected':
+        return const Color(0xFFEF4444);
+      default:
+        return const Color(0xFF64748B);
     }
   }
 
@@ -223,12 +245,19 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
   Widget build(BuildContext context) {
     final job = widget.job;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-    final logoUrl = (job.logoImage != null && job.logoImage!.isNotEmpty) ? job.logoImage!.first : null;
-    final hasLogo = logoUrl != null && logoUrl.toString().trim().isNotEmpty && logoUrl.toString().toLowerCase() != "null";
+    final logoUrl = (job.logoImage != null && job.logoImage!.isNotEmpty)
+        ? job.logoImage!.first
+        : null;
+    final hasLogo =
+        logoUrl != null &&
+        logoUrl.toString().trim().isNotEmpty &&
+        logoUrl.toString().toLowerCase() != "null";
     String postedDate = "Recent";
     try {
       if (job.createdDate != null) {
-        postedDate = DateFormat('MMM dd').format(DateTime.parse(job.createdDate.toString()));
+        postedDate = DateFormat(
+          'MMM dd',
+        ).format(DateTime.parse(job.createdDate.toString()));
       }
     } catch (_) {}
 
@@ -240,7 +269,7 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
         onTap: () {
           Api.userInfo.write('selectJobId', job.jobId.toString());
           Api.userInfo.write('activeStatus', job.isActive.toString());
-        //  Get.toNamed('/viewJobDetailWebPage');
+          //  Get.toNamed('/viewJobDetailWebPage');
           Get.toNamed('/webLoginPage');
         },
         child: AnimatedContainer(
@@ -250,12 +279,16 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: _isHovered ? AppColors.primary.withOpacity(0.4) : const Color(0xFFE2E8F0),
+              color: _isHovered
+                  ? AppColors.primary.withValues(alpha: 0.4)
+                  : const Color(0xFFE2E8F0),
               width: _isHovered ? 1.5 : 1.0,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF0F172A).withOpacity(_isHovered ? 0.06 : 0.02),
+                color: const Color(
+                  0xFF0F172A,
+                ).withValues(alpha: _isHovered ? 0.06 : 0.02),
                 blurRadius: _isHovered ? 20 : 12,
                 offset: _isHovered ? const Offset(0, 10) : const Offset(0, 4),
               ),
@@ -279,7 +312,12 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: hasLogo
-                          ? Image.network(logoUrl.toString(), fit: BoxFit.cover, errorBuilder: (_, __, ___) => _buildInitialFallback(job))
+                          ? Image.network(
+                              logoUrl.toString(),
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) =>
+                                  _buildInitialFallback(job),
+                            )
                           : _buildInitialFallback(job),
                     ),
                   ),
@@ -290,14 +328,23 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
                       children: [
                         Text(
                           job.jobTitle?.toString() ?? "Medical Position",
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E293B), height: 1.2),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1E293B),
+                            height: 1.2,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
                         Text(
                           job.orgName?.toString() ?? "Healthcare Center",
-                          style: const TextStyle(fontSize: 13, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFF64748B),
+                            fontWeight: FontWeight.w500,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -312,26 +359,62 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
                 runSpacing: 8,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(color: const Color(0xFF0F4C81).withOpacity(0.06), borderRadius: BorderRadius.circular(8)),
-                    child: Text(job.jobType?.toString() ?? "Full Time", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F4C81))),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0F4C81).withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      job.jobType?.toString() ?? "Full Time",
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F4C81),
+                      ),
+                    ),
                   ),
                   if (job.status != null)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(color: _getStatusColor(job.status.toString()).withOpacity(0.08), borderRadius: BorderRadius.circular(8)),
-                      child: Text(job.status.toString(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: _getStatusColor(job.status.toString()))),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _getStatusColor(
+                          job.status.toString(),
+                        ).withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        job.status.toString(),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: _getStatusColor(job.status.toString()),
+                        ),
+                      ),
                     ),
                 ],
               ),
-              const SizedBox(height: 8),              Row(
+              const SizedBox(height: 8),
+              Row(
                 children: [
-                  const Icon(Icons.location_on_outlined, color: Color(0xFF94A3B8), size: 16),
+                  const Icon(
+                    Icons.location_on_outlined,
+                    color: Color(0xFF94A3B8),
+                    size: 16,
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       "${job.city ?? 'City'}, ${job.district ?? 'District'}",
-                      style: const TextStyle(fontSize: 13, color: Color(0xFF475569)),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFF475569),
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -341,11 +424,19 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
               const SizedBox(height: 6),
               Row(
                 children: [
-                  const Icon(Icons.currency_rupee_rounded, color: Color(0xFF94A3B8), size: 16),
+                  const Icon(
+                    Icons.currency_rupee_rounded,
+                    color: Color(0xFF94A3B8),
+                    size: 16,
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     "Salary: ${job.salary ?? 'Competitive'}",
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1E293B),
+                    ),
                   ),
                 ],
               ),
@@ -355,7 +446,14 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Posted $postedDate", style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500)),
+                  Text(
+                    "Posted $postedDate",
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF94A3B8),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                   if (!isLoggedIn)
                     SizedBox(
                       height: 32,
@@ -365,18 +463,31 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
                           backgroundColor: AppColors.primary,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(horizontal: 14),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
-                        child: const Text("Apply Now", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.white)),
+                        child: const Text(
+                          "Apply Now",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   if (isLoggedIn)
                     Text(
                       '${job.totalApplicants ?? 0} Applied',
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0F4C81)),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F4C81),
+                      ),
                     ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -392,7 +503,11 @@ class _JobSeekerCardState extends State<_JobSeekerCard> {
     return Center(
       child: Text(
         initial,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F4C81)),
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF0F4C81),
+        ),
       ),
     );
   }
