@@ -15,47 +15,49 @@ class AddGstDetails extends StatefulWidget {
 }
 
 class _AddGstDetailsState extends State<AddGstDetails> {
-  final planController=Get.put(PlanController());
+  final planController = Get.put(PlanController());
   final _formKeyGst = GlobalKey<FormState>();
   @override
-  void initState(){
+  void initState() {
     super.initState();
     planController.getGstDetails(context);
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
-        centerTitle: true,backgroundColor: AppColors.primary,
+        centerTitle: true,
+        backgroundColor: AppColors.white,
         iconTheme: const IconThemeData(color: AppColors.white),
-        title: Text('Add GST Details',style: AppTextStyles.subtitle(context,color: AppColors.white),),
+        title: Text(
+          'Add GST Details',
+          style: AppTextStyles.subtitle(context, color: AppColors.black),
+        ),
         automaticallyImplyLeading: true,
-        // leading: Padding(
-        //   padding: const EdgeInsets.all(8.0),
-        //   child: GestureDetector(
-        //     onTap: () {
-        //       Navigator.pop(context);
-        //     },
-        //     child: Container(
-        //       decoration: const BoxDecoration(
-        //         shape: BoxShape.circle,
-        //         gradient: LinearGradient(
-        //           colors: [AppColors.primary, AppColors.secondary],
-        //           begin: Alignment.topLeft,
-        //           end: Alignment.bottomRight,
-        //         ),
-        //       ),
-        //       child: const Center(
-        //         child: Icon(
-        //           Icons.arrow_back,
-        //           color: AppColors.white,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [AppColors.primary, AppColors.secondary],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: const Center(
+                child: Icon(Icons.arrow_back, color: AppColors.white),
+              ),
+            ),
+          ),
+        ),
       ),
       body: Form(
         key: _formKeyGst,
@@ -115,30 +117,39 @@ class _AddGstDetailsState extends State<AddGstDetails> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ElevatedButton(
-
-                    onPressed: () async{
+                    onPressed: () async {
                       if (_formKeyGst.currentState!.validate()) {
-                        await  planController.addGstDetails(
-                            Api.userInfo.read('userId') ?? "",
-                            planController.selectedState.toString(),
-                            planController.cgstController.text.toString(),
-                            planController.sgstController.text.toString(),
-                            planController.igstController.text.toString(),planController.isShowGst,
-                            context);
+                        await planController.addGstDetails(
+                          Api.userInfo.read('userId') ?? "",
+                          planController.selectedState.toString(),
+                          planController.cgstController.text.toString(),
+                          planController.sgstController.text.toString(),
+                          planController.igstController.text.toString(),
+                          planController.isShowGst,
+                          context,
+                        );
                       }
                       planController.cgstController.clear();
                       planController.igstController.clear();
                       planController.sgstController.clear();
-                      planController.selectedState=='';
-                      planController.selectedState==null;
+                      planController.selectedState == '';
+                      planController.selectedState == null;
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:  Colors.transparent,shadowColor: Colors.transparent,
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child:  Text("Save", style: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold)),
+                    child: Text(
+                      "Save",
+                      style: AppTextStyles.caption(
+                        context,
+                        color: AppColors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -149,34 +160,35 @@ class _AddGstDetailsState extends State<AddGstDetails> {
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
   }
+
   Widget buildSwitchRow({
     required String label,
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
     return GetBuilder<PlanController>(
-        builder: (controller) {
-          return  Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
-                ),
+      builder: (controller) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
               ),
-              Switch(
-                activeColor: AppColors.white,
-                activeTrackColor: AppColors.primary,
-                inactiveThumbColor: Colors.blueGrey.shade600,
-                inactiveTrackColor: Colors.grey.shade400,
-                splashRadius: 50.0,
-                value: value,
-                onChanged: onChanged,
-              ),
-            ],
-          );
-        }
+            ),
+            Switch(
+              activeThumbColor: AppColors.white,
+              activeTrackColor: AppColors.primary,
+              inactiveThumbColor: Colors.blueGrey.shade600,
+              inactiveTrackColor: Colors.grey.shade400,
+              splashRadius: 50.0,
+              value: value,
+              onChanged: onChanged,
+            ),
+          ],
+        );
+      },
     );
   }
 }

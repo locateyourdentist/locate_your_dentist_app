@@ -549,9 +549,12 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                   bottom: 30,
                                   child: Center(
                                       child: Container(
-                                        width: isMobile ? MediaQuery.of(context).size.width * 0.92 : 1500,
+                                         // width:1500,
+                                        width: isMobile
+                                            ? MediaQuery.of(context).size.width * 0.92
+                                            : 1500,
                                         margin: const EdgeInsets.symmetric(horizontal: 20),
-                                        padding: const EdgeInsets.all(20),
+                                        padding: const EdgeInsets.all(25),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius: BorderRadius.circular(20),
@@ -569,7 +572,11 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                           alignment: WrapAlignment.center,
                                           children: [
                                             SizedBox(
-                                              width: size > 1100 ? 250 : size > 800 ? 200 : 200,
+                                              width: size > 1100
+                                                  ? 250
+                                                  : size > 800
+                                                  ? 200
+                                                  : 200,
                                               child: buildFilterBox(
                                                 icon: Icons.map,
                                                 child: CustomDropdown<String>.search(
@@ -607,22 +614,14 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                       e.toString(),
                                                     ),
                                                   ).toList(),
-                                                  title: Text(
-                                                    "Select districts",
-                                                    style: AppTextStyles.body(context),
-                                                  ),
+                                                  title: Center(
+                                                    child: Text(
+                                                      "Select districts",
+                                                      style: AppTextStyles.body(context),
+                                                    ),),
                                                   buttonText: Text(
-                                                    loginController.selectedDistricts.isEmpty
-                                                        ? "District"
-                                                        : loginController.selectedDistricts.first,
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: AppTextStyles.caption(
-                                                      context,
-                                                      color: loginController.selectedDistricts.isEmpty
-                                                          ? AppColors.grey
-                                                          : AppColors.black,
-                                                    ),
+                                                    "district",
+                                                    style: AppTextStyles.caption(context,color: AppColors.grey),
                                                   ),
                                                   decoration: const BoxDecoration(),
                                                   searchable: true,
@@ -635,6 +634,16 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                     loginController.update();
                                                   },
                                                   chipDisplay: MultiSelectChipDisplay.none(),
+                                                  // chipDisplay: MultiSelectChipDisplay(
+                                                  //   height: 130,
+                                                  //   chipWidth: 100,
+                                                  //   textStyle: AppTextStyles.caption(context),
+                                                  //   onTap: (value)async {
+                                                  //     loginController.selectedDistricts.remove(value);
+                                                  //     //  await  loginController.fetchTalukas(loginController.selectedDistricts);
+                                                  //     loginController.update();
+                                                  //   },
+                                                  // ),
                                                 ),
                                               ),
                                             ),
@@ -666,17 +675,8 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                       style: AppTextStyles.body(context),
                                                     ),),
                                                   buttonText: Text(
-                                                    loginController.selectedTalukas.isEmpty
-                                                        ? "Taluka"
-                                                        : loginController.selectedTalukas.first,
-                                                    maxLines: 2,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: AppTextStyles.caption(
-                                                      context,
-                                                      color: loginController.selectedTalukas.isEmpty
-                                                          ? AppColors.grey
-                                                          : AppColors.black,
-                                                    ),
+                                                    "Taluka",
+                                                    style: AppTextStyles.caption(context,color: AppColors.grey),
                                                   ),
                                                   decoration: const BoxDecoration(),
                                                   searchable: true,
@@ -689,6 +689,16 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                     loginController.update();
                                                   },
                                                   chipDisplay: MultiSelectChipDisplay.none(),
+                                                  // chipDisplay: MultiSelectChipDisplay(
+                                                  //   height: 200,
+                                                  //   chipWidth: 100,
+                                                  //   textStyle: AppTextStyles.caption(context),
+                                                  //   onTap: (value)async {
+                                                  //     loginController.selectedTalukas.remove(value);
+                                                  //    await loginController.fetchVillages(loginController.selectedTalukas);
+                                                  //     loginController.update();
+                                                  //   },
+                                                  // ),
                                                 ),
                                               ),
                                             ),
@@ -707,27 +717,24 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                     color: AppColors.white,
                                                     size: 2,
                                                   ),
-                                                  items: loginController.villages.toSet()
-                                                      .map((e) => MultiSelectItem<String>(e.toString(), e.toString(),
-                                                    ),).toList(),
+                                                  items: loginController.villages
+                                                      .toSet()
+                                                      .map(
+                                                        (e) => MultiSelectItem<String>(
+                                                      e.toString(),
+                                                      e.toString(),
+                                                    ),
+                                                  ).toList(),
                                                   title: Center(
                                                     child: Text(
                                                       "Select Areas",
                                                       style: AppTextStyles.body(context),
                                                     ),
                                                   ),
-                                                    buttonText: Text(
-                                                      loginController.selectedVillages.isEmpty
-                                                          ? "Areas"
-                                                          : loginController.selectedVillages.first,
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: AppTextStyles.caption(
-                                                        context,
-                                                        color: loginController.selectedVillages.isEmpty
-                                                            ? AppColors.grey
-                                                            : AppColors.black,
-                                                      ),
+
+                                                  buttonText: Text(
+                                                    "Area",
+                                                    style: AppTextStyles.caption(context,color: AppColors.grey),
                                                   ),
                                                   decoration: const BoxDecoration(),
 
@@ -772,7 +779,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                 size: 22,
                                               ),
                                               label: Text(
-                                                "Search Dentists",
+                                                "Search Dentist",
                                                 style: AppTextStyles.caption(
                                                   context,
                                                   color: Colors.white,
@@ -916,6 +923,67 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                   ],
                                 ),
                               ),
+                              //DentalProblemCard(),
+              
+                        // Column(
+                        //   children: [
+                        //
+                        //     Text(
+                        //       "Popular Dental Treatments",
+                        //       style: TextStyle(
+                        //         fontSize: 26,
+                        //         fontWeight: FontWeight.bold,color: AppColors.primary
+                        //       ),
+                        //     ),
+                        //
+                        //     const SizedBox(height: 15),
+                        //
+                        //     Text(
+                        //       "Explore advanced dental solutions offered by verified clinics",
+                        //       textAlign: TextAlign.center,
+                        //       style: TextStyle(
+                        //         color: Colors.grey.shade600,
+                        //         fontSize: 16,
+                        //       ),
+                        //     ),
+                        //    // const SizedBox(height: 15),
+                        //
+                        //     // GumDiseaseCard(),
+                        //     // BruxismCard(),
+                        //     // SensitivityCard(),
+                        //     // WisdomTeethCard(),
+                        //     // AbscessCard(),
+                        //
+                        //     TreatmentCard(
+                        //       treatment: treatments[0],
+                        //       reverse: false,
+                        //     ),
+                        //
+                        //     TreatmentCard(
+                        //       treatment: treatments[1],
+                        //       reverse: true,
+                        //     ),
+                        //
+                        //     TreatmentCard(
+                        //       treatment: treatments[2],
+                        //       reverse: false,
+                        //     ),
+                        //     TreatmentCard(
+                        //       treatment: treatments[3],
+                        //       reverse: true,
+                        //     ),
+                        //
+                        //     TreatmentCard(
+                        //       treatment: treatments[4],
+                        //       reverse: false,
+                        //     ),
+                        //     SizedBox(height: size*0.01,),
+                        //
+                        //     BrushingTechniqueCard(),
+                        //     SizedBox(height: size*0.01,),
+                        //
+                        //   ],
+                        // ),
 
                               Padding(
                                 padding: const EdgeInsets.all(15.0),
@@ -968,6 +1036,8 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                           mainAxisSpacing: 20,
                                                           crossAxisSpacing: 20,
                                                           childAspectRatio: size < 700 ? 0.8 : 0.8,
+
+                                                          //childAspectRatio: 0.9,
                                                         ),
                                                         itemBuilder: (context, index) {
                                                           return AnimationConfiguration.staggeredList(
@@ -979,8 +1049,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                                   child: FadeInAnimation(
                                                                       child: EnlargeOnTapCard(child:AnimatedContainer(
                                                                           duration: const Duration(milliseconds: 250),
-                                                                          curve: Curves.easeInOutCubic,
-                                                                          child: clinicCard(loginController.profileList[index]))))));
+                                                                          curve: Curves.easeInOutCubic,child: clinicCard(loginController.profileList[index]))))));
                                                         },
                                                       ),
                                                     );
@@ -993,6 +1062,32 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                 ),
                               ),
                               const SizedBox(height: 60),
+                              // heroSection(size),
+                            //  featuresSection (),
+              
+                             // SizedBox(height: size*0.01,),
+              
+              
+                              // Row(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: [
+                              //
+                              //     Expanded(
+                              //       flex: 4,
+                              //       child: clinicSearchWidget(),
+                              //     ),
+                              //
+                              //     SizedBox(width: 30),
+                              //
+                              //
+                              //     Expanded(
+                              //       flex: 3,
+                              //       child: dentalTreatmentWidget(),
+                              //     ),
+                              //   ],
+                              // ),
+              
+                             // howItWorks(),
                               jobsWebinarSection(),
                               const SizedBox(height: 40),
                               Center(child: Text("Latest Career Openings", style: AppTextStyles.subtitle(context, color: AppColors.primary,

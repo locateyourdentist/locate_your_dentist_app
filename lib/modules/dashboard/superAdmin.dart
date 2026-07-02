@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
@@ -33,34 +32,7 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
   final TextEditingController searchController=TextEditingController();
   List<ProfileModel> filteredProfiles = [];
   Map<String, int> typeCounts = {};
-  Future<String> getAddressFromLatLng(double lat, double lng) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
-      Placemark place = placemarks.first;
-      return '${place.subLocality}, ${place.locality} ${place.postalCode}';
-    } catch (e) {
-      return '';
-    }
-  }
-  Future<void> getLocation() async {
-    final position = await LocationService.getCurrentLocation();
 
-    if (position != null) {
-      loginController.latitude = position.latitude;
-      loginController.longitude = position.longitude;
-
-      final address = await getAddressFromLatLng(loginController.latitude!, loginController.longitude!);
-
-      print('latitude ${loginController.latitude.toString()}');
-      print('longitude ${loginController.longitude.toString()}');
-      Api.userInfo.write('latitude', loginController.latitude.toString());
-      Api.userInfo.write('longitude', loginController.longitude.toString());
-      loginController.update();
-      planController.currentLocation = address;
-    } else {
-      Get.snackbar('Location', 'Unable to get location');
-    }
-  }
   @override
   void initState() {
     super.initState();
@@ -114,17 +86,8 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
               style: AppTextStyles.body(context,
                 color: AppColors.black,fontWeight: FontWeight.bold,),
             ),
-            GetBuilder<PlanController>(
-                builder: (controller) {
-                  return Row(
-                    children: [
-                      Icon(Icons.place,color: AppColors.grey,size: size*0.06,),
-                      SizedBox(width: size*0.01,),
-                      Expanded(child: Text(planController.currentLocation??"",overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.grey),)),
-                    ],
-                  );
-                }
-            ),          ],
+            Text(Api.userInfo.read('name')??"",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.bold,color: Colors.black),),
+          ],
         ),
           automaticallyImplyLeading: false,
           actions: [
@@ -133,17 +96,19 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                 return Stack(
                   children: [
 
-                    IconButton(
-                      icon: Icon(
-                        Icons.notifications_none,
-                        color: AppColors.black,
-                        size: size * 0.08,
+                    CircleAvatar(
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.notifications_none,
+                          color: AppColors.black,
+                          size: size * 0.08,
+                        ),
+                        onPressed: () {
+                          notificationController.getNotificationListAdmin(context);
+                          notificationController.update();
+                          Get.toNamed('/notificationPage');
+                          },
                       ),
-                      onPressed: () {
-                        notificationController.getNotificationListAdmin(context);
-                        notificationController.update();
-                        Get.toNamed('/notificationPage');
-                        },
                     ),
                  if (int.tryParse(notificationController.unreadCount ?? "0")! > 0)
                     Positioned(
@@ -535,45 +500,17 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Center(
-                                child: Text(
-                                  'Latest Users List',textAlign: TextAlign.start,
-                                   style: AppTextStyles.body(context,fontWeight: FontWeight.bold),
-                                      ),
-                              ),
-                              SizedBox(width: 50,),
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: TextButton(
-                                  onPressed: (){
-                                    Get.toNamed('/userTypeListPage');
-
-                                  },
-                                  child:Text(
-                                    "View All",softWrap: true,
-                                    style: TextStyle(
-                                      color: AppColors.primary,
-                                      fontWeight: FontWeight.bold,fontSize: size*0.03,decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                ),),
-                            ],
-                          ),
+                          Text(
+                            'Latest Users List',textAlign: TextAlign.start,
+                             style: AppTextStyles.body(context,fontWeight: FontWeight.bold),
+                                ),
                           if(controller.profileList.isEmpty)
                           buildShimmerEmptyWidget(size),
                           if(controller.profileList.isNotEmpty)
 
                           AnimationLimiter(
                             child: Column(
-                            children: controller.profileList
-                                .take(15)
-                                .toList()
-                                .asMap()
-                                .entries
-                                .map((entry) {
+                            children: controller.profileList.asMap().entries.map((entry) {
                             final index = entry.key;
                             final profile = entry.value;
                             return AnimationConfiguration.staggeredList(

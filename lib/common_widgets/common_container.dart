@@ -35,7 +35,7 @@ class CommonImageCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.15),
+              color: Colors.grey.withValues(alpha: 0.15),
               blurRadius: 6,
               offset: const Offset(0, 3),
             ),
@@ -46,26 +46,25 @@ class CommonImageCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(borderRadius),
               child:
-              // (imageUrl != null && imageUrl!.isNotEmpty)
-              //     ? Image.network(
-              //   imageUrl!,
-              //   fit: BoxFit.cover,
-              //   width: double.infinity,
-              //   height: double.infinity,
-              //   errorBuilder: (context, error, stackTrace) => Image.asset(
-              //     assetFallback!,
-              //     fit: BoxFit.cover,
-              //     width: double.infinity,
-              //     height: double.infinity,
-              //   ),
-              // ) :
-
-              Image.asset(
-                imageUrl!,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              ),
+                  // (imageUrl != null && imageUrl!.isNotEmpty)
+                  //     ? Image.network(
+                  //   imageUrl!,
+                  //   fit: BoxFit.cover,
+                  //   width: double.infinity,
+                  //   height: double.infinity,
+                  //   errorBuilder: (context, error, stackTrace) => Image.asset(
+                  //     assetFallback!,
+                  //     fit: BoxFit.cover,
+                  //     width: double.infinity,
+                  //     height: double.infinity,
+                  //   ),
+                  // ) :
+                  Image.asset(
+                    imageUrl!,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
             ),
             Positioned(
               top: 8,
@@ -75,11 +74,11 @@ class CommonImageCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.85),
+                    color: Colors.white.withValues(alpha: 0.85),
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.4),
+                        color: Colors.grey.withValues(alpha: 0.4),
                         blurRadius: 4,
                       ),
                     ],

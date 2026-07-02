@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
-import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:get/get.dart';
@@ -15,30 +14,37 @@ class ForgotChangePassword extends StatefulWidget {
 }
 
 class _ForgotChangePasswordState extends State<ForgotChangePassword> {
-  final loginController=Get.put(LoginController());
+  final loginController = Get.put(LoginController());
   final _formKeyForgotPassword = GlobalKey<FormState>();
-  String? confirmPasswordValidator(String? value, TextEditingController passwordController) {
-    if (value == null || value.isEmpty) return "Confirm Password cannot be empty";
+  String? confirmPasswordValidator(
+    String? value,
+    TextEditingController passwordController,
+  ) {
+    if (value == null || value.isEmpty)
+      return "Confirm Password cannot be empty";
     if (value != passwordController.text) return "Passwords do not match";
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    double size=MediaQuery.of(context).size.width;
+    double size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,backgroundColor: AppColors.white,
+        centerTitle: true,
+        backgroundColor: AppColors.white,
         iconTheme: const IconThemeData(color: AppColors.white),
-        title: Text('Change Password',style: AppTextStyles.subtitle(context,color: AppColors.black),),
+        title: Text(
+          'Change Password',
+          style: AppTextStyles.subtitle(context, color: AppColors.black),
+        ),
         automaticallyImplyLeading: true,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () {
-
               Get.back();
-              },
+            },
             child: Container(
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
@@ -49,10 +55,7 @@ class _ForgotChangePasswordState extends State<ForgotChangePassword> {
                 ),
               ),
               child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
+                child: Icon(Icons.arrow_back, color: AppColors.white),
               ),
             ),
           ),
@@ -76,10 +79,15 @@ class _ForgotChangePasswordState extends State<ForgotChangePassword> {
                 SizedBox(height: size * 0.03),
 
                 //Center(child: Text('Change Password',style: AppTextStyles.subtitle(context,color: AppColors.black),)),
-
-
                 SizedBox(height: size * 0.06),
-                Text('new Password',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
+                Text(
+                  'new Password',
+                  style: AppTextStyles.caption(
+                    context,
+                    color: AppColors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 SizedBox(height: size * 0.03),
                 CustomTextField(
                   hint: "Password",
@@ -109,7 +117,14 @@ class _ForgotChangePasswordState extends State<ForgotChangePassword> {
                   },
                 ),
                 SizedBox(height: size * 0.03),
-                Text('Confirm Password',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
+                Text(
+                  'Confirm Password',
+                  style: AppTextStyles.caption(
+                    context,
+                    color: AppColors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 SizedBox(height: size * 0.03),
 
                 CustomTextField(
@@ -117,7 +132,10 @@ class _ForgotChangePasswordState extends State<ForgotChangePassword> {
                   icon: Icons.lock,
                   isPassword: true,
                   controller: loginController.confirmPasswordController,
-                  validator: (value) => confirmPasswordValidator(value, loginController.passwordController),
+                  validator: (value) => confirmPasswordValidator(
+                    value,
+                    loginController.passwordController,
+                  ),
                 ),
                 SizedBox(height: size * 0.06),
 
@@ -133,18 +151,32 @@ class _ForgotChangePasswordState extends State<ForgotChangePassword> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.transparent, shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                       onPressed: () async {
                         if (_formKeyForgotPassword.currentState!.validate()) {
-                          loginController.forgotChangePassword(Api.userInfo.read('otpMail')??"",loginController.confirmPasswordController.text,context);
+                          loginController.forgotChangePassword(
+                            Api.userInfo.read('otpMail') ?? "",
+                            loginController.confirmPasswordController.text,
+                            context,
+                          );
                         }
                       },
-                      child: Text('Submit',style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white),),
+                      child: Text(
+                        'Submit',
+                        style: AppTextStyles.caption(
+                          context,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.white,
+                        ),
+                      ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),

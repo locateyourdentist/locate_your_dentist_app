@@ -323,7 +323,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           key: _formKeyEditJobProfile,
           child: Column(
             children: [
-          
+
               sectionTitle("Personal Information", size),
               CustomTextField(
                 hint: "Name",
@@ -331,26 +331,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 controller: loginController.fullNameController,
               ),
               SizedBox(height: size * 0.03),
-            CustomTextField(
-              hint: "Date of Birth",
-              controller: loginController.dobController,  fillColor: AppColors.white,
-              borderColor: AppColors.grey,
-              readOnly: true,
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime(2000),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
-                );
+              CustomTextField(
+                hint: "Date of Birth",
+                controller: loginController.dobController,  fillColor: AppColors.white,
+                borderColor: AppColors.grey,
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime(2000),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  );
 
-                if (pickedDate != null) {
-                  loginController.dobController.text =
-                  "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
-                }
-              },
-            ),
-            SizedBox(height: size * 0.03),
+                  if (pickedDate != null) {
+                    loginController.dobController.text =
+                    "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+                  }
+                },
+              ),
+              SizedBox(height: size * 0.03),
               CustomTextField(
                   hint: "Email",
                   icon: Icons.email,
@@ -358,7 +358,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   keyboardType: TextInputType.emailAddress
               ),
               SizedBox(height: size * 0.03),
-          
+
               CustomTextField(
                 hint: "Mobile Number",
                 icon: Icons.phone,
@@ -432,43 +432,43 @@ class _EditProfilePageState extends State<EditProfilePage> {
               SizedBox(height: size*0.03,),
               sectionTitle( "Select Preferences Job Categories",size),
               SizedBox(height: size*0.01,),
-            GetBuilder<JobController>(
-              builder: (jobController) {
-                final List<MultiSelectItem<String>> categoryItems =
-                jobController.jobCategoryAdmin
-                    .map(
-                      (e) => MultiSelectItem<String>(
-                    e.name.trim(),
-                    e.name.trim(),
-                  ),
-                ).toList();
-                return MultiSelectDialogField<String>(
-                  items: categoryItems,
-                  selectedColor: AppColors.primary,
-                  initialValue: loginController.selectedCategories,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.grey, width: 1),
-                  ),
-                  buttonText: Text(
-                    "Select Job Categories",
-                    style: AppTextStyles.caption(
-                      context,
-                      color: AppColors.grey,
-                      fontWeight: FontWeight.normal,
+              GetBuilder<JobController>(
+                builder: (jobController) {
+                  final List<MultiSelectItem<String>> categoryItems =
+                  jobController.jobCategoryAdmin
+                      .map(
+                        (e) => MultiSelectItem<String>(
+                      e.name.trim(),
+                      e.name.trim(),
                     ),
-                  ),
-                  onConfirm: (results) {
-                    loginController.selectedCategories = results;
-                    loginController.update();
-                  },
-                );
-              },
-            ),
-            sectionTitle("Educational Details", size),
-          
-               Text("UG Details", style: AppTextStyles.body(context,fontWeight: FontWeight.bold)),
+                  ).toList();
+                  return MultiSelectDialogField<String>(
+                    items: categoryItems,
+                    selectedColor: AppColors.primary,
+                    initialValue: loginController.selectedCategories,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppColors.grey, width: 1),
+                    ),
+                    buttonText: Text(
+                      "Select Job Categories",
+                      style: AppTextStyles.caption(
+                        context,
+                        color: AppColors.grey,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    onConfirm: (results) {
+                      loginController.selectedCategories = results;
+                      loginController.update();
+                    },
+                  );
+                },
+              ),
+              sectionTitle("Educational Details", size),
+
+              Text("UG Details", style: AppTextStyles.body(context,fontWeight: FontWeight.bold)),
               SizedBox(height: size * 0.02),
 
               CustomTextField(
@@ -644,161 +644,161 @@ class _EditProfilePageState extends State<EditProfilePage> {
               GetBuilder<LoginController>(
                   builder: (controller) {
                     return  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          loginController.togglePGDetails();
-                        },
-                    style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                   // shadowColor: AppColors.primary.withOpacity(0.5),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    ),),
-                        child: Text(
-                          loginController.showPGDetails ? "Hide PG Details" : "Add PG Details",textAlign: TextAlign.right,
-                            style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white)
-                        )
-                      ),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              loginController.togglePGDetails();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              // shadowColor: AppColors.primary.withOpacity(0.5),
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),),
+                            child: Text(
+                                loginController.showPGDetails ? "Hide PG Details" : "Add PG Details",textAlign: TextAlign.right,
+                                style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.white)
+                            )
+                        ),
 
-                      // PG Details section
-                      loginController.showPGDetails
-                          ? GetBuilder<LoginController>(
-                          builder: (controller) {
+                        // PG Details section
+                        loginController.showPGDetails
+                            ? GetBuilder<LoginController>(
+                            builder: (controller) {
                               return Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                               Text(
-                                "PG Details", style: AppTextStyles.body(context,fontWeight: FontWeight.bold)
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "PG Details", style: AppTextStyles.body(context,fontWeight: FontWeight.bold)
 
-                              ),
-                              const SizedBox(height: 10),
+                                  ),
+                                  const SizedBox(height: 10),
 
-                              CustomTextField(
-                                hint: "College Name",
-                                controller: loginController.pgDetails.collegeName,
-                              ),
-                              const SizedBox(height: 10),
+                                  CustomTextField(
+                                    hint: "College Name",
+                                    controller: loginController.pgDetails.collegeName,
+                                  ),
+                                  const SizedBox(height: 10),
 
-                              CustomTextField(
-                                hint: "Degree",
-                                controller: loginController.pgDetails.degree,
-                              ),
-                              const SizedBox(height: 10),
+                                  CustomTextField(
+                                    hint: "Degree",
+                                    controller: loginController.pgDetails.degree,
+                                  ),
+                                  const SizedBox(height: 10),
 
-                              CustomTextField(
-                                hint: "Percentage",
-                                controller: loginController.pgDetails.percentage,
-                              ),
-                              const SizedBox(height: 10),
+                                  CustomTextField(
+                                    hint: "Percentage",
+                                    controller: loginController.pgDetails.percentage,
+                                  ),
+                                  const SizedBox(height: 10),
 
-                              // CustomTextField(
-                              //   hint: "About Me",
-                              //   icon: Icons.location_on,
-                              //   controller: loginController.descriptionController,
-                              // ),
-                              const SizedBox(height: 20),
-                                                  ],
-                                                );
+                                  // CustomTextField(
+                                  //   hint: "About Me",
+                                  //   icon: Icons.location_on,
+                                  //   controller: loginController.descriptionController,
+                                  // ),
+                                  const SizedBox(height: 20),
+                                ],
+                              );
                             }
-                          )
-                          : const SizedBox.shrink(),
-                    ],
-                  );
-                }
+                        )
+                            : const SizedBox.shrink(),
+                      ],
+                    );
+                  }
               ),
               SizedBox(height: size * 0.03),
               GetBuilder<LoginController>(
                   builder: (controller) {
                     return Column(
-                    children: [
-                      for (int i = 0; i < loginController.experienceList.length; i++)
-                        _experienceFields(i,size),
+                      children: [
+                        for (int i = 0; i < loginController.experienceList.length; i++)
+                          _experienceFields(i,size),
 
-                      SizedBox(height: size * 0.03),
-                      Text('Upload Image(Not Mandatory)',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                      SizedBox(height: size * 0.01),
-                             SizedBox(
-                               height: size * 0.5,
-                               child: GetBuilder<LoginController>(
-                                 builder: (controller) {
-                    if (controller.images.isNotEmpty) {
-                      final file = controller.images.first;
+                        SizedBox(height: size * 0.03),
+                        Text('Upload Image(Not Mandatory)',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
+                        SizedBox(height: size * 0.01),
+                        SizedBox(
+                          height: size * 0.5,
+                          child: GetBuilder<LoginController>(
+                            builder: (controller) {
+                              if (controller.images.isNotEmpty) {
+                                final file = controller.images.first;
 
-                      return _buildSingleImageWidget(file: file);
-                    }
-                    if (controller.editImages.isNotEmpty) {
-                      final img = controller.editImages.first;
-                      print('job img url${img.url}}');
-                      return _buildSingleImageWidget(url: "${img.url}");
-                    }
+                                return _buildSingleImageWidget(file: file);
+                              }
+                              if (controller.editImages.isNotEmpty) {
+                                final img = controller.editImages.first;
+                                print('job img url${img.url}}');
+                                return _buildSingleImageWidget(url: "${img.url}");
+                              }
 
-                    return GestureDetector(
-                      onTap: () => pickSingleImage(),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey),
-                          color: Colors.grey.shade200,
+                              return GestureDetector(
+                                onTap: () => pickSingleImage(),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.grey),
+                                    color: Colors.grey.shade200,
+                                  ),
+                                  child: const Center(
+                                    child: Icon(Icons.add, size: 40, color: Colors.grey),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                        child: const Center(
-                          child: Icon(Icons.add, size: 40, color: Colors.grey),
+
+                        SizedBox(height: size * 0.06),
+                        Text('Upload Resume',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
+                        SizedBox(height: size * 0.01),
+                        SizedBox(
+                          height: size * 0.15,
+                          child: GetBuilder<LoginController>(
+                            builder: (_) {
+                              if (loginController.certificates.isNotEmpty) {
+                                final file = loginController.certificates.first;
+                                return _buildSinglePdfWidget(file: file);
+                              }
+                              if (loginController.editCertificates.isNotEmpty) {
+                                final pdf = loginController.editCertificates.first;
+                                return _buildSinglePdfWidget(url: pdf.url);
+                              }
+                              return GestureDetector(
+                                onTap: () => pickResume(),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.grey),
+                                    color: Colors.grey.shade200,
+                                  ),
+                                  child: const Center(
+                                    child: Icon(Icons.picture_as_pdf, size: 40, color: Colors.grey),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
+
+
+                        SizedBox(height: size * 0.03),
+
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(backgroundColor: AppColors.white),
+                          onPressed: () => loginController.addExperienceField(),
+                          icon:  Icon(Icons.add,size: size*0.05,color: AppColors.primary),
+                          label:  Text("Add Experience",style: AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),),
+                        )
+                      ],
                     );
-                                 },
-                               ),
-                             ),
-
-                      SizedBox(height: size * 0.06),
-                      Text('Upload Resume',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                      SizedBox(height: size * 0.01),
-                      SizedBox(
-                                 height: size * 0.15,
-                                 child: GetBuilder<LoginController>(
-                                 builder: (_) {
-                    if (loginController.certificates.isNotEmpty) {
-                      final file = loginController.certificates.first;
-                      return _buildSinglePdfWidget(file: file);
-                    }
-                    if (loginController.editCertificates.isNotEmpty) {
-                      final pdf = loginController.editCertificates.first;
-                      return _buildSinglePdfWidget(url: pdf.url);
-                    }
-                    return GestureDetector(
-                      onTap: () => pickResume(),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey),
-                          color: Colors.grey.shade200,
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.picture_as_pdf, size: 40, color: Colors.grey),
-                        ),
-                      ),
-                    );
-                                 },
-                               ),
-                             ),
-
-
-                      SizedBox(height: size * 0.03),
-
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.white),
-                        onPressed: () => loginController.addExperienceField(),
-                        icon:  Icon(Icons.add,size: size*0.05,color: AppColors.primary),
-                        label:  Text("Add Experience",style: AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),),
-                      )
-                    ],
-                                 );
-                 }
-               ),
+                  }
+              ),
               SizedBox(height: size * 0.06),
-          
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -832,19 +832,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     }).toList();
 
                     Map<String, dynamic> finalJson = {
-                        "collegeDetails": {
-                          "ugDegree": {
-                            "name": loginController.ugCollege.text ?? "",
-                            "degree": loginController.ugDegree.text ?? "",
-                            "percentage": loginController.ugPercentage.text ?? "",
-                          },
-                          "pgDegree": {
-                            "name": loginController.pgCollege.text ?? "",
-                            "degree": loginController.pgDegree.text ?? "",
-                            "percentage": loginController.pgPercentage.text ?? "",
-                          },
+                      "collegeDetails": {
+                        "ugDegree": {
+                          "name": loginController.ugCollege.text ?? "",
+                          "degree": loginController.ugDegree.text ?? "",
+                          "percentage": loginController.ugPercentage.text ?? "",
                         },
-                        "experienceDetails": expJson,
+                        "pgDegree": {
+                          "name": loginController.pgCollege.text ?? "",
+                          "degree": loginController.pgDegree.text ?? "",
+                          "percentage": loginController.pgPercentage.text ?? "",
+                        },
+                      },
+                      "experienceDetails": expJson,
                     };
                     print("Details JSON: $finalJson");
                     final userType = "${Api.userInfo.read('userType')}";
@@ -852,7 +852,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       Get.snackbar("Error", "Please select user type");
                       return;
                     }
-                      print('userid${Api.userInfo.read('userId')} ');
+                    print('userid${Api.userInfo.read('userId')} ');
                     try {
                       Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
                         return await Future.wait(files.map((file) => file.readAsBytes()));
@@ -959,7 +959,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ),
               ),
-          
+
               const SizedBox(height: 40),
             ],
           ),
@@ -1100,15 +1100,15 @@ Widget _experienceFields(int index,size) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text("Experience ${index + 1}", style: const TextStyle(fontWeight: FontWeight.bold)),
-             SizedBox(height: size*0.02,),
+            SizedBox(height: size*0.02,),
             if (index > 0)
               GetBuilder<LoginController>(
                   builder: (controller) {
                     return IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => loginController.removeExperienceField(index),
-                  );
-                }
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => loginController.removeExperienceField(index),
+                    );
+                  }
               ),
           ],
         ),

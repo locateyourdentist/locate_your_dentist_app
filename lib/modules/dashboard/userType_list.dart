@@ -116,12 +116,9 @@ class _userTypeListState extends State<userTypeList> {
     );
   }
   @override
-  void initState() {
+  void iniState(){
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _refresh();
-    });
+    _refresh();
   }
   bool isAnyBasePlanActive(List<ProfileModel> profiles) {
     return profiles.any((profile) {
@@ -132,15 +129,11 @@ class _userTypeListState extends State<userTypeList> {
   }
   Future<void> _refresh() async {
   // await getFilteredProfiles();
-    print('fsf${Api.userInfo.read('sUserType')}');
    await loginController.fetchStates();
    loginController.selectedState=null;
    loginController.selectedDistrict=null;
    loginController.selectedTaluka=null;
-   loginController.selectedVillages.clear();
-    loginController.selectedTalukas.clear();
-    loginController.selectedDistricts.clear();
-    loginController.update();
+   loginController.update();
     if( Api.userInfo.read('userType')=="superAdmin") {
     await   loginController.getProfileDetails('', '', [], [], [],'','','','','',  context);
     }
@@ -148,7 +141,7 @@ class _userTypeListState extends State<userTypeList> {
      await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [],[],'','','','','', context);
     }
     else {
-      await loginController.getProfileDetails(Api.userInfo.read('token')!=null?Api.userInfo.read('sUserType')??"":"", "", [], [], [],'true','','','','', context);
+      await loginController.getProfileDetails(Api.userInfo.read('token')!=null?Api.userInfo.read('sUserType')??"":"",  "", [], [], [],'true','','','','', context);
     }
   }
   @override
@@ -160,21 +153,21 @@ class _userTypeListState extends State<userTypeList> {
     String userId=Api.userInfo.read('userId')??"";
     String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
     //print('planStatus$planActive');
-    //return WillPopScope(
-      // onWillPop: () async {
-      //   Get.toNamed('/${pageUserType(Api.userInfo.read('userType') ?? "")}');
-      //   if( Api.userInfo.read('userType')=="superAdmin") {
-      //     await   loginController.getProfileDetails('', '', [], [], [],'','','','','',  context);
-      //   }
-      //   else if( Api.userInfo.read('userType')=="admin") {
-      //     await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [], [],'','','','','', context);
-      //   }
-      //   else {
-      //     await loginController.getProfileDetails('', '', [], [], [],'true','','','','', context);
-      //   }
-      //   return true;
-      //   },
-      return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        Get.toNamed('/${pageUserType(Api.userInfo.read('userType') ?? "")}');
+        if( Api.userInfo.read('userType')=="superAdmin") {
+          await   loginController.getProfileDetails('', '', [], [], [],'','','','','',  context);
+        }
+        else if( Api.userInfo.read('userType')=="admin") {
+          await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [], [],'','','','','', context);
+        }
+        else {
+          await loginController.getProfileDetails('', '', [], [], [],'true','','','','', context);
+        }
+        return true;
+        },
+      child: Scaffold(
         key: _scaffoldKeyUser,
         appBar: AppBar(
           centerTitle: true,backgroundColor: AppColors.white,
@@ -185,15 +178,15 @@ class _userTypeListState extends State<userTypeList> {
             child: GestureDetector(
               onTap: () async{
                 Get.toNamed('/${pageUserType(Api.userInfo.read('userType') ?? "")}');
-                // if( Api.userInfo.read('userType')=="superAdmin") {
-                //   await   loginController.getProfileDetails('', '',[], [], [],'','','','','',  context);
-                // }
-                // else if( Api.userInfo.read('userType')=="admin") {
-                //   await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [], [],'','','','','', context);
-                // }
-                // else {
-                //   await loginController.getProfileDetails('', '', [], [], [],'true','','','','', context);
-                // }
+                if( Api.userInfo.read('userType')=="superAdmin") {
+                  await   loginController.getProfileDetails('', '',[], [], [],'','','','','',  context);
+                }
+                else if( Api.userInfo.read('userType')=="admin") {
+                  await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", [], [], [],'','','','','', context);
+                }
+                else {
+                  await loginController.getProfileDetails('', '', [], [], [],'true','','','','', context);
+                }
                 //return true;
               },
               child: Container(
@@ -441,20 +434,24 @@ class _userTypeListState extends State<userTypeList> {
                                           loginController.update();
                                         },
                                       ),
+                                    if (loginController.selectedDistricts != null)
                                     ...loginController.selectedDistricts.map(
-                                            (village) => InputChip(
-                                          label: Text(village),
+                                          (district) => InputChip(
+                                        label: Text(district),
+                                        onDeleted: () {
+                                          loginController.selectedDistricts.remove(district);
+                                          loginController.update();
+                                        },
+                                      ),),
+                                    if (loginController.selectedTalukas != null)
+                                      ...loginController.selectedTalukas.map(
+                                            (taluka) => InputChip(
+                                          label: Text(taluka),
                                           onDeleted: () {
-                                            loginController.selectedDistricts.remove(village);
+                                            loginController.selectedTalukas.remove(taluka);
                                             loginController.update();
-                                          },)),
-                                    ...loginController.selectedTalukas.map(
-                                            (village) => InputChip(
-                                          label: Text(village),
-                                          onDeleted: () {
-                                            loginController.selectedTalukas.remove(village);
-                                            loginController.update();
-                                          },)),
+                                          },
+                                        ),),
                                     ...loginController.selectedVillages.map(
                                             (village) => InputChip(
                                           label: Text(village),
@@ -463,6 +460,14 @@ class _userTypeListState extends State<userTypeList> {
                                             loginController.update();
                                           },
                                         ),),
+                                    if (loginController.selectedTaluka != null)
+                                      InputChip(
+                                        label: Text(loginController.selectedTaluka!),
+                                        onDeleted: () {
+                                          loginController.selectedTaluka = null;
+                                          loginController.update();
+                                        },
+                                      ),
                                     if (loginController.selectedJobType != null)
                                       InputChip(
                                         label: Text(loginController.selectedJobType!),
@@ -501,12 +506,6 @@ class _userTypeListState extends State<userTypeList> {
                                         loginController.selectedSalary = null;
                                         loginController.selectedVillages.clear();
                                         loginController.update();
-
-                                          loginController.selectedCategories.clear();
-                                          loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedVillage = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
-                                          loginController.selectedVillages.clear();
-                                          loginController.selectedDistricts.clear();
-                                          loginController.selectedTalukas.clear();
                                         await loginController.getProfileDetails(
                                           "",
                                           "",
@@ -641,6 +640,7 @@ class _userTypeListState extends State<userTypeList> {
           },
         ),
         bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
-      );
+      ),
+    );
   }
 }

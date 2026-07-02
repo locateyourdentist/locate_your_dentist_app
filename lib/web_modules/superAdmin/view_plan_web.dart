@@ -41,15 +41,16 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
 
   void _initData() async {
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
-    final userId = Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId');
-    
+    final userId =
+        Get.arguments?['selectedUserId'] ?? Api.userInfo.read('userId');
+
     if (userType != "admin" && userType != "superAdmin") {
       await loadData(userType);
     } else {
       planController.selectedUserType = "Dental Clinic";
       await loadData(planController.selectedUserType);
     }
-    
+
     if (!mounted) return;
     await planController.checkPlansStatus(userId, context);
   }
@@ -68,6 +69,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
     if (!mounted) return;
     await loginController.getBranchDetails(context);
   }
+
   Map<String, String> calculatePlanDates(String durationStr) {
     int duration = int.tryParse(durationStr) ?? 0;
     DateTime start = DateTime.now();
@@ -77,6 +79,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
       "endDate": "${end.day}-${end.month}-${end.year}",
     };
   }
+
   void resetPlanFields() {
     planController.planNameController.clear();
     planController.priceController.clear();
@@ -101,7 +104,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
       "Dental Shop",
       "Dental Mechanic",
       "Dental Consultant",
-      "Job Seekers"
+      "Job Seekers",
     ];
     String? tempSelectedState = planController.selectedUserType;
     showDialog(
@@ -109,8 +112,13 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
       builder: (context) {
         double s = MediaQuery.of(context).size.width;
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text("Select UserType", style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            "Select UserType",
+            style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
+          ),
           content: SizedBox(
             width: s * 0.2,
             height: s * 0.23,
@@ -119,10 +127,16 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                 return ListView(
                   children: types.map((state) {
                     return RadioListTile<String>(
-                      title: Text(state,
-                          style: AppTextStyles.caption(context,
-                              fontWeight: FontWeight.bold,
-                              color: tempSelectedState == state ? AppColors.primary : Colors.black)),
+                      title: Text(
+                        state,
+                        style: AppTextStyles.caption(
+                          context,
+                          fontWeight: FontWeight.bold,
+                          color: tempSelectedState == state
+                              ? AppColors.primary
+                              : Colors.black,
+                        ),
+                      ),
                       value: state,
                       groupValue: tempSelectedState,
                       activeColor: AppColors.primary,
@@ -139,22 +153,30 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: Text("Cancel", style: AppTextStyles.caption(context))),
             TextButton(
-                onPressed: () {
-                  setState(() {
-                    planController.selectedUserType = tempSelectedState;
-                  });
-                  Navigator.pop(context);
-                },
-                child: Text("OK", style: AppTextStyles.caption(context))),
+              onPressed: () => Navigator.pop(context),
+              child: Text("Cancel", style: AppTextStyles.caption(context)),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  planController.selectedUserType = tempSelectedState;
+                });
+                Navigator.pop(context);
+              },
+              child: Text("OK", style: AppTextStyles.caption(context)),
+            ),
           ],
         );
       },
     );
   }
 
-  Widget _modernFilterBox({required IconData icon, required String label, required VoidCallback onTap}) {
+  Widget _modernFilterBox({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
     double s = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: onTap,
@@ -167,9 +189,21 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
         ),
         child: Row(
           children: [
-            Icon(icon, color: AppColors.primary, size: isDesktop(context) ? s * 0.012 : 22),
+            Icon(
+              icon,
+              color: AppColors.primary,
+              size: isDesktop(context) ? s * 0.012 : 22,
+            ),
             const SizedBox(width: 10),
-            Expanded(child: Text(label, style: AppTextStyles.caption(context, fontWeight: FontWeight.bold))),
+            Expanded(
+              child: Text(
+                label,
+                style: AppTextStyles.caption(
+                  context,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
           ],
         ),
@@ -177,8 +211,10 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
     );
   }
 
-  bool isDesktop(BuildContext context) => MediaQuery.of(context).size.width >= 1100;
-  bool isMobile(BuildContext context) => MediaQuery.of(context).size.width < 700;
+  bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 1100;
+  bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 700;
 
   @override
   Widget build(BuildContext context) {
@@ -190,14 +226,17 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
 
     bool isPosterActive = false;
     if (planController.checkPlanList.isNotEmpty) {
-      final firstPlanDetails = planController.checkPlanList[0]["details"]?["plan"];
+      final firstPlanDetails =
+          planController.checkPlanList[0]["details"]?["plan"];
       isPosterActive = firstPlanDetails?["posterPlan"]?["isActive"] ?? false;
     }
 
     return Scaffold(
       key: _scaffoldKeyPlan,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       appBar: CommonWebAppBar(
         height: isMobile ? 60 : 80,
         title: "LOCATE YOUR DENTIST",
@@ -217,7 +256,13 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 6,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
                     ),
                     child: Stack(
                       children: [
@@ -227,7 +272,8 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                             left: 10,
                             child: IconButton(
                               icon: const Icon(Icons.menu),
-                              onPressed: () => _scaffoldKeyPlan.currentState?.openDrawer(),
+                              onPressed: () =>
+                                  _scaffoldKeyPlan.currentState?.openDrawer(),
                             ),
                           ),
                         DefaultTabController(
@@ -236,25 +282,44 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                             children: [
                               if (!isDesktop) const SizedBox(height: 40),
                               _buildPlanSelector(userType, context, width),
-                              if (userType != "admin" && userType != "superAdmin" && selectedString == "Buy Plans")
+                              if (userType != "admin" &&
+                                  userType != "superAdmin" &&
+                                  selectedString == "Buy Plans")
                                 Padding(
                                   padding: const EdgeInsets.only(top: 20),
                                   child: BlinkingText(
-                                    text: "Upgrade your Plan", 
-                                    style: AppTextStyles.body(context, color: Colors.red, fontWeight: FontWeight.bold)
+                                    text: "Upgrade your Plan",
+                                    style: AppTextStyles.body(
+                                      context,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                              if (isPosterActive && planController.editUploadImage.isNotEmpty && selectedString == "Buy Plans")
+                              if (isPosterActive &&
+                                  planController.editUploadImage.isNotEmpty &&
+                                  selectedString == "Buy Plans")
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                  ),
                                   child: TextButton(
-                                    onPressed: () => Get.toNamed('/createPostImages'),
+                                    onPressed: () =>
+                                        Get.toNamed('/createPostImages'),
                                     style: TextButton.styleFrom(
                                       backgroundColor: AppColors.primary,
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
                                     ),
-                                    child: const Text('Scrolling Ads Pick Image', style: TextStyle(color: Colors.white)),
+                                    child: const Text(
+                                      'Scrolling Ads Pick Image',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                               Expanded(
@@ -264,12 +329,25 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                                       return _buildPlanShimmer(width);
                                     }
                                     if (selectedString == "Active Plans") {
-                                      return SingleChildScrollView(child: Container(
-                                          constraints: const BoxConstraints(maxWidth: 700),
+                                      return SingleChildScrollView(
+                                        child: Container(
+                                          constraints: const BoxConstraints(
+                                            maxWidth: 700,
+                                          ),
 
-                                          child: PlanDetailsWidget(planList: controller.checkPlanList)));
+                                          child: PlanDetailsWidget(
+                                            planList: controller.checkPlanList,
+                                          ),
+                                        ),
+                                      );
                                     } else {
-                                      return _buildBuyPlans(userType, context, width, controller, isMobile);
+                                      return _buildBuyPlans(
+                                        userType,
+                                        context,
+                                        width,
+                                        controller,
+                                        isMobile,
+                                      );
                                     }
                                   },
                                 ),
@@ -314,7 +392,8 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
   }
 
   Widget _buildPlanSelector(String userType, BuildContext context, double s) {
-    if (userType == "superAdmin" || userType == "admin") return const SizedBox.shrink();
+    if (userType == "superAdmin" || userType == "admin")
+      return const SizedBox.shrink();
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -334,7 +413,13 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
     );
   }
 
-  Widget _buildBuyPlans(String userType, BuildContext context, double s, PlanController controller, bool isMobile) {
+  Widget _buildBuyPlans(
+    String userType,
+    BuildContext context,
+    double s,
+    PlanController controller,
+    bool isMobile,
+  ) {
     return Column(
       children: [
         Padding(
@@ -343,50 +428,66 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
             children: [
               if (userType == "superAdmin" || userType == "admin")
                 isMobile
-                ? Column(
-                    children: [
-                      _modernFilterBox(
-                        icon: Icons.person_outline,
-                        label: planController.selectedUserType ?? "Select User Type",
-                        onTap: _showUserTypeDialog,
+                    ? Column(
+                        children: [
+                          _modernFilterBox(
+                            icon: Icons.person_outline,
+                            label:
+                                planController.selectedUserType ??
+                                "Select User Type",
+                            onTap: _showUserTypeDialog,
+                          ),
+                          const SizedBox(height: 10),
+                          gradientButton(
+                            text: 'Create Plan',
+                            height: 45,
+                            onTap: () {
+                              resetPlanFields();
+                              Get.toNamed(
+                                '/createPlanPageWeb',
+                                arguments: {'selectedString': "BasePlan"},
+                              );
+                            },
+                            context: context,
+                          ),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          Text(
+                            'Select UserType',
+                            style: AppTextStyles.caption(
+                              context,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          SizedBox(
+                            width: 250,
+                            child: _modernFilterBox(
+                              icon: Icons.person_outline,
+                              label:
+                                  planController.selectedUserType ??
+                                  "Select User Type",
+                              onTap: _showUserTypeDialog,
+                            ),
+                          ),
+                          const Spacer(),
+                          gradientButton(
+                            text: 'Create Plan',
+                            height: 40,
+                            width: 120,
+                            onTap: () {
+                              resetPlanFields();
+                              Get.toNamed(
+                                '/createPlanPageWeb',
+                                arguments: {'selectedString': "BasePlan"},
+                              );
+                            },
+                            context: context,
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                      gradientButton(
-                        text: 'Create Plan',
-                        height: 45,
-                        onTap: () {
-                          resetPlanFields();
-                          Get.toNamed('/createPlanPageWeb', arguments: {'selectedString': "BasePlan"});
-                        },
-                        context: context,
-                      ),
-                    ],
-                  )
-                : Row(
-                  children: [
-                    Text('Select UserType', style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
-                    const SizedBox(width: 10),
-                    SizedBox(
-                      width: 250,
-                      child: _modernFilterBox(
-                        icon: Icons.person_outline,
-                        label: planController.selectedUserType ?? "Select User Type",
-                        onTap: _showUserTypeDialog,
-                      ),
-                    ),
-                    const Spacer(),
-                    gradientButton(
-                      text: 'Create Plan',
-                      height: 40,
-                      width: 120,
-                      onTap: () {
-                        resetPlanFields();
-                        Get.toNamed('/createPlanPageWeb', arguments: {'selectedString': "BasePlan"});
-                      },
-                      context: context,
-                    ),
-                  ],
-                ),
               const SizedBox(height: 20),
               TabBar(
                 isScrollable: true,
@@ -462,7 +563,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                 name = plan.webinarPlanName;
                 price = plan.price;
                 duration = plan.duration;
-                features = []; 
+                features = [];
                 planIdStr = plan.webinarPlanId.toString();
               } else if (plan is PostImagePlan) {
                 name = plan.postPlanName ?? "";
@@ -480,39 +581,91 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                   child: FadeInAnimation(
                     child: Container(
                       width: 320,
-                      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 20,
+                      ),
                       padding: const EdgeInsets.all(25),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
                         border: Border.all(color: Colors.grey.shade200),
-                        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(name, style: AppTextStyles.body(context, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                          Text(
+                            name,
+                            style: AppTextStyles.body(
+                              context,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          ),
                           const SizedBox(height: 10),
-                          Text("₹$price", style: AppTextStyles.subtitle(context,)),
-                          Text("Duration: $duration days", style: AppTextStyles.caption(context, color: Colors.grey)),
+                          Text(
+                            "₹$price",
+                            style: AppTextStyles.subtitle(context),
+                          ),
+                          Text(
+                            "Duration: $duration days",
+                            style: AppTextStyles.caption(
+                              context,
+                              color: Colors.grey,
+                            ),
+                          ),
                           const Divider(height: 30),
                           Expanded(
                             child: features.isNotEmpty
                                 ? ListView(
                                     shrinkWrap: true,
-                                    children: features.map<Widget>((f) => Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 4),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Icon(Icons.check_circle, size: 16, color: Colors.green),
-                                              const SizedBox(width: 8),
-                                              Expanded(child: Text(f, style: AppTextStyles.caption(context))),
-                                            ],
+                                    children: features
+                                        .map<Widget>(
+                                          (f) => Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 4,
+                                            ),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Icon(
+                                                  Icons.check_circle,
+                                                  size: 16,
+                                                  color: Colors.green,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Expanded(
+                                                  child: Text(
+                                                    f,
+                                                    style:
+                                                        AppTextStyles.caption(
+                                                          context,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        )).toList(),
+                                        )
+                                        .toList(),
                                   )
-                                : Center(child: Text("No features listed", style: AppTextStyles.caption(context, color: Colors.grey))),
+                                : Center(
+                                    child: Text(
+                                      "No features listed",
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
                           ),
                           const SizedBox(height: 20),
                           SizedBox(
@@ -520,17 +673,37 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 15,
+                                ),
                               ),
                               onPressed: () {
                                 if (userType == "superAdmin") {
                                   _onEditPlan(plan, planType);
                                 } else if (userType != "admin") {
-                                  _onBuyPlan(plan, planType, userId, name, price, duration, planIdStr);
+                                  _onBuyPlan(
+                                    plan,
+                                    planType,
+                                    userId,
+                                    name,
+                                    price,
+                                    duration,
+                                    planIdStr,
+                                  );
                                 }
                               },
-                              child: Text(userType == "superAdmin" ? "Edit Plan" : "Buy Now", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                              child: Text(
+                                userType == "superAdmin"
+                                    ? "Edit Plan"
+                                    : "Buy Now",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -564,10 +737,10 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
           'imageCount': plan.details?.imageCount,
           'imageSize': plan.details?.imageSize,
           'videoCount': plan.details?.videoCount,
-          'videoSize': plan.details?.videoSize
+          'videoSize': plan.details?.videoSize,
         },
         'features': plan.features,
-        'userType': plan.userType
+        'userType': plan.userType,
       });
     } else if (plan is AddOnsPlanModel) {
       args.addAll({
@@ -582,7 +755,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
           'area': plan.details?.area,
         },
         'features': plan.features,
-        'userType': plan.userType
+        'userType': plan.userType,
       });
     } else if (plan is JobPlanModel) {
       args.addAll({
@@ -597,7 +770,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
           'area': plan.details?.area,
         },
         'features': plan.features,
-        'userType': plan.userType
+        'userType': plan.userType,
       });
     } else if (plan is WebinarPlan) {
       args.addAll({
@@ -605,7 +778,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
         'webinarPlanId': plan.webinarPlanId,
         'price': plan.price,
         'duration': plan.duration,
-        'userType': plan.userType
+        'userType': plan.userType,
       });
     } else if (plan is PostImagePlan) {
       args.addAll({
@@ -613,28 +786,42 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
         'postImagesPlanId': plan.postImagesPlanId,
         'price': plan.price,
         'duration': plan.duration,
-        'userType': plan.userType
+        'userType': plan.userType,
       });
     }
 
     Get.toNamed('/createPlanPageWeb', arguments: args);
   }
 
-  void _onBuyPlan(dynamic plan, String planType, String userId, String planName, String price, String duration, String planId) {
+  void _onBuyPlan(
+    dynamic plan,
+    String planType,
+    String userId,
+    String planName,
+    String price,
+    String duration,
+    String planId,
+  ) {
     var dates = calculatePlanDates(duration);
     String startDate = dates["startDate"].toString();
     String endDate = dates["endDate"].toString();
     double amount = double.tryParse(price) ?? 0.0;
 
     bool isActive = false;
-    String warningMsg = "Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated.";
+    String warningMsg =
+        "Your plan is already activated. If you proceed, your plan will be upgraded and the old plan will be automatically deactivated.";
     String currentPlanKey = "";
 
-    if (planType == "BasePlan") currentPlanKey = "basePlan";
-    else if (planType == "AddOnsPlan") currentPlanKey = "addonsPlan";
-    else if (planType == "JobPlan") currentPlanKey = "jobPlan";
-    else if (planType == "WebinarPlan") currentPlanKey = "webinarPlan";
-    else if (planType == "PostImagePlan") currentPlanKey = "posterPlan";
+    if (planType == "BasePlan") {
+      currentPlanKey = "basePlan";
+    } else if (planType == "AddOnsPlan")
+      currentPlanKey = "addonsPlan";
+    else if (planType == "JobPlan")
+      currentPlanKey = "jobPlan";
+    else if (planType == "WebinarPlan")
+      currentPlanKey = "webinarPlan";
+    else if (planType == "PostImagePlan")
+      currentPlanKey = "posterPlan";
 
     if (planController.checkPlanList.isNotEmpty) {
       final details = planController.checkPlanList[0]["details"]?["plan"];
@@ -645,36 +832,78 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
 
     bool isBaseActive = false;
     if (planController.checkPlanList.isNotEmpty) {
-      isBaseActive = planController.checkPlanList[0]["details"]?["plan"]?["basePlan"]?["isActive"] ?? false;
+      isBaseActive =
+          planController
+              .checkPlanList[0]["details"]?["plan"]?["basePlan"]?["isActive"] ??
+          false;
     }
 
     if (currentPlanKey != "basePlan" && !isBaseActive) {
-      showSuccessDialog(context, title: "Alert", message: "Oops! Base plan not Activated. please activate base plan..");
+      showSuccessDialog(
+        context,
+        title: "Alert",
+        message: "Oops! Base plan not Activated. please activate base plan..",
+      );
       return;
     }
 
     if (isActive) {
-      showSuccessDialog(context, title: "Alert", message: warningMsg, onOkPressed: () {
-        _navigateToPayment(userId, planId, startDate, endDate, amount, currentPlanKey,planType, planName);
-      });
+      showSuccessDialog(
+        context,
+        title: "Alert",
+        message: warningMsg,
+        onOkPressed: () {
+          _navigateToPayment(
+            userId,
+            planId,
+            startDate,
+            endDate,
+            amount,
+            currentPlanKey,
+            planType,
+            planName,
+          );
+        },
+      );
     } else {
-      _navigateToPayment(userId, planId, startDate, endDate, amount, currentPlanKey, planType,planName);
+      _navigateToPayment(
+        userId,
+        planId,
+        startDate,
+        endDate,
+        amount,
+        currentPlanKey,
+        planType,
+        planName,
+      );
     }
   }
 
-  void _navigateToPayment(String userId, String planId, String startDate, String endDate, double amount, String planKey,String planType, String planName) {
-    Get.toNamed('/paymentPageWeb', arguments: {
-      'userId': userId,
-      'planId': planId,
-      'startDate': startDate,
-      'endDate': endDate,
-      'amount': amount,
-      'name': planKey,
-      'planType':planType,
-      'planName': planName,
-      'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
-      'email': Api.userInfo.read('email') ?? "",
-    });
+  void _navigateToPayment(
+    String userId,
+    String planId,
+    String startDate,
+    String endDate,
+    double amount,
+    String planKey,
+    String planType,
+    String planName,
+  ) {
+    Get.toNamed(
+      '/paymentPageWeb',
+      arguments: {
+        'userId': userId,
+        'planId': planId,
+        'startDate': startDate,
+        'endDate': endDate,
+        'amount': amount,
+        'name': planKey,
+        'planType': planType,
+        'planName': planName,
+        'mobileNumber': Api.userInfo.read('mobileNumber') ?? "",
+        'email': Api.userInfo.read('email') ?? "",
+      },
+    );
   }
 }
 
@@ -683,16 +912,23 @@ class PlanDetailsWidget extends StatelessWidget {
   const PlanDetailsWidget({super.key, required this.planList});
   @override
   Widget build(BuildContext context) {
-    if (planList.isEmpty) return const Center(child: Text("No plan details found"));
+    if (planList.isEmpty)
+      return const Center(child: Text("No plan details found"));
     final plans = planList.first["details"]?["plan"];
-    if (plans == null) return const Center(child: Text("No plan data available"));
-    
+    if (plans == null)
+      return const Center(child: Text("No plan data available"));
+
     final planCards = [
-      if (plans["basePlan"] != null) _planCard("Base Plan", plans["basePlan"], context),
-      if (plans["jobPlan"] != null) _planCard("Job Plan", plans["jobPlan"], context),
-      if (plans["webinarPlan"] != null) _planCard("Webinar Plan", plans["webinarPlan"], context),
-      if (plans["posterPlan"] != null) _planCard("Poster Plan", plans["posterPlan"], context),
-      if (plans["addonsPlan"] != null) _planCard("Add-ons Plan", plans["addonsPlan"], context),
+      if (plans["basePlan"] != null)
+        _planCard("Base Plan", plans["basePlan"], context),
+      if (plans["jobPlan"] != null)
+        _planCard("Job Plan", plans["jobPlan"], context),
+      if (plans["webinarPlan"] != null)
+        _planCard("Webinar Plan", plans["webinarPlan"], context),
+      if (plans["posterPlan"] != null)
+        _planCard("Poster Plan", plans["posterPlan"], context),
+      if (plans["addonsPlan"] != null)
+        _planCard("Add-ons Plan", plans["addonsPlan"], context),
     ];
 
     return AnimationLimiter(
@@ -704,9 +940,7 @@ class PlanDetailsWidget extends StatelessWidget {
             child: SlideAnimation(
               verticalOffset: 80.0,
               curve: Curves.easeOutCubic,
-              child: FadeInAnimation(
-                child: planCards[index],
-              ),
+              child: FadeInAnimation(child: planCards[index]),
             ),
           );
         }),
@@ -714,7 +948,11 @@ class PlanDetailsWidget extends StatelessWidget {
     );
   }
 
-  Widget _planCard(String title, Map<String, dynamic> plan, BuildContext context) {
+  Widget _planCard(
+    String title,
+    Map<String, dynamic> plan,
+    BuildContext context,
+  ) {
     final bool isActive = plan["isActive"] == true;
     String formatDate(String date) {
       if (date.isEmpty) return '';
@@ -735,7 +973,13 @@ class PlanDetailsWidget extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ExpansionTile(
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(isActive ? "Active" : "Expired", style: TextStyle(color: isActive ? Colors.green : Colors.red, fontWeight: FontWeight.bold)),
+        subtitle: Text(
+          isActive ? "Active" : "Expired",
+          style: TextStyle(
+            color: isActive ? Colors.green : Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         childrenPadding: const EdgeInsets.all(16),
         children: [
           _row("Plan Name", plan["name"], context),
@@ -753,8 +997,16 @@ class PlanDetailsWidget extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
         children: [
-          Text("$label: ", style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
-          Expanded(child: Text(value?.toString() ?? "-", style: AppTextStyles.caption(context))),
+          Text(
+            "$label: ",
+            style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Text(
+              value?.toString() ?? "-",
+              style: AppTextStyles.caption(context),
+            ),
+          ),
         ],
       ),
     );
@@ -769,7 +1021,11 @@ class PlanDetailsWidget extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 6),
           child: Row(
             children: [
-              Icon(e.value == true ? Icons.check_circle : Icons.cancel, size: 18, color: e.value == true ? Colors.green : Colors.red),
+              Icon(
+                e.value == true ? Icons.check_circle : Icons.cancel,
+                size: 18,
+                color: e.value == true ? Colors.green : Colors.red,
+              ),
               const SizedBox(width: 8),
               Text(e.key),
             ],

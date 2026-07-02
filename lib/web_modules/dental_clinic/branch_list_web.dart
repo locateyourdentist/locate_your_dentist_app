@@ -23,7 +23,7 @@ Future<void> showBranchSelectionDialog({
 
   Get.dialog(
     Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: GetBuilder<LoginController>(
         builder: (controller) {
           final branches = controller.userBranchesList;
@@ -33,7 +33,8 @@ Future<void> showBranchSelectionDialog({
             builder: (context, setState) {
               return Container(
                 width: size * 0.2,
-                height: size * 0.25,color: AppColors.white,
+                height: size * 0.25,
+                color: AppColors.white,
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
@@ -48,73 +49,79 @@ Future<void> showBranchSelectionDialog({
 
                     branches.isEmpty
                         ? Center(
-                      child: Text(
-                        "No branches found",
-                        style: AppTextStyles.caption(context),
-                      ),
-                    )
-                        : Expanded(
-                      child: ListView.separated(
-                        itemCount: branches.length,
-                        separatorBuilder: (_, __) =>
-                        const SizedBox(height: 8),
-                        itemBuilder: (context, index) {
-                          final branch = branches[index];
-
-                          final name = branch.details['name'] ?? '';
-                          final city = branch.address['city'] ?? '';
-                          final district =
-                              branch.address['district'] ?? '';
-                          final state = branch.address['state'] ?? '';
-
-                          final isSelected =
-                              selectedUserId == branch.userId;
-
-                          return AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isSelected
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.grey.shade300,
-                                width: 1.5,
-                              ),
-                              color: isSelected
-                                  ? Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.05)
-                                  : Colors.white,
+                            child: Text(
+                              "No branches found",
+                              style: AppTextStyles.caption(context),
                             ),
-                            child: RadioListTile<String>(
-                              value: branch.userId,
-                              groupValue: selectedUserId,
+                          )
+                        : Expanded(
+                            child: ListView.separated(
+                              itemCount: branches.length,
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(height: 8),
+                              itemBuilder: (context, index) {
+                                final branch = branches[index];
 
-                              title: Text(
-                                name,
-                                style:AppTextStyles.caption(context,
-                                    fontWeight: FontWeight.w600,color: AppColors.black),
-                              ),
-                              subtitle: Text(
-                                "$city, $district\n$state", style:AppTextStyles.caption(context,
-                                  fontWeight: FontWeight.normal),
-                              ),
-                              isThreeLine: true,
+                                final name = branch.details['name'] ?? '';
+                                final city = branch.address['city'] ?? '';
+                                final district =
+                                    branch.address['district'] ?? '';
+                                final state = branch.address['state'] ?? '';
 
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedUserId = value;
-                                  selectedName =
-                                      branch.details['name'] ?? "";
-                                  selectedUserType =
-                                      branch.userType ?? "";
-                                });
+                                final isSelected =
+                                    selectedUserId == branch.userId;
+
+                                return AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.grey.shade300,
+                                      width: 1.5,
+                                    ),
+                                    color: isSelected
+                                        ? Theme.of(
+                                            context,
+                                          ).primaryColor.withValues(alpha: 0.05)
+                                        : Colors.white,
+                                  ),
+                                  child: RadioListTile<String>(
+                                    value: branch.userId,
+                                    groupValue: selectedUserId,
+
+                                    title: Text(
+                                      name,
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.black,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      "$city, $district\n$state",
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    isThreeLine: true,
+
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedUserId = value;
+                                        selectedName =
+                                            branch.details['name'] ?? "";
+                                        selectedUserType =
+                                            branch.userType ?? "";
+                                      });
+                                    },
+                                  ),
+                                );
                               },
                             ),
-                          );
-                        },
-                      ),
-                    ),
+                          ),
 
                     const SizedBox(height: 16),
 
@@ -124,7 +131,6 @@ Future<void> showBranchSelectionDialog({
                       width: 150,
                       context: context,
                       onTap: () async {
-
                         String platform = kIsWeb
                             ? "Web"
                             : Platform.isAndroid
@@ -144,9 +150,7 @@ Future<void> showBranchSelectionDialog({
                         } else {
                           Get.toNamed(
                             '/viewPlanPageWeb',
-                            arguments: {
-                              'selectedUserId': selectedUserId,
-                            },
+                            arguments: {'selectedUserId': selectedUserId},
                           );
                         }
                       },

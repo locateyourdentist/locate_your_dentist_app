@@ -25,7 +25,11 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
       imageQuality: 80,
     );
 
-   await loginController.deleteAwsFile(loginController.appLogoUrl.toString(),'appLogo',context);
+    await loginController.deleteAwsFile(
+      loginController.appLogoUrl.toString(),
+      'appLogo',
+      context,
+    );
     if (pickedImage != null) {
       File? pickedImageFile = File(pickedImage.path);
       Uint8List bytes = await pickedImageFile.readAsBytes();
@@ -39,16 +43,18 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: file != null
-              ? Image.file(file,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity)
+              ? Image.file(
+                  file,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                )
               : Image.network(
-            url ?? '',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
+                  url ?? '',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
         ),
 
         Positioned(
@@ -56,7 +62,7 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
           top: 5,
           child: GestureDetector(
             onTap: () {
-             removeAppLogo();
+              removeAppLogo();
             },
             child: const CircleAvatar(
               backgroundColor: Colors.black54,
@@ -84,16 +90,23 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
       ],
     );
   }
+
   void removeAppLogo() {
     print('sdelete${loginController.appLogoUrl.toString()}');
-    loginController.deleteAwsFile(loginController.appLogoUrl.toString(),'appLogo',context);
+    loginController.deleteAwsFile(
+      loginController.appLogoUrl.toString(),
+      'appLogo',
+      context,
+    );
     loginController.update();
   }
+
   @override
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -104,16 +117,11 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
         automaticallyImplyLeading: true,
         backgroundColor: AppColors.primary,
 
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
 
         title: Text(
           'Change App Logo',
-          style: AppTextStyles.subtitle(
-            context,
-            color: Colors.white,
-          ),
+          style: AppTextStyles.subtitle(context, color: Colors.white),
         ),
       ),
       body: GetBuilder<LoginController>(
@@ -133,10 +141,10 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
-                      )
+                      ),
                     ],
                   ),
                   child: Column(
@@ -152,8 +160,8 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
 
                       /// Image Preview
                       GetBuilder<LoginController>(
-                          builder: (controller) {
-                            return GestureDetector(
+                        builder: (controller) {
+                          return GestureDetector(
                             onTap: pickSingleImage,
                             child: Container(
                               height: size * 0.45,
@@ -167,37 +175,39 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
                               ),
                               child: controller.appLogoFile != null
                                   ? ClipRRect(
-                                borderRadius: BorderRadius.circular(18),
-                                child: Image.file(
-                                  controller.appLogoFile!,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
+                                      borderRadius: BorderRadius.circular(18),
+                                      child: Image.file(
+                                        controller.appLogoFile!,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
                                   : controller.appLogoUrl != null
                                   ? ClipRRect(
-                                borderRadius: BorderRadius.circular(18),
-                                child: Image.network(
-                                  controller.appLogoUrl!,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
+                                      borderRadius: BorderRadius.circular(18),
+                                      child: Image.network(
+                                        controller.appLogoUrl!,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
                                   : const Column(
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.cloud_upload_outlined,
-                                      size: 40, color: Colors.grey),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    "Tap to upload logo",
-                                    style: TextStyle(
-                                        color: Colors.grey),
-                                  )
-                                ],
-                              ),
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.cloud_upload_outlined,
+                                          size: 40,
+                                          color: Colors.grey,
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          "Tap to upload logo",
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
                             ),
                           );
-                        }
+                        },
                       ),
 
                       const SizedBox(height: 15),
@@ -208,8 +218,10 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
                           onPressed: () {
                             removeAppLogo();
                           },
-                          icon: const Icon(Icons.delete_outline,
-                              color: Colors.red),
+                          icon: const Icon(
+                            Icons.delete_outline,
+                            color: Colors.red,
+                          ),
                           label: const Text(
                             "Remove Logo",
                             style: TextStyle(color: Colors.red),
@@ -218,17 +230,17 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
                     ],
                   ),
                 ),
-                 SizedBox(height: 50,),
+                SizedBox(height: 50),
+
                 /// Save Button
                 SizedBox(
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: () async{
-                      await  loginController.addAppLogoImage(webImage!,context) ;
+                    onPressed: () async {
+                      await loginController.addAppLogoImage(webImage!, context);
 
                       await loginController.getAppLogoImage(context);
-
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -240,9 +252,7 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
                     child: Ink(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [
-                           AppColors.primary,AppColors.primary
-                          ],
+                          colors: [AppColors.primary, AppColors.primary],
                         ),
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -251,7 +261,8 @@ class _ChangeAppLogoImageState extends State<ChangeAppLogoImage> {
                           "Save Changes",
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight: FontWeight.w600,color: AppColors.white
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.white,
                           ),
                         ),
                       ),

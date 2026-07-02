@@ -276,7 +276,7 @@ class _RegisterPageState extends State<RegisterPage> {
     loginController.clearProfileData();
     loginController.fetchStates();
     jobController.getJobCategoryLists("",context);
-     getLocation();
+    getLocation();
     super.initState();
   }
   @override
@@ -285,7 +285,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final userType=Api.userInfo.read('userType')??"";
     print('dgsw$userType');
     //final adminItems = allItems;
-   // final otherItems = allItems.where((e) => e != "admin" && e != "superAdmin").toList();
+    // final otherItems = allItems.where((e) => e != "admin" && e != "superAdmin").toList();
     List<String> dropdownItems;
     if (userType == "superAdmin") {
       dropdownItems = allItems;
@@ -301,281 +301,190 @@ class _RegisterPageState extends State<RegisterPage> {
       body:  Form(
         key:_formKeyRegister ,
         child: GetBuilder<LoginController>(
-          builder: (controller) {
-            return LayoutBuilder(
-                builder: (context, constraints) {
-                  return  SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: IntrinsicHeight(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: size * 0.05),
+            builder: (controller) {
+              return LayoutBuilder(
+                  builder: (context, constraints) {
+                    return  SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: IntrinsicHeight(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 10),
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: size * 0.05),
 
-                                  Text(
-                                    "LYD",
-                                    style: AppTextStyles.headline1(context, color: AppColors.black),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(height: size * 0.01),
-                                  Text(
-                                    "Create an Account",
-                                    style: AppTextStyles.subtitle(context, color: AppColors.black),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(height: size * 0.01),
-                                  Text(
-                                    "Let's get started by filling out the form below",
-                                    textAlign: TextAlign.center,
-                                    style: AppTextStyles.caption(context, color: AppColors.grey),
-                                  ),
-                                  SizedBox(height: size * 0.04),
+                                      Text(
+                                        "LYD",
+                                        style: AppTextStyles.headline1(context, color: AppColors.black),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: size * 0.01),
+                                      Text(
+                                        "Create an Account",
+                                        style: AppTextStyles.subtitle(context, color: AppColors.black),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: size * 0.01),
+                                      Text(
+                                        "Let's get started by filling out the form below",
+                                        textAlign: TextAlign.center,
+                                        style: AppTextStyles.caption(context, color: AppColors.grey),
+                                      ),
+                                      SizedBox(height: size * 0.04),
 
-                                  CustomTextField(
-                                    hint: "Name",
-                                    icon: Icons.person,
-                                    controller: loginController.fullNameController,
-                                  ),
-                                  SizedBox(height: size * 0.01),
-                                  CustomTextField(
-                                    hint: "Date of Birth",
-                                    controller: loginController.dobController,  fillColor: Colors.grey[100],
-                                    borderColor: AppColors.white,
-                                    readOnly: true,
-                                    onTap: () async {
-                                      DateTime? pickedDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime(2000),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime.now(),
-                                      );
-                                      if (pickedDate != null) {
-                                        loginController.dobController.text =
-                                        "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
-                                      }
-                                    },
-                                  ),
-                                  SizedBox(height: size * 0.03),
-                                  CustomTextField(
-                                    hint: "Email",
-                                    icon: Icons.email,
-                                    controller: loginController.emailController,
-                                    keyboardType: TextInputType.emailAddress
-                                  ),
-                                  SizedBox(height: size * 0.03),
-
-                                  CustomTextField(
-                                    hint: "Mobile Number",
-                                    icon: Icons.phone,
-                                    controller: loginController.mobileController,
-                                    keyboardType: TextInputType.number,
-                                    maxLength: 10,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "Mobile Number cannot be empty";
-                                      }
-                                      if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
-                                        return "Enter a valid 10-digit mobile number starting with 6-9";
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  SizedBox(height: size * 0.03),
-                                  CustomTextField(
-                                    hint: "Password",
-                                    icon: Icons.lock,
-                                    isPassword: true,
-                                    controller: loginController.passwordController,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "Password cannot be empty";
-                                      }
-
-                                      if (value.length < 4) {
-                                        return "Password must be at least 4 characters";
-                                      }
-
-                                      // if (!RegExp(r'[a-z]').hasMatch(value)) {
-                                      //   return "Password must contain at least one lowercase letter";
-                                      // }
-                                      //
-                                      // if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                                      //   return "Password must contain at least one uppercase letter";
-                                      // }
-                                      //
-                                      // if (!RegExp(r'[0-9]').hasMatch(value)) {
-                                      //   return "Password must contain at least one number";
-                                      // }
-
-                                      if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-                                        return "Password must contain at least one special character";
-                                      }
-
-                                      return null;
-                                    },
-                                  ),
-                                  SizedBox(height: size * 0.03),
-
-                                  CustomTextField(
-                                    hint: "Confirm Password",
-                                    icon: Icons.lock,
-                                    isPassword: true,
-                                    controller: loginController.confirmPasswordController,
-                                    validator: (value) => confirmPasswordValidator(value, loginController.passwordController),
-                                  ),
-
-                                  SizedBox(height: size * 0.03),
-                                 // if(userType!='superAdmin')
-                                CustomDropdownField(
-                                  hint: "Select UserType",
-                                  fillColor: Colors.grey[100],
-                                  borderColor: AppColors.white,
-                                  items: dropdownItems,
-                                  selectedValue: loginController.selectedUserType,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      loginController.selectedUserType = value;
-                                      print('Selected UserType: ${loginController.selectedUserType}');
-                                    });
-                                  },
-                                ),
-                                  if (loginController.selectedUserType != null &&
-                                      loginController.selectedUserType!.isNotEmpty&&loginController.selectedUserType !='Job Seekers')
-                                    Column(children: [
-                                  SizedBox(height: size * 0.01),
-                                 // if(loginController.selectedUserType !='Job Seekers')
-                                  CustomTextField(
-                                    hint: loginController.selectedUserType == 'Dental Shop'? "College Name":"${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
-                                    icon: Icons.store,
-                                    controller: loginController.typeNameController,
-                                  ),
-                                  ]),
-                                  SizedBox(height: size * 0.03),
-                                  CustomTextField(
-                                    hint: "Address Line 1 (House No, Street Name)",
-                                    icon: Icons.location_on,
-                                    controller: loginController.addressLine1Controller,
-                                    // fillColor: AppColors.white,
-                                    // borderColor: AppColors.grey,
-                                  ),
-                                  SizedBox(height: size * 0.03),
-                                  CustomTextField(
-                                    hint: "Address Line 2 (Landmark, Area, Building)",
-                                    icon: Icons.location_on,
-                                    controller: loginController.addressLine2Controller,
-                                    // fillColor: AppColors.white,
-                                    // borderColor: AppColors.grey,
-                                  ),
-                                  SizedBox(height: size * 0.03),
-
-                                  GetBuilder<LoginController>(
-                                    builder: (controller) {
-                                      return CustomDropdown<String>.search(
-                                        hintText: "Select State",
-                                        decoration: CustomDropdownDecoration(
-                                          closedFillColor: Colors.grey[100],
-                                          expandedFillColor: Colors.white,
-                                          closedBorder: Border.all(
-                                            color: AppColors.white,
-                                            width: 1.5,
-                                          ),
-                                          expandedBorder: Border.all(
-                                            color: AppColors.primary,
-                                            width: 1.5,
-                                          ),
-                                          closedBorderRadius: BorderRadius.circular(10),
-                                          expandedBorderRadius: BorderRadius.circular(10),
-                                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
-                                        items: controller.states.map((s) => s.toString()).toList(),
-                                        initialItem: controller.states.contains(controller.selectedState) ? controller.selectedState : null,
-                                        onChanged: (val) {
-                                          if (val != null) {
-                                            controller.selectedState = val;
-                                            controller.districts.clear();
-                                            controller.selectedDistrict = null;
-                                            controller.selectedTaluka = null;
-                                            controller.selectedVillage = null;
-                                            final state = controller.states.firstWhere((s) => s == val);
-                                            print('state  selected$state');
-                                            controller.fetchDistricts(state.toString());
-                                            controller.update();
+                                      CustomTextField(
+                                        hint: "Name",
+                                        icon: Icons.person,
+                                        controller: loginController.fullNameController,
+                                      ),
+                                      SizedBox(height: size * 0.01),
+                                      CustomTextField(
+                                        hint: "Date of Birth",
+                                        controller: loginController.dobController,  fillColor: Colors.grey[100],
+                                        borderColor: AppColors.white,
+                                        readOnly: true,
+                                        onTap: () async {
+                                          DateTime? pickedDate = await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime(2000),
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime.now(),
+                                          );
+                                          if (pickedDate != null) {
+                                            loginController.dobController.text =
+                                            "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
                                           }
                                         },
-                                      );
-                                    },
-                                  ),
+                                      ),
+                                      SizedBox(height: size * 0.03),
+                                      CustomTextField(
+                                          hint: "Email",
+                                          icon: Icons.email,
+                                          controller: loginController.emailController,
+                                          keyboardType: TextInputType.emailAddress
+                                      ),
+                                      SizedBox(height: size * 0.03),
 
-                                SizedBox(height: size * 0.03),
-
-                                  GetBuilder<LoginController>(
-                                    builder: (controller) {
-                                      return CustomDropdown<String>.search(
-                                        hintText: "Select District",
-                                        items: controller.districts.map((d) => d.toString()).toList(),
-                                        initialItem: controller.districts.contains(controller.selectedDistrict) ? controller.selectedDistrict : null,
-                                        decoration: CustomDropdownDecoration(
-                                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),
-                                          closedFillColor: Colors.grey[100],
-                                          expandedFillColor: Colors.white,
-                                          closedBorder: Border.all(
-                                            color: AppColors.white,
-                                            width: 1.5,
-                                          ),
-                                          expandedBorder: Border.all(
-                                            color: AppColors.primary,
-                                            width: 1.5,
-                                          ),
-                                        ),
-                                        onChanged: (val) {
-                                          if (val != null) {
-                                            controller.selectedDistrict = val;
-                                            controller.talukas.clear();
-                                            controller.selectedTaluka = null;
-                                            controller.selectedVillage = null;
-                                            final district = controller.districts.firstWhere((d) => d == val);
-                                            print('sub district selected$district');
-                                            //controller.fetchTalukas(district.toString());
-                                            controller.fetchTalukas(district);
-                                            controller.update();
+                                      CustomTextField(
+                                        hint: "Mobile Number",
+                                        icon: Icons.phone,
+                                        controller: loginController.mobileController,
+                                        keyboardType: TextInputType.number,
+                                        maxLength: 10,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Mobile Number cannot be empty";
                                           }
+                                          if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
+                                            return "Enter a valid 10-digit mobile number starting with 6-9";
+                                          }
+                                          return null;
                                         },
-                                      );
-                                    },
-                                  ),
+                                      ),
+                                      SizedBox(height: size * 0.03),
+                                      CustomTextField(
+                                        hint: "Password",
+                                        icon: Icons.lock,
+                                        isPassword: true,
+                                        controller: loginController.passwordController,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Password cannot be empty";
+                                          }
 
-                                  SizedBox(height: size * 0.03),
+                                          if (value.length < 4) {
+                                            return "Password must be at least 4 characters";
+                                          }
 
-                                  GetBuilder<LoginController>(
-                                      builder: (controller) {
-                                        final items = loginController.talukas.map((t) => t.toString()).toList();
-                                        final initialItem = items.contains(loginController.selectedTaluka) ? loginController.selectedTaluka : null;
-                                        return  DefaultTextStyle(
-                                          style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
-                                          child: CustomDropdown<String>.search(
-                                            hintText: "Select  taluka/town",
-                                            items: items,
-                                            initialItem: initialItem,
+                                          // if (!RegExp(r'[a-z]').hasMatch(value)) {
+                                          //   return "Password must contain at least one lowercase letter";
+                                          // }
+                                          //
+                                          // if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                                          //   return "Password must contain at least one uppercase letter";
+                                          // }
+                                          //
+                                          // if (!RegExp(r'[0-9]').hasMatch(value)) {
+                                          //   return "Password must contain at least one number";
+                                          // }
 
+                                          if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+                                            return "Password must contain at least one special character";
+                                          }
+
+                                          return null;
+                                        },
+                                      ),
+                                      SizedBox(height: size * 0.03),
+
+                                      CustomTextField(
+                                        hint: "Confirm Password",
+                                        icon: Icons.lock,
+                                        isPassword: true,
+                                        controller: loginController.confirmPasswordController,
+                                        validator: (value) => confirmPasswordValidator(value, loginController.passwordController),
+                                      ),
+
+                                      SizedBox(height: size * 0.03),
+                                      // if(userType!='superAdmin')
+                                      CustomDropdownField(
+                                        hint: "Select UserType",
+                                        fillColor: Colors.grey[100],
+                                        borderColor: AppColors.white,
+                                        items: dropdownItems,
+                                        selectedValue: loginController.selectedUserType,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            loginController.selectedUserType = value;
+                                            print('Selected UserType: ${loginController.selectedUserType}');
+                                          });
+                                        },
+                                      ),
+                                      if (loginController.selectedUserType != null &&
+                                          loginController.selectedUserType!.isNotEmpty&&loginController.selectedUserType !='Job Seekers')
+                                        Column(children: [
+                                          SizedBox(height: size * 0.01),
+                                          // if(loginController.selectedUserType !='Job Seekers')
+                                          CustomTextField(
+                                            hint: loginController.selectedUserType == 'Dental Shop'? "College Name":"${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
+                                            icon: Icons.store,
+                                            controller: loginController.typeNameController,
+                                          ),
+                                        ]),
+                                      SizedBox(height: size * 0.03),
+                                      CustomTextField(
+                                        hint: "Address Line 1 (House No, Street Name)",
+                                        icon: Icons.location_on,
+                                        controller: loginController.addressLine1Controller,
+                                        // fillColor: AppColors.white,
+                                        // borderColor: AppColors.grey,
+                                      ),
+                                      SizedBox(height: size * 0.03),
+                                      CustomTextField(
+                                        hint: "Address Line 2 (Landmark, Area, Building)",
+                                        icon: Icons.location_on,
+                                        controller: loginController.addressLine2Controller,
+                                        // fillColor: AppColors.white,
+                                        // borderColor: AppColors.grey,
+                                      ),
+                                      SizedBox(height: size * 0.03),
+
+                                      GetBuilder<LoginController>(
+                                        builder: (controller) {
+                                          return CustomDropdown<String>.search(
+                                            hintText: "Select State",
                                             decoration: CustomDropdownDecoration(
-                                              hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
-                                              headerStyle: AppTextStyles.caption(context, color: Colors.black),
-                                              listItemStyle: AppTextStyles.caption(context, color: Colors.black),
                                               closedFillColor: Colors.grey[100],
                                               expandedFillColor: Colors.white,
                                               closedBorder: Border.all(
@@ -586,33 +495,38 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 color: AppColors.primary,
                                                 width: 1.5,
                                               ),
-                                            ),
-                                            onChanged: (val)async {
-                                              setState(() => loginController.selectedTaluka = val);
+                                              closedBorderRadius: BorderRadius.circular(10),
+                                              expandedBorderRadius: BorderRadius.circular(10),
+                                              hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                                              headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                                              listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
+                                            items: controller.states.map((s) => s.toString()).toList(),
+                                            initialItem: controller.states.contains(controller.selectedState) ? controller.selectedState : null,
+                                            onChanged: (val) {
                                               if (val != null) {
-                                                final taluka = loginController.talukas.firstWhere((t) => t == val);
-                                                controller.villages.clear();
-                                              await  loginController.fetchVillages(taluka);
-                                                loginController.update();
-                                                print('taluka${loginController.selectedTaluka}');
+                                                controller.selectedState = val;
+                                                controller.districts.clear();
+                                                controller.selectedDistrict = null;
+                                                controller.selectedTaluka = null;
+                                                controller.selectedVillage = null;
+                                                final state = controller.states.firstWhere((s) => s == val);
+                                                print('state  selected$state');
+                                                controller.fetchDistricts(state.toString());
+                                                controller.update();
                                               }
                                             },
-                                          ),
-                                        );
-                                      }
-                                  ),
+                                          );
+                                        },
+                                      ),
 
-                                  SizedBox(height: size * 0.03),
-                                  GetBuilder<LoginController>(
-                                      builder: (controller) {
-                                        final items = controller.villages.map((v) => v.toString()).toList();
-                                        final initialItem = items.contains(controller.selectedVillage) ? controller.selectedVillage : null;
-                                        return DefaultTextStyle(
-                                          style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
-                                          child: CustomDropdown<String>.search(
-                                            hintText: "Select Area",
-                                            items: items,
-                                            initialItem: initialItem,
+                                      SizedBox(height: size * 0.03),
+
+                                      GetBuilder<LoginController>(
+                                        builder: (controller) {
+                                          return CustomDropdown<String>.search(
+                                            hintText: "Select District",
+                                            items: controller.districts.map((d) => d.toString()).toList(),
+                                            initialItem: controller.districts.contains(controller.selectedDistrict) ? controller.selectedDistrict : null,
                                             decoration: CustomDropdownDecoration(
                                               hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
                                               headerStyle: AppTextStyles.caption(context, color: Colors.black),
@@ -629,472 +543,558 @@ class _RegisterPageState extends State<RegisterPage> {
                                               ),
                                             ),
                                             onChanged: (val) {
-                                              setState(() => loginController.selectedVillage = val);
-                                              loginController.update();
-                                              print('Area${loginController.selectedArea}');
+                                              if (val != null) {
+                                                controller.selectedDistrict = val;
+                                                controller.talukas.clear();
+                                                controller.selectedTaluka = null;
+                                                controller.selectedVillage = null;
+                                                final district = controller.districts.firstWhere((d) => d == val);
+                                                print('sub district selected$district');
+                                                //controller.fetchTalukas(district.toString());
+                                                controller.fetchTalukas(district);
+                                                controller.update();
+                                              }
+                                            },
+                                          );
+                                        },
+                                      ),
+
+                                      SizedBox(height: size * 0.03),
+
+                                      GetBuilder<LoginController>(
+                                          builder: (controller) {
+                                            final items = loginController.talukas.map((t) => t.toString()).toList();
+                                            final initialItem = items.contains(loginController.selectedTaluka) ? loginController.selectedTaluka : null;
+                                            return  DefaultTextStyle(
+                                              style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
+                                              child: CustomDropdown<String>.search(
+                                                hintText: "Select  taluka/town",
+                                                items: items,
+                                                initialItem: initialItem,
+
+                                                decoration: CustomDropdownDecoration(
+                                                  hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                                                  headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                  listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                  closedFillColor: Colors.grey[100],
+                                                  expandedFillColor: Colors.white,
+                                                  closedBorder: Border.all(
+                                                    color: AppColors.white,
+                                                    width: 1.5,
+                                                  ),
+                                                  expandedBorder: Border.all(
+                                                    color: AppColors.primary,
+                                                    width: 1.5,
+                                                  ),
+                                                ),
+                                                onChanged: (val)async {
+                                                  setState(() => loginController.selectedTaluka = val);
+                                                  if (val != null) {
+                                                    final taluka = loginController.talukas.firstWhere((t) => t == val);
+                                                    controller.villages.clear();
+                                                    await  loginController.fetchVillages(taluka);
+                                                    loginController.update();
+                                                    print('taluka${loginController.selectedTaluka}');
+                                                  }
+                                                },
+                                              ),
+                                            );
+                                          }
+                                      ),
+
+                                      SizedBox(height: size * 0.03),
+                                      GetBuilder<LoginController>(
+                                          builder: (controller) {
+                                            final items = controller.villages.map((v) => v.toString()).toList();
+                                            final initialItem = items.contains(controller.selectedVillage) ? controller.selectedVillage : null;
+                                            return DefaultTextStyle(
+                                              style: AppTextStyles.caption(context, color: Colors.black,fontWeight: FontWeight.normal),
+                                              child: CustomDropdown<String>.search(
+                                                hintText: "Select Area",
+                                                items: items,
+                                                initialItem: initialItem,
+                                                decoration: CustomDropdownDecoration(
+                                                  hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                                                  headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                  listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                  closedFillColor: Colors.grey[100],
+                                                  expandedFillColor: Colors.white,
+                                                  closedBorder: Border.all(
+                                                    color: AppColors.white,
+                                                    width: 1.5,
+                                                  ),
+                                                  expandedBorder: Border.all(
+                                                    color: AppColors.primary,
+                                                    width: 1.5,
+                                                  ),
+                                                ),
+                                                onChanged: (val) {
+                                                  setState(() => loginController.selectedVillage = val);
+                                                  loginController.update();
+                                                  print('Area${loginController.selectedArea}');
+                                                },
+                                              ),
+                                            );
+                                          }
+                                      ),
+                                      SizedBox(height: size * 0.03),
+                                      CustomTextField(
+                                        hint: "PinCode",
+                                        icon: Icons.pin,
+                                        controller: loginController.pinCodeController,
+                                        keyboardType: TextInputType.number,maxLength: 6,
+                                      ),
+                                      if(loginController.selectedUserType=="Job Seekers")
+                                        Column(children: [
+                                          SizedBox(height: size * 0.03),
+                                          Text("Job Category Preferences",
+                                            style: AppTextStyles.caption(fontWeight: FontWeight.bold,context),),
+                                          SizedBox(height: size * 0.01),
+                                          GetBuilder<JobController>(
+                                            builder: (jobController) {
+                                              final List<MultiSelectItem<String>> categoryItems =
+                                              jobController!.jobCategoryAdmin
+                                                  .map((e) => MultiSelectItem<String>(
+                                                e.name.trim(),
+                                                e.name.trim(),
+                                              ),
+                                              ).toList();
+                                              return MultiSelectDialogField<String>(
+                                                items: categoryItems,
+                                                selectedColor: AppColors.primary,
+                                                initialValue: loginController.selectedCategories,
+
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[100],
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  border: Border.all(color: AppColors.grey, width: 0.1),
+                                                ),
+                                                buttonText: Text(
+                                                  "Select Job Categories",
+                                                  style: AppTextStyles.caption(
+                                                    context,
+                                                    color: AppColors.grey,
+                                                    fontWeight: FontWeight.normal,
+                                                  ),
+                                                ),
+                                                onConfirm: (results) {
+                                                  loginController.selectedCategories = results;
+                                                  loginController.update();
+                                                },
+                                              );
                                             },
                                           ),
-                                        );
-                                      }
-                                  ),
-                                  SizedBox(height: size * 0.03),
-                                  CustomTextField(
-                                    hint: "PinCode",
-                                    icon: Icons.pin,
-                                    controller: loginController.pinCodeController,
-                                    keyboardType: TextInputType.number,maxLength: 6,
-                                  ),
-                                  if(loginController.selectedUserType=="Job Seekers")
-                                    Column(children: [
-                                  SizedBox(height: size * 0.03),
-                                  Text("Job Category Preferences",
-                                    style: AppTextStyles.caption(fontWeight: FontWeight.bold,context),),
-                                  SizedBox(height: size * 0.01),
-                                  GetBuilder<JobController>(
-                                    builder: (jobController) {
-                                      final List<MultiSelectItem<String>> categoryItems =
-                                      jobController!.jobCategoryAdmin
-                                          .map((e) => MultiSelectItem<String>(
-                                          e.name.trim(),
-                                          e.name.trim(),
+                                        ]),
+                                      SizedBox(height: size * 0.01),
+                                      if(loginController.selectedUserType!="Job Seekers")
+                                        CustomTextField(
+                                          hint: "location Link",
+                                          icon: Icons.pin,
+                                          controller: loginController.locationController,
                                         ),
-                                      ).toList();
-                                      return MultiSelectDialogField<String>(
-                                        items: categoryItems,
-                                        selectedColor: AppColors.primary,
-                                        initialValue: loginController.selectedCategories,
+                                      SizedBox(height: size * 0.03),
+                                      CustomTextField(
+                                        hint: "Website Link",
+                                        icon: Icons.web,
+                                        controller: loginController.websiteController,
+                                        // fillColor: AppColors.white,
+                                        // borderColor: AppColors.grey,
+                                      ),
+                                      SizedBox(height: size * 0.01),
 
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[100],
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(color: AppColors.grey, width: 0.1),
-                                        ),
-                                        buttonText: Text(
-                                          "Select Job Categories",
-                                          style: AppTextStyles.caption(
-                                            context,
-                                            color: AppColors.grey,
-                                            fontWeight: FontWeight.normal,
+                                      if (loginController.selectedUserType!=null&&loginController.selectedUserType != "Dental Mechanic") ...[
+                                        SizedBox(height: size * 0.02),
+                                        ElevatedButton(
+                                          onPressed: ()async {
+                                            //Get.toNamed('/registerPage');
+                                            pickCertificates();
+                                            // loginController.certificates.clear();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            side: const BorderSide(
+                                              color:AppColors.primary,
+                                              width: 0.34,
+                                            ),
+                                            backgroundColor: Colors.white,
+                                            foregroundColor: Colors.black,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(5,),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.upload, color: AppColors.primary, size: size * 0.05),
+                                                const SizedBox(width: 5),
+                                                Flexible(
+                                                  child: Text(userTypes(loginController.selectedUserType.toString()),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.bold,color: AppColors.primary),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                        onConfirm: (results) {
-                                          loginController.selectedCategories = results;
-                                          loginController.update();
-                                        },
-                                      );
-                                    },
-                                  ),
-                                   ]),
-                                  SizedBox(height: size * 0.01),
-                                  if(loginController.selectedUserType!="Job Seekers")
-                                  CustomTextField(
-                                    hint: "location Link",
-                                    icon: Icons.pin,
-                                    controller: loginController.locationController,
-                                  ),
-                                  SizedBox(height: size * 0.03),
-                                  CustomTextField(
-                                    hint: "Website Link",
-                                    icon: Icons.web,
-                                    controller: loginController.websiteController,
-                                    // fillColor: AppColors.white,
-                                    // borderColor: AppColors.grey,
-                                  ),
-                                  SizedBox(height: size * 0.01),
+                                        SizedBox(height: size * 0.01),
+                                      ],
+                                      if (loginController.selectedUserType != null &&
+                                          loginController.selectedUserType != "Dental Mechanic") ...[
 
-                                  if (loginController.selectedUserType!=null&&loginController.selectedUserType != "Dental Mechanic") ...[
-                                   SizedBox(height: size * 0.02),
-                                    ElevatedButton(
-                                    onPressed: ()async {
-                                      //Get.toNamed('/registerPage');
-                                      pickCertificates();
-                                     // loginController.certificates.clear();
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      side: const BorderSide(
-                                          color:AppColors.primary,
-                                        width: 0.34,
+                                        SizedBox(
+                                          height: loginController.certificates.isNotEmpty? size*0.35:30,
+                                          child: loginController.certificates.isEmpty
+                                              ?  Center(child: Text("No certificate selected",style: AppTextStyles.caption(context,color: AppColors.black),))
+                                              : GridView.builder(
+                                              padding: const EdgeInsets.all(10),
+                                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 3,
+                                                crossAxisSpacing: 10,
+                                                mainAxisSpacing: 10,
+                                              ),
+                                              itemCount: loginController.certificates.length,
+                                              itemBuilder: (context, index) {
+                                                final file = loginController.certificates[index];
+                                                final path = file.path;
+                                                final isPdf = path.toLowerCase().endsWith(".pdf");
+
+                                                return Stack(
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (_) => ViewPDFPage(pdfUrl: path),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        child: isPdf
+                                                            ? Container(
+                                                          color: Colors.grey[300],
+                                                          child: const Center(
+                                                            child: Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
+                                                          ),
+                                                        )
+                                                            : Image.file(
+                                                          file,
+                                                          fit: BoxFit.cover,
+                                                          width: double.infinity,
+                                                          height: double.infinity,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      right: 0,
+                                                      top: 0,
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            loginController.certificates.removeAt(index);
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.cancel,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              }
+                                          ),),
+                                        Center(child: Text("** maximum 3 images/pdf allowed",
+                                          style: TextStyle(color: Colors.redAccent,fontSize: size*0.019,fontWeight: FontWeight.normal),))
+                                      ],
+                                      //SizedBox(height: size * 0.03),
+                                      if (loginController.selectedUserType == 'Dental Clinic'||loginController.selectedUserType=='Dental Shop'||loginController.selectedUserType=='Dental Mechanic'||loginController.selectedUserType=='Dental Lab') ...[
+                                        SizedBox(height: size * 0.02),
+                                        ElevatedButton(
+                                          onPressed: ()async {
+                                            //Get.toNamed('/registerPage');
+                                            pickImages();
+                                            //loginController.images.clear();
+
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            side: const BorderSide(
+                                              color:AppColors.primary,
+                                              width: 0.34,
+                                            ),
+                                            backgroundColor: Colors.white,
+                                            foregroundColor: Colors.black,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(5,),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.upload, color: AppColors.primary, size: size * 0.05),
+                                                const SizedBox(width: 5),
+                                                Flexible(
+                                                  child: Text(
+                                                    uploadImages(loginController.selectedUserType.toString()),
+                                                    // "Upload Proof / Certificate / Resume",
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.bold,color: AppColors.primary),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: size * 0.03),
+                                      ],
+                                      if (loginController.selectedUserType == 'Dental Clinic'||loginController.selectedUserType=='Dental Shop'||loginController.selectedUserType=='Dental Mechanic'||loginController.selectedUserType=='Dental Lab') ...[
+                                        SizedBox(
+                                          height: loginController.images.isNotEmpty? size*0.35:30,
+                                          child: loginController.images.isEmpty
+                                              ?  Center(child: Text("No images selected",style: AppTextStyles.caption(context,color: AppColors.black),))
+                                              : GridView.builder(
+                                            padding: const EdgeInsets.all(10),
+                                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3,
+                                              crossAxisSpacing: 10,
+                                              mainAxisSpacing: 10,
+                                            ),
+                                            itemCount: loginController.images.length,
+                                            itemBuilder: (context, index) {
+                                              return Stack(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:BorderRadius.circular(10),
+                                                    child: Image.file(
+                                                      loginController.images[index],
+                                                      fit: BoxFit.cover,
+                                                      width: double.infinity,
+                                                      height: double.infinity,
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    right: 0,
+                                                    top: 0,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          loginController.images.removeAt(index);
+                                                        });
+                                                      },
+                                                      child: const Icon(
+                                                        Icons.cancel,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        if(loginController.selectedUserType != "Job Seekers")
+                                          Center(child: Text("** maximum 3 images allowed **",style: TextStyle(color: Colors.redAccent,fontSize: size*0.019,fontWeight: FontWeight.normal),))
+                                      ],
+                                      SizedBox(height: size * 0.03),
+                                      Text(loginController.selectedUserType == "Job Seekers"
+                                          ? "Upload Profile Image"
+                                          : "Upload Logo Image",
+                                        style: AppTextStyles.caption(fontWeight: FontWeight.bold,context),),
+                                      SizedBox(height: size * 0.03),
+
+                                      SizedBox(
+                                        height: size * 0.5,
+                                        child: GetBuilder<LoginController>(
+                                          builder: (controller) {
+                                            if (controller.logoImages.isNotEmpty) {
+                                              final File file = controller.logoImages.first;
+                                              return _buildSingleImageWidget1(file: file);
+                                            }
+                                            if (controller.logoImage.isNotEmpty) {
+                                              //final AppImage img = controller.logoImage.first;
+                                              final  img = controller.logoImage.first;
+                                              return _buildSingleImageWidget1(url: img);
+                                            }
+                                            return GestureDetector(
+                                              onTap: () => pickSingleImage1(),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  border: Border.all(color: Colors.grey),
+                                                  color: Colors.grey.shade200,
+                                                ),
+                                                child: const Center(
+                                                  child: Icon(Icons.add, size: 40, color: Colors.grey),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5,),
+                                      SizedBox(height: size * 0.03),
+
+                                      SizedBox(
+                                        width: double.infinity,
+                                        height: 50,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(12),
+                                            gradient: const LinearGradient(
+                                              colors: [AppColors.primary,AppColors.secondary],
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                            ),
+                                          ),
+                                          child: GetBuilder<LoginController>(
+                                              builder: (controller) {
+                                                return ElevatedButton(
+                                                  onPressed:controller.isLoading?null: () async {
+                                                    if (_formKeyRegister.currentState!.validate()) {
+                                                      final position = await LocationService.getCurrentLocation();
+                                                      if (position == null) {
+                                                        return;
+                                                      }
+                                                      debugPrint('User location: Lat ${position.latitude}, Lng ${position.longitude}');
+                                                      print("FULL NAME = ${loginController.fullNameController.text}");
+                                                      print("MOBILE = ${loginController.mobileController.text}");
+                                                      print("EMAIL = ${loginController.emailController.text}");
+                                                      print("STATE = ${loginController.selectedState.toString()}");
+                                                      print("DISTRICT = ${loginController.selectedDistrict.toString()}");
+                                                      print("CITY = ${loginController.selectedTaluka.toString()}");
+                                                      print("PINCODE = ${loginController.selectedVillage.toString()}");
+                                                      print("LAB NAME = ${loginController.typeNameController.text}");
+                                                      print("IMAGES = ${loginController.images}");
+                                                      print('logo${loginController.logoImages}');
+                                                      print("CERTIFICATES = ${loginController.certificates}");
+                                                      print('dob ${loginController.dobController}');
+                                                      if(loginController.selectedUserType==null){
+                                                        showCustomToast(context,"Please Select usertype",);
+                                                      }
+                                                      if(loginController.selectedState==null){
+                                                        showCustomToast(context,"Please  Select State",);
+                                                      }
+                                                      if(loginController.selectedDistrict==null){
+                                                        showCustomToast(context,"Please Select District",);
+                                                      }
+                                                      if(loginController.selectedTaluka==null){
+                                                        showCustomToast(context,"Please Select Taluka",);
+                                                      }
+                                                      if(loginController.selectedVillage==null){
+                                                        showCustomToast(context,"Please Select Village",);
+                                                      }
+                                                      Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
+                                                        return await Future.wait(files.map((file) => file.readAsBytes()));
+                                                      }
+                                                      final imageBytes = loginController.selectedUserType == "Job Seekers"
+                                                          ? await convertFilesToBytes(controller.logoImages)
+                                                          : await convertFilesToBytes(loginController.images);
+
+                                                      final logoBytes = loginController.selectedUserType != "Job Seekers"
+                                                          ? await convertFilesToBytes(controller.logoImages)
+                                                          : [];
+                                                      final certBytes = await convertFilesToBytes(loginController.certificates);
+
+                                                      //print('usertype${loginController.selectedUserType} married${loginController.selectedMartialStatus!}');
+                                                      await loginController.registerUser(
+                                                        userId: "0",
+                                                        userType: loginController.selectedUserType!,
+                                                        //martialStatus: loginController.selectedMartialStatus!,
+                                                        fullName: loginController.fullNameController.text,
+                                                        dob: loginController.dobController.text,
+                                                        mobile: loginController.mobileController.text,
+                                                        email: loginController.emailController.text,
+                                                        confirmPassword: loginController.confirmPasswordController.text,
+                                                        addressLine1: loginController.addressLine1Controller.text ?? '',
+                                                        addressLine2:  loginController.addressLine2Controller.text ?? '',
+                                                        taluk: loginController.selectedState ?? '',
+                                                        district: loginController.selectedDistrict ?? '',
+                                                        city: loginController.selectedTaluka ?? '',
+                                                        area: loginController.selectedVillage ?? '',
+                                                        pinCode: loginController.pinCodeController.text,
+                                                        typeName: loginController.typeNameController.text??"",
+                                                        //image: loginController.selectedUserType=="Job Seekers"?controller.logoImages ?? []:loginController.images ?? [],
+                                                        image: loginController.selectedUserType=="Job Seekers"?logoBytes ?? []:imageBytes ?? [],
+                                                        certificate: certBytes,
+                                                        //loginController.certificates ?? [],
+                                                        location: loginController.locationController.text,
+                                                        website: loginController.websiteController.text,
+                                                        description: loginController.descriptionController.text??"N/A",
+                                                        //logoImage: loginController.selectedUserType!="Job Seekers"?controller.logoImages ?? []:[],
+                                                        logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
+                                                        latitude: loginController.latitude.toString()??"",
+                                                        longitude: loginController.longitude.toString()??"",
+                                                        jobCategory:loginController.selectedCategories,
+                                                        isAdmin: "false",
+                                                        context: context,
+                                                      );
+
+                                                    }
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                    ),
+                                                    backgroundColor: AppColors.transparent,
+                                                  ),
+                                                  child:  controller.isLoading
+                                                      ? const SizedBox(
+                                                    height: 22,
+                                                    width: 22,
+                                                    child: CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
+                                                      : Text(
+                                                    "Create Account",
+                                                    style: AppTextStyles.body(
+                                                      context,
+                                                      color: AppColors.white,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    child: Center(
-                                      child: Row(
+                                      SizedBox(height: size * 0.03),
+
+                                      Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Icon(Icons.upload, color: AppColors.primary, size: size * 0.05),
-                                          const SizedBox(width: 5),
-                                          Flexible(
-                                            child: Text(userTypes(loginController.selectedUserType.toString()),
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.bold,color: AppColors.primary),
+                                          Text(
+                                            "Already have an account? ",
+                                            style: AppTextStyles.caption(context, color: Colors.black54),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.toNamed('/loginPage');
+
+                                            },
+                                            child:  Text(
+                                                "Sign in here",
+                                                style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold)
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(height: size * 0.01),
-                                  ],
-                                  if (loginController.selectedUserType != null &&
-                                      loginController.selectedUserType != "Dental Mechanic") ...[
-
-                                SizedBox(
-                                    height: loginController.certificates.isNotEmpty? size*0.35:30,
-                                    child: loginController.certificates.isEmpty
-                                        ?  Center(child: Text("No certificate selected",style: AppTextStyles.caption(context,color: AppColors.black),))
-                                        : GridView.builder(
-                                      padding: const EdgeInsets.all(10),
-                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        crossAxisSpacing: 10,
-                                        mainAxisSpacing: 10,
-                                      ),
-                                      itemCount: loginController.certificates.length,
-                                        itemBuilder: (context, index) {
-                                          final file = loginController.certificates[index];
-                                          final path = file.path;
-                                          final isPdf = path.toLowerCase().endsWith(".pdf");
-
-                                          return Stack(
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (_) => ViewPDFPage(pdfUrl: path),
-                                                    ),
-                                                  );
-                                                },
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  child: isPdf
-                                                      ? Container(
-                                                    color: Colors.grey[300],
-                                                    child: const Center(
-                                                      child: Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
-                                                    ),
-                                                  )
-                                                      : Image.file(
-                                                    file,
-                                                    fit: BoxFit.cover,
-                                                    width: double.infinity,
-                                                    height: double.infinity,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                right: 0,
-                                                top: 0,
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      loginController.certificates.removeAt(index);
-                                                    });
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.cancel,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        }
-                                        ),),
-                           Center(child: Text("** maximum 3 images/pdf allowed",
-                           style: TextStyle(color: Colors.redAccent,fontSize: size*0.019,fontWeight: FontWeight.normal),))
-                                  ],
-                                  //SizedBox(height: size * 0.03),
-                                  if (loginController.selectedUserType == 'Dental Clinic'||loginController.selectedUserType=='Dental Shop'||loginController.selectedUserType=='Dental Mechanic'||loginController.selectedUserType=='Dental Lab') ...[
-                                    SizedBox(height: size * 0.02),
-                                    ElevatedButton(
-                                      onPressed: ()async {
-                                        //Get.toNamed('/registerPage');
-                                        pickImages();
-                                        //loginController.images.clear();
-
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        side: const BorderSide(
-                                          color:AppColors.primary,
-                                          width: 0.34,
-                                        ),
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(5,),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.upload, color: AppColors.primary, size: size * 0.05),
-                                            const SizedBox(width: 5),
-                                            Flexible(
-                                              child: Text(
-                                                uploadImages(loginController.selectedUserType.toString()),
-                                                // "Upload Proof / Certificate / Resume",
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(fontSize: size*0.025,fontWeight: FontWeight.bold,color: AppColors.primary),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: size * 0.03),
-                                  ],
-                                  if (loginController.selectedUserType == 'Dental Clinic'||loginController.selectedUserType=='Dental Shop'||loginController.selectedUserType=='Dental Mechanic'||loginController.selectedUserType=='Dental Lab') ...[
-                                    SizedBox(
-                                      height: loginController.images.isNotEmpty? size*0.35:30,
-                                      child: loginController.images.isEmpty
-                                          ?  Center(child: Text("No images selected",style: AppTextStyles.caption(context,color: AppColors.black),))
-                                          : GridView.builder(
-                                        padding: const EdgeInsets.all(10),
-                                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 10,
-                                          mainAxisSpacing: 10,
-                                        ),
-                                        itemCount: loginController.images.length,
-                                        itemBuilder: (context, index) {
-                                          return Stack(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:BorderRadius.circular(10),
-                                                child: Image.file(
-                                                  loginController.images[index],
-                                                  fit: BoxFit.cover,
-                                                  width: double.infinity,
-                                                  height: double.infinity,
-                                                ),
-                                              ),
-                                              Positioned(
-                                                right: 0,
-                                                top: 0,
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      loginController.images.removeAt(index);
-                                                    });
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.cancel,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    if(loginController.selectedUserType != "Job Seekers")
-                                    Center(child: Text("** maximum 3 images allowed **",style: TextStyle(color: Colors.redAccent,fontSize: size*0.019,fontWeight: FontWeight.normal),))
-                                  ],
-                                  SizedBox(height: size * 0.03),
-                                  Text(loginController.selectedUserType == "Job Seekers"
-                                      ? "Upload Profile Image"
-                                      : "Upload Logo Image",
-                                    style: AppTextStyles.caption(fontWeight: FontWeight.bold,context),),
-                                  SizedBox(height: size * 0.03),
-
-                                  SizedBox(
-                                    height: size * 0.5,
-                                    child: GetBuilder<LoginController>(
-                                      builder: (controller) {
-                                        if (controller.logoImages.isNotEmpty) {
-                                          final File file = controller.logoImages.first;
-                                          return _buildSingleImageWidget1(file: file);
-                                        }
-                                        if (controller.logoImage.isNotEmpty) {
-                                          //final AppImage img = controller.logoImage.first;
-                                          final  img = controller.logoImage.first;
-                                          return _buildSingleImageWidget1(url: img);
-                                        }
-                                        return GestureDetector(
-                                          onTap: () => pickSingleImage1(),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              border: Border.all(color: Colors.grey),
-                                              color: Colors.grey.shade200,
-                                            ),
-                                            child: const Center(
-                                              child: Icon(Icons.add, size: 40, color: Colors.grey),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(height: size * 0.03),
-
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 50,
-                                    child: Container(
-                                    decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    gradient: const LinearGradient(
-                                    colors: [AppColors.primary,AppColors.secondary],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    ),
-                                    ),
-                                      child: GetBuilder<LoginController>(
-                                          builder: (controller) {
-                                            return ElevatedButton(
-                                            onPressed:controller.isLoading?null: () async {
-                                              if (_formKeyRegister.currentState!.validate()) {
-                                              final position = await LocationService.getCurrentLocation();
-                                              if (position == null) {
-                                              return;
-                                              }
-                                              debugPrint('User location: Lat ${position.latitude}, Lng ${position.longitude}');
-                                              print("FULL NAME = ${loginController.fullNameController.text}");
-                                                print("MOBILE = ${loginController.mobileController.text}");
-                                                print("EMAIL = ${loginController.emailController.text}");
-                                                print("STATE = ${loginController.selectedState.toString()}");
-                                                print("DISTRICT = ${loginController.selectedDistrict.toString()}");
-                                                print("CITY = ${loginController.selectedTaluka.toString()}");
-                                                print("PINCODE = ${loginController.selectedVillage.toString()}");
-                                                print("LAB NAME = ${loginController.typeNameController.text}");
-                                                print("IMAGES = ${loginController.images}");
-                                                print('logo${loginController.logoImages}');
-                                                print("CERTIFICATES = ${loginController.certificates}");
-                                                print('dob ${loginController.dobController}');
-                                                if(loginController.selectedUserType==null){
-                                                  showCustomToast(context,"Please Select usertype",);
-                                                }
-                                              if(loginController.selectedState==null){
-                                                showCustomToast(context,"Please  Select State",);
-                                              }
-                                              if(loginController.selectedDistrict==null){
-                                                showCustomToast(context,"Please Select District",);
-                                              }
-                                              if(loginController.selectedTaluka==null){
-                                                showCustomToast(context,"Please Select Taluka",);
-                                              }
-                                              if(loginController.selectedVillage==null){
-                                                showCustomToast(context,"Please Select Village",);
-                                              }
-                                              Future<List<Uint8List>> convertFilesToBytes(List<File> files) async {
-                                                return await Future.wait(files.map((file) => file.readAsBytes()));
-                                              }
-                                              final imageBytes = loginController.selectedUserType == "Job Seekers"
-                                                  ? await convertFilesToBytes(controller.logoImages)
-                                                  : await convertFilesToBytes(loginController.images);
-
-                                              final logoBytes = loginController.selectedUserType != "Job Seekers"
-                                                  ? await convertFilesToBytes(controller.logoImages)
-                                                  : [];
-                                              final certBytes = await convertFilesToBytes(loginController.certificates);
-
-                                                //print('usertype${loginController.selectedUserType} married${loginController.selectedMartialStatus!}');
-                                                await loginController.registerUser(
-                                                  userId: "0",
-                                                  userType: loginController.selectedUserType!,
-                                                  //martialStatus: loginController.selectedMartialStatus!,
-                                                  fullName: loginController.fullNameController.text,
-                                                  dob: loginController.dobController.text,
-                                                  mobile: loginController.mobileController.text,
-                                                  email: loginController.emailController.text,
-                                                  confirmPassword: loginController.confirmPasswordController.text,
-                                                  addressLine1: loginController.addressLine1Controller.text ?? '',
-                                                  addressLine2:  loginController.addressLine2Controller.text ?? '',
-                                                  taluk: loginController.selectedState ?? '',
-                                                  district: loginController.selectedDistrict ?? '',
-                                                  city: loginController.selectedTaluka ?? '',
-                                                  area: loginController.selectedVillage ?? '',
-                                                  pinCode: loginController.pinCodeController.text,
-                                                  typeName: loginController.typeNameController.text??"",
-                                                  //image: loginController.selectedUserType=="Job Seekers"?controller.logoImages ?? []:loginController.images ?? [],
-                                                  image: loginController.selectedUserType=="Job Seekers"?logoBytes ?? []:imageBytes ?? [],
-                                                  certificate: certBytes,
-                                                  //loginController.certificates ?? [],
-                                                  location: loginController.locationController.text,
-                                                  website: loginController.websiteController.text,
-                                                  description: loginController.descriptionController.text??"N/A",
-                                                  //logoImage: loginController.selectedUserType!="Job Seekers"?controller.logoImages ?? []:[],
-                                                  logoImage: loginController.selectedUserType!="Job Seekers"?logoBytes ?? []:[],
-                                                  latitude: loginController.latitude.toString()??"",
-                                                  longitude: loginController.longitude.toString()??"",
-                                                  jobCategory:loginController.selectedCategories,
-                                                  isAdmin: "false",
-                                                  context: context,
-                                                );
-
-                                              }
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                              ),
-                                              backgroundColor: AppColors.transparent,
-                                            ),
-                                            child:  controller.isLoading
-                                            ? const SizedBox(
-                                            height: 22,
-                                              width: 22,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                                : Text(
-                                            "Create Account",
-                                            style: AppTextStyles.body(
-                                            context,
-                                            color: AppColors.white,
-                                            fontWeight: FontWeight.bold,
-                                            ),
-                                            ),
-                                          );
-                                        }
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: size * 0.03),
-
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Already have an account? ",
-                                        style: AppTextStyles.caption(context, color: Colors.black54),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Get.toNamed('/loginPage');
-
-                                        },
-                                        child:  Text(
-                                          "Sign in here",
-                                          style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold)
-                                        ),
-                                      ),
+                                      const SizedBox(height: 60),
                                     ],
                                   ),
-                                  const SizedBox(height: 60),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              }
-            );
-          }
+                    );
+                  }
+              );
+            }
         ),
       ),
     );

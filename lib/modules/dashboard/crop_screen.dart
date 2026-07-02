@@ -22,7 +22,10 @@ class _CropScreenState extends State<CropScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text("Crop Image",style: AppTextStyles.body(context,color: AppColors.white),),
+        title: Text(
+          "Crop Image",
+          style: AppTextStyles.body(context, color: AppColors.white),
+        ),
         elevation: 0,
         actions: [
           TextButton(
@@ -30,16 +33,13 @@ class _CropScreenState extends State<CropScreen> {
               setState(() => _isCropping = true);
               _controller.crop();
             },
-            child: const Text(
-              "DONE",
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text("DONE", style: TextStyle(color: Colors.white)),
           ),
         ],
         flexibleSpace: Container(
-          decoration:  BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.primary,AppColors.secondary],
+              colors: [AppColors.primary, AppColors.secondary],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -82,7 +82,7 @@ class _CropScreenState extends State<CropScreen> {
               controller: _controller,
               aspectRatio: 1,
               baseColor: Colors.black,
-              maskColor: Colors.black.withOpacity(0.6),
+              maskColor: Colors.black.withValues(alpha: 0.6),
 
               onCropped: (result) {
                 setState(() => _isCropping = false);
@@ -96,10 +96,7 @@ class _CropScreenState extends State<CropScreen> {
             ),
           ),
 
-          if (_isCropping)
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
+          if (_isCropping) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );

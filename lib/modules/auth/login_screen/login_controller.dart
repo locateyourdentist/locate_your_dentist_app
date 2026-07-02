@@ -85,7 +85,7 @@ class BranchModel {
   TextEditingController location;
 
   BranchModel({
-     this.userId,
+    this.userId,
     TextEditingController? branchName,
     TextEditingController? state,
     TextEditingController? district,
@@ -255,14 +255,14 @@ class LoginController extends GetxController {
   List<BranchModel> branchList = <BranchModel>[];
   void addBranchList() {
     branchList.add(BranchModel(
-         userId: branchUserId??"",
-        branchName: TextEditingController(),
-        state : TextEditingController(),
-        district :TextEditingController(),
-        city : TextEditingController(),
-        area :TextEditingController(),
-        pincode : TextEditingController(),
-        location : TextEditingController(),
+      userId: branchUserId??"",
+      branchName: TextEditingController(),
+      state : TextEditingController(),
+      district :TextEditingController(),
+      city : TextEditingController(),
+      area :TextEditingController(),
+      pincode : TextEditingController(),
+      location : TextEditingController(),
     ));
   }
 
@@ -485,7 +485,7 @@ class LoginController extends GetxController {
   Future<void> fetchStates() async {
     try {
       const url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}${AppConstants.stateUrl}';
-       print('state url$url');
+      print('state url$url');
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
@@ -652,7 +652,7 @@ class LoginController extends GetxController {
         print("Login Success");
         final user = (data["data"] ?? {}) as Map<String, dynamic>;
         Api.userInfo.write("token", data["authToken"] ?? "");
-         String userType1=user["userType"]?.toString() ?? "";
+        String userType1=user["userType"]?.toString() ?? "";
         String userId1=user["userId"]?.toString() ?? "";
         String personName=user["name"]?.toString() ?? "";
         Api.userInfo.write("userType", user["userType"]?.toString() ?? "");
@@ -687,7 +687,7 @@ class LoginController extends GetxController {
         print("STATE: $state");
         print("NAME: $name");
         print(Api.userInfo.read("profileImage"));
-         String fcmToken=Api.userInfo.read('fcmToken')??"";
+        String fcmToken=Api.userInfo.read('fcmToken')??"";
         // print("read fcm token${Api.userInfo.read('fcmToken')}");
         // final token = await FirebaseMessaging.instance.getToken();
         // print('userid$userId1 usertype$userType1 token$fcmToken');
@@ -769,7 +769,7 @@ class LoginController extends GetxController {
         print('userid$userId1 usertype$userType1 token$fcmToken');
         await saveFcmToken(userId1,userType1,fcmToken,context);
         showCustomToast(context, "Account Switched successfully", backgroundColor: AppColors.secondary);
-                 Navigator.pop(context);
+        Navigator.pop(context);
         platform != "Web"
             ? Get.offAllNamed("/${pageUserType(userType)}")
             : Get.offAllNamed("/${pageUserTypeWeb(userType)}");
@@ -870,9 +870,9 @@ class LoginController extends GetxController {
       var data = jsonDecode(response.body);
       if ( data["status"] == "Success") {
         List<dynamic> users = data["data"];
-         String excludedUserId = Api.userInfo.read('userId')??"";
-         //_profileList = users.where((e) => e["userId"] != excludedUserId).map((e) => ProfileModel.fromJson(e)).toList();
-       // String userType = Api.userInfo.read('userType') ?? '';
+        String excludedUserId = Api.userInfo.read('userId')??"";
+        //_profileList = users.where((e) => e["userId"] != excludedUserId).map((e) => ProfileModel.fromJson(e)).toList();
+        // String userType = Api.userInfo.read('userType') ?? '';
         final currentUserType = Api.userInfo.read("userType") ?? "";
         _profileList = users.where((e) {
           final userId = e["userId"];
@@ -912,7 +912,7 @@ class LoginController extends GetxController {
         _userBranchesList = users.map((e) => ProfileModel.fromJson(e)).toList();
         print('Total profiles: ${_userBranchesList.length}');
         branchList.clear();
-       // _userBranchesList=[];
+        // _userBranchesList=[];
         for (var e in users) {
           branchList.add(
             BranchModel(
@@ -961,7 +961,7 @@ class LoginController extends GetxController {
         selectUserId=user.userId??"";
         selectedUserType=user.userType??"";
         passwordController.text=user.details["password"]??"";
-       // descriptionController.text = user.details["description"] ?? "";
+        // descriptionController.text = user.details["description"] ?? "";
         descriptionData = user.details["description"] ?? "";
 
         print("namw${user.details["name"] ?? ""}");
@@ -1017,12 +1017,12 @@ class LoginController extends GetxController {
           String normalize(String v) => v.trim().toLowerCase();
 
           if (jc == null) {
-           selectedCategories = [];
+            selectedCategories = [];
           } else {
-        selectedCategories = jc.map((e) => normalize(e.toString())).toList();
+            selectedCategories = jc.map((e) => normalize(e.toString())).toList();
           }
 
-         update();
+          update();
         }
         List<String> parseStringList(dynamic value) {
           if (value == null) return [];
@@ -1119,7 +1119,7 @@ class LoginController extends GetxController {
     required String userId,
     required String userType,
     required String fullName,
-     String? martialStatus,
+    String? martialStatus,
     required String dob,
     required String mobile,
     required String email,
@@ -1156,7 +1156,7 @@ class LoginController extends GetxController {
       Future<List<Uint8List>?> convertToBytes(dynamic input) async {
         if (input == null) return null;
         if (input is List<Uint8List>) return input;
-        
+
         if (input is List<File>) {
           List<Uint8List> result = [];
           for (var f in input) {
@@ -1192,8 +1192,8 @@ class LoginController extends GetxController {
         mobile,
         email,
         confirmPassword,
-          addressLine1,
-          addressLine2,
+        addressLine1,
+        addressLine2,
         taluk,
         district,
         city,
@@ -1219,65 +1219,65 @@ class LoginController extends GetxController {
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
         print('update status ${data["status"]}$userId uid');
-      (userId=="0")?
-      await showSuccessDialog(context, title:"Success",message :"User Registered successfully.Please check your mail", onOkPressed: () {
-        kIsWeb? Get.offAllNamed('/webLoginPage'):Get.offAllNamed('/loginPage') ;
-      }):
-     await showSuccessDialog(context, title:"Success",message :"User updated successfully!", onOkPressed: () {
-        Get.back();});
-       clearProfileData();
-      if (userId != "0") {
-        List<String> _parseList(dynamic value) {
-          if (value == null) return [];
-          if (value is List) return value.map((e) => e.toString()).toList();
-          if (value is String && value.isNotEmpty) return [value];
-          return [];
+        (userId=="0")?
+        await showSuccessDialog(context, title:"Success",message :"User Registered successfully.Please check your mail", onOkPressed: () {
+          kIsWeb? Get.offAllNamed('/webLoginPage'):Get.offAllNamed('/loginPage') ;
+        }):
+        await showSuccessDialog(context, title:"Success",message :"User updated successfully!", onOkPressed: () {
+          Get.back();});
+        clearProfileData();
+        if (userId != "0") {
+          List<String> _parseList(dynamic value) {
+            if (value == null) return [];
+            if (value is List) return value.map((e) => e.toString()).toList();
+            if (value is String && value.isNotEmpty) return [value];
+            return [];
+          }
+          final updatedUser = ProfileModel.fromJson(data["data"]);
+          _userData = [updatedUser];
+          editImages = updatedUser.images.map((e) {
+            final url = e.replaceAll("\\", "/");
+            return AppImage(url: url, isVideo: url.toLowerCase().endsWith(".mp4"));
+          }).toList();
+          logoImage = _parseList(updatedUser.logoImages).map((e) => e.replaceAll("\\", "/")).toList();
+          editCertificates = _parseList(updatedUser.certificates).map((e) => AppImage(url: e.replaceAll("\\", "/"))).toList();
+          logoImages.clear();
         }
-        final updatedUser = ProfileModel.fromJson(data["data"]);
-        _userData = [updatedUser];
-        editImages = updatedUser.images.map((e) {
-          final url = e.replaceAll("\\", "/");
-          return AppImage(url: url, isVideo: url.toLowerCase().endsWith(".mp4"));
-        }).toList();
-        logoImage = _parseList(updatedUser.logoImages).map((e) => e.replaceAll("\\", "/")).toList();
-        editCertificates = _parseList(updatedUser.certificates).map((e) => AppImage(url: e.replaceAll("\\", "/"))).toList();
-        logoImages.clear();
-      }
-      String userId1=data["data"]["userId"];
-      String userType=data["data"]["userType"];
+        String userId1=data["data"]["userId"];
+        String userType=data["data"]["userType"];
         selectedCategories.clear();
         fullNameController.clear();
-         mobileController.clear();
-         addressController.clear();
-         dobController.clear();
-         confirmPasswordController.clear();
-         passwordController.clear();
-         selectedVillage=null;
-         selectedTaluka=null;
-         selectedDistrict=null;
-         selectedState=null;
-         selectedMartialStatus=null;
-         logoImages.clear();
-         pinCodeController.clear();
-         typeNameController.clear();
-         locationController.clear();
-         servicesOfferedController.clear();
-         emailController.clear();
-         websiteController.clear();
-         descriptionController.clear();
-         images = [];
-         certificates = [];
-         selectedUserType=null;
-         image==null;
-       // (userId=="0")?   await sentMailUser(userId1, "register", "New User Register From LYD", "your Registered successfully", context):"";
-      //(userId=="0")?   await notificationController.createNotification(userId1,"",true, 'new', '$userId1 Registered successfully ',Api.userInfo.read('state')??"",Api.userInfo.read('district')??"",Api.userInfo.read('city')??"",Api.userInfo.read('area')??"", context):"";
+        mobileController.clear();
+        addressController.clear();
+        dobController.clear();
+        confirmPasswordController.clear();
+        passwordController.clear();
+        selectedVillage=null;
+        selectedTaluka=null;
+        selectedDistrict=null;
+        selectedState=null;
+        selectedMartialStatus=null;
+        logoImages.clear();
+        pinCodeController.clear();
+        typeNameController.clear();
+        locationController.clear();
+        servicesOfferedController.clear();
+        emailController.clear();
+        websiteController.clear();
+        descriptionController.clear();
+        images = [];
+        certificates = [];
+        selectedUserType=null;
+        image==null;
+        // (userId=="0")?   await sentMailUser(userId1, "register", "New User Register From LYD", "your Registered successfully", context):"";
+        //(userId=="0")?   await notificationController.createNotification(userId1,"",true, 'new', '$userId1 Registered successfully ',Api.userInfo.read('state')??"",Api.userInfo.read('district')??"",Api.userInfo.read('city')??"",Api.userInfo.read('area')??"", context):"";
         (userId=="0")?   await notificationController.createNotification(userId1,"",true, 'new', '$userId1 Registered successfully ',"","","","", context):"";
         //kIsWeb? Get.offAllNamed('/webLoginPage'):Get.offAllNamed('/loginPage') ;
       } else {
         await showSuccessDialog(context, title:"Error",message :"${data["message"] ?? "error"}",
             onOkPressed: () {
-          Get.back();
-        });
+              Get.back();
+            });
       }
     } catch (e, st) {
       print("Register Exception: $e");
@@ -1357,7 +1357,7 @@ class LoginController extends GetxController {
         if (!context.mounted) return;
         showSuccessDialog(context, title:"Success",message :"Otp Sent to mail successfully to ${Api.userInfo.read('otpMail')??""} ${data["message"] ??""} ",
             onOkPressed: (){kIsWeb? Get.offAllNamed('/verifyPasswordWeb'):Get.offAllNamed('/verifyPasswordPage') ;
-        });
+            });
         emailController.clear();
       } else {
         showSuccessDialog(context, title:"Error",message :"${data["message"] ?? "error"} ",
@@ -1371,8 +1371,8 @@ class LoginController extends GetxController {
     }
   }
   //Future<void> addAppLogoImage(XFile ?logoImage1,dynamic context) async {
-    Future<void> addAppLogoImage(Uint8List bytes,  context) async {
-      var connection = await Connectivity().checkConnectivity();
+  Future<void> addAppLogoImage(Uint8List bytes,  context) async {
+    var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
       return;
@@ -1385,14 +1385,14 @@ class LoginController extends GetxController {
         if (!context.mounted) return;
         showSuccessDialog(context, title:"Success",message :"${data["message"] ??""} ",
             onOkPressed: (){
-             // Get.toNamed('/verifyPasswordPage');
+              // Get.toNamed('/verifyPasswordPage');
             });
         emailController.clear();
       } else {
         showSuccessDialog(context, title:"Error",message :"${data["message"] ?? "error"} ",
             onOkPressed: (){
-          //    Get.toNamed('/forgotPasswordPage');
-        });
+              //    Get.toNamed('/forgotPasswordPage');
+            });
       }
     } catch (error) {
       print('get mail error $error');
@@ -1489,10 +1489,10 @@ class LoginController extends GetxController {
       if ( data["status"].toString().toLowerCase() == "success") {
         showSuccessDialog(context, title:"Success",message :"mail verified successfully ${data["message"] ??""} ",
           onOkPressed: () {
-          kIsWeb? Get.offAllNamed('/forgotPasswordWebScreen'):Get.offAllNamed('/forgotChangePasswordPage') ;
+            kIsWeb? Get.offAllNamed('/forgotPasswordWebScreen'):Get.offAllNamed('/forgotChangePasswordPage') ;
           },);
         emailController.clear();
-      //  Get.toNamed('/verifyPasswordPage');
+        //  Get.toNamed('/verifyPasswordPage');
       } else {
         showCustomToast(context,"password not changed, ${data["message"] ?? "error"}",);
       }
@@ -1514,7 +1514,7 @@ class LoginController extends GetxController {
       final response = await api.createMail( userId,title!,Subject,message);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
-       // showCustomToast(context,"mail sent successfully",);
+        // showCustomToast(context,"mail sent successfully",);
       } else {
         print("error${data["message"] ?? "error"}");
         showCustomToast(context,"mail not get error, ${data["message"] ?? "error"}",);

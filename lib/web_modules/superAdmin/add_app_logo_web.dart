@@ -20,14 +20,15 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
   Uint8List? webImage;
 
   Future<void> pickImage() async {
-    final XFile? pickedImage =
-    await picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedImage = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
     if (pickedImage != null) {
       if (kIsWeb) {
         Uint8List bytes = await pickedImage.readAsBytes();
         webImage = bytes;
         String fileName = pickedImage.name;
-        print('Web image selected: ${fileName}');
+        print('Web image selected: $fileName');
       } else {
         loginController.appLogoFile = File(pickedImage.path);
         print('Mobile image path: ${loginController.appLogoFile}');
@@ -35,9 +36,13 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
       loginController.update();
     }
   }
+
   void removeLogo() {
     loginController.deleteAwsFile(
-        loginController.appLogoUrl.toString(), 'appLogo', context);
+      loginController.appLogoUrl.toString(),
+      'appLogo',
+      context,
+    );
     loginController.appLogoFile = null;
     loginController.appLogoUrl = null;
     webImage = null; // clear web image
@@ -49,6 +54,7 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
     super.initState();
     loginController.getAppLogoImage(context);
   }
+
   Widget uploadPlaceholder() {
     return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -59,9 +65,10 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
       ],
     );
   }
+
   @override
   Widget build(BuildContext context) {
-    double s=MediaQuery.of(context).size.width;
+    double s = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Center(
@@ -76,7 +83,6 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                  
                       Text(
                         "Upload App Logo",
                         style: AppTextStyles.body(
@@ -85,9 +91,9 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                  
+
                       const SizedBox(height: 30),
-                  
+
                       /// IMAGE PREVIEW
                       // GestureDetector(
                       //   onTap: pickImage,
@@ -150,55 +156,94 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
                           width: 220,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.grey.shade300, width: 2),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 2,
+                            ),
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(14),
                             child: kIsWeb
                                 ? webImage != null
-                                ? Image.memory(webImage!, fit: BoxFit.cover)
-                                : controller.appLogoUrl != null
-                                ? Image.network(controller.appLogoUrl!, fit: BoxFit.cover)
-                                : uploadPlaceholder()
+                                      ? Image.memory(
+                                          webImage!,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : controller.appLogoUrl != null
+                                      ? Image.network(
+                                          controller.appLogoUrl!,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : uploadPlaceholder()
                                 : controller.appLogoFile != null
-                                ? Image.file(controller.appLogoFile!, fit: BoxFit.cover)
+                                ? Image.file(
+                                    controller.appLogoFile!,
+                                    fit: BoxFit.cover,
+                                  )
                                 : controller.appLogoUrl != null
-                                ? Image.network(controller.appLogoUrl!, fit: BoxFit.cover)
+                                ? Image.network(
+                                    controller.appLogoUrl!,
+                                    fit: BoxFit.cover,
+                                  )
                                 : uploadPlaceholder(),
                           ),
                         ),
                       ),
                       const SizedBox(height: 25),
-                  
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton.icon(
                             onPressed: pickImage,
-                            icon:  Icon(Icons.upload,color: AppColors.white,size: s*0.008,),
-                            label:  Text("Upload",style: AppTextStyles.caption(context,color: AppColors.white),),
+                            icon: Icon(
+                              Icons.upload,
+                              color: AppColors.white,
+                              size: s * 0.008,
+                            ),
+                            label: Text(
+                              "Upload",
+                              style: AppTextStyles.caption(
+                                context,
+                                color: AppColors.white,
+                              ),
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 22, vertical: 14),
+                                horizontal: 22,
+                                vertical: 14,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                           ),
-                  
+
                           const SizedBox(width: 15),
-                  
+
                           if (controller.appLogoFile != null ||
                               controller.appLogoUrl != null)
                             ElevatedButton.icon(
                               onPressed: removeLogo,
-                              icon:  Icon(Icons.delete,color: AppColors.white,size: s*0.008),
-                              label:  Text("Remove",style: AppTextStyles.caption(context,color: AppColors.white),),
+                              icon: Icon(
+                                Icons.delete,
+                                color: AppColors.white,
+                                size: s * 0.008,
+                              ),
+                              label: Text(
+                                "Remove",
+                                style: AppTextStyles.caption(
+                                  context,
+                                  color: AppColors.white,
+                                ),
+                              ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 22, vertical: 14),
+                                  horizontal: 22,
+                                  vertical: 14,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -206,15 +251,18 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
                             ),
                         ],
                       ),
-                  
+
                       const SizedBox(height: 35),
-                  
+
                       SizedBox(
                         width: 200,
                         height: 45,
                         child: ElevatedButton(
                           onPressed: () async {
-                            await loginController.addAppLogoImage(webImage!, context);
+                            await loginController.addAppLogoImage(
+                              webImage!,
+                              context,
+                            );
                             await loginController.getAppLogoImage(context);
                           },
                           style: ElevatedButton.styleFrom(
@@ -223,9 +271,12 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child:  Text(
+                          child: Text(
                             "Save Changes",
-                            style: AppTextStyles.caption(context,color: AppColors.white),
+                            style: AppTextStyles.caption(
+                              context,
+                              color: AppColors.white,
+                            ),
                           ),
                         ),
                       ),

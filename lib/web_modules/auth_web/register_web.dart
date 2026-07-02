@@ -25,7 +25,8 @@ class RegisterWebPage extends StatefulWidget {
 }
 
 class _RegisterWebPageState extends State<RegisterWebPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKeyRegister = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyRegister =
+      GlobalKey<ScaffoldState>();
   int currentStep = 0;
   final ImagePicker _picker = ImagePicker();
   final _formKeyRegisterWeb = GlobalKey<FormState>();
@@ -44,20 +45,20 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     "Dental Shop",
     "Dental Mechanic",
     "Job Seekers",
-    "Dental Consultant"
+    "Dental Consultant",
   ];
 
   List<String> get filteredItems {
     final userType = Api.userInfo.read('userType');
 
     if (userType != 'superAdmin') {
-      return allItems
-          .where((e) => e != "admin" && e != "superAdmin")
-          .toList();
+      return allItems.where((e) => e != "admin" && e != "superAdmin").toList();
     }
 
     return allItems;
-  }  final int maxFiles = 3;
+  }
+
+  final int maxFiles = 3;
   bool isPicking = false;
 
   @override
@@ -97,6 +98,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
     loginController.update();
   }
+
   Map<String, int> getPlanLimits() {
     if (loginController.userData.isEmpty) {
       loginController.maxFilesImage = 2;
@@ -110,8 +112,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
     final userData = loginController.userData.first;
 
-    final planDetails =
-    userData.details?["plan"]?["basePlan"]?["details"];
+    final planDetails = userData.details["plan"]?["basePlan"]?["details"];
 
     loginController.maxFilesImage =
         int.tryParse(planDetails?["imageCount"]?.toString() ?? "2") ?? 2;
@@ -132,6 +133,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
     return {};
   }
+
   Future<void> _refresh() async {
     await getLocation();
     loadJobDescription(loginController.descriptionData);
@@ -151,7 +153,10 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     if (position != null) {
       loginController.latitude = position.latitude;
       loginController.longitude = position.longitude;
-      final address = await getAddressFromLatLng(position.latitude, position.longitude);
+      final address = await getAddressFromLatLng(
+        position.latitude,
+        position.longitude,
+      );
       planController.currentLocation = address;
     }
   }
@@ -168,7 +173,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
   void loadJobDescription(dynamic data) {
     try {
-      List<Map<String, dynamic>> delta = [{"insert": "\n"}];
+      List<Map<String, dynamic>> delta = [
+        {"insert": "\n"},
+      ];
       if (data != null && data.toString().trim().isNotEmpty) {
         if (data is String) {
           delta = List<Map<String, dynamic>>.from(jsonDecode(data.trim()));
@@ -179,16 +186,24 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       _controller.document = Document.fromJson(delta);
       if (mounted) setState(() {});
     } catch (e) {
-      _controller.document = Document.fromJson([{"insert": "\n"}]);
+      _controller.document = Document.fromJson([
+        {"insert": "\n"},
+      ]);
       if (mounted) setState(() {});
     }
   }
+
   Future<void> pickLogo() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
     if (image == null) return;
     loginController.logoImages1.clear();
     if (kIsWeb) {
-      loginController.logoImages1.add(AppImage2(bytes: await image.readAsBytes()));
+      loginController.logoImages1.add(
+        AppImage2(bytes: await image.readAsBytes()),
+      );
     } else {
       loginController.logoImages1.add(AppImage2(file: File(image.path)));
     }
@@ -214,9 +229,13 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       if (result != null && result.files.isNotEmpty) {
         for (final file in result.files.take(remaining)) {
           if (kIsWeb) {
-            loginController.certificates1.add(AppImage2(bytes: file.bytes, name: file.name));
+            loginController.certificates1.add(
+              AppImage2(bytes: file.bytes, name: file.name),
+            );
           } else if (file.path != null) {
-            loginController.certificates1.add(AppImage2(file: File(file.path!)));
+            loginController.certificates1.add(
+              AppImage2(file: File(file.path!)),
+            );
           }
         }
         loginController.update();
@@ -273,20 +292,42 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     } else {
       XFile? pickedFile = isVideo
           ? await _picker.pickVideo(source: ImageSource.gallery)
-          : await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+          : await _picker.pickImage(
+              source: ImageSource.gallery,
+              imageQuality: 80,
+            );
       if (pickedFile == null) return;
-      loginController.images1.add(AppImage2(file: File(pickedFile.path), isVideo: isVideo));
+      loginController.images1.add(
+        AppImage2(file: File(pickedFile.path), isVideo: isVideo),
+      );
     }
 
     loginController.update();
   }
+
   List<Step> getSteps(bool isMobile) {
     return [
-      Step(title: Text(isMobile ? "" : "Personal"), content: _step1(isMobile), isActive: currentStep >= 0),
-      Step(title: Text(isMobile ? "" : "Professional"), content: _step2(isMobile), isActive: currentStep >= 1),
-      Step(title: Text(isMobile ? "" : "Uploads"), content: _step3(), isActive: currentStep >= 2),
+      Step(
+        title: Text(isMobile ? "" : "Personal"),
+        content: _step1(isMobile),
+        isActive: currentStep >= 0,
+      ),
+      Step(
+        title: Text(isMobile ? "" : "Professional"),
+        content: _step2(isMobile),
+        isActive: currentStep >= 1,
+      ),
+      Step(
+        title: Text(isMobile ? "" : "Uploads"),
+        content: _step3(),
+        isActive: currentStep >= 2,
+      ),
       if (loginController.selectedUserType == 'Job Seekers')
-        Step(title: Text(isMobile ? "" : "Education"), content: _step4(), isActive: currentStep >= 3),
+        Step(
+          title: Text(isMobile ? "" : "Education"),
+          content: _step4(),
+          isActive: currentStep >= 3,
+        ),
     ];
   }
 
@@ -300,7 +341,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     return Scaffold(
       key: _scaffoldKeyRegister,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       body: Row(
         children: [
           if (isLoggedIn && isDesktop) const AdminSideBar(),
@@ -315,7 +358,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                         padding: EdgeInsets.only(
                           left: isMobile ? 10.0 : 35.0,
                           right: isMobile ? 10.0 : 35.0,
-                          top: (isLoggedIn && !isDesktop) ? 56.0 : (isMobile ? 10.0 : 35.0),
+                          top: (isLoggedIn && !isDesktop)
+                              ? 56.0
+                              : (isMobile ? 10.0 : 35.0),
                           bottom: isMobile ? 10.0 : 35.0,
                         ),
                         child: ConstrainedBox(
@@ -324,44 +369,80 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
-                              boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const SizedBox(height: 20),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: isMobile ? 12.0 : 0),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: isMobile ? 12.0 : 0,
+                                  ),
                                   child: Text(
-                                    loginController.fullNameController.text.isNotEmpty ? "Edit Details" : "Register New User",
-                                    style: AppTextStyles.body(context, fontWeight: FontWeight.bold, color: AppColors.black),
+                                    loginController
+                                            .fullNameController
+                                            .text
+                                            .isNotEmpty
+                                        ? "Edit Details"
+                                        : "Register New User",
+                                    style: AppTextStyles.body(
+                                      context,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.black,
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                if (loginController.fullNameController.text.isEmpty)
+                                if (loginController
+                                    .fullNameController
+                                    .text
+                                    .isEmpty)
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: isMobile ? 12.0 : 0),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isMobile ? 12.0 : 0,
+                                    ),
                                     child: Text(
                                       "Fill in the details to create a new account",
-                                      style: AppTextStyles.caption(context, fontWeight: FontWeight.bold, color: AppColors.grey),
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.grey,
+                                      ),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                 Theme(
                                   data: Theme.of(context).copyWith(
-                                    colorScheme: const ColorScheme.light(primary: AppColors.primary),
+                                    colorScheme: const ColorScheme.light(
+                                      primary: AppColors.primary,
+                                    ),
                                   ),
                                   child: Stepper(
-                                    key: ValueKey(loginController.selectedUserType),
+                                    key: ValueKey(
+                                      loginController.selectedUserType,
+                                    ),
                                     type: StepperType.vertical,
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     steps: getSteps(isMobile),
                                     currentStep: currentStep,
                                     onStepContinue: () async {
-                                      int lastStep = loginController.selectedUserType == 'Job Seekers' ? 3 : 2;
+                                      int lastStep =
+                                          loginController.selectedUserType ==
+                                              'Job Seekers'
+                                          ? 3
+                                          : 2;
                                       if (currentStep == lastStep) {
-                                        if (_formKeyRegisterWeb.currentState!.validate()) {
+                                        if (_formKeyRegisterWeb.currentState!
+                                            .validate()) {
                                           await _handleRegistration();
                                         }
                                       } else {
@@ -369,13 +450,17 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                       }
                                     },
                                     onStepCancel: () {
-                                      if (currentStep > 0) setState(() => currentStep--);
+                                      if (currentStep > 0)
+                                        setState(() => currentStep--);
                                     },
                                     controlsBuilder: (context, details) {
                                       return Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 20),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 20,
+                                        ),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             if (currentStep != 0)
                                               OutlinedButton(
@@ -396,30 +481,38 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                             //   ),
                                             // ),
                                             ElevatedButton(
-                                              onPressed: loginController.isLoadingRegister
+                                              onPressed:
+                                                  loginController
+                                                      .isLoadingRegister
                                                   ? null
                                                   : details.onStepContinue,
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor: AppColors.primary,
+                                                backgroundColor:
+                                                    AppColors.primary,
                                                 foregroundColor: Colors.white,
                                               ),
-                                              child: loginController.isLoadingRegister
+                                              child:
+                                                  loginController
+                                                      .isLoadingRegister
                                                   ? const SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  color: Colors.white,
-                                                ),
-                                              )
+                                                      height: 20,
+                                                      width: 20,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                            strokeWidth: 2,
+                                                            color: Colors.white,
+                                                          ),
+                                                    )
                                                   : Text(
-                                                currentStep ==
-                                                    (loginController.selectedUserType == 'Job Seekers'
-                                                        ? 3
-                                                        : 2)
-                                                    ? "Submit"
-                                                    : "Next",
-                                              ),
+                                                      currentStep ==
+                                                              (loginController
+                                                                          .selectedUserType ==
+                                                                      'Job Seekers'
+                                                                  ? 3
+                                                                  : 2)
+                                                          ? "Submit"
+                                                          : "Next",
+                                                    ),
                                             ),
                                           ],
                                         ),
@@ -441,7 +534,8 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                       left: 10,
                       child: IconButton(
                         icon: Icon(Icons.menu, color: AppColors.black),
-                        onPressed: () => _scaffoldKeyRegister.currentState?.openDrawer(),
+                        onPressed: () =>
+                            _scaffoldKeyRegister.currentState?.openDrawer(),
                       ),
                     ),
                 ],
@@ -454,7 +548,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   }
 
   Future<void> _handleRegistration() async {
-   // final imageBytes = await _convertAppImages(loginController.editImages);
+    // final imageBytes = await _convertAppImages(loginController.editImages);
     final imageBytes = await _convertAppImage2s(loginController.images1);
     final logoBytes = await _convertAppImage2s(loginController.logoImages1);
     final certBytes = await _convertAppImage2s(loginController.certificates1);
@@ -470,9 +564,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     final location = await loginController.getLatLng(
       state: loginController.selectedState ?? '',
       district: loginController.selectedDistrict ?? '',
-      taluka:  loginController.selectedTaluka ?? '',
+      taluka: loginController.selectedTaluka ?? '',
       area: loginController.selectedVillage ?? '',
-      pincode:loginController.pinCodeController.text,
+      pincode: loginController.pinCodeController.text,
     );
 
     print(location);
@@ -485,11 +579,13 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       loginController.longitude = null;
     }
     await loginController.registerUser(
-      userId: (Api.userInfo.read('token') == null || Get.arguments?['userId'] == "0")
+      userId:
+          (Api.userInfo.read('token') == null ||
+              Get.arguments?['userId'] == "0")
           ? "0"
-          :(loginController.userData.isNotEmpty
-          ? loginController.userData.first.userId ?? ""
-          : ""),
+          : (loginController.userData.isNotEmpty
+                ? loginController.userData.first.userId ?? ""
+                : ""),
       userType: loginController.selectedUserType!,
       fullName: loginController.fullNameController.text,
       dob: loginController.dobController.text,
@@ -497,7 +593,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       email: loginController.emailController.text,
       confirmPassword: loginController.confirmPasswordController.text,
       addressLine1: loginController.addressLine1Controller.text ?? '',
-      addressLine2:  loginController.addressLine2Controller.text ?? '',
+      addressLine2: loginController.addressLine2Controller.text ?? '',
       taluk: loginController.selectedState ?? '',
       district: loginController.selectedDistrict ?? '',
       city: loginController.selectedTaluka ?? '',
@@ -512,22 +608,30 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       location: loginController.locationController.text,
       website: loginController.websiteController.text,
       description: jsonEncode(_controller.document.toDelta().toJson()),
-      adminId: branchId == "0" ? (Api.userInfo.read('userId') ?? "") : (loginController.selectUserId ?? ""),
+      adminId: branchId == "0"
+          ? (Api.userInfo.read('userId') ?? "")
+          : (loginController.selectUserId ?? ""),
       isAdmin: branchId == "0" ? "true" : "false",
       latitude: loginController.latitude?.toString() ?? "",
       longitude: loginController.longitude?.toString() ?? "",
-      jobCategory: loginController.selectedUserType == 'Job Seekers' ? (loginController.selectedCategories ?? []) : [],
+      jobCategory: loginController.selectedUserType == 'Job Seekers'
+          ? (loginController.selectedCategories ?? [])
+          : [],
       context: context,
     );
   }
+
   Future<List<Uint8List>> _convertAppImage2s(List<AppImage2> images) async {
     List<Uint8List> res = [];
     for (var img in images) {
-      if (kIsWeb && img.bytes != null) res.add(img.bytes!);
-      else if (img.file != null) res.add(await img.file!.readAsBytes());
+      if (kIsWeb && img.bytes != null) {
+        res.add(img.bytes!);
+      } else if (img.file != null)
+        res.add(await img.file!.readAsBytes());
     }
     return res;
   }
+
   Widget _responsiveRow(bool isMobile, Widget first, Widget second) {
     if (isMobile) {
       return Column(
@@ -536,16 +640,24 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       );
     }
     return Row(
-      children: [Expanded(child: first), const SizedBox(width: 15), Expanded(child: second)],
+      children: [
+        Expanded(child: first),
+        const SizedBox(width: 15),
+        Expanded(child: second),
+      ],
     );
   }
+
   Widget _step1(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _responsiveRow(
           isMobile,
-          CustomTextField(hint: "Full Name", controller: loginController.fullNameController),
+          CustomTextField(
+            hint: "Full Name",
+            controller: loginController.fullNameController,
+          ),
           CustomTextField(
             hint: "DOB",
             controller: loginController.dobController,
@@ -557,7 +669,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                 firstDate: DateTime(1900),
                 lastDate: DateTime.now(),
               );
-              if (p != null) loginController.dobController.text = "${p.day}-${p.month}-${p.year}";
+              if (p != null)
+                loginController.dobController.text =
+                    "${p.day}-${p.month}-${p.year}";
             },
           ),
         ),
@@ -565,37 +679,59 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         if (branchId != "0")
           _responsiveRow(
             isMobile,
-            CustomTextField(hint: "Email", controller: loginController.emailController),
-            CustomTextField(hint: "Mobile", controller: loginController.mobileController, maxLength: 10, keyboardType: TextInputType.number),
+            CustomTextField(
+              hint: "Email",
+              controller: loginController.emailController,
+            ),
+            CustomTextField(
+              hint: "Mobile",
+              controller: loginController.mobileController,
+              maxLength: 10,
+              keyboardType: TextInputType.number,
+            ),
           )
         else
-          CustomTextField(hint: "Mobile", controller: loginController.mobileController, maxLength: 10, keyboardType: TextInputType.number),
+          CustomTextField(
+            hint: "Mobile",
+            controller: loginController.mobileController,
+            maxLength: 10,
+            keyboardType: TextInputType.number,
+          ),
         if (Api.userInfo.read('token') == null) ...[
           const SizedBox(height: 15),
           _responsiveRow(
             isMobile,
-            CustomTextField(hint: "Password", controller: loginController.passwordController, isPassword: true),
-            CustomTextField(hint: "Confirm Password", controller: loginController.confirmPasswordController, isPassword: true),
+            CustomTextField(
+              hint: "Password",
+              controller: loginController.passwordController,
+              isPassword: true,
+            ),
+            CustomTextField(
+              hint: "Confirm Password",
+              controller: loginController.confirmPasswordController,
+              isPassword: true,
+            ),
           ),
         ],
         const SizedBox(height: 15),
         _responsiveRow(
-    isMobile,
-        CustomTextField(
-          hint: "Google map Link",
-          icon: Icons.location_on,
-          controller: loginController.locationController,
-          // fillColor: AppColors.white,
-          // borderColor: AppColors.grey,
+          isMobile,
+          CustomTextField(
+            hint: "Google map Link",
+            icon: Icons.location_on,
+            controller: loginController.locationController,
+            // fillColor: AppColors.white,
+            // borderColor: AppColors.grey,
+          ),
+          // const SizedBox(height: 15),
+          CustomTextField(
+            hint: "Website Link",
+            icon: Icons.web,
+            controller: loginController.websiteController,
+            // fillColor: AppColors.white,
+            // borderColor: AppColors.grey,
+          ),
         ),
-       // const SizedBox(height: 15),
-        CustomTextField(
-          hint: "Website Link",
-          icon: Icons.web,
-          controller: loginController.websiteController,
-          // fillColor: AppColors.white,
-          // borderColor: AppColors.grey,
-        ),)
       ],
     );
   }
@@ -608,20 +744,24 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
           hint: "User Type",
           items: filteredItems,
           selectedValue: loginController.selectedUserType,
-          onChanged: (v) => setState(() => loginController.selectedUserType = v),
+          onChanged: (v) =>
+              setState(() => loginController.selectedUserType = v),
         ),
         const SizedBox(height: 15),
 
-        if (loginController.selectedUserType != 'Job Seekers' && loginController.selectedUserType != null)
+        if (loginController.selectedUserType != 'Job Seekers' &&
+            loginController.selectedUserType != null)
           Padding(
-            padding: const EdgeInsets.only(top: 15,bottom: 15),
-            child:   CustomTextField(
-              hint: loginController.selectedUserType == 'Dental Shop'? "Shop Name":"${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
+            padding: const EdgeInsets.only(top: 15, bottom: 15),
+            child: CustomTextField(
+              hint: loginController.selectedUserType == 'Dental Shop'
+                  ? "Shop Name"
+                  : "${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
               icon: Icons.store,
               controller: loginController.typeNameController,
             ),
           ),
-       // const SizedBox(height: 15),
+        // const SizedBox(height: 15),
         _responsiveRow(
           isMobile,
           CustomTextField(
@@ -638,13 +778,22 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             controller: loginController.addressLine2Controller,
             // fillColor: AppColors.white,
             // borderColor: AppColors.grey,
-          ),),
+          ),
+        ),
         const SizedBox(height: 15),
-        _responsiveRow(isMobile, _buildStateDropdown(), _buildDistrictDropdown()),
+        _responsiveRow(
+          isMobile,
+          _buildStateDropdown(),
+          _buildDistrictDropdown(),
+        ),
         const SizedBox(height: 15),
         _responsiveRow(isMobile, _buildTalukaDropdown(), _buildAreaDropdown()),
         const SizedBox(height: 15),
-        CustomTextField(hint: "Pin Code", controller: loginController.pinCodeController, maxLength: 6),
+        CustomTextField(
+          hint: "Pin Code",
+          controller: loginController.pinCodeController,
+          maxLength: 6,
+        ),
         const SizedBox(height: 15),
         _buildRichTextEditor(),
       ],
@@ -666,7 +815,10 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             children: [
               QuillSimpleToolbar(
                 controller: _controller,
-                config: const QuillSimpleToolbarConfig(embedButtons: [], showBackgroundColorButton: false),
+                config: const QuillSimpleToolbarConfig(
+                  embedButtons: [],
+                  showBackgroundColorButton: false,
+                ),
               ),
               const Divider(height: 1),
               SizedBox(
@@ -675,7 +827,10 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                   controller: _controller,
                   scrollController: _scrollController,
                   focusNode: _focusNode,
-                  config: const QuillEditorConfig(placeholder: "Description...", padding: EdgeInsets.all(10)),
+                  config: const QuillEditorConfig(
+                    placeholder: "Description...",
+                    padding: EdgeInsets.all(10),
+                  ),
                 ),
               ),
             ],
@@ -703,7 +858,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             headerStyle: AppTextStyles.caption(context, color: Colors.black),
             listItemStyle: AppTextStyles.caption(context, color: Colors.black),
           ),
-          initialItem: stateItems.contains(c.selectedState) ? c.selectedState : null,
+          initialItem: stateItems.contains(c.selectedState)
+              ? c.selectedState
+              : null,
           onChanged: (v) {
             if (v != null) {
               c.selectedState = v;
@@ -738,7 +895,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             headerStyle: AppTextStyles.caption(context, color: Colors.black),
             listItemStyle: AppTextStyles.caption(context, color: Colors.black),
           ),
-          initialItem: districtItems.contains(c.selectedDistrict) ? c.selectedDistrict : null,
+          initialItem: districtItems.contains(c.selectedDistrict)
+              ? c.selectedDistrict
+              : null,
           onChanged: (v) {
             if (v != null) {
               c.selectedDistrict = v;
@@ -757,7 +916,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     return GetBuilder<LoginController>(
       builder: (c) {
         final talukaItems = c.talukas.map((e) => e.toString()).toList();
-        final selectedTaluka = talukaItems.contains(c.selectedTaluka) ? c.selectedTaluka : null;
+        final selectedTaluka = talukaItems.contains(c.selectedTaluka)
+            ? c.selectedTaluka
+            : null;
         return CustomDropdown<String>.search(
           hintText: "Taluka",
           items: talukaItems,
@@ -791,7 +952,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     return GetBuilder<LoginController>(
       builder: (c) {
         final villageItems = c.villages.map((e) => e.toString()).toList();
-        final selectedVillage = villageItems.contains(c.selectedVillage) ? c.selectedVillage : null;
+        final selectedVillage = villageItems.contains(c.selectedVillage)
+            ? c.selectedVillage
+            : null;
         return CustomDropdown<String>.search(
           hintText: "Area",
           items: villageItems,
@@ -830,14 +993,16 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
         _buildImagePicker(),
         const SizedBox(height: 20),
-        if(Api.userInfo.read('userId')!=null)
-          Column(children: [
-            const Text("Upload Video"),
-            const SizedBox(height: 10),
+        if (Api.userInfo.read('userId') != null)
+          Column(
+            children: [
+              const Text("Upload Video"),
+              const SizedBox(height: 10),
 
-            _buildVideoPicker(),
-            const SizedBox(height: 20),
-          ],),
+              _buildVideoPicker(),
+              const SizedBox(height: 20),
+            ],
+          ),
         const Text("Logo / Profile Image"),
         const SizedBox(height: 10),
         _buildLogoPicker(),
@@ -846,66 +1011,83 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   }
 
   Widget _buildCertificatePicker() {
-    return GetBuilder<LoginController>(builder: (c) {
-      return Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: [
-          ...c.certificates1.map((img) => _buildThumb(img, () {
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        return Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            ...c.certificates1.map(
+              (img) => _buildThumb(img, () {
                 c.certificates1.remove(img);
                 c.update();
-              })),
-          if (c.certificates1.length < maxFiles) _buildAddThumb(pickCertificates),
-        ],
-      );
-    });
+              }),
+            ),
+            if (c.certificates1.length < maxFiles)
+              _buildAddThumb(pickCertificates),
+          ],
+        );
+      },
+    );
   }
+
   Widget _buildImagePicker() {
-    return GetBuilder<LoginController>(builder: (c) {
-      final imageItems = c.images1.where((img) => !img.isVideo).toList();
-      return Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: [
-          ...imageItems.map((img) => _buildThumb(img, () {
-            c.images1.remove(img);
-            c.update();
-          })),
-          if (imageItems.length < c.maxFilesImage)
-            _buildAddThumb(() => pickMedia("image")),
-        ],
-      );
-    });
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        final imageItems = c.images1.where((img) => !img.isVideo).toList();
+        return Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            ...imageItems.map(
+              (img) => _buildThumb(img, () {
+                c.images1.remove(img);
+                c.update();
+              }),
+            ),
+            if (imageItems.length < c.maxFilesImage)
+              _buildAddThumb(() => pickMedia("image")),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildVideoPicker() {
-    return GetBuilder<LoginController>(builder: (c) {
-      final videoItems = c.images1.where((img) => img.isVideo).toList();
-      return Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: [
-          ...videoItems.map((img) => _buildThumb(img, () {
-            c.images1.remove(img);
-            c.update();
-          })),
-          if (videoItems.length < c.maxFilesVideo)
-            _buildAddThumb(() => pickMedia("video")),
-        ],
-      );
-    });
-  }
-  Widget _buildLogoPicker() {
-    return GetBuilder<LoginController>(builder: (c) {
-      return Center(
-        child: c.logoImages1.isEmpty
-            ? _buildAddThumb(pickLogo)
-            : _buildThumb(c.logoImages1.first, () {
-                c.logoImages1.clear();
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        final videoItems = c.images1.where((img) => img.isVideo).toList();
+        return Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            ...videoItems.map(
+              (img) => _buildThumb(img, () {
+                c.images1.remove(img);
                 c.update();
               }),
-      );
-    });
+            ),
+            if (videoItems.length < c.maxFilesVideo)
+              _buildAddThumb(() => pickMedia("video")),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildLogoPicker() {
+    return GetBuilder<LoginController>(
+      builder: (c) {
+        return Center(
+          child: c.logoImages1.isEmpty
+              ? _buildAddThumb(pickLogo)
+              : _buildThumb(c.logoImages1.first, () {
+                  c.logoImages1.clear();
+                  c.update();
+                }),
+        );
+      },
+    );
   }
 
   Widget _buildThumb(AppImage2 img, VoidCallback onRem) {
@@ -914,8 +1096,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         Container(
           width: 120,
           height: 120,
-          decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(8)),
-          child: ClipRRect(borderRadius: BorderRadius.circular(8), child: _buildImage(img)),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: _buildImage(img),
+          ),
         ),
         if (img.isVideo)
           const Positioned(
@@ -926,7 +1114,10 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         Positioned(
           top: 0,
           right: 0,
-          child: GestureDetector(onTap: onRem, child: const Icon(Icons.cancel, color: Colors.red, size: 20)),
+          child: GestureDetector(
+            onTap: onRem,
+            child: const Icon(Icons.cancel, color: Colors.red, size: 20),
+          ),
         ),
       ],
     );
@@ -952,20 +1143,43 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     if (image.isVideo) {
       return Container(
         color: Colors.black87,
-        child: const Center(child: Icon(Icons.videocam, color: Colors.white, size: 40)),
+        child: const Center(
+          child: Icon(Icons.videocam, color: Colors.white, size: 40),
+        ),
       );
     }
-    if (kIsWeb && image.bytes != null) return Image.memory(image.bytes!, width: 120, height: 120, fit: BoxFit.cover);
-    if (image.file != null) return Image.file(image.file!, width: 120, height: 120, fit: BoxFit.cover);
+    if (kIsWeb && image.bytes != null)
+      return Image.memory(
+        image.bytes!,
+        width: 120,
+        height: 120,
+        fit: BoxFit.cover,
+      );
+    if (image.file != null)
+      return Image.file(
+        image.file!,
+        width: 120,
+        height: 120,
+        fit: BoxFit.cover,
+      );
     if (image.url != null && image.url!.isNotEmpty) {
       final url = image.url!.toLowerCase();
-      if (url.endsWith('.mp4') || url.endsWith('.mov') || url.endsWith('.avi')) {
+      if (url.endsWith('.mp4') ||
+          url.endsWith('.mov') ||
+          url.endsWith('.avi')) {
         return Container(
           color: Colors.black87,
-          child: const Center(child: Icon(Icons.videocam, color: Colors.white, size: 40)),
+          child: const Center(
+            child: Icon(Icons.videocam, color: Colors.white, size: 40),
+          ),
         );
       }
-      return Image.network(image.url!, width: 120, height: 120, fit: BoxFit.cover);
+      return Image.network(
+        image.url!,
+        width: 120,
+        height: 120,
+        fit: BoxFit.cover,
+      );
     }
     return const Icon(Icons.image);
   }
@@ -973,10 +1187,19 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   Widget _step4() {
     return Column(
       children: [
-        const Text("Education Details", style: TextStyle(fontWeight: FontWeight.bold)),
-        CustomTextField(hint: "UG College", controller: loginController.ugCollege),
+        const Text(
+          "Education Details",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        CustomTextField(
+          hint: "UG College",
+          controller: loginController.ugCollege,
+        ),
         const SizedBox(height: 10),
-        CustomTextField(hint: "UG Degree", controller: loginController.ugDegree),
+        CustomTextField(
+          hint: "UG Degree",
+          controller: loginController.ugDegree,
+        ),
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () => loginController.addExperienceField(),
@@ -984,7 +1207,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         ),
         GetBuilder<LoginController>(
           builder: (c) => Column(
-            children: [for (int i = 0; i < c.experienceList.length; i++) _expField(i)],
+            children: [
+              for (int i = 0; i < c.experienceList.length; i++) _expField(i),
+            ],
           ),
         ),
       ],

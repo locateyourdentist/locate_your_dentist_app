@@ -14,8 +14,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:locate_your_dentist/web_modules/common/filter_side_bar.dart';
 import 'package:excel/excel.dart';
 
-import '../../modules/notification_page/notificationController.dart';
-
 class ModernUserTable extends StatefulWidget {
   @override
   State<ModernUserTable> createState() => _ModernUserTableState();
@@ -27,14 +25,14 @@ class _ModernUserTableState extends State<ModernUserTable> {
   String? userType;
   final TextEditingController searchController = TextEditingController();
   final ScrollController _horizontalScrollController = ScrollController();
-  final notificationController=Get.put(NotificationController());
-
   bool isExporting = false;
+
   @override
   void initState() {
     super.initState();
-    _refresh();
+   // _refresh();
   }
+
   @override
   void dispose() {
     searchController.dispose();
@@ -43,10 +41,10 @@ class _ModernUserTableState extends State<ModernUserTable> {
   }
 
   Future<void> _refresh() async {
-    // await loginController.getProfileDetails(
-    //   Api.userInfo.read('sUserType1')??"",  loginController.selectedState,
-    //   loginController.selectedDistricts,
-    //   loginController.selectedTalukas,loginController.selectedVillages,Api.userInfo.read('token')==null? 'true':"", '', '', '', '', context,);
+    await loginController.getProfileDetails(
+      Api.userInfo.read('sUserType1')??"",  loginController.selectedState,
+      loginController.selectedDistricts,
+      loginController.selectedTalukas,loginController.selectedVillages,Api.userInfo.read('token')==null? 'true':"", '', '', '', '', context,);
     await loginController.fetchStates();
     loginController.selectedState = null;
     loginController.selectedDistrict = null;
@@ -250,16 +248,6 @@ class _ModernUserTableState extends State<ModernUserTable> {
       //await loginController.getProfileDetails(userType, loginController.selectedState, loginController.selectedDistrict, loginController.selectedTaluka,loginController.selectedArea, 'true',safeLat, safeLng, distance, searchController.text, context);
     }
   }
-  void _clearAllFilters() async {
-    loginController.selectedCategories.clear();
-    loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedVillage = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
-    loginController.selectedVillages.clear();
-    loginController.selectedDistricts.clear();
-    loginController.selectedTalukas.clear();
-    loginController.update();
-    await loginController.getProfileDetails("", "", [], [],[] ,"", "", "", "", "", context);
-  }
-
   Widget _buildActiveFilters(bool isMobile) {
     bool hasFilters = loginController.selectedDistance != null || loginController.selectedState != null || loginController.selectedDistrict != null || loginController.selectedTaluka != null || loginController.selectedJobType != null || loginController.selectedSalary != null || loginController.selectedCategories.isNotEmpty;
     if (!hasFilters) return const SizedBox.shrink();
@@ -269,23 +257,8 @@ class _ModernUserTableState extends State<ModernUserTable> {
         spacing: 8, runSpacing: 8,
         children: [
           if (loginController.selectedState != null) InputChip(label: Text(loginController.selectedState!), onDeleted: () { loginController.selectedState = null; loginController.update(); }),
-          // if (loginController.selectedDistricts != null) InputChip(label: Text(loginController.selectedDistrict!), onDeleted: () { loginController.selectedDistrict = null; loginController.update(); }),
-          //if (loginController.selectedTaluka != null) InputChip(label: Text(loginController.selectedTaluka!), onDeleted: () { loginController.selectedTaluka = null; loginController.update(); }),
-
-          ...loginController.selectedDistricts.map(
-                  (village) => InputChip(
-                label: Text(village),
-                onDeleted: () {
-                  loginController.selectedDistricts.remove(village);
-                  loginController.update();
-                },)),
-          ...loginController.selectedTalukas.map(
-                  (village) => InputChip(
-                label: Text(village),
-                onDeleted: () {
-                  loginController.selectedTalukas.remove(village);
-                  loginController.update();
-                },)),
+          if (loginController.selectedDistrict != null) InputChip(label: Text(loginController.selectedDistrict!), onDeleted: () { loginController.selectedDistrict = null; loginController.update(); }),
+          if (loginController.selectedTaluka != null) InputChip(label: Text(loginController.selectedTaluka!), onDeleted: () { loginController.selectedTaluka = null; loginController.update(); }),
           ...loginController.selectedVillages.map(
                 (village) => InputChip(
               label: Text(village),
@@ -298,6 +271,14 @@ class _ModernUserTableState extends State<ModernUserTable> {
         ],
       ),
     );
+  }
+
+  void _clearAllFilters() async {
+    loginController.selectedCategories.clear();
+    loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedVillage = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
+    loginController.selectedVillages.clear();
+    loginController.update();
+    await loginController.getProfileDetails("", "", [], [],[] ,"", "", "", "", "", context);
   }
 
   Widget _buildExportButton(List filteredProfiles) {

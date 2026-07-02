@@ -19,6 +19,7 @@ class ReportsDashboardPage extends StatefulWidget {
   @override
   State<ReportsDashboardPage> createState() => _ReportsDashboardPageState();
 }
+
 class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
   final PlanController controller = Get.put(PlanController());
   final loginController = Get.put(LoginController());
@@ -63,9 +64,7 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
 
     final incomeSheet = excel['Income'];
 
-    incomeSheet.appendRow([
-      TextCellValue("Income Report"),
-    ]);
+    incomeSheet.appendRow([TextCellValue("Income Report")]);
 
     incomeSheet.merge(
       CellIndex.indexByString("A1"),
@@ -74,10 +73,7 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
 
     incomeSheet.cell(CellIndex.indexByString("A1")).cellStyle = titleStyle;
 
-    incomeSheet.appendRow([
-      TextCellValue("Category"),
-      TextCellValue("Income"),
-    ]);
+    incomeSheet.appendRow([TextCellValue("Category"), TextCellValue("Income")]);
 
     incomeSheet.cell(CellIndex.indexByString("A2")).cellStyle = headerStyle;
     incomeSheet.cell(CellIndex.indexByString("B2")).cellStyle = headerStyle;
@@ -98,17 +94,19 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
         TextCellValue(incomeData[i][1].toString()),
       ]);
 
-      incomeSheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).cellStyle =
+      incomeSheet
+              .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
+              .cellStyle =
           cellStyle;
-      incomeSheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).cellStyle =
+      incomeSheet
+              .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row))
+              .cellStyle =
           cellStyle;
     }
 
     final expenseSheet = excel['Expenses'];
 
-    expenseSheet.appendRow([
-      TextCellValue("Expense Report"),
-    ]);
+    expenseSheet.appendRow([TextCellValue("Expense Report")]);
 
     expenseSheet.appendRow([
       TextCellValue("Title"),
@@ -120,8 +118,9 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
 
     for (int i = 0; i < 5; i++) {
       expenseSheet
-          .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 1))
-          .cellStyle = headerStyle;
+              .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 1))
+              .cellStyle =
+          headerStyle;
     }
 
     for (int i = 0; i < expenses.length; i++) {
@@ -132,21 +131,20 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
         TextCellValue(e.title ?? ""),
         TextCellValue(e.category ?? ""),
         TextCellValue((e.amount ?? 0).toString()),
-        TextCellValue((e.state?.isEmpty ?? true) ? "Others" : e.state!),
+        TextCellValue((e.state.isEmpty ?? true) ? "Others" : e.state),
         TextCellValue(e.createdDate.toString().split('T')[0]),
       ]);
 
       for (int c = 0; c < 5; c++) {
         expenseSheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: row))
-            .cellStyle = cellStyle;
+                .cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: row))
+                .cellStyle =
+            cellStyle;
       }
     }
     final stateSheet = excel['StateWise'];
 
-    stateSheet.appendRow([
-      TextCellValue("State Wise Expense"),
-    ]);
+    stateSheet.appendRow([TextCellValue("State Wise Expense")]);
 
     stateSheet.appendRow([
       TextCellValue("State"),
@@ -161,23 +159,28 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
       final row = i + 3;
 
       stateSheet.appendRow([
-        TextCellValue((s['state'] == null || s['state'] == "")
-            ? "Others"
-            : s['state'].toString()),
+        TextCellValue(
+          (s['state'] == null || s['state'] == "")
+              ? "Others"
+              : s['state'].toString(),
+        ),
         TextCellValue((s['totalExpense'] ?? 0).toString()),
       ]);
 
       stateSheet
-          .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
-          .cellStyle = cellStyle;
+              .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
+              .cellStyle =
+          cellStyle;
 
       stateSheet
-          .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row))
-          .cellStyle = cellStyle;
+              .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row))
+              .cellStyle =
+          cellStyle;
     }
     final summary = excel['Summary'];
 
-    final totalIncome = incomeModel.posterIncome +
+    final totalIncome =
+        incomeModel.posterIncome +
         incomeModel.basePlanIncome +
         incomeModel.addOnsIncome +
         incomeModel.jobIncome +
@@ -206,42 +209,58 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
       mimeType: MimeType.microsoftExcel,
     );
   }
+
   String buildFileName({
     required String state,
     String? fromDate,
     String? toDate,
   }) {
-    final safeState = (state.isEmpty) ? "AllStates" : state.replaceAll(" ", "_");
+    final safeState = (state.isEmpty)
+        ? "AllStates"
+        : state.replaceAll(" ", "_");
 
     final from = (fromDate == null || fromDate.isEmpty) ? "AllTime" : fromDate;
     final to = (toDate == null || toDate.isEmpty) ? "AllTime" : toDate;
 
-    return "Finance_${safeState}_${from}_to_${to}.xlsx";
+    return "Finance_${safeState}_${from}_to_$to.xlsx";
   }
+
   void addSheetTitle({
     required Sheet sheet,
     required String title,
     required CellStyle style,
   }) {
-    sheet.merge(
-      CellIndex.indexByString("A1"),
-      CellIndex.indexByString("E1"),
-    );
+    sheet.merge(CellIndex.indexByString("A1"), CellIndex.indexByString("E1"));
 
     sheet.cell(CellIndex.indexByString("A1"))
       ..value = TextCellValue(title)
       ..cellStyle = style;
   }
+
   @override
   void initState() {
     super.initState();
     _refresh();
   }
+
   Future<void> _refresh() async {
-   await controller.getIncomeDetailsByPlan(context: context);
-   await controller.getExpense(month: "", year: selectedYear);
-   await loginController.getProfileDetails('', '', [], [],[], false.toString(),'','','','', context);
+    await controller.getIncomeDetailsByPlan(context: context);
+    await controller.getExpense(month: "", year: selectedYear);
+    await loginController.getProfileDetails(
+      '',
+      '',
+      [],
+      [],
+      [],
+      false.toString(),
+      '',
+      '',
+      '',
+      '',
+      context,
+    );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -267,10 +286,7 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
                 ),
               ),
               child: const Center(
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.white,
-                ),
+                child: Icon(Icons.arrow_back, color: AppColors.white),
               ),
             ),
           ),
@@ -283,108 +299,111 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
             child: controller.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primary, AppColors.secondary],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        Text(
-                          "Total Income",
-                          style: AppTextStyles.body(
-                              context,
-                              color: AppColors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          "\₹ ${controller.income?.total.toStringAsFixed(2) ?? 0}",
-                          style: AppTextStyles.body(
-                              context,
-                              color: AppColors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          "Total Expenses",
-                          style: AppTextStyles.subtitle(
-                              context,
-                              color: AppColors.white,
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: const LinearGradient(
+                              colors: [AppColors.primary, AppColors.secondary],
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Total Income",
+                                style: AppTextStyles.body(
+                                  context,
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                "₹ ${controller.income?.total.toStringAsFixed(2) ?? 0}",
+                                style: AppTextStyles.body(
+                                  context,
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                "Total Expenses",
+                                style: AppTextStyles.subtitle(
+                                  context,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                "₹ ${controller.total.toStringAsFixed(2)}",
+                                style: AppTextStyles.caption(
+                                  context,
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                          "\₹ ${controller.total.toStringAsFixed(2)}",
-                          style: AppTextStyles.caption(
-                              context,
-                              color: AppColors.white,
-                              fontWeight: FontWeight.bold),
+
+                        const SizedBox(height: 30),
+
+                        GridView(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 1,
+                                childAspectRatio: 2.5,
+                                crossAxisSpacing: 15,
+                                mainAxisSpacing: 15,
+                              ),
+                          children: [
+                            _metricCard(
+                              title: "Income",
+                              value:
+                                  "₹ ${controller.income?.total.toStringAsFixed(2)}",
+                              color: Colors.green,
+                              onTap: () => Get.toNamed('/viewIncomePage'),
+                            ),
+                            _metricCard(
+                              title: "Expenses",
+                              value: "₹ ${controller.total.toStringAsFixed(2)}",
+                              color: Colors.red,
+                              onTap: () => Get.toNamed('/viewExpensePage'),
+                            ),
+                            GetBuilder<LoginController>(
+                              builder: (controller) {
+                                return _metricCard(
+                                  title: "Total Users",
+                                  value: loginController.profileList.length
+                                      .toString(),
+                                  color: Colors.blue,
+                                  onTap: () {},
+                                  //onTap: () => Get.toNamed('/usersPage'),
+                                );
+                              },
+                            ),
+                          ],
                         ),
+
+                        const SizedBox(height: 30),
                       ],
                     ),
                   ),
-
-                  const SizedBox(height: 30),
-
-                  GridView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                      childAspectRatio: 2.5,
-                      crossAxisSpacing: 15,
-                      mainAxisSpacing: 15,
-                    ),
-                    children: [
-                      _metricCard(
-                        title: "Income",
-                        value:
-                        "\₹ ${controller.income?.total.toStringAsFixed(2)}",
-                        color: Colors.green,
-                        onTap: () => Get.toNamed('/viewIncomePage'),
-                      ),
-                      _metricCard(
-                        title: "Expenses",
-                        value: "\₹ ${controller.total.toStringAsFixed(2)}",
-                        color: Colors.red,
-                        onTap: () => Get.toNamed('/viewExpensePage'),
-                      ),
-                      GetBuilder<LoginController>(
-                          builder: (controller) {
-                            return _metricCard(
-                            title: "Total Users",
-                            value: loginController.profileList.length.toString(),
-                            color: Colors.blue,
-                              onTap: (){}
-                            //onTap: () => Get.toNamed('/usersPage'),
-                          );
-                        }
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 30),
-
-                ],
-              ),
-            ),
           );
         },
       ),
@@ -392,21 +411,22 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
     );
   }
 
-  Widget _metricCard(
-      {required String title,
-        required String value,
-        required Color color,
-        required VoidCallback onTap}) {
+  Widget _metricCard({
+    required String title,
+    required String value,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.3),
+              color: color.withValues(alpha: 0.3),
               blurRadius: 6,
               offset: const Offset(2, 4),
             ),
@@ -418,18 +438,28 @@ class _ReportsDashboardPageState extends State<ReportsDashboardPage> {
             Text(
               title,
               style: AppTextStyles.caption(
-                  Get.context!, color: color, fontWeight: FontWeight.bold),
+                Get.context!,
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               value,
               style: AppTextStyles.caption(
-                  Get.context!, color: color, fontWeight: FontWeight.bold),
+                Get.context!,
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
 
-            CircleAvatar(child: IconButton(onPressed: onTap, icon: Icon(Icons.arrow_forward,color: color,),)
-            )
+            CircleAvatar(
+              child: IconButton(
+                onPressed: onTap,
+                icon: Icon(Icons.arrow_forward, color: color),
+              ),
+            ),
           ],
         ),
       ),

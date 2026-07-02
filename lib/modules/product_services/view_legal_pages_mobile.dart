@@ -43,21 +43,25 @@ class _LegalPagesMobileViewState extends State<LegalPagesMobileView> {
     controller = QuillController.basic();
     loadInitialData();
   }
+
   Future<void> loadInitialData() async {
     final data = await serviceController.getPrivacyPolicyDetails(
-      selectedTitle!,
+      selectedTitle,
       context,
     );
 
     controller.clear();
     loadDescription(data);
   }
+
   void loadDescription(dynamic data) {
     try {
       List<Map<String, dynamic>> delta = [];
 
       if (data == null || data.toString().trim().isEmpty) {
-        delta = [{"insert": "\n"}];
+        delta = [
+          {"insert": "\n"},
+        ];
       } else {
         dynamic decoded = data;
 
@@ -68,7 +72,9 @@ class _LegalPagesMobileViewState extends State<LegalPagesMobileView> {
         if (decoded is List) {
           delta = List<Map<String, dynamic>>.from(decoded);
         } else {
-          delta = [{"insert": "\n"}];
+          delta = [
+            {"insert": "\n"},
+          ];
         }
       }
 
@@ -78,14 +84,11 @@ class _LegalPagesMobileViewState extends State<LegalPagesMobileView> {
         document: Document.fromJson(delta),
         selection: const TextSelection.collapsed(offset: 0),
         config: const QuillControllerConfig(
-          clipboardConfig: QuillClipboardConfig(
-            enableExternalRichPaste: true,
-          ),
+          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
         ),
       );
 
       if (mounted) setState(() {});
-
     } catch (e) {
       print("Quill load error: $e");
 
@@ -93,6 +96,7 @@ class _LegalPagesMobileViewState extends State<LegalPagesMobileView> {
       if (mounted) setState(() {});
     }
   }
+
   @override
   void dispose() {
     controller.dispose();
@@ -100,15 +104,21 @@ class _LegalPagesMobileViewState extends State<LegalPagesMobileView> {
     _scrollController.dispose();
     super.dispose();
   }
+
   @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(selectedTitle??"",style: AppTextStyles.subtitle(context,color: AppColors.white),),
-        iconTheme: const IconThemeData(color: AppColors.white), flexibleSpace: Container(
+      appBar: AppBar(
+        title: Text(
+          selectedTitle ?? "",
+          style: AppTextStyles.subtitle(context, color: AppColors.white),
+        ),
+        iconTheme: const IconThemeData(color: AppColors.white),
+        flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.primary,AppColors.secondary],
+              colors: [AppColors.primary, AppColors.secondary],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -119,7 +129,6 @@ class _LegalPagesMobileViewState extends State<LegalPagesMobileView> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-        
             // Padding(
             //   padding: const EdgeInsets.all(12),
             //   child: DropdownButtonFormField<String>(
@@ -155,7 +164,6 @@ class _LegalPagesMobileViewState extends State<LegalPagesMobileView> {
             //     },
             //   ),
             // ),
-        
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -178,7 +186,6 @@ class _LegalPagesMobileViewState extends State<LegalPagesMobileView> {
                 ],
               ),
             ),
-        
 
             Container(
               margin: const EdgeInsets.all(12),
@@ -187,10 +194,7 @@ class _LegalPagesMobileViewState extends State<LegalPagesMobileView> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: const [
-                  BoxShadow(
-                    blurRadius: 10,
-                    color: Colors.black12,
-                  )
+                  BoxShadow(blurRadius: 10, color: Colors.black12),
                 ],
               ),
               child: KeyedSubtree(

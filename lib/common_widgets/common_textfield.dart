@@ -16,9 +16,9 @@ class CustomTextField extends StatefulWidget {
   final bool readOnly;
   final VoidCallback? onTap;
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.hint,
-     this.icon,
+    this.icon,
     this.isPassword = false,
     this.controller,
     this.validator,
@@ -29,10 +29,11 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType,
     this.readOnly = false,
     this.onTap,
-  }) : super(key: key);
+  });
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
 }
+
 class _CustomTextFieldState extends State<CustomTextField> {
   late bool _obscureText;
   @override
@@ -40,6 +41,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     super.initState();
     _obscureText = widget.isPassword;
   }
+
   @override
   Widget build(BuildContext context) {
     final Color fill = widget.fillColor ?? Colors.grey[100]!;
@@ -60,16 +62,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
         labelStyle: AppTextStyles.caption(context, color: AppColors.grey),
         suffixIcon: widget.isPassword
             ? IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility_off : Icons.visibility,
-            color: AppColors.grey,
-          ),
-          onPressed: () {
-            setState(() {
-              _obscureText = !_obscureText;
-            });
-          },
-        )
+                icon: Icon(
+                  _obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: AppColors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              )
             : null,
         filled: true,
         fillColor: fill,
@@ -99,14 +101,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
           borderSide: const BorderSide(color: Colors.redAccent, width: 2),
         ),
       ),
-      validator: widget.validator ??
-              (value) {
+      validator:
+          widget.validator ??
+          (value) {
             if (value == null || value.isEmpty) {
               return "${widget.hint} cannot be empty";
             }
             if (widget.hint.toLowerCase() == "email" &&
-                !RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
-                    .hasMatch(value)) {
+                !RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$").hasMatch(value)) {
               return "Enter a valid email";
             }
             return null;
@@ -117,22 +119,22 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
 class CustomDropdownField extends StatelessWidget {
   final String hint;
- // final IconData icon;
+  // final IconData icon;
   final List<String> items;
   final String? selectedValue;
   final ValueChanged<String?>? onChanged;
   final Color? fillColor;
   final Color? borderColor;
   const CustomDropdownField({
-    Key? key,
+    super.key,
     required this.hint,
     //required this.icon,
     required this.items,
     required this.selectedValue,
     required this.onChanged,
-     this.fillColor,
-     this.borderColor
-  }) : super(key: key);
+    this.fillColor,
+    this.borderColor,
+  });
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -146,8 +148,16 @@ class CustomDropdownField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hint,
           labelText: hint,
-          hintStyle: AppTextStyles.caption(context,fontWeight: FontWeight.normal, color: AppColors.grey),
-          labelStyle: AppTextStyles.caption(context,fontWeight: FontWeight.normal, color: AppColors.grey),
+          hintStyle: AppTextStyles.caption(
+            context,
+            fontWeight: FontWeight.normal,
+            color: AppColors.grey,
+          ),
+          labelStyle: AppTextStyles.caption(
+            context,
+            fontWeight: FontWeight.normal,
+            color: AppColors.grey,
+          ),
           //prefixIcon: Icon(icon, color: AppColors.grey),
           filled: true,
           fillColor: fill,
@@ -171,33 +181,44 @@ class CustomDropdownField extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(color: Colors.redAccent, width: 2),
           ),
-        //   border: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(12),
-        //     borderSide:  BorderSide(color: outerBorderColor, width: 1.5),
-        //   ),enabledBorder: OutlineInputBorder(
-        //   borderRadius: BorderRadius.circular(10),
-        //   borderSide:  BorderSide(color: outerBorderColor, width: 1.5),
-        // ),
-        //   focusedBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(10),
-        //     borderSide: const BorderSide(color: AppColors.primary, width: 2),
-        //   ),
 
+          //   border: OutlineInputBorder(
+          //     borderRadius: BorderRadius.circular(12),
+          //     borderSide:  BorderSide(color: outerBorderColor, width: 1.5),
+          //   ),enabledBorder: OutlineInputBorder(
+          //   borderRadius: BorderRadius.circular(10),
+          //   borderSide:  BorderSide(color: outerBorderColor, width: 1.5),
+          // ),
+          //   focusedBorder: OutlineInputBorder(
+          //     borderRadius: BorderRadius.circular(10),
+          //     borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          //   ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 12),
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             isExpanded: true,
-            value: (selectedValue != null && items.contains(selectedValue)) ? selectedValue : null,
-            style: AppTextStyles.caption(context, color: Colors.black,),
+            value: (selectedValue != null && items.contains(selectedValue))
+                ? selectedValue
+                : null,
+            style: AppTextStyles.caption(context, color: Colors.black),
             items: items
                 .map(
                   (e) => DropdownMenuItem<String>(
-                value: e,
-                child: Text(e,textAlign: TextAlign.center,overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.caption(context, color: AppColors.black,fontWeight: FontWeight.normal),),
-              ),
-            ).toList(),
+                    value: e,
+                    child: Text(
+                      e,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.caption(
+                        context,
+                        color: AppColors.black,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
             onChanged: onChanged,
           ),
         ),

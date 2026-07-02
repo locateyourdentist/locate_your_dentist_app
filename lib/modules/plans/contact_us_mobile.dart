@@ -9,6 +9,7 @@ import 'package:locate_your_dentist/modules/contact_form/contact_controller.dart
 import 'package:get/get.dart';
 
 import '../../model/contact_model_web.dart';
+
 class ContactsMobilePage extends StatefulWidget {
   const ContactsMobilePage({super.key});
 
@@ -22,24 +23,20 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
-  final contactController=Get.put(ContactController());
+  final contactController = Get.put(ContactController());
   final _formKeyPublicContactProfile = GlobalKey<FormState>();
-  final loginController=Get.put(LoginController());
+  final loginController = Get.put(LoginController());
 
   List<Map<String, dynamic>> contacts = [];
 
-  List<String> states = [
-    "All",
-    "Tamil Nadu",
-    "Kerala",
-    "Andhra Pradesh",
-  ];
+  List<String> states = ["All", "Tamil Nadu", "Kerala", "Andhra Pradesh"];
 
   @override
   void initState() {
     super.initState();
     loginController.getAllContacts(context);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,19 +47,19 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Container(
                     width: double.infinity,
                     height: 180,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        image: const AssetImage('assets/images/contactss.jpg'),       fit: BoxFit.cover,
+                        image: AssetImage('assets/images/contactss.jpg'),
+                        fit: BoxFit.cover,
                       ),
                     ),
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.primary
+                        color: AppColors.primary,
                         // color: Colors.black.withOpacity(0.5),
                       ),
                       child: Column(
@@ -127,20 +124,19 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
         },
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
-
     );
   }
+
   Widget _buildContactList(LoginController controller) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(vertical: 10),
       itemCount: controller.contactListApi.length,
       itemBuilder: (context, index) {
-        return _modernContactCard(
-          controller.contactListApi[index],
-        );
+        return _modernContactCard(controller.contactListApi[index]);
       },
     );
   }
+
   Widget contactForm() {
     final size = MediaQuery.of(context).size.width;
     return Container(
@@ -151,9 +147,9 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 10,
-          )
+          ),
         ],
       ),
       child: Form(
@@ -161,7 +157,6 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Text(
               "Send a Contact Request",
               style: AppTextStyles.subtitle(context),
@@ -176,10 +171,10 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
             ),
             SizedBox(height: size * 0.03),
             CustomTextField(
-                hint: "Email",
-                icon: Icons.email,
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress
+              hint: "Email",
+              icon: Icons.email,
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: size * 0.03),
 
@@ -206,26 +201,38 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
               icon: Icons.text_fields,
               controller: messageController,
               fillColor: Colors.grey.shade100,
-              borderColor: AppColors.white,maxLines: 5,
+              borderColor: AppColors.white,
+              maxLines: 5,
             ),
 
             const SizedBox(height: 20),
             Center(
               child: SizedBox(
-                width: size*0.25,
+                width: size * 0.25,
                 child: ElevatedButton(
-                  onPressed: ()async{
+                  onPressed: () async {
                     if (_formKeyPublicContactProfile.currentState!.validate()) {
                       await contactController.postPublicContactDetail(
-                          emailController.text, phoneController.text,
-                          nameController.text, messageController.text, context);
+                        emailController.text,
+                        phoneController.text,
+                        nameController.text,
+                        messageController.text,
+                        context,
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child:  Text("Submit",style: AppTextStyles.caption(context,color: AppColors.white,fontWeight: FontWeight.bold),),
+                  child: Text(
+                    "Submit",
+                    style: AppTextStyles.caption(
+                      context,
+                      color: AppColors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -234,6 +241,7 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
       ),
     );
   }
+
   Widget _modernContactCard(ContactApiModel contact) {
     final size = MediaQuery.of(context).size.width;
 
@@ -246,15 +254,14 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
         boxShadow: [
           BoxShadow(
             blurRadius: 12,
-            color: Colors.black.withOpacity(0.06),
-          )
+            color: Colors.black.withValues(alpha: 0.06),
+          ),
         ],
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           /// STATE HEADER
           Row(
             children: [
@@ -279,7 +286,8 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
           Text(
             contact.name,
             style: AppTextStyles.caption(
-              context,                    color: AppColors.black,
+              context,
+              color: AppColors.black,
 
               fontWeight: FontWeight.w600,
             ),
@@ -293,13 +301,15 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
             },
             child: Row(
               children: [
-                 Icon(Icons.phone, size: size*0.04, color: Colors.black),
+                Icon(Icons.phone, size: size * 0.04, color: Colors.black),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     contact.mobileNumber,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.caption(context,                    color: AppColors.black,
+                    style: AppTextStyles.caption(
+                      context,
+                      color: AppColors.black,
                     ),
                   ),
                 ),
@@ -315,13 +325,15 @@ class _ContactsMobilePageState extends State<ContactsMobilePage> {
             },
             child: Row(
               children: [
-                 Icon(Icons.email, size: size*0.04, color: Colors.grey),
+                Icon(Icons.email, size: size * 0.04, color: Colors.grey),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     contact.email,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.caption(context,                    color: AppColors.black,
+                    style: AppTextStyles.caption(
+                      context,
+                      color: AppColors.black,
                     ),
                   ),
                 ),

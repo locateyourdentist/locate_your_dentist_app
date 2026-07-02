@@ -15,6 +15,7 @@ class JobSeekerProfilePage extends StatefulWidget {
   @override
   State<JobSeekerProfilePage> createState() => _JobSeekerProfilePageState();
 }
+
 class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
   final loginController = Get.put(LoginController());
   final ScrollController _scrollController = ScrollController();
@@ -24,14 +25,12 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
       List<Map<String, dynamic>> delta = [];
 
       if (data == null) {
-        delta = [{"insert": "\n"}];
-      }
-
-      else if (data is List) {
+        delta = [
+          {"insert": "\n"},
+        ];
+      } else if (data is List) {
         delta = List<Map<String, dynamic>>.from(data);
-      }
-
-      else if (data is String) {
+      } else if (data is String) {
         delta = List<Map<String, dynamic>>.from(jsonDecode(data));
       }
 
@@ -44,46 +43,53 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
       _controller = QuillController.basic();
     }
   }
+
   @override
   void initState() {
     super.initState();
     //loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
     _controller = QuillController.basic(
       config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-        ),
-
+        clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
       ),
     );
     _refresh();
   }
+
   Future<void> _refresh() async {
-    print('sid${Api.userInfo.read('selectUId')??""}');
-    await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
+    print('sid${Api.userInfo.read('selectUId') ?? ""}');
+    await loginController.getProfileByUserId(
+      Api.userInfo.read('selectUId') ?? "",
+      context,
+    );
     loadJobDescription(loginController.descriptionData);
   }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-    String userType=Api.userInfo.read('userType')??"";
+    String userType = Api.userInfo.read('userType') ?? "";
     final hasData = loginController.userData.isNotEmpty;
     final user = hasData ? loginController.userData.first : null;
-    final collegeDetails =
-    hasData ? (user?.details['collegeDetails'] ?? {}) : {};
+    final collegeDetails = hasData
+        ? (user?.details['collegeDetails'] ?? {})
+        : {};
     final ug = collegeDetails['ugDegree'] ?? {};
     final pg = collegeDetails['pgDegree'] ?? {};
-    final experiences = hasData ? (user?.details['experienceDetails'] ?? []) : [];
-    final description = hasData ? user?.details["description"]?.toString() ?? "" : "";
-    final categoryString =
-    (hasData && user?.details['jobCategory'] is List)
+    final experiences = hasData
+        ? (user?.details['experienceDetails'] ?? [])
+        : [];
+    final description = hasData
+        ? user?.details["description"]?.toString() ?? ""
+        : "";
+    final categoryString = (hasData && user?.details['jobCategory'] is List)
         ? (user!.details['jobCategory'] as List).join(", ")
         : user?.details['jobCategory']?.toString() ?? "";
-        return Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.white,
-      body:  GetBuilder<LoginController>(
-          builder: (controller) {
-            return  SafeArea(
+      body: GetBuilder<LoginController>(
+        builder: (controller) {
+          return SafeArea(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(1.0),
@@ -93,17 +99,20 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                     if (!hasData)
                       Column(
                         children: [
-                          const SizedBox(height: 20,),
+                          const SizedBox(height: 20),
                           Center(
-                            child: Text('No data found', style: AppTextStyles.caption(context)),
+                            child: Text(
+                              'No data found',
+                              style: AppTextStyles.caption(context),
+                            ),
                           ),
                         ],
                       ),
                     if (hasData)
-                    Stack(
+                      Stack(
                         children: [
-                          const SizedBox(height: 15,),
-                            Positioned(
+                          const SizedBox(height: 15),
+                          Positioned(
                             top: 10,
                             left: 10,
                             child: GestureDetector(
@@ -114,7 +123,10 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   gradient: LinearGradient(
-                                    colors: [AppColors.primary, AppColors.secondary],
+                                    colors: [
+                                      AppColors.primary,
+                                      AppColors.secondary,
+                                    ],
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                   ),
@@ -131,7 +143,7 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10,),
+                          const SizedBox(height: 10),
                           Center(
                             child: Container(
                               padding: const EdgeInsets.all(3),
@@ -139,7 +151,8 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                                 shape: BoxShape.circle,
                                 gradient: LinearGradient(
                                   colors: [
-                                    AppColors.primary,AppColors.secondary
+                                    AppColors.primary,
+                                    AppColors.secondary,
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -150,25 +163,31 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                                 backgroundColor: Colors.white,
                                 child: CircleAvatar(
                                   radius: size * 0.155,
-                                  backgroundImage: (user!.images.isNotEmpty &&
-                                      user.images[0].isNotEmpty)
+                                  backgroundImage:
+                                      (user!.images.isNotEmpty &&
+                                          user.images[0].isNotEmpty)
                                       ? NetworkImage(user.images[0])
                                       : null,
-                                  child: (user.images.isEmpty ||
-                                      user.images[0].isEmpty)
+                                  child:
+                                      (user.images.isEmpty ||
+                                          user.images[0].isEmpty)
                                       ? const Icon(Icons.person, size: 40)
                                       : null,
                                 ),
                               ),
                             ),
-                          )
-
+                          ),
                         ],
                       ),
                     const SizedBox(height: 12),
                     Center(
-                      child: Text(user?.name ?? "",
-                        style: TextStyle(fontSize: size * 0.05, fontWeight: FontWeight.bold, color: Colors.black),
+                      child: Text(
+                        user?.name ?? "",
+                        style: TextStyle(
+                          fontSize: size * 0.05,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
 
@@ -181,11 +200,19 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('About',
-                                  textAlign: TextAlign.start,
-                                  style: AppTextStyles.body(context, fontWeight: FontWeight.bold)),
+                              Text(
+                                'About',
+                                textAlign: TextAlign.start,
+                                style: AppTextStyles.body(
+                                  context,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
 
-                              if (userType=='admin'||userType=='superAdmin'||user?.userId==(Api.userInfo.read('userId') ?? ""))
+                              if (userType == 'admin' ||
+                                  userType == 'superAdmin' ||
+                                  user?.userId ==
+                                      (Api.userInfo.read('userId') ?? ""))
                                 Padding(
                                   padding: const EdgeInsets.only(right: 20),
                                   child: Align(
@@ -193,38 +220,41 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                                     child: TextButton(
                                       onPressed: () {
                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => const EditProfilePage()));
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const EditProfilePage(),
+                                          ),
+                                        );
                                       },
                                       child: Text(
                                         "Edit Profile",
                                         style: TextStyle(
-                                            fontSize: size * 0.035,
-                                            decoration: TextDecoration.underline,
-                                            color: Colors.blueAccent),
+                                          fontSize: size * 0.035,
+                                          decoration: TextDecoration.underline,
+                                          color: Colors.blueAccent,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-
                             ],
                           ),
                           const SizedBox(height: 10),
-                         // Text(description, style: AppTextStyles.caption(context, fontWeight: FontWeight.normal)),
+                          // Text(description, style: AppTextStyles.caption(context, fontWeight: FontWeight.normal)),
                           Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child:  IgnorePointer(
-                                child: QuillEditor(
-                                  controller: _controller,
-                                  scrollController: _scrollController,
-                                  focusNode: FocusNode(),
-                                  config: const QuillEditorConfig(
-                                    showCursor: false,
-                                    expands: false,
-                                  ),
+                            padding: const EdgeInsets.all(8.0),
+                            child: IgnorePointer(
+                              child: QuillEditor(
+                                controller: _controller,
+                                scrollController: _scrollController,
+                                focusNode: FocusNode(),
+                                config: const QuillEditorConfig(
+                                  showCursor: false,
+                                  expands: false,
                                 ),
-                              )
+                              ),
+                            ),
                             //Text( getPlainText(job.jobDescription), style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
                           ),
                           const SizedBox(height: 10),
@@ -235,15 +265,20 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        ViewPDFPage(pdfUrl: user.certificates[0]),
+                                    builder: (context) => ViewPDFPage(
+                                      pdfUrl: user.certificates[0],
+                                    ),
                                   ),
                                 );
                               }
                             },
                             child: Row(
                               children: [
-                                Icon(Icons.file_open, color: AppColors.primary, size: size * 0.07),
+                                Icon(
+                                  Icons.file_open,
+                                  color: AppColors.primary,
+                                  size: size * 0.07,
+                                ),
                                 const SizedBox(width: 8),
                                 // Text(
                                 //   (user!.certificates.isNotEmpty && user.certificates[0].isNotEmpty)
@@ -253,25 +288,30 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                                 // ),
                                 Text(
                                   (user != null &&
-                                      user.certificates != null &&
-                                      user.certificates.isNotEmpty &&
-                                      (user.certificates[0] ?? "").isNotEmpty)
+                                          user.certificates.isNotEmpty &&
+                                          (user.certificates[0] ?? "")
+                                              .isNotEmpty)
                                       ? "Resume.pdf"
                                       : "Upload PDF",
                                   style: TextStyle(
-                                      fontSize: size * 0.03,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
+                                    fontSize: size * 0.03,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
                                 ),
                                 IconButton(
                                   onPressed: () {},
-                                  icon: Icon(Icons.edit, size: size * 0.036, color: Colors.grey),
+                                  icon: Icon(
+                                    Icons.edit,
+                                    size: size * 0.036,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
 
-                           const SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           _sectionTitle("Contact Information", size),
                           // _contactTile(Icons.email_rounded, "Email", user!.email ?? "", size),
                           // _contactTile(Icons.call, "Mobile", user.mobileNumber ?? "", size),
@@ -281,13 +321,13 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                           _contactTile(
                             Icons.email_rounded,
                             "Email",
-                            (user != null && user.email != null) ? user.email! : "",
+                            (user != null) ? user.email : "",
                             size,
                           ),
                           _contactTile(
                             Icons.call,
                             "Mobile",
-                            (user != null && user.mobileNumber != null) ? user.mobileNumber! : "",
+                            (user != null) ? user.mobileNumber : "",
                             size,
                           ),
                           // _contactTile(
@@ -305,7 +345,7 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                           _contactTile(
                             Icons.location_on,
                             "Location",
-                            (user != null && user.address != null)
+                            (user != null)
                                 ? "${user.address['city'] ?? ''}, ${user.address['district'] ?? ''}, ${user.address['state'] ?? ''}"
                                 : "",
                             size,
@@ -315,7 +355,8 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                           _sectionTitle("Job Category", size),
                           _contactTile(
                             Icons.category,
-                            "Preferences",categoryString,
+                            "Preferences",
+                            categoryString,
                             // (user != null &&
                             //     user.details != null &&
                             //     user.details['jobCategory'] != null &&
@@ -328,18 +369,20 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                           _sectionTitle("Academic Details", size),
                           if (ug.isNotEmpty)
                             _infoPanel(
-                                icon: Icons.school,
-                                title: "UG Details",
-                                desc:
-                                "College: ${ug['name'] ?? ""}\nDegree: ${ug['degree'] ?? ""}\nPercentage: ${ug['percentage'] ?? ""}",
-                                size: size),
+                              icon: Icons.school,
+                              title: "UG Details",
+                              desc:
+                                  "College: ${ug['name'] ?? ""}\nDegree: ${ug['degree'] ?? ""}\nPercentage: ${ug['percentage'] ?? ""}",
+                              size: size,
+                            ),
                           if (pg.isNotEmpty)
                             _infoPanel(
-                                icon: Icons.school,
-                                title: "PG Details",
-                                desc:
-                                "College: ${pg['name'] ?? ""}\nDegree: ${pg['degree'] ?? ""}\nPercentage: ${pg['percentage'] ?? ""}",
-                                size: size),
+                              icon: Icons.school,
+                              title: "PG Details",
+                              desc:
+                                  "College: ${pg['name'] ?? ""}\nDegree: ${pg['degree'] ?? ""}\nPercentage: ${pg['percentage'] ?? ""}",
+                              size: size,
+                            ),
 
                           const SizedBox(height: 20),
                           _sectionTitle("Experience", size),
@@ -350,14 +393,19 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
                                   icon: Icons.work_outline_rounded,
                                   title: "${exp['companyName'] ?? ""}",
                                   desc:
-                                  "Duration: ${exp['experience'] ?? ""} \nDescription: ${exp['jobDescription'] ?? ""}",
+                                      "Duration: ${exp['experience'] ?? ""} \nDescription: ${exp['jobDescription'] ?? ""}",
                                   size: size,
                                 );
                               }).toList(),
                             )
                           else
-                            Text("No experience available",
-                                style: TextStyle(fontSize: size * 0.038, color: Colors.grey[700])),
+                            Text(
+                              "No experience available",
+                              style: TextStyle(
+                                fontSize: size * 0.038,
+                                color: Colors.grey[700],
+                              ),
+                            ),
 
                           const SizedBox(height: 30),
                         ],
@@ -368,7 +416,7 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
               ),
             ),
           );
-        }
+        },
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
@@ -381,7 +429,11 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
         alignment: Alignment.centerLeft,
         child: Text(
           title,
-          style: TextStyle(fontSize: size * 0.04, fontWeight: FontWeight.bold, color: AppColors.primary),
+          style: TextStyle(
+            fontSize: size * 0.04,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+          ),
         ),
       ),
     );
@@ -399,10 +451,22 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label,
-                    style: TextStyle(fontSize: size * 0.04, color: Colors.black87, fontWeight: FontWeight.w600)),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: size * 0.04,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(value, style: TextStyle(fontSize: size * 0.038, color: Colors.grey[700])),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: size * 0.038,
+                    color: Colors.grey[700],
+                  ),
+                ),
               ],
             ),
           ),
@@ -423,21 +487,36 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withValues(alpha: 0.9),
       ),
       child: Row(
         children: [
           Icon(icon, size: size * 0.085, color: Colors.black54),
           const SizedBox(width: 15),
           Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: TextStyle(fontSize: size * 0.04, fontWeight: FontWeight.bold, color: Colors.black)),
-                  const SizedBox(height: 6),
-                  Text(desc, style: TextStyle(fontSize: size * 0.038, height: 1.4, color: Colors.grey[800])),
-                ],
-              )),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: size * 0.04,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  desc,
+                  style: TextStyle(
+                    fontSize: size * 0.038,
+                    height: 1.4,
+                    color: Colors.grey[800],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
