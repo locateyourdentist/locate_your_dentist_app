@@ -46,6 +46,7 @@ class _FilterResultPageState extends State<FilterResultPage> {
     double size = MediaQuery.of(context).size.width;
     String? selectedUserType = args?['selecteduserType'];
     print('userlist$selectedUserType');
+    final bool isMobile = size < 700;
     return WillPopScope(
       onWillPop: () async {
 
@@ -243,6 +244,7 @@ class _FilterResultPageState extends State<FilterResultPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            buildActiveFilters(isMobile,context),
 
                             if(controller.profileList.isEmpty)
                               Center(child: Text('No data found',style: AppTextStyles.caption(context),),),

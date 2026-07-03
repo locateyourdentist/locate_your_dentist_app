@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
+import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
@@ -95,44 +96,27 @@ class _ViewJobPageState extends State<ViewJobPage> {
           length: 2,
           child: GetBuilder<JobController>(
             builder: (controller) {
-              // final job1 = jobController.job.isNotEmpty ? jobController.job[0] : null;
-              // String targetJobId = job1?.jobId ?? "";
-              // print('targetid$targetJobId');
-              // bool isJobApplied = jobController.jobSeekersAppliedLists
-              //     .any((j) => j.jobId.toString() == targetJobId);
-              // print("Is job applied? $isJobApplied");
-              // if (controller.job.isEmpty) {
-              //   return const Center(child: CircularProgressIndicator());
-              // }
-              // final job = controller.job.isNotEmpty ? controller.job[0] : null;
-              // if (job == null) {
               if (controller.job.isEmpty) {
                 return const Center(child: CircularProgressIndicator());
               }
               final job = controller.job.first;
               final String targetJobId = job.jobId ?? "";
-
               print("targetid: $targetJobId");
-
               final bool isJobApplied = controller.jobSeekersAppliedLists.any(
                 (j) => j.jobId.toString() == targetJobId,
               );
-
               print("Is job applied? $isJobApplied");
               final url = loginController.jobFileImages.isNotEmpty
                   ? loginController.jobFileImages.first.url.toString()
                   : "";
-              String getPlainText(List<Map<String, dynamic>>? delta) {
-                if (delta == null) return "";
-                return delta.map((e) => e['insert'] ?? "").join();
-              }
-
               return SingleChildScrollView(
                 child: SafeArea(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Stack(
+                      if (url.isNotEmpty)
+
+                        Stack(
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
@@ -170,13 +154,6 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                         size: size * 0.08,
                                       ),
                                     );
-                                    //   Center(
-                                    //   child: Icon(
-                                    //     Icons.camera_alt_outlined,
-                                    //     size: size*0.12,
-                                    //     color: Colors.grey[400],
-                                    //   ),
-                                    // );
                                   },
                                 ),
                               ),
@@ -209,9 +186,6 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                       isActive.toString(),
                                       context,
                                     );
-                                // jobController.getJobsById(
-                                //     seeker.jobSeekerId.toString(),
-                                //     seeker.isActive.toString(), context);
                                 await jobController.getJobsById(
                                   job.jobId.toString(),
                                   context,
@@ -224,10 +198,6 @@ class _ViewJobPageState extends State<ViewJobPage> {
                               },
                               itemBuilder: (BuildContext context) {
                                 return [
-                                  // PopupMenuItem(
-                                  //   value: "true",
-                                  //   child: Text("Open",style: AppTextStyles.caption(context,fontWeight: FontWeight.normal),),
-                                  // ),
                                   PopupMenuItem(
                                     value: "false",
                                     child: Text(
@@ -249,8 +219,6 @@ class _ViewJobPageState extends State<ViewJobPage> {
                           ),
                         ],
                       ),
-
-                      // Job Info Container
                       Container(
                         clipBehavior: Clip.antiAlias,
                         width: size,
@@ -265,7 +233,6 @@ class _ViewJobPageState extends State<ViewJobPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Job Title
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -337,6 +304,8 @@ class _ViewJobPageState extends State<ViewJobPage> {
                             ),
                             const SizedBox(height: 10),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   "Posted: ${job.createdDate != null ? DateFormat('MMM dd, yyyy').format(job.createdDate!) : ''}",
@@ -356,29 +325,84 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                     color: AppColors.grey,
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Text(
-                                        job.jobType ?? '',
-                                        style: AppTextStyles.caption(
-                                          context,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text(
+                                      job.jobType ?? '',
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                                const SizedBox(width: 10),
+
+                                GetBuilder<LoginController>(
+                                builder: (controller) {
+                                  return Center(
+                                    child: Switch(
+                                      value:
+                                      job.isActive
+                                          .toString() ==
+                                          'true',
+                                      activeThumbColor:
+                                      job.isActive
+                                          .toString() ==
+                                          'true'
+                                          ? Colors.green
+                                          : Colors.red,
+                                      activeTrackColor:
+                                      job.isActive.toString() == 'true'
+                                          ? AppColors.primary.withValues(alpha: 0.5,
+                                      ) : Colors.red,
+                                      inactiveThumbColor:
+                                      Colors.red,
+                                      inactiveTrackColor:
+                                      Colors.grey.shade400,
+                                      onChanged: (value) {
+                                        showDeactivateConfirmDialog(
+                                          context: context,
+                                          isActivating: value,
+                                          onConfirm: () async {
+                                            print(
+                                              'jhg${job.isActive.toString()}',
+                                            );
+                                            job.isActive.toString() == 'true'
+                                                ? await jobController.updateApplicationStatusAdmin(
+                                              job.jobId.toString(), 'false', context,)
+                                                : await jobController.updateApplicationStatusAdmin(
+                                              job.jobId.toString(), 'true', context,);
+                                            await jobController.getJobsById(
+                                              job.jobId.toString(), context,);
+                                            await jobController.getAppliedJobsAdmin(
+                                              job.jobId.toString(), context,);
+                                            jobController.update();
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],),
                             const SizedBox(height: 16),
+
                             Center(
                               child: Text(
                                 "Salary :${job.salary ?? ''}",
@@ -565,45 +589,47 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                 'Job Seekers')
                               GetBuilder<JobController>(
                                 builder: (controller) {
-                                  return Center(
-                                    child: SizedBox(
-                                      width: size * 0.9,
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          await jobController
-                                              .applyJobsJobSeekers(
-                                                job.jobId ?? '',
-                                                Api.userInfo.read('userId') ??
-                                                    '',
-                                                job.userType ?? '',
-                                                job.orgName ?? '',
-                                                context,
-                                              );
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: isJobApplied == true
-                                              ? AppColors.white
-                                              : AppColors.primary,
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 16,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              30,
+                                  return SafeArea(
+                                    child: Center(
+                                      child: SizedBox(
+                                        width: size * 0.9,
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            await jobController
+                                                .applyJobsJobSeekers(
+                                                  job.jobId ?? '',
+                                                  Api.userInfo.read('userId') ??
+                                                      '',
+                                                  job.userType ?? '',
+                                                  job.orgName ?? '',
+                                                  context,
+                                                );
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: isJobApplied == true
+                                                ? AppColors.white
+                                                : AppColors.primary,
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 16,
                                             ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(
+                                                30,
+                                              ),
+                                            ),
+                                            elevation: 5,
                                           ),
-                                          elevation: 5,
-                                        ),
-                                        child: Text(
-                                          isJobApplied == true
-                                              ? 'Applied'
-                                              : "Apply Now",
-                                          style: AppTextStyles.caption(
-                                            context,
-                                            fontWeight: FontWeight.bold,
-                                            color: isJobApplied == true
-                                                ? AppColors.primary
-                                                : AppColors.white,
+                                          child: Text(
+                                            isJobApplied == true
+                                                ? 'Applied'
+                                                : "Apply Now",
+                                            style: AppTextStyles.caption(
+                                              context,
+                                              fontWeight: FontWeight.bold,
+                                              color: isJobApplied == true
+                                                  ? AppColors.primary
+                                                  : AppColors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -704,147 +730,145 @@ class JobSeekerAppliedCard extends StatelessWidget {
               SizedBox(width: width * 0.04),
 
               // Right Side Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            seeker.name,
-                            softWrap: true,
-                            style: AppTextStyles.caption(
-                              context,
-                              fontWeight: FontWeight.bold,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          seeker.name,
+                          softWrap: true,
+                          style: AppTextStyles.caption(
+                            context,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      PopupMenuButton<String>(
+                        onSelected: (String status) async {
+                          print("Selected Status: $status");
+                          print('jobid${seeker.jobSeekerId.toString()}');
+
+                          await jobController.updateJobStatusAdmin(
+                            seeker.jobSeekerId.toString(),
+                            seeker.jobId.toString(),
+                            status,
+                            orgName ?? "",
+                            context,
+                          );
+                          await jobController.getJobsById(
+                            Api.userInfo.read('selectJobId') ?? "",
+                            context,
+                          );
+                          await jobController.getAppliedJobsAdmin(
+                            Api.userInfo.read('selectJobId') ?? "",
+                            context,
+                          );
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem(
+                              value: "Shortlisted",
+                              child: Text(
+                                "Shortlisted",
+                                style: AppTextStyles.caption(
+                                  context,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        PopupMenuButton<String>(
-                          onSelected: (String status) async {
-                            print("Selected Status: $status");
-                            print('jobid${seeker.jobSeekerId.toString()}');
-
-                            await jobController.updateJobStatusAdmin(
-                              seeker.jobSeekerId.toString(),
-                              seeker.jobId.toString(),
-                              status,
-                              orgName ?? "",
-                              context,
-                            );
-                            await jobController.getJobsById(
-                              Api.userInfo.read('selectJobId') ?? "",
-                              context,
-                            );
-                            await jobController.getAppliedJobsAdmin(
-                              Api.userInfo.read('selectJobId') ?? "",
-                              context,
-                            );
-                          },
-                          itemBuilder: (BuildContext context) {
-                            return [
-                              PopupMenuItem(
-                                value: "Shortlisted",
-                                child: Text(
-                                  "Shortlisted",
-                                  style: AppTextStyles.caption(
-                                    context,
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                            PopupMenuItem(
+                              value: "Rejected",
+                              child: Text(
+                                "Rejected",
+                                style: AppTextStyles.caption(
+                                  context,
+                                  fontWeight: FontWeight.normal,
                                 ),
                               ),
-                              PopupMenuItem(
-                                value: "Rejected",
-                                child: Text(
-                                  "Rejected",
-                                  style: AppTextStyles.caption(
-                                    context,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ),
-                            ];
-                          },
+                            ),
+                          ];
+                        },
 
-                          child: Icon(Icons.more_vert, color: Colors.grey[700]),
+                        child: Icon(Icons.more_vert, color: Colors.grey[700]),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 5),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "ID: ${seeker.jobSeekerId}",
+                        style: TextStyle(
+                          fontSize: width * 0.03,
+                          color: Colors.black87,
                         ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 5),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "ID: ${seeker.jobSeekerId}",
-                          style: TextStyle(
-                            fontSize: width * 0.03,
-                            color: Colors.black87,
-                          ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4,
+                          horizontal: 8,
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4,
-                            horizontal: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: getStatusColor(
-                              seeker.status.toString(),
-                            ).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
+                        decoration: BoxDecoration(
+                          color: getStatusColor(
                             seeker.status.toString(),
-                            style: TextStyle(
-                              color: getStatusColor(seeker.status.toString()),
-                              fontSize: width * 0.028,
-                              fontWeight: FontWeight.bold,
+                          ).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          seeker.status.toString(),
+                          style: TextStyle(
+                            color: getStatusColor(seeker.status.toString()),
+                            fontSize: width * 0.028,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    "Email: ${seeker.email}",
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: width * 0.028,
+                      color: Colors.grey,
+                    ),
+                  ),
+
+                  // Text("JobId: ${seeker.jobId}",
+                  //     style: TextStyle(fontSize: width * 0.035, color: Colors.grey)),
+                  const SizedBox(height: 5),
+                  SizedBox(
+                    height: width * 0.06,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: width * 0.08,
+                          child: Transform.rotate(
+                            angle: 20 * 3.1415926535 / 180,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.call,
+                                color: AppColors.primary,
+                                size: width * 0.05,
+                              ),
+                              onPressed: onCall,
                             ),
                           ),
                         ),
+                        Text(
+                          seeker.mobileNumber,
+                          style: TextStyle(fontSize: width * 0.035),
+                        ),
                       ],
                     ),
-                    Text(
-                      "Email: ${seeker.email}",
-                      softWrap: true,
-                      style: TextStyle(
-                        fontSize: width * 0.028,
-                        color: Colors.grey,
-                      ),
-                    ),
-
-                    // Text("JobId: ${seeker.jobId}",
-                    //     style: TextStyle(fontSize: width * 0.035, color: Colors.grey)),
-                    const SizedBox(height: 5),
-                    SizedBox(
-                      height: width * 0.06,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: width * 0.08,
-                            child: Transform.rotate(
-                              angle: 20 * 3.1415926535 / 180,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.call,
-                                  color: AppColors.primary,
-                                  size: width * 0.05,
-                                ),
-                                onPressed: onCall,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            seeker.mobileNumber,
-                            style: TextStyle(fontSize: width * 0.035),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),

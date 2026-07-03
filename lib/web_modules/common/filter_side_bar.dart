@@ -95,30 +95,6 @@ class _FilterSidebarState extends State<FilterSidebar> {
 
                         const SizedBox(height: 10),
 
-                        // _dropdown(
-                        //   "District",
-                        //   loginController.districts.map((e) => e.toString()).toList(),
-                        //   loginController.selectedDistrict,
-                        //       (val) {
-                        //     loginController.selectedDistricts =[val!];
-                        //     loginController.fetchTalukas([val]);
-                        //     loginController.selectedTaluka = null;
-                        //     loginController.update();
-                        //   },
-                        // ),
-                        // const SizedBox(height: 10),
-                        //
-                        // _dropdown(
-                        //   "Taluka",
-                        //   loginController.talukas.map((e) => e.toString()).toList(),
-                        //   loginController.selectedTaluka,
-                        //       (val) {
-                        //     loginController.selectedTaluka = val;
-                        //     loginController.fetchVillages([val!]);
-                        //     loginController.selectedVillage = null;
-                        //     loginController.update();
-                        //   },
-                        // ),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
@@ -153,8 +129,13 @@ class _FilterSidebarState extends State<FilterSidebar> {
                                 style: AppTextStyles.body(context),
                               ),),
                             buttonText: Text(
-                              "district",
-                              style: AppTextStyles.caption(context,color: AppColors.grey),
+                              loginController.selectedDistricts.isEmpty
+                                  ? "District"
+                                  : loginController.selectedDistricts.length == 1
+                                  ? loginController.selectedDistricts.first
+                                  : "${loginController.selectedDistricts.first} +${loginController.selectedDistricts.length - 1}",
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.caption(context,color: AppColors.black),
                             ),
                             decoration: const BoxDecoration(),
                             searchable: true,
@@ -167,16 +148,6 @@ class _FilterSidebarState extends State<FilterSidebar> {
                               loginController.update();
                             },
                             chipDisplay: MultiSelectChipDisplay.none(),
-                            // chipDisplay: MultiSelectChipDisplay(
-                            //   height: 130,
-                            //   chipWidth: 100,
-                            //   textStyle: AppTextStyles.caption(context),
-                            //   onTap: (value)async {
-                            //     loginController.selectedDistricts.remove(value);
-                            //     //  await  loginController.fetchTalukas(loginController.selectedDistricts);
-                            //     loginController.update();
-                            //   },
-                            // ),
                           ),
                         ),
                         SizedBox(height: 10,),
@@ -214,8 +185,13 @@ class _FilterSidebarState extends State<FilterSidebar> {
                                 style: AppTextStyles.body(context),
                               ),),
                             buttonText: Text(
-                              "Taluka",
-                              style: AppTextStyles.caption(context,color: AppColors.grey),
+                              loginController.selectedTalukas.isEmpty
+                                  ? "Taluka"
+                                  : loginController.selectedTalukas.length == 1
+                                  ? loginController.selectedTalukas.first
+                                  : "${loginController.selectedTalukas.first} +${loginController.selectedTalukas.length - 1}",
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.caption(context,color: AppColors.black),
                             ),
                             decoration: const BoxDecoration(),
                             searchable: true,
@@ -254,28 +230,26 @@ class _FilterSidebarState extends State<FilterSidebar> {
                               size: 2,
                             ),
                             items: loginController.villages
-                                .toSet()
-                                .map(
-                                  (e) => MultiSelectItem<String>(
+                                .toSet().map((e) => MultiSelectItem<String>(
                                 e.toString(),
                                 e.toString(),
                               ),
-                            )
-                                .toList(),
-
+                            ).toList(),
                             title: Center(
                               child: Text(
-                                "Select Areas",
-                                style: AppTextStyles.body(context),
-                              ),
+                                "Select Areas", style: AppTextStyles.body(context),),
                             ),
 
                             buttonText: Text(
-                              "Area",
+                              loginController.selectedVillages.isEmpty
+                                  ? "Areas"
+                                  : loginController.selectedVillages.length == 1
+                                  ? loginController.selectedVillages.first
+                                  : "${loginController.selectedVillages.first} +${loginController.selectedVillages.length - 1}",
+                              overflow: TextOverflow.ellipsis,
                               style: AppTextStyles.caption(context),
                             ),
                             decoration: const BoxDecoration(),
-
                             searchable: true,
                             dialogHeight: 400,
                             dialogWidth:120,
@@ -357,7 +331,6 @@ class _FilterSidebarState extends State<FilterSidebar> {
     );
   }
 
-  // ================= HEADER =================
   Widget _header() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -507,15 +480,15 @@ class _FilterSidebarState extends State<FilterSidebar> {
                   loginController.longitude = null;
                 }
 
-                String safeLat =
-                (distance != "0" && loginController.latitude != null)
-                    ? loginController.latitude.toString()
-                    : "";
+                String safeLat ='12.834';
+                // (distance != "0" && loginController.latitude != null)
+                //     ? loginController.latitude.toString()
+                //     : "";
 
-                String safeLng =
-                (distance != "0" && loginController.longitude != null)
-                    ? loginController.longitude.toString()
-                    : "";
+                String safeLng ='79.704';
+                // (distance != "0" && loginController.longitude != null)
+                //     ? loginController.longitude.toString()
+                //     : "";
                 if( Api.userInfo.read('userType')=="superAdmin") {
                   await   loginController.getProfileDetails('',  loginController.selectedState,
                       loginController.selectedDistricts,

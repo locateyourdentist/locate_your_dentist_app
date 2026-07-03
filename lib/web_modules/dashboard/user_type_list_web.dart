@@ -155,7 +155,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
                                       children: [
                                         _buildHeaderActions(isDesktop, isMobile),
                                         const SizedBox(height: 20),
-                                        _buildActiveFilters(isMobile),
+                                        buildActiveFilters(isMobile,context),
                                         _buildExportButton(filteredProfiles),
                                         const SizedBox(height: 20),
                                         if (filteredProfiles.isEmpty)
@@ -247,38 +247,6 @@ class _ModernUserTableState extends State<ModernUserTable> {
           "Dental Clinic", '', [], [],[], 'true','', '', '', searchController.text.toString(), context);
       //await loginController.getProfileDetails(userType, loginController.selectedState, loginController.selectedDistrict, loginController.selectedTaluka,loginController.selectedArea, 'true',safeLat, safeLng, distance, searchController.text, context);
     }
-  }
-  Widget _buildActiveFilters(bool isMobile) {
-    bool hasFilters = loginController.selectedDistance != null || loginController.selectedState != null || loginController.selectedDistrict != null || loginController.selectedTaluka != null || loginController.selectedJobType != null || loginController.selectedSalary != null || loginController.selectedCategories.isNotEmpty;
-    if (!hasFilters) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Wrap(
-        spacing: 8, runSpacing: 8,
-        children: [
-          if (loginController.selectedState != null) InputChip(label: Text(loginController.selectedState!), onDeleted: () { loginController.selectedState = null; loginController.update(); }),
-          if (loginController.selectedDistrict != null) InputChip(label: Text(loginController.selectedDistrict!), onDeleted: () { loginController.selectedDistrict = null; loginController.update(); }),
-          if (loginController.selectedTaluka != null) InputChip(label: Text(loginController.selectedTaluka!), onDeleted: () { loginController.selectedTaluka = null; loginController.update(); }),
-          ...loginController.selectedVillages.map(
-                (village) => InputChip(
-              label: Text(village),
-              onDeleted: () {
-                loginController.selectedVillages.remove(village);
-                loginController.update();
-              },
-            ),
-          ),          TextButton(onPressed: () => _clearAllFilters(), child: const Text("Clear All", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
-        ],
-      ),
-    );
-  }
-
-  void _clearAllFilters() async {
-    loginController.selectedCategories.clear();
-    loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedVillage = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
-    loginController.selectedVillages.clear();
-    loginController.update();
-    await loginController.getProfileDetails("", "", [], [],[] ,"", "", "", "", "", context);
   }
 
   Widget _buildExportButton(List filteredProfiles) {

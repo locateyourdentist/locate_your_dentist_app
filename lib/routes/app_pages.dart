@@ -4,6 +4,7 @@ class AppRoutes {
   static const loginPage = '/loginPage';
   static const forgotPasswordWebScreen = '/forgotPasswordWebScreen';
   static const forgotPasswordEmailWeb = '/forgotPasswordEmailWeb';
+  static const forgotMailWebScreen = '/forgotMailWebScreen';
   static const verifyPasswordWeb = '/verifyPasswordWeb';
   static const registerPageWeb = '/registerPageWeb';
   static const webLoginPage='/webLoginPage';

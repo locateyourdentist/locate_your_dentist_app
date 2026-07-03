@@ -246,7 +246,6 @@ class _ClinicEditProfileState extends State<ClinicEditProfile> {
     if (loginController.selectedTaluka != null && loginController.selectedTaluka!.isNotEmpty) {
       await loginController.fetchVillages(loginController.selectedTalukas);
     }
-
     loginController.update();
   }
   bool getPlanActive() {

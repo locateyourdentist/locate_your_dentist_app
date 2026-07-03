@@ -442,18 +442,12 @@ class _PatientDashboardState extends State<PatientDashboard> {
         overlayColor: Colors.black,
         backgroundColor: AppColors.primary,
         elevation: 12,
-
         buttonSize: const Size(60, 60),
         childrenButtonSize: const Size(55, 55),
-
-        icon: null,
-        activeIcon: null,
-
         spacing: 12,
         spaceBetweenChildren: 12,
         animationCurve: Curves.easeOutBack,
         animationDuration: const Duration(milliseconds: 350),
-
         children: items.map((item) {
           return SpeedDialChild(
             child: Icon(

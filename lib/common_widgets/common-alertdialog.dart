@@ -419,7 +419,7 @@ void showDeactivateConfirmDialog({
     context: context,
     builder: (_) => AlertDialog(
       title: Text(
-        isActivating ? "Activate User" : "Deactivate User",
+        isActivating ? "Activate" : "Deactivate",
         textAlign: TextAlign.center,
         style: AppTextStyles.body(
           context,
@@ -429,8 +429,8 @@ void showDeactivateConfirmDialog({
       ),
       content: Text(
         isActivating
-            ? "Are you sure you want to activate this user?"
-            : "Are you sure you want to deactivate this user?",
+            ? "Are you sure you want to activate?"
+            : "Are you sure you want to deactivate?",
       ),
       actions: [
         TextButton(

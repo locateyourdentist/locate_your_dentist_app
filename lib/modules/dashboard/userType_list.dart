@@ -151,6 +151,7 @@ class _userTypeListState extends State<userTypeList> {
     final planActive = isAnyBasePlanActive(loginController.profileList);
     final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
     String userId=Api.userInfo.read('userId')??"";
+    final bool isMobile = size < 700;
     String editUserId=loginController.userData.isNotEmpty?loginController.userData.first.userId.toString():"";
     //print('planStatus$planActive');
     return WillPopScope(
@@ -412,126 +413,15 @@ class _userTypeListState extends State<userTypeList> {
                           ),
                         ),
                       ),
-                      if (loginController.selectedDistance != null ||loginController.selectedState != null||
-                          loginController.selectedDistrict != null ||
-                          loginController.selectedTaluka != null ||
-                          loginController.selectedJobType != null ||
-                          loginController.selectedSalary != null ||
-                          loginController.selectedCategories.isNotEmpty)
-                        GetBuilder<LoginController>(
-                            builder: (_) {
-                              return  Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                child: Wrap(
-                                  spacing: 3,
-                                  runSpacing: 4,
-                                  children: [
-                                    if (loginController.selectedState != null)
-                                      InputChip(
-                                        label: Text(loginController.selectedState!),
-                                        onDeleted: () {
-                                          loginController.selectedState = null;
-                                          loginController.update();
-                                        },
-                                      ),
-                                    if (loginController.selectedDistricts != null)
-                                    ...loginController.selectedDistricts.map(
-                                          (district) => InputChip(
-                                        label: Text(district),
-                                        onDeleted: () {
-                                          loginController.selectedDistricts.remove(district);
-                                          loginController.update();
-                                        },
-                                      ),),
-                                    if (loginController.selectedTalukas != null)
-                                      ...loginController.selectedTalukas.map(
-                                            (taluka) => InputChip(
-                                          label: Text(taluka),
-                                          onDeleted: () {
-                                            loginController.selectedTalukas.remove(taluka);
-                                            loginController.update();
-                                          },
-                                        ),),
-                                    ...loginController.selectedVillages.map(
-                                            (village) => InputChip(
-                                          label: Text(village),
-                                          onDeleted: () {
-                                            loginController.selectedVillages.remove(village);
-                                            loginController.update();
-                                          },
-                                        ),),
-                                    if (loginController.selectedTaluka != null)
-                                      InputChip(
-                                        label: Text(loginController.selectedTaluka!),
-                                        onDeleted: () {
-                                          loginController.selectedTaluka = null;
-                                          loginController.update();
-                                        },
-                                      ),
-                                    if (loginController.selectedJobType != null)
-                                      InputChip(
-                                        label: Text(loginController.selectedJobType!),
-                                        onDeleted: () {
-                                          loginController.selectedJobType = null;
-                                          loginController.update();
-                                        },
-                                      ),
-                                    if (loginController.selectedSalary != null)
-                                      InputChip(
-                                        label: Text(loginController.selectedSalary!),
-                                        onDeleted: () {
-                                          loginController.selectedSalary = null;
-                                          loginController.update();
-                                        },
-                                      ),
-                                    for (var category in loginController.selectedCategories)
-                                      InputChip(
-                                        label: Text(category,style: AppTextStyles.caption(context),),
-                                        onDeleted: () {
-                                          loginController.selectedCategories.remove(category);
-                                          loginController.update();
-                                        },
-                                      ),
-                                    TextButton(
-                                      onPressed: () async{
-                                        loginController.selectedCategories.clear();
-                                        loginController.selectedArea = null;
-                                        loginController.selectedUserType = null;
-                                        loginController.selectedState = null;
-                                        loginController.selectedDistrict = null;
-                                        loginController.selectedDistance = null;
-                                        loginController.selectedTaluka = null;
-                                        loginController.selectedArea = null;
-                                        loginController.selectedJobType = null;
-                                        loginController.selectedSalary = null;
-                                        loginController.selectedVillages.clear();
-                                        loginController.update();
-                                        await loginController.getProfileDetails(
-                                          "",
-                                          "",
-                                          [], [], [],
-                                          "",
-                                          "",
-                                          "",
-                                          "",
-                                          "",
-                                          context,
-                                        );
-                                        },
-                                      child: const Text(
-                                        "Clear All",
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                        ),
-                if(loginController.profileList.isNotEmpty)
+                      // if (loginController.selectedDistance != null ||loginController.selectedState != null||
+                      //     loginController.selectedDistrict != null ||
+                      //     loginController.selectedTaluka != null ||
+                      //     loginController.selectedJobType != null ||
+                      //     loginController.selectedSalary != null ||
+                      //     loginController.selectedCategories.isNotEmpty)
+                      buildActiveFilters(isMobile,context),
+
+                      if(loginController.profileList.isNotEmpty)
                       Align(
                         alignment: Alignment.topRight,
                         child: Padding(

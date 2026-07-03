@@ -69,7 +69,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       _refresh();
     });
   }
-
   @override
   void dispose() {
     _focusNode.dispose();
@@ -77,7 +76,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     _controller.dispose();
     super.dispose();
   }
-
   Future<void> setProfileData(user) async {
     loginController.selectedState = user.address?.state ?? "";
     loginController.selectedDistrict = user.address?.district ?? "";
@@ -98,14 +96,12 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
     loginController.update();
   }
-
   Map<String, int> getPlanLimits() {
     if (loginController.userData.isEmpty) {
       loginController.maxFilesImage = 2;
       loginController.maxFilesVideo = 1;
       loginController.filesImageSize = 0;
       loginController.filesVideoSize = 0;
-
       loginController.update();
       return {};
     }
@@ -244,25 +240,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       isPicking = false;
     }
   }
-
-  // Future<void> pickMedia(String source) async {
-  //   bool isVideo = source == "video";
-  //   if (kIsWeb) {
-  //     final result = await FilePicker.platform.pickFiles(type: isVideo ? FileType.video : FileType.image, withData: true);
-  //     if (result == null || result.files.isEmpty) return;
-  //     final file = result.files.first;
-  //     loginController.editImages.add(AppImage(bytes: file.bytes, isVideo: isVideo));
-  //   } else {
-  //     XFile? pickedFile = isVideo
-  //         ? await _picker.pickVideo(source: ImageSource.gallery)
-  //         : await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-  //     if (pickedFile == null) return;
-  //     loginController.editImages.add(AppImage(file: File(pickedFile.path), isVideo: isVideo));
-  //     loginController.update();
-  //
-  //   }
-  //   loginController.update();
-  // }
   Future<void> pickMedia(String source) async {
     final isVideo = source == "video";
 
@@ -274,8 +251,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       );
       if (result == null || result.files.isEmpty) return;
       final file = result.files.first;
-
-      // file.bytes can be null for large files — fall back to stream
       Uint8List? bytes = file.bytes;
       if (bytes == null && file.readStream != null) {
         final chunks = <int>[];
@@ -301,7 +276,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         AppImage2(file: File(pickedFile.path), isVideo: isVideo),
       );
     }
-
     loginController.update();
   }
 
@@ -330,20 +304,16 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         ),
     ];
   }
-
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-
     return Scaffold(
       key: _scaffoldKeyRegister,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: (isLoggedIn && !isDesktop)
-          ? const Drawer(width: 250, child: AdminSideBar())
-          : null,
+      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
       body: Row(
         children: [
           if (isLoggedIn && isDesktop) const AdminSideBar(),
@@ -356,12 +326,12 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.only(
-                          left: isMobile ? 10.0 : 35.0,
-                          right: isMobile ? 10.0 : 35.0,
+                          left: isMobile ? 10 : 35,
+                          right: isMobile ? 10 : 35,
                           top: (isLoggedIn && !isDesktop)
-                              ? 56.0
-                              : (isMobile ? 10.0 : 35.0),
-                          bottom: isMobile ? 10.0 : 35.0,
+                              ? 56
+                              : (isMobile ? 10 : 35),
+                          bottom: isMobile ? 10 : 35,
                         ),
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 1200),
@@ -386,10 +356,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                     horizontal: isMobile ? 12.0 : 0,
                                   ),
                                   child: Text(
-                                    loginController
-                                            .fullNameController
-                                            .text
-                                            .isNotEmpty
+                                    loginController.fullNameController.text.isNotEmpty
                                         ? "Edit Details"
                                         : "Register New User",
                                     style: AppTextStyles.body(
@@ -581,7 +548,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     await loginController.registerUser(
       userId:
           (Api.userInfo.read('token') == null ||
-              Get.arguments?['userId'] == "0")
+              Get.arguments?['userId'] == "0" || Get.arguments?['branchId'] == "0")
           ? "0"
           : (loginController.userData.isNotEmpty
                 ? loginController.userData.first.userId ?? ""

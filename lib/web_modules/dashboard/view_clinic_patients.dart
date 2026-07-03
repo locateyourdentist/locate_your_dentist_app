@@ -66,7 +66,6 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Upper Metadata Header Row
                           Padding(
                             padding: const EdgeInsets.only(bottom: 16.0, left: 4.0),
                             child: Row(
@@ -114,29 +113,31 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
                                     child: FilterSidebar(),
                                   ),
                                 ),
-                              // if (isLoggedIn && !isDesktop)
-                              //   Positioned(
-                              //     top: 10,
-                              //     left: 10,
-                              //     child: IconButton(
-                              //       icon: const Icon(Icons.menu,color: AppColors.black,),
-                              //       onPressed: () => _scaffoldKeyPatients.currentState?.openDrawer(),
-                              //     ),
-                              //   ),
+
+
+
                               Expanded(
                                 child: controller.profileList.isEmpty
                                     ? _buildEmptyState()
-                                    : ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: controller.profileList.length,
-                                  itemBuilder: (context, index) {
-                                    return _ClinicDashboardListCard(
-                                      clinic: controller.profileList[index],
-                                      loginController: controller,
-                                    );
-                                  },
-                                ),
+                                    : Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: buildActiveFilters(isMobile,context),
+                                        ),
+                                        ListView.builder(
+                                                                          shrinkWrap: true,
+                                                                          physics: const NeverScrollableScrollPhysics(),
+                                                                          itemCount: controller.profileList.length,
+                                                                          itemBuilder: (context, index) {
+                                        return _ClinicDashboardListCard(
+                                          clinic: controller.profileList[index],
+                                          loginController: controller,
+                                        );
+                                                                          },
+                                                                        ),
+                                      ],
+                                    ),
                               ),
                             ],
                           ),

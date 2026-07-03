@@ -7,7 +7,6 @@ import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
-import 'package:locate_your_dentist/modules/dashboard/slider_images_dashboard.dart';
 import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/modules/profiles/jobseeker_viewprofile.dart';
@@ -311,9 +310,9 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                           .openDrawer();
                                     },
                                     icon: Icon(
-                                      Icons.filter_list,
+                                      Icons.filter_alt,
                                       color: Colors.black,
-                                      size: size * 0.06,
+                                      size: size * 0.05,
                                     ),
                                     splashRadius: 22,
                                   ),
@@ -382,11 +381,56 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                           ],
                         ),
                         const SizedBox(height: 5),
-                        DashboardCarousel(
-                          imageList: planController.editUploadImage
-                              .map((e) => e.url ?? '')
-                              .where((url) => url.isNotEmpty)
-                              .toList(),
+                        // DashboardCarousel(
+                        //   imageList: planController.editUploadImage
+                        //       .map((e) => e.url ?? '')
+                        //       .where((url) => url.isNotEmpty)
+                        //       .toList(),
+                        // ),
+                        GetBuilder<JobController>(
+                          builder: (controller) {
+                            return LayoutBuilder(
+                              builder: (context, constraints) {
+                                // Automatically switches between 2 or 4 columns based on available width
+                                int crossAxisCount = constraints.maxWidth > 600 ? 4 : 2;
+
+                                return GridView.count(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  crossAxisCount: crossAxisCount,
+                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16,
+                                  childAspectRatio: 1.6, // Adjust this ratio to control card height
+                                  children: [
+                                    _buildRowCard(
+                                      title: "Applied",
+                                      count: controller.appliedCount.toString(),
+                                      icon: Icons.work_outline,
+                                      color: Colors.blue,
+                                    ),
+                                    _buildRowCard(
+                                      title: "Shortlisted",
+                                      count: controller.shortlistedCount.toString(),
+                                      icon: Icons.star_border_rounded,
+                                      color: Colors.orange,
+                                    ),
+                                    _buildRowCard(
+                                      title: "Rejected",
+                                      count: controller.rejectedCount.toString(),
+                                      icon: Icons.cancel_outlined,
+                                      color: Colors.red,
+                                    ),
+                                    _buildRowCard(
+                                        title: "Viewed",
+                                      count: controller.viewedCount.toString(),
+                                      icon: Icons.hourglass_empty_rounded,
+                                      color: Colors.amber,
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1132,4 +1176,50 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
       ),
     );
   }
+}
+
+Widget _buildRowCard({
+  required String title,
+  required String count,
+  required IconData icon,
+  required Color color,
+}) {
+  return Container(
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      border: Border(
+        left: BorderSide(color: color, width: 4),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.02),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        )
+      ],
+    ),
+    child: Row(
+      children: [
+        Icon(icon, color: color.withOpacity(0.8), size: 28),
+        const SizedBox(width: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: TextStyle(fontSize: 13, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              count,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }

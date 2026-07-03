@@ -101,6 +101,7 @@ import '../modules/auth/password_page/forgot_password_page.dart';
 import '../modules/contact_form/view_feedback_forms.dart';
 import '../modules/plans/create_plan.dart';
 import '../modules/profiles/clinic_web_view.dart';
+import '../web_modules/auth_web/forgot_password_web.dart';
 import '../web_modules/common/aboutus_web.dart';
 import '../web_modules/dashboard/view_clinic_patients.dart';
 import '../web_modules/dental_mechanic_lab_shop/create_contact_web_page.dart';
@@ -113,6 +114,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.forgotPasswordWebScreen,
       page: () => const ForgotChangePasswordPage(),
+    ),
+    GetPage(
+      name: AppRoutes.forgotMailWebScreen,
+      page: () => const ForgotPasswordPageWeb(),
     ),
     GetPage(
       name: AppRoutes.forgotPasswordEmailWeb,

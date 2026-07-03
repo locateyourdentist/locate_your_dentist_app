@@ -137,26 +137,20 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
-                          width: size * 0.3,
-                          height: size * 0.3,
-                          child: ClipOval(
-                            child: loginController.appLogoUrl != null
-                                ? Image.network(
-                                    loginController.appLogoUrl!,
-                                    fit: BoxFit.cover,
-                                    width: size * 0.3,
-                                    height: size * 0.3,
-                                  )
-                                : Container(
-                                    color: Colors.white.withValues(alpha: 0.3),
-                                    child: Icon(
-                                      Icons.medical_services,
-                                      size: size * 0.2,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                          ),
+
+                        CircleAvatar(
+                          radius: size * 0.045,
+                          backgroundColor: Colors.white,
+                          backgroundImage: loginController.appLogoUrl != null
+                              ? NetworkImage(loginController.appLogoUrl!)
+                              : null,
+                          child: loginController.appLogoUrl == null
+                              ? Icon(
+                            Icons.medical_services,
+                            size: size * 0.12,
+                            color: Colors.blue,
+                          )
+                              : null,
                         ),
                         const SizedBox(height: 20),
 

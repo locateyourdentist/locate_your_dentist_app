@@ -516,9 +516,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                               8.0,
                                                             ),
                                                         child: clinicCard(
-                                                          loginController
-                                                              .profileList[index],
-                                                          context,
+                                                          loginController.profileList[index], context,
                                                         ),
                                                       ),
                                                     ),

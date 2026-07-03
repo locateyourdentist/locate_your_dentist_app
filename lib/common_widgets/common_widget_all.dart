@@ -420,7 +420,58 @@ class CommonListTile extends StatelessWidget {
     );
   }
 }
+Widget buildActiveFilters(bool isMobile,dynamic context) {
+  final loginController = Get.put(LoginController());
+  bool hasFilters = loginController.selectedDistance != null || loginController.selectedState != null || loginController.selectedDistrict != null || loginController.selectedTaluka != null || loginController.selectedJobType != null || loginController.selectedSalary != null || loginController.selectedCategories.isNotEmpty;
+  if (!hasFilters) return const SizedBox.shrink();
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 20),
+    child: Wrap(
+      spacing: 8, runSpacing: 8,
+      children: [
+        if (loginController.selectedState != null) InputChip(label: Text(loginController.selectedState!), onDeleted: () { loginController.selectedState = null; loginController.update(); }),
+        if (loginController.selectedDistricts != null)
+          ...loginController.selectedDistricts.map(
+                (district) => InputChip(
+              label: Text(district),
+              onDeleted: () {
+                loginController.selectedDistricts.remove(district);
+                loginController.update();
+              },
+            ),),
+        if (loginController.selectedTalukas != null)
+          ...loginController.selectedTalukas.map(
+                (taluka) => InputChip(
+              label: Text(taluka),
+              onDeleted: () {
+                loginController.selectedTalukas.remove(taluka);
+                loginController.update();
+              },
+            ),),
+        ...loginController.selectedVillages.map(
+              (village) => InputChip(
+            label: Text(village),
+            onDeleted: () {
+              loginController.selectedVillages.remove(village);
+              loginController.update();
+            },
+          ),
+        ),          TextButton(onPressed: () => _clearAllFilters(context), child: const Text("Clear All", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
+      ],
+    ),
+  );
+}
 
+void _clearAllFilters(dynamic context) async {
+  final loginController = Get.put(LoginController());
+  loginController.selectedCategories.clear();
+  loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedVillage = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
+  loginController.selectedVillages.clear();
+  loginController.selectedDistricts.clear();
+  loginController.selectedTalukas.clear();
+  loginController.update();
+  await loginController.getProfileDetails("", "", [], [],[] ,"", "", "", "", "", context);
+}
 Future<void> sendEmail(String email) async {
   final Uri emailUri = Uri(scheme: 'mailto', path: email);
 
@@ -994,3 +1045,4 @@ Widget buildActionButton({
     ),
   );
 }
+

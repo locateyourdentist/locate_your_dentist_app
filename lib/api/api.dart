@@ -530,12 +530,24 @@ class Api {
         'distance': distance,
         'isActive': isActive
       };
-      Map<String, String> cleanedFilters = {};
+      Map<String, dynamic> cleanedFilters = {};
+
       filters.forEach((key, value) {
-        if (value != null && value.isNotEmpty) {
+        if (value == null) return;
+
+        if (value is String) {
+          if (value.isNotEmpty) {
+            cleanedFilters[key] = value;
+          }
+        } else if (value is List && value.isNotEmpty) {
           cleanedFilters[key] = value;
         }
       });
+      // filters.forEach((key, value) {
+      //   if (value != null && value.isNotEmpty) {
+      //     cleanedFilters[key] = value;
+      //   }
+      // });
       final body = jsonEncode(
           {'search': searchText, 'filters': cleanedFilters});
       print('req body$body');

@@ -86,7 +86,17 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
               style: AppTextStyles.body(context,
                 color: AppColors.black,fontWeight: FontWeight.bold,),
             ),
-            Text(Api.userInfo.read('name')??"",style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.bold,color: Colors.black),),
+            GetBuilder<PlanController>(
+                builder: (controller) {
+                  return Row(
+                    children: [
+                      Icon(Icons.place,color: AppColors.grey,size: size*0.06,),
+                      SizedBox(width: size*0.01,),
+                      Expanded(child: Text(planController.currentLocation??"",overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.013,fontWeight: FontWeight.normal,color: Colors.grey),)),
+                    ],
+                  );
+                }
+            ),
           ],
         ),
           automaticallyImplyLeading: false,
@@ -96,19 +106,17 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                 return Stack(
                   children: [
 
-                    CircleAvatar(
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.notifications_none,
-                          color: AppColors.black,
-                          size: size * 0.08,
-                        ),
-                        onPressed: () {
-                          notificationController.getNotificationListAdmin(context);
-                          notificationController.update();
-                          Get.toNamed('/notificationPage');
-                          },
+                    IconButton(
+                      icon: Icon(
+                        Icons.notifications_none,
+                        color: AppColors.black,
+                        size: size * 0.08,
                       ),
+                      onPressed: () {
+                        notificationController.getNotificationListAdmin(context);
+                        notificationController.update();
+                        Get.toNamed('/notificationPage');
+                        },
                     ),
                  if (int.tryParse(notificationController.unreadCount ?? "0")! > 0)
                     Positioned(
@@ -510,9 +518,17 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
 
                           AnimationLimiter(
                             child: Column(
-                            children: controller.profileList.asMap().entries.map((entry) {
-                            final index = entry.key;
-                            final profile = entry.value;
+                            // children: controller.profileList.asMap().entries.map((entry) {
+                            // final index = entry.key;
+                            // final profile = entry.value;
+                              children:  controller.profileList
+                                  .take(10)
+                                  .toList()
+                                  .asMap()
+                                  .entries
+                                  .map((entry) {
+                                final index = entry.key;
+                                final profile = entry.value;
                             return AnimationConfiguration.staggeredList(
                             position: index,
                             duration: const Duration(milliseconds: 1300),

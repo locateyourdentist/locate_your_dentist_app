@@ -490,10 +490,7 @@ class LoginController extends GetxController {
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
-        states = List<String>.from(
-          decoded is List ? decoded : decoded["states"] ?? decoded["data"] ?? [],
-        );
-
+        states = List<String>.from(decoded is List ? decoded : decoded["states"] ?? decoded["data"] ?? [],);
         print("Loaded States: $states");
         update();
       } else {
@@ -506,8 +503,7 @@ class LoginController extends GetxController {
   Future<void> fetchDistricts(String state) async {
     try {
       final res = await http.post(
-        Uri.parse(
-            '${AppConstants.baseUrl}${AppConstants.notificationUrl}districts'),
+        Uri.parse('${AppConstants.baseUrl}${AppConstants.notificationUrl}districts'),
         headers: {
           "Content-Type": "application/json",
         },
@@ -1226,6 +1222,7 @@ class LoginController extends GetxController {
         await showSuccessDialog(context, title:"Success",message :"User updated successfully!", onOkPressed: () {
           Get.back();});
         clearProfileData();
+        update();
         if (userId != "0") {
           List<String> _parseList(dynamic value) {
             if (value == null) return [];

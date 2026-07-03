@@ -69,7 +69,44 @@ class JobController extends GetxController {
   RxList<File> images = <File>[].obs;
   RxList<int> preferences = <int>[].obs;
   RxString userType = ''.obs;
+  int appliedCount = 0;
+  int shortlistedCount = 0;
+  int rejectedCount = 0;
+  int viewedCount = 0;
+  int selectedCount = 0;
+  int interviewCount = 0;
 
+  void calculateDashboardCounts() {
+    appliedCount = 0;
+    shortlistedCount = 0;
+    rejectedCount = 0;
+    viewedCount = 0;
+    selectedCount = 0;
+    interviewCount = 0;
+
+    for (final job in _jobSeekersAppliedLists) {
+      switch ((job.status ?? "").toLowerCase()) {
+        case "applied":
+          appliedCount++;
+          break;
+
+        case "shortlisted":
+          shortlistedCount++;
+          break;
+
+        case "rejected":
+          rejectedCount++;
+          break;
+
+        case "viewed":
+          viewedCount++;
+          break;
+
+      }
+    }
+
+    update();
+  }
   // Assign to your controller
   //   _controller = QuillController(
   //   document: document,
@@ -526,6 +563,7 @@ class JobController extends GetxController {
         _jobSeekersAppliedLists = jobs
             .map((e) => JobModel.fromJson(e))
             .toList();
+        calculateDashboardCounts();
       } else {
         print('view Jobs failed: ${data["message"]}');
         // showCustomToast(context, "view Jobs failed: ${data["message"]}");

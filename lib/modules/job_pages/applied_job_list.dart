@@ -291,8 +291,7 @@ class _AppliedJobListsState extends State<AppliedJobLists> {
                                                         decoration: BoxDecoration(
                                                           color:
                                                               getStatusColor(
-                                                                appliedJobs
-                                                                        .status ??
+                                                                appliedJobs.status ??
                                                                     "",
                                                               ).withValues(
                                                                 alpha: 0.1,

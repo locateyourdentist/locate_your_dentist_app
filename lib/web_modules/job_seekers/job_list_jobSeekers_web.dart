@@ -338,7 +338,7 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
         Api.userInfo.write('selectJobId', job.jobId.toString());
         Api.userInfo.write('activeStatus', job.isActive.toString());
         //  Get.toNamed('/viewJobDetailWebPage');
-        Get.toNamed('/webLoginPage');
+        Api.userInfo.read('token') == null?  Get.toNamed('/webLoginPage'):Get.toNamed('/viewJobDetailWebPage');
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),

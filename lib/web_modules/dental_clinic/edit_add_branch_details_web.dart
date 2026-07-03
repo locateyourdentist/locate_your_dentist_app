@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
@@ -138,8 +139,8 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                                   Padding(
                                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
                                                     child: Container(
-                                                      //height:size * 0.018,
-                                                                                                     // width:size*0.12,
+                                                      //height:size
+                                                      width:200,
                                                       decoration: BoxDecoration(
                                                         gradient: const LinearGradient(
                                                           colors: [AppColors.primary, AppColors.secondary],
@@ -150,9 +151,10 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                                       ),
                                                       child: ElevatedButton(
                                                         onPressed: ()async {
-                                                          loginController.userData.clear();
-                                                          loginController.clearProfileData();
-                                                          // loginController.getProfileByUserId(Api.userInfo.read('userId')??"", context);
+                                                          //loginController.userData.clear();
+                                                         // loginController.clearProfileData();
+                                                          // loginController.getProfileByUserId(vv, context);
+                                                          Api.userInfo.write('selectUId',Api.userInfo.read('userId'));
                                                           Get.toNamed('/registerPageWeb',arguments: {'branchId':'0'});
                                                         },
                                                         style: ElevatedButton.styleFrom(
@@ -183,8 +185,7 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                                       ),
                                                     ),
 
-                                                  ),
-                                                  SizedBox(height: 25),
+                                                  )
 
                                                 ]);
                                           }
@@ -229,18 +230,6 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
               children: [
                 Text("Branch ${index + 1}", style: const TextStyle(fontWeight: FontWeight.bold)),
 
-                // if (index > 0)
-                //   GetBuilder<LoginController>(
-                //       builder: (controller) {
-                //         return IconButton(
-                //           icon:  Icon(Icons.delete, color: Colors.red,size: MediaQuery.of(context).size.width*0.06,),
-                //           onPressed: () {
-                //             loginController.removeBranchField(index);
-                //            // loginController.deactivateUserAdmin(userId, isActive, context)
-                //             },
-                //         );
-                //       }
-                //   ),
                 GetBuilder<LoginController>(
                     builder: (controller) {
                       return IconButton(

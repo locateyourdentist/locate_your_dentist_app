@@ -183,7 +183,9 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                           buttonText: Text(
                             loginController.selectedDistricts.isEmpty
                                 ? "District"
-                                : loginController.selectedDistricts.first,
+                                : loginController.selectedDistricts.length == 1
+                                ? loginController.selectedDistricts.first
+                                : "${loginController.selectedDistricts.first} +${loginController.selectedDistricts.length - 1}",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTextStyles.caption(
@@ -204,16 +206,6 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                             loginController.update();
                           },
                           chipDisplay: MultiSelectChipDisplay.none(),
-                          // chipDisplay: MultiSelectChipDisplay(
-                          //   height: 130,
-                          //   chipWidth: 100,
-                          //   textStyle: AppTextStyles.caption(context),
-                          //   onTap: (value)async {
-                          //     loginController.selectedDistricts.remove(value);
-                          //     //  await  loginController.fetchTalukas(loginController.selectedDistricts);
-                          //     loginController.update();
-                          //   },
-                          // ),
                         ),
                       ),
                       //_districtDropdown(),
@@ -257,7 +249,9 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                     buttonText: Text(
                       loginController.selectedTalukas.isEmpty
                           ? "Taluka"
-                          : loginController.selectedTalukas.first,
+                          : loginController.selectedTalukas.length == 1
+                          ? loginController.selectedTalukas.first
+                          : "${loginController.selectedTalukas.first} +${loginController.selectedTalukas.length - 1}",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.caption(
@@ -323,7 +317,9 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                     buttonText: Text(
                       loginController.selectedVillages.isEmpty
                           ? "Areas"
-                          : loginController.selectedVillages.first,
+                          : loginController.selectedVillages.length == 1
+                          ? loginController.selectedVillages.first
+                          : "${loginController.selectedVillages.first} +${loginController.selectedVillages.length - 1}",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.caption(

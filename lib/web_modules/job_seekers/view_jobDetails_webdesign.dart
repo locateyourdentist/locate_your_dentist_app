@@ -206,8 +206,8 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                                     ?.openDrawer(),
                                           ),
                                         ),
-
-                                      ClipRRect(
+                                      if (url.isNotEmpty)
+                                        ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
                                         child: SizedBox(
                                           height: screenWidth * 0.15,

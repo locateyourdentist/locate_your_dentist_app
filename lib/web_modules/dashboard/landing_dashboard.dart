@@ -153,13 +153,13 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
     if (!kIsWeb) {
       await getLocation();
     }
-  //  await loginController.getProfileDetails('', '', '', '','', "", '', '', '', '', context);
+    //  await loginController.getProfileDetails('', '', '', '','', "", '', '', '', '', context);
     print("Calling getProfileDetails");
     await loginController.getProfileDetails('Dental Clinic', '', [], [],[], "true", '', '', '', '', context);
     await loginController.fetchStates();
     await loginController.getAppLogoImage(context);
     await planController.getUploadImages(userType: "Dental Clinic", context: context);
-   await jobController.getWebinarListJobSeekers('','',context);
+    await jobController.getWebinarListJobSeekers('','',context);
     await jobController.getJobListJobSeekers(
       search: searchController.text.trim(),
       state: null,
@@ -171,7 +171,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
       context: context,
     );
   }
-    Future<void> getLocation() async {
+  Future<void> getLocation() async {
     try {
       bool serviceEnabled;
       LocationPermission permission;
@@ -277,162 +277,162 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
         builder: (controller) {
           final double size = MediaQuery.of(context).size.width;
           return GestureDetector(
-          onTap: ()async{
-            Api.userInfo.write('selectUId',clinic.userId.toString());
-            await  loginController.getProfileByUserId(clinic.userId.toString(), context);
-            Get.toNamed('/clinicProfileWebPage');
-          },
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: TweenAnimationBuilder(
-              tween: Tween<double>(begin: 0.95, end: 1.0),
-              duration: const Duration(milliseconds: 400),
-              builder: (context, double scale, child) {
-                return Transform.scale(
-                  scale: scale,
-                  child: child,
-                );
-              },
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
-                    ),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ClipRRect(
-                              borderRadius:  BorderRadius.vertical(top: Radius.circular(15)),
-                              child: firstImage.isNotEmpty
-                                  ? Image.network(
-                                  height:size < 700 ? (130) : 300.0,
-                                  (firstImage.isNotEmpty && isAdminUser||
-                                      ((planActive == true &&
-                                          clinic.details["plan"]?["basePlan"]?["details"]?["images"] == true)))
-                                      ? firstImage
-                                      : "",
-                                  // loginController.logoImage.isNotEmpty
-                                  //     ? loginController.logoImage.first ?? ""
-                                  //     : "",
-                                  width: double.infinity, fit: BoxFit.cover)
-                                  : Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF1F3F6),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: const Icon(Icons.image_outlined, color: Colors.grey, size: 50),
-                              )),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                clinic.details['name']?.toString() ?? "",
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.primary),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                "Dr.${clinic.name?.toString() ?? ""}",
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.caption(context,fontWeight: FontWeight.w500),
-                              ),
-                              const SizedBox(height: 5),
-
-                              if ((planActive == true &&
-                                  clinic.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-                                  isAdminUser)
-                              Text(
-                                "Mobile : ${clinic.mobileNumber.toString()}",
-                                style: AppTextStyles.caption(context,),
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  IconButton(
-                                    icon:Icon( Icons.location_on,
-                                      color: Colors.grey,
-                                      size: 18,),
-                                    onPressed: (){
-                                      if(clinic.location.toString().isNotEmpty&&(planActive==true
-                                          &&clinic?.details["plan"]?["basePlan"]?["details"]?["location"]==true|| isAdminUser)) {
-                                        if (PlatformHelper.platform == 'Android' ||
-                                            PlatformHelper.platform == 'iOS') {
-                                          Get.toNamed(
-                                              '/webViewProfilePage', arguments: {
-                                            "url": clinic
-                                                .location
-                                                .toString() ?? "",
-                                            "clinicName": clinic
-                                                .details["name"].toString() ?? ""
-                                          });
-                                        }
-                                      }
-                                    },
+            onTap: ()async{
+              Api.userInfo.write('selectUId',clinic.userId.toString());
+              await  loginController.getProfileByUserId(clinic.userId.toString(), context);
+              Get.toNamed('/clinicProfileWebPage');
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: TweenAnimationBuilder(
+                tween: Tween<double>(begin: 0.95, end: 1.0),
+                duration: const Duration(milliseconds: 400),
+                builder: (context, double scale, child) {
+                  return Transform.scale(
+                    scale: scale,
+                    child: child,
+                  );
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
+                      ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                                borderRadius:  BorderRadius.vertical(top: Radius.circular(15)),
+                                child: firstImage.isNotEmpty
+                                    ? Image.network(
+                                    height:size < 700 ? (130) : 300.0,
+                                    (firstImage.isNotEmpty && isAdminUser||
+                                        ((planActive == true &&
+                                            clinic.details["plan"]?["basePlan"]?["details"]?["images"] == true)))
+                                        ? firstImage
+                                        : "",
+                                    // loginController.logoImage.isNotEmpty
+                                    //     ? loginController.logoImage.first ?? ""
+                                    //     : "",
+                                    width: double.infinity, fit: BoxFit.cover)
+                                    : Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF1F3F6),
+                                    borderRadius: BorderRadius.circular(16),
                                   ),
-                                  const SizedBox(width: 5),
-                                  Expanded(
+                                  child: const Icon(Icons.image_outlined, color: Colors.grey, size: 50),
+                                )),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  clinic.details['name']?.toString() ?? "",
+                                  textAlign: TextAlign.center,
+                                  style: AppTextStyles.caption(context,fontWeight: FontWeight.bold,color: AppColors.primary),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  "Dr.${clinic.name?.toString() ?? ""}",
+                                  textAlign: TextAlign.center,
+                                  style: AppTextStyles.caption(context,fontWeight: FontWeight.w500),
+                                ),
+                                const SizedBox(height: 5),
+
+                                if ((planActive == true &&
+                                    clinic.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
+                                    isAdminUser)
+                                  Text(
+                                    "Mobile : ${clinic.mobileNumber.toString()}",
+                                    style: AppTextStyles.caption(context,),
+                                  ),
+                                const SizedBox(height: 5),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    IconButton(
+                                      icon:Icon( Icons.location_on,
+                                        color: Colors.grey,
+                                        size: 18,),
+                                      onPressed: (){
+                                        if(clinic.location.toString().isNotEmpty&&(planActive==true
+                                            &&clinic?.details["plan"]?["basePlan"]?["details"]?["location"]==true|| isAdminUser)) {
+                                          if (PlatformHelper.platform == 'Android' ||
+                                              PlatformHelper.platform == 'iOS') {
+                                            Get.toNamed(
+                                                '/webViewProfilePage', arguments: {
+                                              "url": clinic
+                                                  .location
+                                                  .toString() ?? "",
+                                              "clinicName": clinic
+                                                  .details["name"].toString() ?? ""
+                                            });
+                                          }
+                                        }
+                                      },
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Expanded(
+                                      child: Text(
+                                        "${clinic.address['addressLine1'] ?? ''}, ${clinic.address['addressLine2'] ?? ''}, ${clinic.address['area'] ?? ''}, "
+                                            "${clinic.address['city'] ?? ''}, "
+                                            "${clinic.address['district'] ?? ''}, "
+                                            "${clinic.address['state'] ?? ''}",
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,style: AppTextStyles.caption(context,color: AppColors.grey),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                if ((planActive == true &&
+                                    clinic.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
+                                    isAdminUser)
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primary,
+                                    ),
+                                    onPressed: () async{
+                                      await   launchCallWeb("tel:${clinic.mobileNumber}");
+
+                                    },
                                     child: Text(
-                                      "${clinic.address['addressLine1'] ?? ''}, ${clinic.address['addressLine2'] ?? ''}, ${clinic.address['area'] ?? ''}, "
-                                          "${clinic.address['city'] ?? ''}, "
-                                          "${clinic.address['district'] ?? ''}, "
-                                          "${clinic.address['state'] ?? ''}",
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,style: AppTextStyles.caption(context,color: AppColors.grey),
+                                      "Call",
+                                      style: AppTextStyles.caption(context, color: AppColors.white),
                                     ),
                                   ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              if ((planActive == true &&
-                                  clinic.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-                                  isAdminUser)
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
-                                ),
-                                onPressed: () async{
-                                  await   launchCallWeb("tel:${clinic.mobileNumber}");
-
-                                },
-                                child: Text(
-                                  "Call",
-                                  style: AppTextStyles.caption(context, color: AppColors.white),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (addOnsPlanStatus == "true")
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.orangeAccent,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text("SPONSORED", style: AppTextStyles.caption(context)),
+                        ],
                       ),
                     ),
-                ],
+                    if (addOnsPlanStatus == "true")
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.orangeAccent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text("SPONSORED", style: AppTextStyles.caption(context)),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }
+          );
+        }
     );
   }
   bool getPlanActive() {
@@ -479,42 +479,32 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: const Color(0xFFF8FAFC),
+      appBar: CommonHeader(),
       body: GetBuilder<LoginController>(
           builder: (controller) {
-          return RefreshIndicator(
-            onRefresh: _refresh,
-            child: SafeArea(
-              child: SingleChildScrollView(
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
+            return RefreshIndicator(
+              onRefresh: _refresh,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Center(
-                        child: Container(
-                         // constraints: const BoxConstraints(maxWidth: 1300),
-                         // padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-              
-                              AnimationLimiter(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AnimationConfiguration.staggeredList(
-                                      position: 0,
-                                      duration: const Duration(milliseconds: 600),
-                                      child: SlideAnimation(
-                                        verticalOffset: -50.0,
-                                        child: FadeInAnimation(
-                                          child: CommonHeader(),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // AnimationLimiter(
+                          //   child: AnimationConfiguration.staggeredList(
+                          //     position: 0,
+                          //     duration: const Duration(milliseconds: 600),
+                          //     child: SlideAnimation(
+                          //       verticalOffset: -50.0,
+                          //       child: FadeInAnimation(
+                          //         child: CommonHeader(),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           SizedBox(
                             width: double.infinity,
                             height: isMobile?900:1200,
@@ -535,627 +525,540 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                   ),
                                 ),
                                 if(!isMobile)
-                                Positioned(
-                                  right: 80,
-                                  top: 0,
-                                  bottom: 120,
-                                  child: Center(
-                                    child: _buildTransparentLoginCard(context),
+                                  Positioned(
+                                    right: 80,
+                                    top: 0,
+                                    bottom: 120,
+                                    child: Center(
+                                      child: _buildTransparentLoginCard(context),
+                                    ),
                                   ),
-                                ),
                                 Positioned(
                                   left: 0,
                                   right: 0,
                                   bottom: 30,
                                   child: Center(
-                                      child: Container(
-                                         // width:1500,
-                                        width: isMobile
-                                            ? MediaQuery.of(context).size.width * 0.92
-                                            : 1500,
-                                        margin: const EdgeInsets.symmetric(horizontal: 20),
-                                        padding: const EdgeInsets.all(25),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(20),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withOpacity(.12),
-                                              blurRadius: 25,
-                                              offset: const Offset(0, 10),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Wrap(
-                                          spacing: 15,
-                                          runSpacing: 15,
-                                          alignment: WrapAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              width: size > 1100
-                                                  ? 250
-                                                  : size > 800
-                                                  ? 200
-                                                  : 200,
-                                              child: buildFilterBox(
-                                                icon: Icons.map,
-                                                child: CustomDropdown<String>.search(
-                                                  hintText: "State",
-                                                  items: controller.states.map((e) => e.toString()).toList(),
-                                                  onChanged: (val)async {
-                                                    if (val != null) {
-                                                      controller.selectedState = val;
-                                                     await controller.fetchDistricts(val);
-                                                      controller.update();
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: size > 1100
-                                                  ? 250
-                                                  : size > 800
-                                                  ? 200
-                                                  : 200,
-                                              child: buildFilterBox(
-                                                icon: Icons.location_city,
-                                                child:MultiSelectDialogField<String>(
-                                                  checkColor: AppColors.primary,
-                                                  buttonIcon: const Icon(
-                                                    Icons.arrow_drop_down,
-                                                    color: AppColors.white,
-                                                    size: 2,),
-                                                  items: loginController.districts
-                                                      .toSet()
-                                                      .map(
-                                                        (e) => MultiSelectItem<String>(
-                                                      e.toString(),
-                                                      e.toString(),
-                                                    ),
-                                                  ).toList(),
-                                                  title: Center(
-                                                    child: Text(
-                                                      "Select districts",
-                                                      style: AppTextStyles.body(context),
-                                                    ),),
-                                                  buttonText: Text(
-                                                    "district",
-                                                    style: AppTextStyles.caption(context,color: AppColors.grey),
-                                                  ),
-                                                  decoration: const BoxDecoration(),
-                                                  searchable: true,
-                                                  dialogHeight: 400,
-                                                  dialogWidth:120,
-                                                  initialValue: loginController.selectedDistricts,
-                                                  onConfirm: (values)async {
-                                                    loginController.selectedDistricts = values.map((e) => e.toString()).toList();
-                                                    await  loginController.fetchTalukas(loginController.selectedDistricts);
-                                                    loginController.update();
-                                                  },
-                                                  chipDisplay: MultiSelectChipDisplay.none(),
-                                                  // chipDisplay: MultiSelectChipDisplay(
-                                                  //   height: 130,
-                                                  //   chipWidth: 100,
-                                                  //   textStyle: AppTextStyles.caption(context),
-                                                  //   onTap: (value)async {
-                                                  //     loginController.selectedDistricts.remove(value);
-                                                  //     //  await  loginController.fetchTalukas(loginController.selectedDistricts);
-                                                  //     loginController.update();
-                                                  //   },
-                                                  // ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: size > 1100
-                                                  ? 250
-                                                  : size > 800
-                                                  ? 200
-                                                  : 200,
-                                              child: buildFilterBox(
-                                                icon: Icons.account_balance,
-                                                child:MultiSelectDialogField<String>(
-                                                  checkColor: AppColors.primary,
-                                                  buttonIcon: const Icon(
-                                                    Icons.arrow_drop_down,
-                                                    color: AppColors.white,
-                                                    size: 2,),
-                                                  items: loginController.talukas
-                                                      .toSet()
-                                                      .map(
-                                                        (e) => MultiSelectItem<String>(
-                                                      e.toString(),
-                                                      e.toString(),
-                                                    ),
-                                                  ).toList(),
-                                                  title: Center(
-                                                    child: Text(
-                                                      "Select Taluka",
-                                                      style: AppTextStyles.body(context),
-                                                    ),),
-                                                  buttonText: Text(
-                                                    "Taluka",
-                                                    style: AppTextStyles.caption(context,color: AppColors.grey),
-                                                  ),
-                                                  decoration: const BoxDecoration(),
-                                                  searchable: true,
-                                                  dialogHeight: 400,
-                                                  dialogWidth:120,
-                                                  initialValue: loginController.selectedTalukas,
-                                                  onConfirm: (values) async{
-                                                    loginController.selectedTalukas = values.map((e) => e.toString()).toList();
-                                                    await loginController.fetchVillages(loginController.selectedTalukas);
-                                                    loginController.update();
-                                                  },
-                                                  chipDisplay: MultiSelectChipDisplay.none(),
-                                                  // chipDisplay: MultiSelectChipDisplay(
-                                                  //   height: 200,
-                                                  //   chipWidth: 100,
-                                                  //   textStyle: AppTextStyles.caption(context),
-                                                  //   onTap: (value)async {
-                                                  //     loginController.selectedTalukas.remove(value);
-                                                  //    await loginController.fetchVillages(loginController.selectedTalukas);
-                                                  //     loginController.update();
-                                                  //   },
-                                                  // ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: size > 1100
-                                                  ? 250
-                                                  : size > 800
-                                                  ? 200
-                                                  : 200,
-                                              child: buildFilterBox(
-                                                icon: Icons.place,
-                                                child:  MultiSelectDialogField<String>(
-                                                  checkColor: AppColors.primary,
-                                                  buttonIcon: const Icon(
-                                                    Icons.arrow_drop_down,
-                                                    color: AppColors.white,
-                                                    size: 2,
-                                                  ),
-                                                  items: loginController.villages
-                                                      .toSet()
-                                                      .map(
-                                                        (e) => MultiSelectItem<String>(
-                                                      e.toString(),
-                                                      e.toString(),
-                                                    ),
-                                                  ).toList(),
-                                                  title: Center(
-                                                    child: Text(
-                                                      "Select Areas",
-                                                      style: AppTextStyles.body(context),
-                                                    ),
-                                                  ),
-
-                                                  buttonText: Text(
-                                                    "Area",
-                                                    style: AppTextStyles.caption(context,color: AppColors.grey),
-                                                  ),
-                                                  decoration: const BoxDecoration(),
-
-                                                  searchable: true,
-                                                  dialogHeight: 400,
-                                                  dialogWidth:120,
-                                                  initialValue: loginController.selectedVillages,
-
-                                                  onConfirm: (values) {
-                                                    loginController.selectedVillages = values.map((e) => e.toString()).toList();
-                                                    loginController.update();
-                                                  },
-                                                  chipDisplay: MultiSelectChipDisplay.none(),
-
-                                                  // chipDisplay: MultiSelectChipDisplay(
-                                                  //   height: 130,
-                                                  //   chipWidth: 100,
-                                                  //   textStyle: AppTextStyles.caption(context),
-                                                  //   onTap: (value) {
-                                                  //     loginController.selectedVillages.remove(value);
-                                                  //     loginController.update();
-                                                  //   },
-                                                  // ),
-                                                ),
-                                              ),
-                                            ),
-                                            ElevatedButton.icon(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: AppColors.primary,
-                                                elevation: 5,
-                                                padding: const EdgeInsets.symmetric(
-                                                  horizontal: 35,
-                                                  vertical: 18,
-                                                ),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                ),
-                                              ),
-                                              icon: const Icon(
-                                                Icons.search_rounded,
-                                                color: Colors.white,
-                                                size: 22,
-                                              ),
-                                              label: Text(
-                                                "Search Dentist",
-                                                style: AppTextStyles.caption(
-                                                  context,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              onPressed: () async {
-                                                Api.userInfo.write('sUserType','Dental Clinic');
-                                                await loginController.getProfileDetails(
-                                                  "Dental Clinic",
-                                                  loginController.selectedState,
-                                                  loginController.selectedDistricts,
-                                                  loginController.selectedTalukas,loginController.selectedVillages,
-                                                  "true",
-                                                  '',
-                                                  '',
-                                                  '',
-                                                  '',
-                                                  context,
-                                                );
-                                                Get.toNamed('/viewPatientsListWeb');
-                                              },
-                                            )
-
-
-                                          ],
-                                        ),
+                                    child: Container(
+                                      // width:1500,
+                                      width: isMobile
+                                          ? MediaQuery.of(context).size.width * 0.92
+                                          : 1500,
+                                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                                      padding: const EdgeInsets.all(25),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(.12),
+                                            blurRadius: 25,
+                                            offset: const Offset(0, 10),
+                                          ),
+                                        ],
                                       ),
+                                      child: Wrap(
+                                        spacing: 15,
+                                        runSpacing: 15,
+                                        alignment: WrapAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: size > 1100
+                                                ? 250
+                                                : size > 800
+                                                ? 200
+                                                : 200,
+                                            child: buildFilterBox(
+                                              icon: Icons.map,
+                                              child: CustomDropdown<String>.search(
+                                                hintText: "State",
+                                                items: controller.states.map((e) => e.toString()).toList(),
+                                                onChanged: (val)async {
+                                                  if (val != null) {
+                                                    controller.selectedState = val;
+                                                    await controller.fetchDistricts(val);
+                                                    controller.update();
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: size > 1100
+                                                ? 250
+                                                : size > 800
+                                                ? 200
+                                                : 200,
+                                            child: buildFilterBox(
+                                              icon: Icons.location_city,
+                                              child:MultiSelectDialogField<String>(
+                                                checkColor: AppColors.primary,
+                                                buttonIcon: const Icon(
+                                                  Icons.arrow_drop_down,
+                                                  color: AppColors.white,
+                                                  size: 2,),
+                                                items: loginController.districts
+                                                    .toSet()
+                                                    .map(
+                                                      (e) => MultiSelectItem<String>(
+                                                    e.toString(),
+                                                    e.toString(),
+                                                  ),
+                                                ).toList(),
+                                                title: Center(
+                                                  child: Text(
+                                                    "Select districts",
+                                                    style: AppTextStyles.body(context),
+                                                  ),),
+                                                buttonText: Text(
+                                                  loginController.selectedDistricts.isEmpty
+                                                      ? "District"
+                                                      : loginController.selectedDistricts.length == 1
+                                                      ? loginController.selectedDistricts.first
+                                                      : "${loginController.selectedDistricts.first} +${loginController.selectedDistricts.length - 1}",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: AppTextStyles.caption(context,color: AppColors.black),
+                                                ),
+                                                decoration: const BoxDecoration(),
+                                                searchable: true,
+                                                dialogHeight: 400,
+                                                dialogWidth:120,
+                                                initialValue: loginController.selectedDistricts,
+                                                onConfirm: (values)async {
+                                                  loginController.selectedDistricts = values.map((e) => e.toString()).toList();
+                                                  await  loginController.fetchTalukas(loginController.selectedDistricts);
+                                                  loginController.update();
+                                                },
+                                                chipDisplay: MultiSelectChipDisplay.none(),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: size > 1100
+                                                ? 250
+                                                : size > 800
+                                                ? 200
+                                                : 200,
+                                            child: buildFilterBox(
+                                              icon: Icons.account_balance,
+                                              child:MultiSelectDialogField<String>(
+                                                checkColor: AppColors.primary,
+                                                buttonIcon: const Icon(
+                                                  Icons.arrow_drop_down,
+                                                  color: AppColors.white,
+                                                  size: 2,),
+                                                items: loginController.talukas
+                                                    .toSet()
+                                                    .map(
+                                                      (e) => MultiSelectItem<String>(
+                                                    e.toString(),
+                                                    e.toString(),
+                                                  ),
+                                                ).toList(),
+                                                title: Center(
+                                                  child: Text(
+                                                    "Select Taluka",
+                                                    style: AppTextStyles.body(context),
+                                                  ),),
+                                                buttonText: Text(
+                                                  loginController.selectedTalukas.isEmpty
+                                                      ? "Taluka"
+                                                      : loginController.selectedTalukas.length == 1
+                                                      ? loginController.selectedTalukas.first
+                                                      : "${loginController.selectedTalukas.first} +${loginController.selectedTalukas.length - 1}",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: AppTextStyles.caption(context,color: AppColors.black),
+                                                ),
+                                                decoration: const BoxDecoration(),
+                                                searchable: true,
+                                                dialogHeight: 400,
+                                                dialogWidth:120,
+                                                initialValue: loginController.selectedTalukas,
+                                                onConfirm: (values) async{
+                                                  loginController.selectedTalukas = values.map((e) => e.toString()).toList();
+                                                  await loginController.fetchVillages(loginController.selectedTalukas);
+                                                  loginController.update();
+                                                },
+                                                chipDisplay: MultiSelectChipDisplay.none(),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: size > 1100
+                                                ? 250
+                                                : size > 800
+                                                ? 200
+                                                : 200,
+                                            child: buildFilterBox(
+                                              icon: Icons.place,
+                                              child:  MultiSelectDialogField<String>(
+                                                checkColor: AppColors.primary,
+                                                buttonIcon: const Icon(
+                                                  Icons.arrow_drop_down,
+                                                  color: AppColors.white,
+                                                  size: 2,
+                                                ),
+                                                items: loginController.villages
+                                                    .toSet()
+                                                    .map(
+                                                      (e) => MultiSelectItem<String>(
+                                                    e.toString(),
+                                                    e.toString(),
+                                                  ),
+                                                ).toList(),
+                                                title: Center(
+                                                  child: Text(
+                                                    "Select Areas",
+                                                    style: AppTextStyles.body(context),
+                                                  ),
+                                                ),
+
+                                                buttonText: Text(
+                                                  loginController.selectedVillages.isEmpty
+                                                      ? "Areas"
+                                                      : loginController.selectedVillages.length == 1
+                                                      ? loginController.selectedVillages.first
+                                                      : "${loginController.selectedVillages.first} +${loginController.selectedVillages.length - 1}",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: AppTextStyles.caption(context,color: AppColors.black),
+                                                ),
+                                                decoration: const BoxDecoration(),
+
+                                                searchable: true,
+                                                dialogHeight: 400,
+                                                dialogWidth:120,
+                                                initialValue: loginController.selectedVillages,
+
+                                                onConfirm: (values) {
+                                                  loginController.selectedVillages = values.map((e) => e.toString()).toList();
+                                                  loginController.update();
+                                                },
+                                                chipDisplay: MultiSelectChipDisplay.none(),
+                                              ),
+                                            ),
+                                          ),
+                                          ElevatedButton.icon(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: AppColors.primary,
+                                              elevation: 5,
+                                              padding: const EdgeInsets.symmetric(
+                                                horizontal: 35,
+                                                vertical: 18,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                            ),
+                                            icon: const Icon(
+                                              Icons.search_rounded,
+                                              color: Colors.white,
+                                              size: 22,
+                                            ),
+                                            label: Text(
+                                              "Search Dentist",
+                                              style: AppTextStyles.caption(
+                                                context,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            onPressed: () async {
+                                              Api.userInfo.write('sUserType','Dental Clinic');
+                                              await loginController.getProfileDetails(
+                                                "Dental Clinic",
+                                                loginController.selectedState,
+                                                loginController.selectedDistricts,
+                                                loginController.selectedTalukas,loginController.selectedVillages,
+                                                "true",
+                                                '',
+                                                '',
+                                                '',
+                                                '',
+                                                context,
+                                              );
+                                              Get.toNamed('/viewPatientsListWeb');
+                                            },
+                                          )
+
+
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                              const SizedBox(height: 40),
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 40,
-                                  vertical: 80,
-                                ),
-                                color: const Color(0xffF6FBFB),
-                                child: Column(
-                                  children: [
-                                    Center(child: Text("Featured Clinics", style: AppTextStyles.headline1(context,color: AppColors.primary))),
-                                    const SizedBox(height: 20),
-                                    if (loginController.profileList.isEmpty)
-                                      Center(child: Text('No data found', style: AppTextStyles.caption(context))),
-                                    if (loginController.isLoading)
-                                      const Center(child: CircularProgressIndicator(color: AppColors.primary)),
-                                    if (loginController.profileList.isNotEmpty)
-                                      GetBuilder<PlanController>(
-                                        builder: (controller) {
-                                          final imageUrls = controller.editUploadImage1
-                                              .where((img) => img.isActive == true)
-                                              .map((img) => img.url ?? "")
-                                              .where((url) => url.isNotEmpty)
-                                              .toList();
-                                          // final imageUrls = controller.editUploadImage1
-                                          //     .map((clinic) => clinic.url ?? "")
-                                          //     .where((url) => url.isNotEmpty)
-                                          //     .toList();
-                                          return Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: ClinicImageCarousel(imageUrls: imageUrls),
-                                          );
-                                        },
-                                      ),
+                          const SizedBox(height: 40),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 80,
+                            ),
+                            color: const Color(0xffF6FBFB),
+                            child: Column(
+                              children: [
+                                Center(child: Text("Featured Clinics", style: AppTextStyles.headline1(context,color: AppColors.primary))),
+                                const SizedBox(height: 20),
+                                if (loginController.profileList.isEmpty)
+                                  Center(child: Text('No data found', style: AppTextStyles.caption(context))),
+                                if (loginController.isLoading)
+                                  const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+                                if (loginController.profileList.isNotEmpty)
+                                  GetBuilder<PlanController>(
+                                    builder: (controller) {
+                                      final imageUrls = controller.editUploadImage1
+                                          .where((img) => img.isActive == true)
+                                          .map((img) => img.url ?? "")
+                                          .where((url) => url.isNotEmpty)
+                                          .toList();
+                                      // final imageUrls = controller.editUploadImage1
+                                      //     .map((clinic) => clinic.url ?? "")
+                                      //     .where((url) => url.isNotEmpty)
+                                      //     .toList();
+                                      return Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: ClinicImageCarousel(imageUrls: imageUrls),
+                                      );
+                                    },
+                                  ),
 
-                                    const SizedBox(height: 30),
-                                    Center(
-                                      child: Text(
-                                        "Popular Dental Treatments",
-                                        style: TextStyle(
-                                            fontSize: 26,
-                                            fontWeight: FontWeight.bold,color: AppColors.primary
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                     // width: double.infinity,
-                                      constraints: const BoxConstraints(maxWidth: 1500),
-                                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                                      color: const Color(0xffF8FAFC),
-                                      child: Center(
-                                        child: AnimatedContainer(
-                                          duration: const Duration(milliseconds: 250),
-                                          curve: Curves.easeInOutCubic,
-                                          constraints: const BoxConstraints(maxWidth: 1500),
-                                          child: Wrap(
-                                            spacing: 10,
-                                            runSpacing: 10,
-                                            alignment: WrapAlignment.center,
-                                            children: const [
-              
-                                              DentalServiceCard(
-                                                title: "Root Canal",
-                                                image: "assets/images/root_canal1.png",
-                                                url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
-                                              ),
-              
-                                              DentalServiceCard(
-                                                title: "Dental Implants",
-                                                image: "assets/images/dentalimplant1.png",
-                                                url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
-                                              ),
-              
-                                              DentalServiceCard(
-                                                title: "Aligners",
-                                                image: "assets/images/aligners1.png",
-                                                url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
-                                              ),
-              
-                                              DentalServiceCard(
-                                                title: "Braces",
-                                                image: "assets/images/braces1.png",
-                                                url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
-                                              ),
-              
-                                              DentalServiceCard(
-                                                title: "Gum Care",
-                                                image: "assets/images/gumcare1.png",
-                                                url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
-                                              ),
-              
-                                              DentalServiceCard(
-                                                title: "Tooth Whitening",
-                                                image: "assets/images/toothwhitening1.png",
-                                                url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                   WhyChooseUsSection(),
-              
-                                    const SizedBox(height: 30),
-                                    AboutUsSection(),
-                                    SizedBox(height: size*0.01,),
-                                    platformOverviewSection(context),
-                                  ],
-                                ),
-                              ),
-                              //DentalProblemCard(),
-              
-                        // Column(
-                        //   children: [
-                        //
-                        //     Text(
-                        //       "Popular Dental Treatments",
-                        //       style: TextStyle(
-                        //         fontSize: 26,
-                        //         fontWeight: FontWeight.bold,color: AppColors.primary
-                        //       ),
-                        //     ),
-                        //
-                        //     const SizedBox(height: 15),
-                        //
-                        //     Text(
-                        //       "Explore advanced dental solutions offered by verified clinics",
-                        //       textAlign: TextAlign.center,
-                        //       style: TextStyle(
-                        //         color: Colors.grey.shade600,
-                        //         fontSize: 16,
-                        //       ),
-                        //     ),
-                        //    // const SizedBox(height: 15),
-                        //
-                        //     // GumDiseaseCard(),
-                        //     // BruxismCard(),
-                        //     // SensitivityCard(),
-                        //     // WisdomTeethCard(),
-                        //     // AbscessCard(),
-                        //
-                        //     TreatmentCard(
-                        //       treatment: treatments[0],
-                        //       reverse: false,
-                        //     ),
-                        //
-                        //     TreatmentCard(
-                        //       treatment: treatments[1],
-                        //       reverse: true,
-                        //     ),
-                        //
-                        //     TreatmentCard(
-                        //       treatment: treatments[2],
-                        //       reverse: false,
-                        //     ),
-                        //     TreatmentCard(
-                        //       treatment: treatments[3],
-                        //       reverse: true,
-                        //     ),
-                        //
-                        //     TreatmentCard(
-                        //       treatment: treatments[4],
-                        //       reverse: false,
-                        //     ),
-                        //     SizedBox(height: size*0.01,),
-                        //
-                        //     BrushingTechniqueCard(),
-                        //     SizedBox(height: size*0.01,),
-                        //
-                        //   ],
-                        // ),
+                                const SizedBox(height: 30),
 
-                              Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Center(
+                                CompleteCareSection(),
+                                const SizedBox(height: 30),
+
+                                Center(
+                                  child: Text(
+                                    "Popular Dental Treatments",
+                                    style: TextStyle(
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.bold,color: AppColors.primary
+                                    ),
+                                  ),
+                                ),
+                                Center(
                                   child: Container(
+                                    // width: double.infinity,
                                     constraints: const BoxConstraints(maxWidth: 1500),
-                                    child:  GetBuilder<LoginController>(
-                                        builder: (controller) {
-                                          return Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text("Dental Clinics", style: AppTextStyles.subtitle(context, color: AppColors.black)),
-                                                  TextButton(
-                                                    onPressed: () async{
-                                                      Api.userInfo.write('sUserType1', 'Dental Clinic',);
-                                                      await loginController.getProfileDetails('Dental Clinic', '', [], [],[], 'true', '', '', '', '',
-                                                        context,);
-                                                     // Get.toNamed('/userTypeListWeb');
-                                                      Get.to(() => ViewClinicPatients());
-                                                    },
-                                                    child: Text(
-                                                      "View All",
-                                                      style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.bold)
-                                                          .copyWith(decoration: TextDecoration.underline),
-                                                    ),
+                                    padding: const EdgeInsets.all(20),
+                                    color: const Color(0xffF8FAFC),
+                                    child: Center(
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 250),
+                                        curve: Curves.easeInOutCubic,
+                                        constraints: const BoxConstraints(maxWidth: 1500),
+                                        child: Wrap(
+                                          spacing: 10,
+                                          runSpacing: 10,
+                                          alignment: WrapAlignment.center,
+                                          children: const [
+
+                                            DentalServiceCard(
+                                              title: "Root Canal",
+                                              description:
+                                              "Save damaged teeth with painless root canal treatment using advanced dental technology.",
+                                              image: "assets/images/root_canal1.png",
+                                              url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
+                                            ),
+
+                                            DentalServiceCard(
+                                              title: "Dental Implants",
+                                              description:"Permanent replacement for missing teeth with natural appearance and function.",
+                                              image: "assets/images/dentalimplant1.png",
+                                              url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
+                                            ),
+
+                                            DentalServiceCard(
+                                              title: "Aligners",
+                                              description:
+                                              "Nearly invisible teeth straightening with removable clear aligners.",
+                                              image: "assets/images/aligners1.png",
+                                              url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
+                                            ),
+
+                                            DentalServiceCard(
+                                              title: "Braces",
+                                              description:
+                                              "Straighten misaligned teeth and improve bite correction.",
+                                              image: "assets/images/braces1.png",
+                                              url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
+                                            ),
+
+                                            DentalServiceCard(
+                                              title: "Gum Care",
+                                              description:
+                                              "Prevent and treat gum disease for healthier teeth and gums.",
+                                              image: "assets/images/gumcare1.png",
+                                              url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
+                                            ),
+
+                                            DentalServiceCard(
+                                              title: "Tooth Whitening",
+                                              description:
+                                              "Professional whitening for a brighter, stain-free smile.",
+                                              image: "assets/images/toothwhitening1.png",
+                                              url: "https://youtu.be/0s35QCFg7p0?si=TxqOPWBNRP-5wNtX",
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                WhyChooseUsSection(),
+
+                                const SizedBox(height: 30),
+                                AboutUsSection(),
+                                SizedBox(height: size*0.01,),
+                                platformOverviewSection(context),
+                              ],
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Center(
+                              child: Container(
+                                constraints: const BoxConstraints(maxWidth: 1500),
+                                child:  GetBuilder<LoginController>(
+                                    builder: (controller) {
+                                      return Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text("Dental Clinics", style: AppTextStyles.subtitle(context, color: AppColors.black)),
+                                                TextButton(
+                                                  onPressed: () async{
+                                                    Api.userInfo.write('sUserType1', 'Dental Clinic',);
+                                                    await loginController.getProfileDetails('Dental Clinic', '', [], [],[], 'true', '', '', '', '',
+                                                      context,);
+                                                    // Get.toNamed('/userTypeListWeb');
+                                                    Get.to(() => ViewClinicPatients());
+                                                  },
+                                                  child: Text(
+                                                    "View All",
+                                                    style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.bold)
+                                                        .copyWith(decoration: TextDecoration.underline),
                                                   ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 10),
-                                              if (loginController.isLoading)
-                                                _buildClinicShimmerGrid(context)
-                                              else if (loginController.profileList.isEmpty)
-                                                _buildEmptyStateWithShimmer(context)
-                                              else if (loginController.profileList.isNotEmpty)
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 10),
+                                            if (loginController.isLoading)
+                                              _buildClinicShimmerGrid(context)
+                                            else if (loginController.profileList.isEmpty)
+                                              _buildEmptyStateWithShimmer(context)
+                                            else if (loginController.profileList.isNotEmpty)
                                                 GetBuilder<LoginController>(
                                                     builder: (controller) {
                                                       return AnimationLimiter(
-                                                      child: GridView.builder(
-                                                        shrinkWrap: true,
-                                                        physics: const NeverScrollableScrollPhysics(),
-                                                        itemCount: loginController.profileList.length > 10
-                                                            ? 10
-                                                            : loginController.profileList.length,
-                                                        gridDelegate:  SliverGridDelegateWithMaxCrossAxisExtent(
-                                                          maxCrossAxisExtent: 280,
-                                                          mainAxisSpacing: 20,
-                                                          crossAxisSpacing: 20,
-                                                          childAspectRatio: size < 700 ? 0.8 : 0.8,
+                                                        child: GridView.builder(
+                                                          shrinkWrap: true,
+                                                          physics: const NeverScrollableScrollPhysics(),
+                                                          itemCount: loginController.profileList.length > 10
+                                                              ? 10
+                                                              : loginController.profileList.length,
+                                                          gridDelegate:  SliverGridDelegateWithMaxCrossAxisExtent(
+                                                            maxCrossAxisExtent: 280,
+                                                            mainAxisSpacing: 20,
+                                                            crossAxisSpacing: 20,
+                                                            childAspectRatio: size < 700 ? 0.8 : 0.8,
 
-                                                          //childAspectRatio: 0.9,
+                                                            //childAspectRatio: 0.9,
+                                                          ),
+                                                          itemBuilder: (context, index) {
+                                                            return AnimationConfiguration.staggeredList(
+                                                                position: index,
+                                                                duration: const Duration(milliseconds: 700),
+                                                                child: SlideAnimation(
+                                                                    horizontalOffset: 80.0,
+                                                                    curve: Curves.easeOutCubic,
+                                                                    child: FadeInAnimation(
+                                                                        child: EnlargeOnTapCard(child:AnimatedContainer(
+                                                                            duration: const Duration(milliseconds: 250),
+                                                                            curve: Curves.easeInOutCubic,child: clinicCard(loginController.profileList[index]))))));
+                                                          },
                                                         ),
-                                                        itemBuilder: (context, index) {
-                                                          return AnimationConfiguration.staggeredList(
-                                                              position: index,
-                                                              duration: const Duration(milliseconds: 700),
-                                                              child: SlideAnimation(
-                                                                  horizontalOffset: 80.0,
-                                                                  curve: Curves.easeOutCubic,
-                                                                  child: FadeInAnimation(
-                                                                      child: EnlargeOnTapCard(child:AnimatedContainer(
-                                                                          duration: const Duration(milliseconds: 250),
-                                                                          curve: Curves.easeInOutCubic,child: clinicCard(loginController.profileList[index]))))));
-                                                        },
-                                                      ),
-                                                    );
-                                                  }
+                                                      );
+                                                    }
                                                 ),
-                                            ]);
-                                      }
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 60),
-                              // heroSection(size),
-                            //  featuresSection (),
-              
-                             // SizedBox(height: size*0.01,),
-              
-              
-                              // Row(
-                              //   crossAxisAlignment: CrossAxisAlignment.start,
-                              //   children: [
-                              //
-                              //     Expanded(
-                              //       flex: 4,
-                              //       child: clinicSearchWidget(),
-                              //     ),
-                              //
-                              //     SizedBox(width: 30),
-                              //
-                              //
-                              //     Expanded(
-                              //       flex: 3,
-                              //       child: dentalTreatmentWidget(),
-                              //     ),
-                              //   ],
-                              // ),
-              
-                             // howItWorks(),
-                              jobsWebinarSection(),
-                              const SizedBox(height: 40),
-                              Center(child: Text("Latest Career Openings", style: AppTextStyles.subtitle(context, color: AppColors.primary,
-                              ))),
-                              //const SizedBox(height: 20),
-              
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                child: GetBuilder<JobController>(
-                                  builder: (jController) {
-                                    return JobSeekersDashboardGrid(
-                                      jobList: jController.jobListJobSeekers,
-                                      isLoading: jController.isLoading,
-                                    );
-                                  },
-                                ),
-                              ),
-                              Column(
-                                children: [
-              
-                                  const SizedBox(height: 20),
-              
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 10,
-                                    ),
-                                    child: Text(
-                                      "Upcoming Webinars",
-                                      style: AppTextStyles.subtitle(
-                                        context,
-                                        color: AppColors.primary,
-                                      ),
-                                    ),
-                                  ),
-              
-                                  //const SizedBox(height: 20),
-              
-                                  GetBuilder<JobController>(
-                                      builder: (jController) {
-                                        return  SizedBox(
-                                          height:jobController.webinarListJobSeekers.length>3? 850:530,
-                                          child: WebinarDashboardGrid(
-                                          webinarList:
-                                          jobController.webinarListJobSeekers.take(6).toList(),
-                                          controller: jobController,
-                                          ),
-                                        );
+                                          ]);
                                     }
-                                  ),
-                                ],
+                                ),
                               ),
-                              //const SizedBox(height: 40),
-              
-                              userTypesSection(),
-                              const SizedBox(height: 60),
+                            ),
+                          ),
+                          const SizedBox(height: 60),
+
+                          jobsWebinarSection(),
+                          const SizedBox(height: 40),
+                          Center(child: Text("Latest Career Openings", style: AppTextStyles.subtitle(context, color: AppColors.primary,
+                          ))),
+                          //const SizedBox(height: 20),
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: GetBuilder<JobController>(
+                              builder: (jController) {
+                                return JobSeekersDashboardGrid(
+                                  jobList: jController.jobListJobSeekers,
+                                  isLoading: jController.isLoading,
+                                );
+                              },
+                            ),
+                          ),
+                          Column(
+                            children: [
+
+                              const SizedBox(height: 20),
+
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 10,
+                                ),
+                                child: Text(
+                                  "Upcoming Webinars",
+                                  style: AppTextStyles.subtitle(
+                                    context,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+
+                              //const SizedBox(height: 20),
+
+                              GetBuilder<JobController>(
+                                  builder: (jController) {
+                                    return  SizedBox(
+                                      height:jobController.webinarListJobSeekers.length>3? 850:530,
+                                      child: WebinarDashboardGrid(
+                                        webinarList:
+                                        jobController.webinarListJobSeekers.take(6).toList(),
+                                        controller: jobController,
+                                      ),
+                                    );
+                                  }
+                              ),
                             ],
                           ),
-                        ),
+                          const SizedBox(height: 40),
+
+                          userTypesSection(),
+                          const SizedBox(height: 60),
+                        ],
                       ),
                       const CommonFooter(),
                     ],
                   ),
                 ),
               ),
-            ),
-          );
-        }
+            );
+          }
       ),
     );
   }
@@ -1187,7 +1090,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                     ),
                   ),
                   const SizedBox(height: 20),
-                   Text(
+                  Text(
                     "Connect Patients, Clinics, Labs & Jobs in one platform",
                     style: AppTextStyles.caption(context,color: AppColors.white),
                   ),
@@ -1463,14 +1366,14 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
       width: size*0.13,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),color: AppColors.white
+          borderRadius: BorderRadius.circular(16),color: AppColors.white
         // gradient: LinearGradient(
         //   colors: [AppColors.primary,AppColors.secondary],
         // ),
       ),
       child: Column(
         children: [
-           Icon(Icons.groups, size: size*0.02,color: AppColors.primary,),
+          Icon(Icons.groups, size: size*0.02,color: AppColors.primary,),
           const SizedBox(height: 10),
           Text(title, style: AppTextStyles.caption(context,color:AppColors.black,fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
@@ -1489,7 +1392,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
 
     return Column(
       children: [
-         Text("How It Works", style: AppTextStyles.subtitle(context)),
+        Text("How It Works", style: AppTextStyles.subtitle(context)),
         const SizedBox(height: 30),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1696,7 +1599,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
   @override
   void dispose() {
     _fadeController.dispose();
-  //  _controller.dispose();
+    //  _controller.dispose();
     super.dispose();
   }
 
@@ -1734,7 +1637,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
             Icon(Icons.search_off_outlined, size: 80, color: Colors.grey[300]),
             const SizedBox(height: 15),
             Text('No clinics found matching your location',
-              style: AppTextStyles.subtitle(context, color: Colors.grey)),
+                style: AppTextStyles.subtitle(context, color: Colors.grey)),
           ],
         ),
       ),
@@ -1843,7 +1746,7 @@ class _HeroBannerState extends State<HeroBanner>
     final bool isMobile = width < 700;
     final bool isDesktop = width >= 1000;
     return SizedBox(
-    //  height: isMobile ? 300 : width * 0.4,
+      //  height: isMobile ? 300 : width * 0.4,
       height: isMobile
           ? 450
           : MediaQuery.of(context).size.height * 0.75,
@@ -1984,7 +1887,7 @@ class _HeroBannerState extends State<HeroBanner>
                       backgroundColor: AppColors.primary,
                     ),
                     child: Text(
-                      banners[currentPage]["button"]!,
+                      banners[currentPage]["button"]!,style: AppTextStyles.caption(context),
                     ),
                   ),
                 ],
@@ -2029,150 +1932,150 @@ Widget _buildTransparentLoginCard(BuildContext context) {
     ),
     child: SingleChildScrollView(
       child: Form(
-        key: _formKeyLoginFront,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-          const Text(
-          "Welcome Back",
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: 28,
-              fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          "Login to your account",
-          style: TextStyle(color: Colors.white70, fontSize: 16),
-        ),
-        const SizedBox(height: 30),
-      
-      
-        TextField(
-          controller: loginController.emailController,
-          style:  const TextStyle(color: Colors.white),
-          decoration: InputDecoration(
-            hintText: "Email",
-            hintStyle: AppTextStyles.caption(context,color: AppColors.white),
-            filled: true,
-            fillColor: Colors.white.withOpacity(0.1),
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide.none),
-            prefixIcon:  const Icon(Icons.email, color: Colors.white),
-          ),
-        ),
-        const SizedBox(height: 20),
-      
-        // Password field
-        TextField(
-          controller: loginController.passwordController,
-          obscureText: true,
-          style: const TextStyle(color: Colors.white),
-          decoration: InputDecoration(
-            hintText: "Password",
-            hintStyle: AppTextStyles.caption(context,color: AppColors.white),
-            filled: true,
-            fillColor: Colors.white.withOpacity(0.1),
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide.none),
-            prefixIcon: const Icon(Icons.lock, color: Colors.white),
-          ),
-        ),
-        const SizedBox(height: 10),
-      
-        // Forgot password
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-              onPressed: () {
-                Get.toNamed('/forgotPasswordEmailWeb');
-              },
-              child:  Text("Forgot Password?",
-                  style: AppTextStyles.caption(context,color: AppColors.white))),
-        ),
-        const SizedBox(height: 20),
-      
-        // Login button
-        SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: () async{
-      
-              if (_formKeyLoginFront.currentState!.validate()) {
-                String email = loginController.emailController.text.trim();
-                String password = loginController.passwordController.text;
-      
-                if (email.isEmpty || password.isEmpty) {
-                  showCustomToast(context, "Please enter email and password",backgroundColor: AppColors.secondary);
-      
-                  // ScaffoldMessenger
-                  //     .of(context)
-                  //     .showSnackBar(
-                  //   const SnackBar(
-                  //       content: Text(
-                  //           "Please enter email and password")),
-                  // );
-                  return;
-                }
-                await loginController.login(
-                    loginController.emailController.text.toString(),
-                    loginController.passwordController.text.toString(),platform,context);
-                loginController.emailController.clear();
-                loginController.passwordController.clear();
-              } else {
-                showCustomToast(context,  "Invalid email or password",backgroundColor: AppColors.secondary);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-            ),
-            child:  Text(
-              "Login",
-              style:
-              AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
-      
-        // Divider
-        Row(
-          children: [
-            Expanded(
-                child: Divider(color: Colors.white.withOpacity(0.4))),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text("OR",
-                style: AppTextStyles.caption(context,color: AppColors.white),
-              ),),
-            Expanded(
-                child: Divider(color: Colors.white.withOpacity(0.4))),
-          ],
-        ),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Don't have an account? ",
-              style: AppTextStyles.caption(context,color: AppColors.white),
-            ),
-            TextButton(
-              onPressed: () {
-                Get.toNamed('/registerPageWeb');
-              },
-              child:  Text("Sign Up", style: AppTextStyles.body(context,fontWeight:FontWeight.bold,color: AppColors.white),
-              ),)
-          ],
-        ),
-      ])),
+          key: _formKeyLoginFront,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Welcome Back",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Login to your account",
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                ),
+                const SizedBox(height: 30),
+
+
+                TextField(
+                  controller: loginController.emailController,
+                  style:  const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: "Email",
+                    hintStyle: AppTextStyles.caption(context,color: AppColors.white),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.1),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none),
+                    prefixIcon:  const Icon(Icons.email, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Password field
+                TextField(
+                  controller: loginController.passwordController,
+                  obscureText: true,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: "Password",
+                    hintStyle: AppTextStyles.caption(context,color: AppColors.white),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.1),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none),
+                    prefixIcon: const Icon(Icons.lock, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Forgot password
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                      onPressed: () {
+                        Get.toNamed('/forgotMailWebScreen');
+                      },
+                      child:  Text("Forgot Password?",
+                          style: AppTextStyles.caption(context,color: AppColors.white))),
+                ),
+                const SizedBox(height: 20),
+
+                // Login button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () async{
+
+                      if (_formKeyLoginFront.currentState!.validate()) {
+                        String email = loginController.emailController.text.trim();
+                        String password = loginController.passwordController.text;
+
+                        if (email.isEmpty || password.isEmpty) {
+                          showCustomToast(context, "Please enter email and password",backgroundColor: AppColors.secondary);
+
+                          // ScaffoldMessenger
+                          //     .of(context)
+                          //     .showSnackBar(
+                          //   const SnackBar(
+                          //       content: Text(
+                          //           "Please enter email and password")),
+                          // );
+                          return;
+                        }
+                        await loginController.login(
+                            loginController.emailController.text.toString(),
+                            loginController.passwordController.text.toString(),platform,context);
+                        loginController.emailController.clear();
+                        loginController.passwordController.clear();
+                      } else {
+                        showCustomToast(context,  "Invalid email or password",backgroundColor: AppColors.secondary);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child:  Text(
+                      "Login",
+                      style:
+                      AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Divider
+                Row(
+                  children: [
+                    Expanded(
+                        child: Divider(color: Colors.white.withOpacity(0.4))),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text("OR",
+                        style: AppTextStyles.caption(context,color: AppColors.white),
+                      ),),
+                    Expanded(
+                        child: Divider(color: Colors.white.withOpacity(0.4))),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account? ",
+                      style: AppTextStyles.caption(context,color: AppColors.white),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed('/registerPageWeb');
+                      },
+                      child:  Text("Sign Up", style: AppTextStyles.body(context,fontWeight:FontWeight.bold,color: AppColors.white),
+                      ),)
+                  ],
+                ),
+              ])),
     ),
   );
 }
@@ -2218,7 +2121,7 @@ Widget platformOverviewSection(context) {
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 1500),
       padding: const EdgeInsets.all(20),
-     // padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
+      // padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
       color: const Color(0xffF8FAFC),
       child: Center(
         child: Container(
@@ -2329,9 +2232,9 @@ Widget platformOverviewSection(context) {
                         child: Text(
                           "REGISTER NOW",
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,color: AppColors.white,
-                            decoration: TextDecoration.underline,decorationColor: AppColors.white
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,color: AppColors.white,
+                              decoration: TextDecoration.underline,decorationColor: AppColors.white
                           ),
                         ),
                       ),
@@ -2489,13 +2392,13 @@ class AboutUsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "ABOUT OUR PLATFORM",
-          style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold)
+            "ABOUT OUR PLATFORM",
+            style: AppTextStyles.body(context,color: AppColors.primary,fontWeight: FontWeight.bold)
         ),
         const SizedBox(height: 10),
 
         Text(
-          "A Complete Dental Ecosystem in One Platform",
+            "A Complete Dental Ecosystem in One Platform",
             style: AppTextStyles.subtitle(context,color: AppColors.black,)
 
         ),
@@ -2503,17 +2406,17 @@ class AboutUsSection extends StatelessWidget {
         const SizedBox(height: 15),
 
         Text(
-          "Locate Your Dentist is a unified digital healthcare platform designed exclusively for the dental community. "
-              "We bring together patients, dental clinics, dental laboratories, dental shops, dental mechanics, consultants, "
-              "and job seekers into a single connected ecosystem.\n\n"
-              "Our mission is to simplify dental healthcare access by enabling patients to easily discover nearby verified clinics "
-              "based on location. Clinics can manage their profile, showcase services, hire professionals, and grow their practice. "
-              "Dental labs and shops can connect directly with clinics for faster workflow and communication.\n\n"
-              "We also empower dental professionals and job seekers by providing a dedicated job portal and webinar system where "
-              "they can explore opportunities, enhance skills, and build their careers.\n\n"
-              "This platform is built to strengthen the dental network by improving visibility, collaboration, and accessibility "
-              "across the entire dental industry.",
-          style: AppTextStyles.body(context,color: Colors.black)
+            "Locate Your Dentist is a unified digital healthcare platform designed exclusively for the dental community. "
+                "We bring together patients, dental clinics, dental laboratories, dental shops, dental mechanics, consultants, "
+                "and job seekers into a single connected ecosystem.\n\n"
+                "Our mission is to simplify dental healthcare access by enabling patients to easily discover nearby verified clinics "
+                "based on location. Clinics can manage their profile, showcase services, hire professionals, and grow their practice. "
+                "Dental labs and shops can connect directly with clinics for faster workflow and communication.\n\n"
+                "We also empower dental professionals and job seekers by providing a dedicated job portal and webinar system where "
+                "they can explore opportunities, enhance skills, and build their careers.\n\n"
+                "This platform is built to strengthen the dental network by improving visibility, collaboration, and accessibility "
+                "across the entire dental industry.",
+            style: AppTextStyles.body(context,color: Colors.black)
         ),
       ],
     );
@@ -2545,3 +2448,251 @@ class Responsive {
   }
 }
 
+class CompleteCareSection extends StatelessWidget {
+  const CompleteCareSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 1500),
+      padding: const EdgeInsets.all(20),
+     // padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 50),
+      decoration:  BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          colors: [
+            Color(0xff042347),
+            Color(0xff0A3D72),
+          ],
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          /// LEFT SIDE
+          Expanded(
+            flex: 4,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                  Row(
+                  children: [
+                    Icon(
+                      Icons.auto_awesome,
+                      color: Colors.white70,
+                      size: 16,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "Our Expertise",
+                        style: AppTextStyles.body(context,color: Colors.white70,   fontWeight: FontWeight.bold,)
+
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 25),
+
+                RichText(
+                  text:  TextSpan(
+                    children: [
+                      TextSpan(text: "Complete Care\nfor Every ", style: AppTextStyles.body(context,color: Colors.white,   fontWeight: FontWeight.bold,)),
+
+                      TextSpan(text: "Smile", style: AppTextStyles.body(context,color: Color(0xff7DB6FF),   fontWeight: FontWeight.bold,)),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                 Text(
+                  "From routine checkups to advanced\n"
+                      "treatments — we've got you covered.",
+                  style: AppTextStyles.body(context,color: Colors.white70,)
+
+                ),
+
+                const SizedBox(height: 40),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    side: const BorderSide(color: Colors.white30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(35),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 22,
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.to(() => ViewClinicPatients());
+                  },
+                  icon: Text(
+                    "Search Dental Clinics",
+                    style: AppTextStyles.body(
+                      context,
+                      color: Colors.white,
+                    ),
+                  ),
+                  label: const CircleAvatar(
+                    radius: 15,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.arrow_forward,
+                      color: Colors.black,
+                      size: 18,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 35),
+
+          /// RIGHT SIDE
+
+          Expanded(
+            flex: 6,
+            child: SizedBox(
+              height: isMobile?150:420,
+              child: Row(
+                children: [
+
+                  Expanded(
+                    child: ServicePreviewCard(
+                      image: "assets/images/dental_implant.jpg",
+                      title: "Preventive Care",
+                      subtitle: "Regular checkups & cleanings",
+                    ),
+                  ),
+
+                  const SizedBox(width: 20),
+
+                  Expanded(
+                    child: ServicePreviewCard(
+                      highlight: true,
+                      image: "assets/images/aligners.jpg",
+                      title: "Dental Fillings",
+                      subtitle: "Stronger roots,\nNatural Smile",
+                    ),
+                  ),
+
+                  const SizedBox(width: 20),
+
+                  Expanded(
+                    child: ServicePreviewCard(
+                      image: "assets/images/align_dental.jpg",
+                      title: "Toothache Treatment",
+                      subtitle: "Brighter smile,\nMore confidence",
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+
+class ServicePreviewCard extends StatelessWidget {
+  final String image;
+  final String title;
+  final String subtitle;
+  final bool highlight;
+
+  const ServicePreviewCard({
+    super.key,
+    required this.image,
+    required this.title,
+    required this.subtitle,
+    this.highlight = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 400),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(
+          color: highlight
+              ? Colors.blueAccent
+              : Colors.white24,
+          width: highlight ? 3 : 1,
+        ),
+        boxShadow: [
+          if (highlight)
+            BoxShadow(
+              blurRadius: 25,
+              color: Colors.blue.withOpacity(.35),
+            ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(26),
+        child: Stack(
+          children: [
+
+            Positioned.fill(
+              child: Image.asset(
+                image,
+                fit: BoxFit.cover,height: isMobile?120:420,width:isMobile?160:420,
+              ),
+            ),
+
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withOpacity(.65),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            Positioned(
+              left: 20,
+              right: 20,
+              bottom: 25,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  Text(title, style: AppTextStyles.body(context,color: Colors.white,fontWeight: FontWeight.bold )),
+
+                  const SizedBox(height: 10),
+                  Text(subtitle, style: AppTextStyles.body(context,color: Colors.white,)),
+                  const SizedBox(height: 20),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.arrow_forward,
+                        color: Colors.blue.shade900,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
