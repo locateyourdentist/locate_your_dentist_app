@@ -679,7 +679,7 @@ class _CommonHeaderState extends State<CommonHeader> {
                 ],
               ),
 
-            const SizedBox(width: 20),
+            const SizedBox(width: 10),
 
             ElevatedButton(
               style: ElevatedButton.styleFrom(

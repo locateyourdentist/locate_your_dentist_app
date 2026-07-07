@@ -7,6 +7,7 @@ import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:get/get.dart';
+import 'package:locate_your_dentist/main.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import '../../../common_widgets/custom_toast.dart';
 
@@ -85,33 +86,6 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Center(
-                              //   child: ClipRRect(
-                              //     borderRadius: BorderRadius.circular(10),
-                              //     child: Image.network(
-                              //       loginController.appLogoUrl ?? "",
-                              //       // AppConstants.logoUrl,
-                              //       width: size * 0.35,
-                              //       height: size * 0.35,
-                              //       fit: BoxFit.cover,
-                              //       errorBuilder: (context, error, stackTrace) {
-                              //         return Container(
-                              //             height: 90,
-                              //             width: 90,
-                              //             decoration: BoxDecoration(
-                              //               color: AppColors.secondary,
-                              //               borderRadius: BorderRadius.circular(25),
-                              //             ),
-                              //             child: const Icon(
-                              //               Icons.local_hospital,
-                              //               color: AppColors.white,
-                              //               size: 50,
-                              //             ),
-                              //           );
-                              //       },
-                              //     ),
-                              //   ),
-                              // ),
                               Center(
                                 child: Container(
                                   width: size * 0.35,
@@ -221,6 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                                         );
                                         return;
                                       }
+                                      await setupFCM();
 
                                       await loginController.login(
                                         email,
@@ -230,8 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                                       );
 
                                       loginController.emailController.clear();
-                                      loginController.passwordController
-                                          .clear();
+                                      loginController.passwordController.clear();
                                     } else {
                                       showCustomToast(
                                         context,

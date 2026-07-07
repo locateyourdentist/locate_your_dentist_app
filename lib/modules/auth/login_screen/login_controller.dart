@@ -618,21 +618,6 @@ class LoginController extends GetxController {
       print("Error fetching villages: $e");
     }
   }
-  // Future<void> fetchVillages(String subDistrict) async {
-  //   try {
-  //     final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}villages/$subDistrict';
-  //     final res = await http.get(Uri.parse(url));
-  //     if (res.statusCode == 200) {
-  //       final decoded = jsonDecode(res.body);
-  //       villages = List<String>.from(
-  //         decoded is List ? decoded : decoded["villages"] ?? decoded["data"] ?? [],);
-  //       print('villages: $villages');
-  //       update();
-  //     }
-  //   } catch (e) {
-  //     print("Error fetching villages: $e");
-  //   }
-  // }
   Future<void> login(String email,String password,String platform,context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
