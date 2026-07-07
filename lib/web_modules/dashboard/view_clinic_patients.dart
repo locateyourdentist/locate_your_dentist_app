@@ -44,10 +44,9 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
         return const CommonHeader();
       }
     }
-
     return Scaffold(
       key: _scaffoldKeyPatients,
-      backgroundColor: const Color(0xFFF8FAFC), // Modern soft background grey
+      backgroundColor: const Color(0xFFF8FAFC),
       drawer: (!isDesktop) ? const Drawer(width: 250, child: FilterSidebar()) : null,
       //endDrawer: isMobile ? const Drawer(width: 300, child: FilterSidebar()) : null,
       appBar: buildAppBar(),
@@ -116,7 +115,7 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
 
 
 
-                              Expanded(
+                                Expanded(
                                 child: controller.profileList.isEmpty
                                     ? _buildEmptyState()
                                     : Column(
@@ -126,10 +125,10 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
                                           child: buildActiveFilters(isMobile,context),
                                         ),
                                         ListView.builder(
-                                                                          shrinkWrap: true,
-                                                                          physics: const NeverScrollableScrollPhysics(),
-                                                                          itemCount: controller.profileList.length,
-                                                                          itemBuilder: (context, index) {
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: controller.profileList.length,
+                                        itemBuilder: (context, index) {
                                         return _ClinicDashboardListCard(
                                           clinic: controller.profileList[index],
                                           loginController: controller,
@@ -176,27 +175,23 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
   }
 }
 
-class _ClinicDashboardListCard extends StatefulWidget {
+  class _ClinicDashboardListCard extends StatefulWidget {
   final ProfileModel clinic;
   final LoginController loginController;
-
   const _ClinicDashboardListCard({
     required this.clinic,
     required this.loginController,
   });
-
   @override
   State<_ClinicDashboardListCard> createState() => _ClinicDashboardListCardState();
-}
-
-class _ClinicDashboardListCardState extends State<_ClinicDashboardListCard> {
+  }
+  class _ClinicDashboardListCardState extends State<_ClinicDashboardListCard> {
   bool _isHovered = false;
 
   bool get isBasePlanActive {
     final isActive = widget.clinic.details?["plan"]?["basePlan"]?["isActive"];
     return isActive == true || isActive == "true";
   }
-
   @override
   Widget build(BuildContext context) {
     final String userType = Api.userInfo.read('userType')?.toString() ?? "";
@@ -315,8 +310,8 @@ class _ClinicDashboardListCardState extends State<_ClinicDashboardListCard> {
                     await widget.loginController.getProfileByUserId(widget.clinic.userId, context);
                     Get.toNamed('/clinicProfileWebPage');
                   },
-                  icon: const Icon(Icons.person_rounded, size: 16),
-                  label: const Text("View Profile", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                  icon: const Icon(Icons.person_rounded,color:AppColors.primary, size: 16),
+                  label: const Text("View Profile", style: TextStyle(fontSize: 13,color:AppColors.primary, fontWeight: FontWeight.w600)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
@@ -329,21 +324,19 @@ class _ClinicDashboardListCardState extends State<_ClinicDashboardListCard> {
                   const SizedBox(height: 8),
                   OutlinedButton.icon(
                     onPressed: () async => await launchUrl(Uri.parse("tel:${widget.clinic.mobileNumber}")),
-                    icon: const Icon(Icons.call_rounded, size: 16),
-                    label: const Text("Call Now", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    icon: const Icon(Icons.call_rounded,color:Colors.green, size: 16),
+                    label: const Text("Call Now", style: TextStyle(fontSize:13,color:AppColors.white,fontWeight: FontWeight.w600)),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF16A34A),
                       side: const BorderSide(color: Color(0xFFBBF7D0), width: 1.5),
                       backgroundColor: const Color(0xFFF0FDF4),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                   ),
                 ],
               ],
             );
-
-            // Conditional rendering layout based on width constraints
             if (compactMode) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

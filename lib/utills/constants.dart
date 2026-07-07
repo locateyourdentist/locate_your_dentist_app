@@ -1,8 +1,8 @@
 
 class AppConstants{
   static const baseUrl=
- 'http://192.168.31.117:3000/';
- //  'https://locateyourdentist.onrender.com/';
+ // 'http://192.168.31.117:3000/';
+  'https://locateyourdentist.onrender.com/';
   static const razorPayKey='rzp_test_RzNhGYRP9d54Ca';
   static const webFireBaseVAPID_KEY='BPIa_iU8vOaJk3MquVBrNP0ONtl1Kcf7eMhhArQTXn33d_yPxnsVxcpDulrLu5ijuifyCXZH2MFAWHy7olnTM5o';
       //'BIQ7RfHOZhssH1uXBZpuun3r6D7UhoHuAuqE4QjvpLolyo-E7_LDrYUnUOPYkMCh7VASKy2UWfyDg4DBNl7Khw8';
@@ -13,7 +13,6 @@ class AppConstants{
   static const developerCompanyUrl='https://www.vorynto.com/';
   static const companyEmail='support@LYD.com';
   static const appDescription="LYD connects dental clinics, dental doctors, dental laboratories,dental shops, dental mechanics and job seekers in one platform.";
-  //controller
   static const String userUrl='lyd/user/';
   static const String logoUrl='https://locate-your-dentist.s3.ap-south-1.amazonaws.com/appLogo/logoLYD.png';
   static const String serviceURL='lyd/services/';
