@@ -72,7 +72,7 @@ dependencies:
   fl_chart:
   flutter_quill: ^11.5.1
 #  flutter_quill:
-  flutter_quill_extensions:
+  flutter_quill_extensions: ^11.0.0
   permission_handler:
   excel:
   share_plus:
