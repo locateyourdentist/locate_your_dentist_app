@@ -885,55 +885,57 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                             _HoverLift(
                                               liftScale: 1.03,
                                               borderRadius: BorderRadius.circular(14),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(14),
-                                                  gradient: LinearGradient(
-                                                    colors: [AppColors.primary, AppColors.secondary],
-                                                  ),
-                                                ),
-                                                child: ElevatedButton.icon(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: Colors.transparent,
-                                                    shadowColor: Colors.transparent,
-                                                    elevation: 0,
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 35,
-                                                      vertical: 18,
-                                                    ),
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(14),
+                                              child: Center(
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(14),
+                                                    gradient: LinearGradient(
+                                                      colors: [AppColors.primary, AppColors.secondary],
                                                     ),
                                                   ),
-                                                  icon: const Icon(
-                                                    Icons.search_rounded,
-                                                    color: Colors.white,
-                                                    size: 22,
-                                                  ),
-                                                  label: Text(
-                                                    "Search Dentist",
-                                                    style: AppTextStyles.caption(
-                                                      context,
+                                                  child: ElevatedButton.icon(
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Colors.transparent,
+                                                      shadowColor: Colors.transparent,
+                                                      elevation: 0,
+                                                      padding: const EdgeInsets.symmetric(
+                                                        horizontal: 35,
+                                                        vertical: 18,
+                                                      ),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(14),
+                                                      ),
+                                                    ),
+                                                    icon: const Icon(
+                                                      Icons.search_rounded,
                                                       color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
+                                                      size: 22,
                                                     ),
+                                                    label: Text(
+                                                      "Search Dentist",
+                                                      style: AppTextStyles.caption(
+                                                        context,
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    onPressed: () async {
+                                                      Api.userInfo.write('sUserType','Dental Clinic');
+                                                      await loginController.getProfileDetails(
+                                                        "Dental Clinic",
+                                                        loginController.selectedState,
+                                                        loginController.selectedDistricts,
+                                                        loginController.selectedTalukas,loginController.selectedVillages,
+                                                        "true",
+                                                        '',
+                                                        '',
+                                                        '',
+                                                        '',
+                                                        context,
+                                                      );
+                                                      Get.toNamed('/viewPatientsListWeb');
+                                                    },
                                                   ),
-                                                  onPressed: () async {
-                                                    Api.userInfo.write('sUserType','Dental Clinic');
-                                                    await loginController.getProfileDetails(
-                                                      "Dental Clinic",
-                                                      loginController.selectedState,
-                                                      loginController.selectedDistricts,
-                                                      loginController.selectedTalukas,loginController.selectedVillages,
-                                                      "true",
-                                                      '',
-                                                      '',
-                                                      '',
-                                                      '',
-                                                      context,
-                                                    );
-                                                    Get.toNamed('/viewPatientsListWeb');
-                                                  },
                                                 ),
                                               ),
                                             )
@@ -2101,6 +2103,7 @@ class _HeroBannerState extends State<HeroBanner>
 Widget _buildTransparentLoginCard(BuildContext context) {
   final loginController=Get.put(LoginController());
   final _formKeyLoginFront = GlobalKey<FormState>();
+  bool _obscurePassword = true;
   String platform = kIsWeb
       ? "Web"
       : Platform.isAndroid
@@ -2177,22 +2180,39 @@ Widget _buildTransparentLoginCard(BuildContext context) {
               // Password field
               TextField(
                 controller: loginController.passwordController,
-                obscureText: true,
+                obscureText: _obscurePassword,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: "Password",
-                  hintStyle: AppTextStyles.caption(context,color: AppColors.white),
+                  hintStyle: AppTextStyles.caption(
+                    context,
+                    color: AppColors.white,
+                  ),
                   filled: true,
                   fillColor: Colors.white.withOpacity(0.1),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none),
-                  prefixIcon: const Icon(Icons.lock, color: Colors.white),
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.lock,
+                    color: Colors.white,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      _obscurePassword = !_obscurePassword;
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
 
-              // Forgot password
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
@@ -2727,6 +2747,7 @@ class CompleteCareSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints: const BoxConstraints(maxWidth: 1500),
       padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 50),
       decoration:  BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -2803,13 +2824,10 @@ class CompleteCareSection extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => const AllServicesDialog(),
-                    );
+                    Get.toNamed('/viewPatientsListWeb');
                   },
                   icon: Text(
-                    "View All Services",
+                    "Search Nearby Dental Clinics",
                     style: AppTextStyles.body(
                       context,
                       color: Colors.white,

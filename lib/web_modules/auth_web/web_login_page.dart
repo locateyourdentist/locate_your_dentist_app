@@ -18,6 +18,7 @@ class _WebLoginPageState extends State<WebLoginPage> {
   final TextEditingController passwordController = TextEditingController();
   final loginController = Get.put(LoginController());
   DateTime? currentBackPressTime;
+  bool _obscurePassword = true;
   final _formKeyLoginWeb = GlobalKey<FormState>();
   Future<bool> _onWillPop() async {
     DateTime now = DateTime.now();
@@ -155,7 +156,7 @@ class _WebLoginPageState extends State<WebLoginPage> {
                             // Password field
                             TextField(
                               controller: loginController.passwordController,
-                              obscureText: true,
+                              obscureText: _obscurePassword,
                               style: const TextStyle(color: Colors.white),
                               decoration: InputDecoration(
                                 hintText: "Password",
@@ -172,6 +173,19 @@ class _WebLoginPageState extends State<WebLoginPage> {
                                 prefixIcon: const Icon(
                                   Icons.lock,
                                   color: Colors.white,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
                                 ),
                               ),
                             ),

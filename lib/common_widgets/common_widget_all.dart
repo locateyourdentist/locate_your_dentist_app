@@ -448,6 +448,7 @@ Widget buildActiveFilters(bool isMobile,dynamic context) {
                 loginController.update();
               },
             ),),
+        if (loginController.selectedVillages != null)
         ...loginController.selectedVillages.map(
               (village) => InputChip(
             label: Text(village),
