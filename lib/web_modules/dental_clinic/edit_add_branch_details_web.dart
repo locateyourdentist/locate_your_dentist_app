@@ -124,11 +124,13 @@ class _AddBranchesWebState extends State<AddBranchesWeb> {
                                           ),
                                         ),
 
-                                      Text(
-                                        "Add Branches",
-                                        style: AppTextStyles.subtitle(context, color: AppColors.black),
+                                      Center(
+                                        child: Text(
+                                          "Add Branches",
+                                          style: AppTextStyles.subtitle(context, color: AppColors.black),
+                                        ),
                                       ),
-                                      SizedBox(height: size*0.005,),
+                                      SizedBox(height: 20,),
                                       GetBuilder<LoginController>(
                                           init: LoginController(),
                                           builder: (controller) {

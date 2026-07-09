@@ -139,8 +139,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       getPlanLimits();
     }
     await jobController.getJobCategoryLists("", context);
-    branchId = Get.arguments?['branchId'] ?? "";
-    print('userid is${Get.arguments?['userId']}ss');
+    setState(() {
+      branchId = Get.arguments?['branchId'] ?? "";
+    });    print('userid is${Get.arguments?['userId']}ss');
     if (Get.arguments?['userId'] == "0") loginController.clearProfileData();
   }
 
@@ -546,13 +547,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       loginController.longitude = null;
     }
     await loginController.registerUser(
-      userId:
-          (Api.userInfo.read('token') == null ||
-              Get.arguments?['userId'] == "0" || Get.arguments?['branchId'] == "0")
+      userId: (Api.userInfo.read('token') == null || Get.arguments?['userId'] == "0" || Get.arguments?['branchId'] == "0")
           ? "0"
-          : (loginController.userData.isNotEmpty
-                ? loginController.userData.first.userId ?? ""
-                : ""),
+          : (loginController.userData.isNotEmpty ? loginController.userData.first.userId ?? "" : ""),
       userType: loginController.selectedUserType!,
       fullName: loginController.fullNameController.text,
       dob: loginController.dobController.text,
@@ -575,9 +572,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       location: loginController.locationController.text,
       website: loginController.websiteController.text,
       description: jsonEncode(_controller.document.toDelta().toJson()),
-      adminId: branchId == "0"
-          ? (Api.userInfo.read('userId') ?? "")
-          : (loginController.selectUserId ?? ""),
+      adminId:Get.arguments?['branchId'] == "0"?Api.userInfo.read('userId'):loginController.selectUserId! ,
       isAdmin: branchId == "0" ? "true" : "false",
       latitude: loginController.latitude?.toString() ?? "",
       longitude: loginController.longitude?.toString() ?? "",

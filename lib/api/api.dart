@@ -424,15 +424,15 @@ class Api {
     if (image != null) {
       for (int i = 0; i < image.length; i++) {
         final bytes = image[i];
-        String ext = 'mp4'; // default: treat unknown as video
+        String ext = 'mp4';
         if (bytes.length >= 4) {
           if (bytes[0] == 0xFF && bytes[1] == 0xD8) {
-            ext = 'jpg'; // JPEG
+            ext = 'jpg';
           } else if (bytes[0] == 0x89 &&
               bytes[1] == 0x50 &&
               bytes[2] == 0x4E &&
               bytes[3] == 0x47) {
-            ext = 'png'; // PNG
+            ext = 'png';
           } else if (bytes.length >= 12 &&
               bytes[0] == 0x52 &&
               bytes[1] == 0x49 &&
@@ -442,9 +442,8 @@ class Api {
               bytes[9] == 0x45 &&
               bytes[10] == 0x42 &&
               bytes[11] == 0x50) {
-            ext = 'webp'; // WebP
+            ext = 'webp';
           }
-          // all other formats (MP4, MOV, AVI, 3GP…) keep ext = 'mp4'
         }
         request.files.add(
           http.MultipartFile.fromBytes(

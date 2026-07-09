@@ -599,6 +599,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
     bool isMobile = size < 800;
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
+      appBar: CommonHeader(),
       body: GetBuilder<LoginController>(
           builder: (controller) {
             return RefreshIndicator(
@@ -976,7 +977,11 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                           .toList();
                                       return Padding(
                                         padding: const EdgeInsets.all(20.0),
-                                        child: ClinicImageCarousel(imageUrls: imageUrls),
+                                        child: GetBuilder<LoginController>(
+                                            builder: (controller) {
+                                              return ClinicImageCarousel(imageUrls: imageUrls);
+                                          }
+                                        ),
                                       );
                                     },
                                   ),
@@ -2847,7 +2852,7 @@ class CompleteCareSection extends StatelessWidget {
                     child: ServicePreviewCard(
                       highlight: true,
                       image: "assets/images/aligners.jpg",
-                      title: "Dental Implants",
+                      title: "Tooth Decay",
                       subtitle: "Stronger roots,\nNatural Smile",
                     ),
                   ),
@@ -2857,7 +2862,7 @@ class CompleteCareSection extends StatelessWidget {
                   Expanded(
                     child: ServicePreviewCard(
                       image: "assets/images/align_dental.jpg",
-                      title: "Teeth Whitening",
+                      title: "Tooth Sensitivity",
                       subtitle: "Brighter smile,\nMore confidence",
                     ),
                   ),

@@ -216,7 +216,9 @@ class _ClinicEditProfileState extends State<ClinicEditProfile> {
   }
   Future<void> _refresh() async {
     userId=Get.arguments?["userId"]??"";
-    branchId = Get.arguments?['branchId'] ??"";
+    setState(() {
+      branchId = Get.arguments?['branchId'] ?? "";
+    });
     print('sd${Api.userInfo.read('selectUId')??""}');
     await loginController.fetchStates();
     await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);

@@ -20,7 +20,6 @@ Future<void> showBranchSelectionDialog({
   String? selectedName;
   String? selectedUserId = savedUserId;
   String? selectedUserType;
-
   Get.dialog(
     Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

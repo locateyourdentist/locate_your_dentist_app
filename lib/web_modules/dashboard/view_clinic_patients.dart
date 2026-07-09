@@ -311,7 +311,7 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
                     Get.toNamed('/clinicProfileWebPage');
                   },
                   icon: const Icon(Icons.person_rounded,color:AppColors.primary, size: 16),
-                  label: const Text("View Profile", style: TextStyle(fontSize: 13,color:AppColors.primary, fontWeight: FontWeight.w600)),
+                  label: const Text("View Profile", style: TextStyle(fontSize: 13,color:AppColors.white, fontWeight: FontWeight.w600)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
@@ -325,7 +325,7 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
                   OutlinedButton.icon(
                     onPressed: () async => await launchUrl(Uri.parse("tel:${widget.clinic.mobileNumber}")),
                     icon: const Icon(Icons.call_rounded,color:Colors.green, size: 16),
-                    label: const Text("Call Now", style: TextStyle(fontSize:13,color:AppColors.white,fontWeight: FontWeight.w600)),
+                    label: const Text("Call Now", style: TextStyle(fontSize:13,color:Colors.green,fontWeight: FontWeight.w600)),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF16A34A),
                       side: const BorderSide(color: Color(0xFFBBF7D0), width: 1.5),

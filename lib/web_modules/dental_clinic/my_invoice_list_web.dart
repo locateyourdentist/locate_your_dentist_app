@@ -9,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 
+import '../../common_widgets/common_widget_all.dart';
+
 class InvoiceListPageWeb extends StatefulWidget {
   const InvoiceListPageWeb({super.key});
 
@@ -41,6 +43,7 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
 
     return Scaffold(
       key: _scaffoldKeyInvoice,
+      backgroundColor: const Color(0xFFF8FAFC),
       drawer: (isLoggedIn && !isDesktop)
           ? const Drawer(width: 250, child: AdminSideBar())
           : null,
@@ -77,15 +80,7 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                             ),
 
                           if (planController.invoiceList.isEmpty)
-                            Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Center(
-                                child: Text(
-                                  "No invoices available",
-                                  style: AppTextStyles.caption(context),
-                                ),
-                              ),
-                            ),
+                            Expanded(child: buildShimmerEmptyWidget(width)),
 
                           if (planController.invoiceList.isNotEmpty)
                             Expanded(

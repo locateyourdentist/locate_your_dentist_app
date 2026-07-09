@@ -987,7 +987,7 @@ Widget buildShimmerEmptyWidget(double size) {
         baseColor: Colors.grey[300]!,
         highlightColor: Colors.grey[100]!,
         child: Container(
-          height: size * 0.3,
+          height:size<600? size * 0.3:size * 0.13,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,

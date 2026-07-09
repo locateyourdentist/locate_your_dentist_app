@@ -133,7 +133,7 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
           crossAxisCount: isMobile ? 1 : 3,
           crossAxisSpacing: 15,
           mainAxisSpacing: 15,
-          childAspectRatio: isMobile ? 1.5 : 0.8,
+          childAspectRatio: isMobile ? 1.5 : 1.2,
         ),
         itemBuilder: (context, index) {
           final double width = MediaQuery.of(context).size.width;
@@ -150,7 +150,7 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
                     Get.toNamed('/serviceDetailPageWeb',arguments: {'serviceId':'${service.serviceId}'});
                   },
                   child: Card(
-                    clipBehavior: Clip.antiAlias,
+                    clipBehavior: Clip.antiAlias,color: AppColors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     child: Column(
                       children: [
@@ -160,8 +160,8 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(service.serviceTitle ?? "", style: const TextStyle(fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
-                              Text("₹ ${service.serviceCost}", style: const TextStyle(color: AppColors.primary)),
+                              Text(service.serviceTitle ?? "",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),  maxLines: 1, overflow: TextOverflow.ellipsis),
+                              Text("₹ ${service.serviceCost}", style: AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -185,11 +185,11 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
   }
 
   void _confirmDelete(String id,String url) {
-    showDialog(context: context, builder: (c) => AlertDialog(title: const Text("Delete"), content: const Text("Are you sure?"), actions: [
+    showDialog(context: context, builder: (c) => AlertDialog(title:  Text("Delete",style: AppTextStyles.body(context),), content:  Text("Are you sure?",style: AppTextStyles.body(context),), actions: [
       TextButton(onPressed: () => Get.back(), child:  Text("No",style: AppTextStyles.caption(context),)),
       TextButton(onPressed: () async {
         await serviceController.deactivateService(id, context);
-        await loginController.deleteAwsFile(url, 'serviceImage', context);
+        await loginController.deleteAwsFile(url,'serviceImage',context);
         Get.back(); _refresh();
         }, child:  Text("Yes",style: AppTextStyles.caption(context),)),
     ]));
