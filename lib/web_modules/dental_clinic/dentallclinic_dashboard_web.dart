@@ -15,6 +15,73 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/web_modules/job_seekers/view_jobWebinar_web.dart';
 import 'package:shimmer/shimmer.dart';
 
+
+class _HoverLift extends StatefulWidget {
+  final Widget child;
+  final double liftScale;
+  final BorderRadius? borderRadius;
+  const _HoverLift({required this.child, this.liftScale = 1.02, this.borderRadius});
+
+  @override
+  State<_HoverLift> createState() => _HoverLiftState();
+}
+
+class _HoverLiftState extends State<_HoverLift> {
+  bool _hovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovering = true),
+      onExit: (_) => setState(() => _hovering = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
+        transform: Matrix4.identity()
+          ..translate(0.0, _hovering ? -5.0 : 0.0)
+          ..scale(_hovering ? widget.liftScale : 1.0),
+        transformAlignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: widget.borderRadius,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: _hovering ? 0.18 : 0.0),
+              blurRadius: _hovering ? 22 : 0,
+              offset: const Offset(0, 12),
+            ),
+          ],
+        ),
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+class _RevealIn extends StatelessWidget {
+  final Widget child;
+  const _RevealIn({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 650),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 20),
+            child: child,
+          ),
+        );
+      },
+      child: child,
+    );
+  }
+}
+
 class DentalClinicDashboardWebPage extends StatefulWidget {
   const DentalClinicDashboardWebPage({super.key});
   @override
@@ -99,17 +166,18 @@ class _DentalClinicDashboardWebPageState
                             child: Container(
                               decoration: BoxDecoration(
                                 color: AppColors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: const [
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 6,
-                                    offset: Offset(0, 3),
+                                    color: AppColors.primary.withValues(alpha: 0.08),
+                                    blurRadius: 24,
+                                    offset: const Offset(0, 10),
                                   ),
                                 ],
                               ),
                               child: Padding(
                                 padding: EdgeInsets.all(isMobile ? 15.0 : 30.0),
+                                child: _RevealIn(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -143,16 +211,18 @@ class _DentalClinicDashboardWebPageState
                                           vertical: 15,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: Colors.grey.shade100,
+                                          color: Colors.grey.shade50,
                                           borderRadius: BorderRadius.circular(
-                                            10,
+                                            16,
                                           ),
+                                          border: Border.all(color: Colors.grey.shade200),
                                           boxShadow: [
                                             BoxShadow(
                                               color: Colors.grey.withValues(
-                                                alpha: 0.15,
+                                                alpha: 0.12,
                                               ),
-                                              blurRadius: 6,
+                                              blurRadius: 10,
+                                              offset: const Offset(0, 4),
                                             ),
                                           ],
                                         ),
@@ -186,10 +256,24 @@ class _DentalClinicDashboardWebPageState
                                       ),
                                     ),
 
-                                    const SizedBox(height: 20),
-                                    Text(
-                                      'What are you looking for?',
-                                      style: AppTextStyles.subtitle(context),
+                                    const SizedBox(height: 24),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(7),
+                                          decoration: BoxDecoration(
+                                            gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: const Icon(Icons.grid_view_rounded, size: 16, color: Colors.white),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          'What are you looking for?',
+                                          style: AppTextStyles.subtitle(context),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(height: 20),
 
@@ -265,12 +349,26 @@ class _DentalClinicDashboardWebPageState
                                       },
                                     ),
                                     const SizedBox(height: 30),
-                                    Text(
-                                      'Jobs & Webinars',
-                                      style: AppTextStyles.subtitle(
-                                        context,
-                                        color: AppColors.black,
-                                      ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(7),
+                                          decoration: BoxDecoration(
+                                            gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: const Icon(Icons.work_outline, size: 16, color: Colors.white),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          'Jobs & Webinars',
+                                          style: AppTextStyles.subtitle(
+                                            context,
+                                            color: AppColors.black,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(height: 20),
                                     Center(
@@ -278,9 +376,16 @@ class _DentalClinicDashboardWebPageState
                                         width: isMobile ? double.infinity : 400,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(
-                                            10,
+                                            50,
                                           ),
                                           color: Colors.grey.shade100,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withValues(alpha: 0.05),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
                                         ),
                                         child: TabBar(
                                           indicatorSize:
@@ -288,7 +393,7 @@ class _DentalClinicDashboardWebPageState
                                           dividerColor: Colors.transparent,
                                           indicator: BoxDecoration(
                                             borderRadius: BorderRadius.circular(
-                                              10,
+                                              50,
                                             ),
                                             gradient: const LinearGradient(
                                               colors: [
@@ -331,6 +436,7 @@ class _DentalClinicDashboardWebPageState
                                     ),
                                   ],
                                 ),
+                                ),
                               ),
                             ),
                           ),
@@ -362,7 +468,7 @@ class _DentalClinicDashboardWebPageState
           int crossAxisCount = w < 600 ? 1 : (w < 900 ? 2 : (w < 1200 ? 3 : 4));
           double aspectRatio = w < 600
               ? 1.9
-              : (w < 900 ? 1.8 : (w < 1200 ? 2.0 : 2.2));
+              : (w < 900 ? 1.8 : (w < 1200 ? 1.8 : 1.8));
           return GridView.builder(
             padding: const EdgeInsets.all(20),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -437,7 +543,7 @@ class _DentalClinicDashboardWebPageState
           int crossAxisCount = w < 600 ? 1 : (w < 900 ? 2 : (w < 1200 ? 3 : 4));
           double aspectRatio = w < 600
               ? 1.9
-              : (w < 900 ? 1.8 : (w < 1200 ? 2.0 : 2.2));
+              : (w < 900 ? 1.8 : (w < 1200 ? 1.8 : 1.8));
           return GridView.builder(
             padding: const EdgeInsets.all(20),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -512,16 +618,20 @@ Widget _modernCard({
   required VoidCallback onTap,
   required BuildContext context,
 }) {
-  return Container(
-    padding: const EdgeInsets.all(15),
+  return _HoverLift(
+    liftScale: 1.02,
+    borderRadius: BorderRadius.circular(18),
+    child: Container(
+    padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(color: Colors.grey.shade100),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withValues(alpha: 0.05),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
+          blurRadius: 12,
+          offset: const Offset(0, 5),
         ),
       ],
     ),
@@ -547,8 +657,9 @@ Widget _modernCard({
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.1),
+                color: statusColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: statusColor.withValues(alpha: 0.4)),
               ),
               child: Text(
                 status,
@@ -566,24 +677,36 @@ Widget _modernCard({
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Text(
-                subtitle,
-                style: AppTextStyles.caption(
-                  context,
-                  color: Colors.grey.shade600,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                child: Text(
+                  subtitle,
+                  style: AppTextStyles.caption(
+                    context,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
-            IconButton(
-              icon: const Icon(
-                Icons.edit_note,
-                color: AppColors.primary,
-                size: 24,
+            _HoverLift(
+              liftScale: 1.1,
+              borderRadius: BorderRadius.circular(20),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.edit_note,
+                  color: AppColors.primary,
+                  size: 24,
+                ),
+                onPressed: onTap,
+                padding: EdgeInsets.zero,
               ),
-              onPressed: onTap,
-              padding: EdgeInsets.zero,
             ),
           ],
         ),
@@ -616,6 +739,7 @@ Widget _modernCard({
           ],
         ),
       ],
+    ),
     ),
   );
 }
@@ -716,33 +840,44 @@ Widget _dashboardTile({
   required BuildContext context,
 }) {
   final double size = MediaQuery.of(context).size.width;
-  return InkWell(
+  return _HoverLift(
+    liftScale: 1.03,
+    borderRadius: BorderRadius.circular(20),
+    child: InkWell(
     onTap: onTap,
-    borderRadius: BorderRadius.circular(16),
+    borderRadius: BorderRadius.circular(20),
     child: Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.shade100),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
       child: Column(
         children: [
           Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
-              ),
-              child: Image.asset(
-                image,
-                height: size < 700 ? (size * 0.65) : 300.0,
-                fit: BoxFit.cover,
-                width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.asset(
+                    image,
+                    height: size < 700 ? (size * 0.65) : 300.0,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
+                ),
               ),
             ),
           ),
@@ -761,6 +896,7 @@ Widget _dashboardTile({
           SizedBox(height: 10),
         ],
       ),
+    ),
     ),
   );
 }

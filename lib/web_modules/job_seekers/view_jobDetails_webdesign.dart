@@ -126,8 +126,6 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
     final screenHeight = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     final bool isDesktop = width >= 1100;
-    final bool isTablet = width >= 700 && width < 1100;
-    final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
       key: _scaffoldKeyJobDetail,
@@ -155,11 +153,6 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
             final isJobApplied = jobController.jobSeekersAppliedLists.any(
               (j) => j.jobId.toString() == targetJobId,
             );
-            String getPlainText(List<Map<String, dynamic>>? delta) {
-              if (delta == null) return "";
-              return delta.map((e) => e['insert'] ?? "").join();
-            }
-
             return ConstrainedBox(
               constraints: BoxConstraints(minHeight: screenHeight),
               child: SafeArea(

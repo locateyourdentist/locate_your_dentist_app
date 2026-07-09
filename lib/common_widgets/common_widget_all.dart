@@ -55,13 +55,13 @@ class DoctorCardWidget extends StatelessWidget {
                   child: doctor.logoImages.isNotEmpty
                       ? Image.network(
                           doctor.logoImages.first,
-                          width: size * 0.25,
-                          height: size * 0.25,
+                          width: size * 0.22,
+                          height: size * 0.22,
                           fit: BoxFit.cover,
                         )
                       : Container(
-                          width: size * 0.25,
-                          height: size * 0.25,
+                          width: size * 0.2,
+                          height: size * 0.2,
                           color: Colors.grey.shade200,
                           child: const Icon(
                             Icons.person,
@@ -429,11 +429,11 @@ Widget buildActiveFilters(bool isMobile,dynamic context) {
     child: Wrap(
       spacing: 8, runSpacing: 8,
       children: [
-        if (loginController.selectedState != null) InputChip(label: Text(loginController.selectedState!), onDeleted: () { loginController.selectedState = null; loginController.update(); }),
+        if (loginController.selectedState != null) InputChip(label: Text(loginController.selectedState!, style: AppTextStyles.caption(context,)), onDeleted: () { loginController.selectedState = null; loginController.update(); }),
         if (loginController.selectedDistricts != null)
           ...loginController.selectedDistricts.map(
                 (district) => InputChip(
-              label: Text(district),
+              label: Text(district,  style: AppTextStyles.caption(context,),),
               onDeleted: () {
                 loginController.selectedDistricts.remove(district);
                 loginController.update();
@@ -442,7 +442,7 @@ Widget buildActiveFilters(bool isMobile,dynamic context) {
         if (loginController.selectedTalukas != null)
           ...loginController.selectedTalukas.map(
                 (taluka) => InputChip(
-              label: Text(taluka),
+              label: Text(taluka,  style: AppTextStyles.caption(context,)),
               onDeleted: () {
                 loginController.selectedTalukas.remove(taluka);
                 loginController.update();
@@ -451,7 +451,7 @@ Widget buildActiveFilters(bool isMobile,dynamic context) {
         if (loginController.selectedVillages != null)
         ...loginController.selectedVillages.map(
               (village) => InputChip(
-            label: Text(village),
+            label: Text(village,  style: AppTextStyles.caption(context,)),
             onDeleted: () {
               loginController.selectedVillages.remove(village);
               loginController.update();
