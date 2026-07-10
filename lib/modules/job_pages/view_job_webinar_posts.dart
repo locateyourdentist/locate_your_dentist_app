@@ -411,21 +411,13 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                                               child: JobCard(
                                                 title: jobs.jobTitle.toString(),
                                                 //description: jobs.jobDescription.toString(),
-                                                description:
-                                                    "Posted On: ${formatDate1("${jobs.createdDate}")}",
-                                                jobType: jobs.jobType
-                                                    .toString(),
-                                                appliedCount: jobs
-                                                    .totalApplicants
-                                                    .toString(),
-                                                postedAgo: timeAgo(
-                                                  DateTime.parse(
-                                                    jobs.createdDate.toString(),
-                                                  ),
+                                                description: "Posted On: ${formatDate1("${jobs.createdDate}")}",
+                                                jobType: jobs.jobType.toString(),
+                                                appliedCount: jobs.totalApplicants.toString(),
+                                                postedAgo: timeAgo(DateTime.parse(jobs.createdDate.toString(),),
                                                 ),
                                                 status: jobs.isActive == true
-                                                    ? "Open"
-                                                    : "Close",
+                                                    ? "Open" : "Close",
                                                 statusColor:
                                                     jobs.isActive == true
                                                     ? Colors.lightGreen
@@ -435,11 +427,7 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                                                     .toString(),
                                                 size: size,
                                                 onTap: () async {
-                                                  await jobController
-                                                      .getJobsById(
-                                                        jobs.jobId.toString(),
-                                                        context,
-                                                      );
+                                                  await jobController.getJobsById(jobs.jobId.toString(), context);
                                                   Get.toNamed(
                                                     '/createJobAdminPage',
                                                   );
@@ -545,30 +533,22 @@ class _ViewJobWebinarState extends State<ViewJobWebinar> {
                                                       ? "Open"
                                                       : "Close",
                                                   statusColor:
-                                                      webinars.isActive
-                                                              .toString() ==
-                                                          "true"
+                                                      webinars.isActive.toString() == "true"
                                                       ? Colors.lightGreen
                                                       : Colors.redAccent,
-                                                  jobId: webinars.webinarId
-                                                      .toString(),
-                                                  isActive: webinars.isActive
-                                                      .toString(),
+                                                  jobId: webinars.webinarId.toString(),
+                                                  isActive: webinars.isActive.toString(),
                                                   size: size,
                                                   onTap: () async {
                                                     await jobController
                                                         .getWebinarById(
-                                                          webinars.webinarId
-                                                              .toString(),
-                                                          webinars.isActive
-                                                              .toString(),
+                                                          webinars.webinarId.toString(),
+                                                          webinars.isActive.toString(),
                                                           context,
                                                         );
                                                     Get.toNamed(
                                                       '/createJobAdminPage',
-                                                      arguments: {
-                                                        "selectedString":
-                                                            "Webinar",
+                                                      arguments: {"selectedString": "Webinar",
                                                       },
                                                     );
                                                   },

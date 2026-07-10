@@ -61,7 +61,6 @@ class _HoverLiftState extends State<_HoverLift> {
   }
 }
 
-/// Fades + slides a child in once on build, for a gentle section reveal.
 class _RevealIn extends StatelessWidget {
   final Widget child;
   final Duration delay;
@@ -101,8 +100,6 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
   List<ProfileModel> filteredProfiles = [];
   List<String> title=["Dental Shop","Dental Lab","Dental Mechanic","Dental Consultant","Job Posts/Webinars"];
 
-  /// Purely presentational: gradient pairs cycled across the bento category
-  /// tiles so the grid doesn't read as a flat wall of white cards.
   final List<List<Color>> _tileColors = const [
     [Color(0xFF6C63FF), Color(0xFF9C88FF)],
     [Color(0xFFFF6B6B), Color(0xFFFF9E9E)],
@@ -131,6 +128,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
     _refresh();
   }
   Future<void> _refresh() async {
+    await getLocation();
    await  jobController.getJobListAdmin(context);
    await  jobController.getWebinarListAdmin(context);
    await  notificationController.getNotificationListAdmin(context);
@@ -522,7 +520,6 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                 child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        /// HERO + FLOATING SEARCH CARD
                         Stack(
                           clipBehavior: Clip.none,
                           children: [
@@ -564,7 +561,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                       children: [
                                         Text(
                                           "Welcome back",
-                                          style: AppTextStyles.caption(context, color: Colors.white.withOpacity(0.85)),
+                                          style: AppTextStyles.caption(context, color: Colors.white.withOpacity(0.85),fontWeight: FontWeight.bold),
                                         ),
                                         const SizedBox(height: 3),
                                         GetBuilder<PlanController>(
@@ -573,12 +570,16 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                               children: [
                                                 const Icon(Icons.place_outlined, color: Colors.white, size: 14),
                                                 const SizedBox(width: 4),
-                                                Expanded(
-                                                  child: Text(
-                                                    planController.currentLocation ?? "",
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.w600),
-                                                  ),
+                                                GetBuilder<PlanController>(
+                                                    builder: (controller) {
+                                                      return  Expanded(
+                                                      child: Text(
+                                                        planController.currentLocation ?? "",
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.w600),
+                                                      ),
+                                                    );
+                                                  }
                                                 ),
                                               ],
                                             );

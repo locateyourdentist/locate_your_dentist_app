@@ -666,7 +666,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                   Positioned(
                                     left: 20,
                                     right: 20,
-                                    bottom: isMobile ? -200 : -30,
+                                    bottom: isMobile ? -240 :size>600? -30:-90,
                                     child: Center(
                                       child: _RevealIn(
                                         offsetY: 36,
@@ -1115,7 +1115,8 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                     await loginController.getProfileDetails('Dental Clinic', '', [], [],[], 'true', '', '', '', '',
                                                       context,);
                                                     // Get.toNamed('/userTypeListWeb');
-                                                    Get.to(() => ViewClinicPatients());
+                                                    Get.toNamed('/viewPatientsListWeb');
+
                                                   },
                                                   icon: Text(
                                                     "View All",

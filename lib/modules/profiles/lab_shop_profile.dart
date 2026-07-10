@@ -238,7 +238,7 @@ class _LabProfileState extends State<LabProfile>
                             Container(
                               color: Colors.grey[200],
                               width: double.infinity,
-                              height: 120,
+                              height: 200,
                               //s*0.015,
                               child: Icon(Icons.image, size: 15),
                             ),

@@ -58,7 +58,7 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
               if (isDesktop && isLoggedIn) const AdminSideBar(),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.all(isMobile ? 16.0 : 32.0),
+                  padding: EdgeInsets.all(isMobile ? 16 : 32),
                   child: Center(
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 1400),
@@ -83,9 +83,8 @@ class _ViewClinicPatientsState extends State<ViewClinicPatients> {
                                 //     onPressed: () => _scaffoldKeyPatients.currentState?.openEndDrawer(),
                                 //   ),
                                 if (!isDesktop)
-                                  Positioned(
-                                    top: 10,
-                                    left: 10,
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
                                     child: IconButton(
                                       icon:  Icon(Icons.filter_alt,color: AppColors.black,size: 17,),
                                       onPressed: () => _scaffoldKeyPatients.currentState?.openDrawer(),

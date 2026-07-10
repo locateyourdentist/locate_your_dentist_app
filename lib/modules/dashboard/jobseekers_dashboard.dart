@@ -16,7 +16,96 @@ import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 import '../../common_widgets/common_sidebar_mobile.dart';
-import '../../web_modules/common/common_side_bar.dart';
+
+class _HoverLift extends StatefulWidget {
+  final Widget child;
+  final double liftScale;
+  final BorderRadius? borderRadius;
+  const _HoverLift({required this.child, this.liftScale = 1.02, this.borderRadius});
+
+  @override
+  State<_HoverLift> createState() => _HoverLiftState();
+}
+
+class _HoverLiftState extends State<_HoverLift> {
+  bool _hovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovering = true),
+      onExit: (_) => setState(() => _hovering = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
+        transform: Matrix4.identity()
+          ..translate(0.0, _hovering ? -4.0 : 0.0)
+          ..scale(_hovering ? widget.liftScale : 1.0),
+        transformAlignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: widget.borderRadius,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(_hovering ? 0.18 : 0.0),
+              blurRadius: _hovering ? 20 : 0,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+class _RevealIn extends StatelessWidget {
+  final Widget child;
+  final Duration delay;
+  const _RevealIn({required this.child, this.delay = Duration.zero});
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: Duration(milliseconds: 600 + delay.inMilliseconds),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 20),
+            child: child,
+          ),
+        );
+      },
+      child: child,
+    );
+  }
+}
+
+Widget _sectionHeading(BuildContext context, {required IconData icon, required String text}) {
+  return Row(
+    children: [
+      Container(
+        padding: const EdgeInsets.all(7),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, size: 15, color: Colors.white),
+      ),
+      const SizedBox(width: 10),
+      Expanded(
+        child: Text(
+          text,
+          overflow: TextOverflow.ellipsis,
+          style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold),
+        ),
+      ),
+    ],
+  );
+}
 
 class JobSeekerDashboard extends StatefulWidget {
   const JobSeekerDashboard({super.key});
@@ -55,12 +144,16 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
       jobCategory: loginController.selectedCategories,
       context: context,
     );
+    if (!mounted) return;
     await jobController.getJobSeekersAppliedLists(
       Api.userInfo.read('userId') ?? "",
       context,
     );
+    if (!mounted) return;
     await jobController.getWebinarListJobSeekers('', '', context);
+    if (!mounted) return;
     await notificationController.getNotificationListAdmin(context);
+    if (!mounted) return;
     await planController.getUploadImages(
       userType: "Job Seekers",
       context: context,
@@ -78,7 +171,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
 
     return Scaffold(
       key: _scaffoldKeyJobs,
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: const Color(0xFFF6F8FC),
       drawer: !isDesktop
           ? Drawer(width: 250, child: SettingsSidebarDrawer())
           : null,
@@ -86,8 +179,12 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
         centerTitle: false,
         elevation: 0,
         automaticallyImplyLeading: false,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(1)),
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(1)),
             gradient: LinearGradient(
               colors: [AppColors.primary, AppColors.secondary],
               begin: Alignment.topLeft,
@@ -102,15 +199,15 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
             Text(
               'Welcome Back',
               style: TextStyle(
-                fontSize: size * 0.04,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+                fontSize: size * 0.032,
+                fontWeight: FontWeight.w500,
+                color: Colors.white70,
               ),
             ),
             Text(
               Api.userInfo.read('personName') ?? "",
               style: TextStyle(
-                fontSize: size * 0.03,
+                fontSize: size * 0.04,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -118,55 +215,70 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
           ],
         ),
         leading: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (context) => const JobSeekerProfilePage(),
+          padding: const EdgeInsets.all(8.0),
+          child: _HoverLift(
+            liftScale: 1.08,
+            borderRadius: BorderRadius.circular(50),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => const JobSeekerProfilePage(),
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white.withOpacity(0.6), width: 1.5),
                 ),
-              );
-            },
-            child: ProfileImageWidget(size: size),
+                child: ProfileImageWidget(size: size),
+              ),
+            ),
           ),
         ),
         actions: [
           GetBuilder<NotificationController>(
             builder: (controller) {
-              return Stack(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.notifications_none,
-                      color: AppColors.white,
-                      size: size * 0.08,
+              return _HoverLift(
+                liftScale: 1.1,
+                borderRadius: BorderRadius.circular(24),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.notifications_none,
+                        color: AppColors.white,
+                        size: size * 0.08,
+                      ),
+                      onPressed: () {
+                        notificationController.getNotificationListAdmin(context);
+                        Get.toNamed('/notificationPage');
+                        notificationController.update();
+                      },
                     ),
-                    onPressed: () {
-                      notificationController.getNotificationListAdmin(context);
-                      Get.toNamed('/notificationPage');
-                      notificationController.update();
-                    },
-                  ),
-                  if (int.tryParse(notificationController.unreadCount ?? "0")! >
-                      0)
-                    Positioned(
-                      top: 0,
-                      right: 15,
-                      child: CircleAvatar(
-                        radius: size * 0.024,
-                        backgroundColor: Colors.redAccent,
-                        child: Text(
-                          notificationController.unreadCount.toString() ?? "",
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: size * 0.025,
+                    if (int.tryParse(notificationController.unreadCount ?? "0")! >
+                        0)
+                      Positioned(
+                        top: 4,
+                        right: 12,
+                        child: CircleAvatar(
+                          radius: size * 0.024,
+                          backgroundColor: Colors.redAccent,
+                          child: Text(
+                            notificationController.unreadCount.toString(),
+                            style: TextStyle(
+                              color: AppColors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: size * 0.025,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               );
             },
           ),
@@ -205,131 +317,136 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
-                    //margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    //padding: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primary, AppColors.secondary],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(40),
-                        bottomRight: Radius.circular(40),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withValues(alpha: 0.15),
-                          spreadRadius: 2,
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    height: size * 0.23,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(50),
+                  /// HERO + FLOATING SEARCH CARD
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [AppColors.primary, AppColors.secondary],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(32),
+                            bottomRight: Radius.circular(32),
+                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withValues(alpha: 0.15),
-                              spreadRadius: 2,
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
+                              color: Colors.black26,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
                             ),
                           ],
                         ),
-                        height: size * 0.012,
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.search,
-                              color: Colors.grey,
-                              size: 24,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: TextField(
-                                controller: searchController,
-                                decoration: InputDecoration(
-                                  hintText:
-                                      "Search your job by clinic name,area..",
-                                  hintStyle: AppTextStyles.caption(
-                                    context,
-                                    fontWeight: FontWeight.normal,
-                                    color: AppColors.grey,
-                                  ),
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                  ),
+                        height: size * 0.28,
+                      ),
+                      Positioned(
+                        left: 20,
+                        right: 20,
+                        bottom: -26,
+                        child: _RevealIn(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 14,
+                                  offset: const Offset(0, 6),
                                 ),
-                                style: AppTextStyles.caption(
-                                  context,
-                                  color: AppColors.black,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                                cursorColor: AppColors.primary,
-                                onSubmitted: (value) {
-                                  print("Search text: $value");
-                                  jobController.getJobListJobSeekers(
-                                    search: searchController.text.toString(),
-                                    context: context,
-                                  );
-                                  Get.toNamed('/filterPageJobSeekersPage');
-                                },
-                              ),
+                              ],
                             ),
-
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: AppColors.white,
-                                  border: Border.all(
+                            height: 56,
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Icon(
+                                    Icons.search,
                                     color: AppColors.primary,
-                                    width: 1.3,
+                                    size: 18,
                                   ),
                                 ),
-                                child: Center(
-                                  child: IconButton(
-                                    onPressed: () {
-                                      _scaffoldKeyJobs.currentState!
-                                          .openDrawer();
-                                    },
-                                    icon: Icon(
-                                      Icons.filter_alt,
-                                      color: Colors.black,
-                                      size: size * 0.05,
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: TextField(
+                                    controller: searchController,
+                                    decoration: InputDecoration(
+                                      hintText:
+                                          "Search your job by clinic name,area..",
+                                      hintStyle: AppTextStyles.caption(
+                                        context,
+                                        fontWeight: FontWeight.normal,
+                                        color: AppColors.grey,
+                                      ),
+                                      border: InputBorder.none,
+                                      isDense: true,
+                                      contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 8,
+                                      ),
                                     ),
-                                    splashRadius: 22,
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      color: AppColors.black,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                    cursorColor: AppColors.primary,
+                                    onSubmitted: (value) {
+                                      print("Search text: $value");
+                                      jobController.getJobListJobSeekers(
+                                        search: searchController.text.toString(),
+                                        context: context,
+                                      );
+                                      Get.toNamed('/filterPageJobSeekersPage');
+                                    },
                                   ),
                                 ),
-                              ),
+                                _HoverLift(
+                                  liftScale: 1.06,
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      gradient: const LinearGradient(
+                                        colors: [AppColors.primary, AppColors.secondary],
+                                      ),
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        _scaffoldKeyJobs.currentState!
+                                            .openDrawer();
+                                      },
+                                      icon: Icon(
+                                        Icons.filter_alt,
+                                        color: Colors.white,
+                                        size: size * 0.05,
+                                      ),
+                                      splashRadius: 22,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
+                  const SizedBox(height: 44),
 
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      //mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
                           'Let Find a Job With LYD',
@@ -339,24 +456,65 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                             fontSize: size * 0.045,
                           ),
                         ),
-                        //  Text('With LYD',textAlign:TextAlign.start, style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: size*0.05),),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 14),
+                        GetBuilder<JobController>(
+                          builder: (controller) {
+                            return _RevealIn(
+                              delay: const Duration(milliseconds: 80),
+                              child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                // Automatically switches between 2 or 4 columns based on available width
+                                int crossAxisCount = constraints.maxWidth > 600 ? 4 : 2;
+
+                                return GridView.count(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  crossAxisCount: crossAxisCount,
+                                  crossAxisSpacing: 14,
+                                  mainAxisSpacing: 14,
+                                  childAspectRatio: 1.6, // Adjust this ratio to control card height
+                                  children: [
+                                    _buildRowCard(
+                                      title: "Applied",
+                                      count: controller.appliedCount.toString(),
+                                      icon: Icons.work_outline,
+                                      colors: const [AppColors.primary, AppColors.secondary],
+                                    ),
+                                    _buildRowCard(
+                                      title: "Shortlisted",
+                                      count: controller.shortlistedCount.toString(),
+                                      icon: Icons.star_border_rounded,
+                                      colors: const [Color(0xFFF59E0B), Color(0xFFFFC15E)],
+                                    ),
+                                    _buildRowCard(
+                                      title: "Rejected",
+                                      count: controller.rejectedCount.toString(),
+                                      icon: Icons.cancel_outlined,
+                                      colors: const [Color(0xFFFF6B6B), Color(0xFFFF9E9E)],
+                                    ),
+                                    _buildRowCard(
+                                        title: "Viewed",
+                                      count: controller.viewedCount.toString(),
+                                      icon: Icons.hourglass_empty_rounded,
+                                      colors: const [Color(0xFF06B6D4), Color(0xFF67E8F9)],
+                                    ),
+                                  ],
+                                );
+                              },
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 22),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Flexible(
-                              child: Text(
-                                'Popular Jobs/Webinars Posts',
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: size * 0.035,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                            Expanded(
+                              child: _sectionHeading(context, icon: Icons.local_fire_department_rounded, text: 'Popular Jobs/Webinars Posts'),
                             ),
-                            Align(
-                              alignment: Alignment.topRight,
+                            _HoverLift(
+                              liftScale: 1.04,
+                              borderRadius: BorderRadius.circular(20),
                               child: TextButton(
                                 onPressed: () async {
                                   await jobController.getWebinarListJobSeekers(
@@ -367,87 +525,28 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                   Get.toNamed('/viewWebinarListJobseekersPage');
                                 },
                                 child: Text(
-                                  "View Webinars",
+                                  "Webinars",
                                   softWrap: true,
                                   style: TextStyle(
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: size * 0.03,
-                                    decoration: TextDecoration.underline,
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5),
-                        // DashboardCarousel(
-                        //   imageList: planController.editUploadImage
-                        //       .map((e) => e.url ?? '')
-                        //       .where((url) => url.isNotEmpty)
-                        //       .toList(),
-                        // ),
-                        GetBuilder<JobController>(
-                          builder: (controller) {
-                            return LayoutBuilder(
-                              builder: (context, constraints) {
-                                // Automatically switches between 2 or 4 columns based on available width
-                                int crossAxisCount = constraints.maxWidth > 600 ? 4 : 2;
-
-                                return GridView.count(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  crossAxisCount: crossAxisCount,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                  childAspectRatio: 1.6, // Adjust this ratio to control card height
-                                  children: [
-                                    _buildRowCard(
-                                      title: "Applied",
-                                      count: controller.appliedCount.toString(),
-                                      icon: Icons.work_outline,
-                                      color: Colors.blue,
-                                    ),
-                                    _buildRowCard(
-                                      title: "Shortlisted",
-                                      count: controller.shortlistedCount.toString(),
-                                      icon: Icons.star_border_rounded,
-                                      color: Colors.orange,
-                                    ),
-                                    _buildRowCard(
-                                      title: "Rejected",
-                                      count: controller.rejectedCount.toString(),
-                                      icon: Icons.cancel_outlined,
-                                      color: Colors.red,
-                                    ),
-                                    _buildRowCard(
-                                        title: "Viewed",
-                                      count: controller.viewedCount.toString(),
-                                      icon: Icons.hourglass_empty_rounded,
-                                      color: Colors.amber,
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                        ),
+                        const SizedBox(height: 18),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Flexible(
-                              child: Text(
-                                'Find your Top Jobs',
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: size * 0.035,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                            Expanded(
+                              child: _sectionHeading(context, icon: Icons.trending_up_rounded, text: 'Find your Top Jobs'),
                             ),
-                            Align(
-                              alignment: Alignment.topRight,
+                            _HoverLift(
+                              liftScale: 1.04,
+                              borderRadius: BorderRadius.circular(20),
                               child: TextButton(
                                 onPressed: () {
                                   jobController.getJobListJobSeekers(
@@ -463,14 +562,13 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: size * 0.03,
-                                    decoration: TextDecoration.underline,
                                   ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 8),
                         if (jobController.isLoading)
                           _buildShimmerPopularJobs(size)
                         else if (jobController.jobListJobSeekers.isEmpty)
@@ -482,7 +580,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                           )
                         else
                           SizedBox(
-                            height: size * 0.55,
+                            height: size * 0.6,
                             child: AnimationLimiter(
                               child: ListView.builder(
                                 itemCount:
@@ -510,7 +608,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                       curve: Curves.easeOutBack,
                                       child: FadeInAnimation(
                                         child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
+                                          padding: const EdgeInsets.all(8.0),
                                           child: GestureDetector(
                                             onTap: () async {
                                               Api.userInfo.write(
@@ -523,20 +621,29 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                               isSelected =
                                                   currentIndex == index;
                                             },
-                                            child: Container(
+                                            child: _HoverLift(
+                                              liftScale: 1.02,
+                                              borderRadius: BorderRadius.circular(20),
+                                              child: Container(
                                               width: size * 0.8,
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(15),
+                                                    BorderRadius.circular(20),
                                                 color: AppColors.white,
                                                 border: Border.all(
-                                                  color: AppColors.primary,
-                                                  width: 1.5,
+                                                  color: Colors.grey.shade100,
                                                 ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withOpacity(0.05),
+                                                    blurRadius: 12,
+                                                    offset: const Offset(0, 5),
+                                                  ),
+                                                ],
                                               ),
                                               child: Padding(
                                                 padding: const EdgeInsets.all(
-                                                  10.0,
+                                                  14.0,
                                                 ),
                                                 child: Column(
                                                   crossAxisAlignment:
@@ -616,56 +723,50 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                                     TextOverflow
                                                                         .ellipsis,
                                                               ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Flexible(
-                                                                    child: Text(
-                                                                      Jobs.jobType
-                                                                          .toString(),
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      style: TextStyle(
-                                                                        fontSize:
-                                                                            size *
-                                                                            0.03,
-                                                                        fontWeight:
-                                                                            FontWeight.normal,
-                                                                        color: Colors
-                                                                            .grey,
-                                                                      ),
-                                                                    ),
+                                                              Container(
+                                                                margin: const EdgeInsets.only(top: 3),
+                                                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                                decoration: BoxDecoration(
+                                                                  color: AppColors.primary.withOpacity(0.08),
+                                                                  borderRadius: BorderRadius.circular(8),
+                                                                ),
+                                                                child: Text(
+                                                                  Jobs.jobType
+                                                                      .toString(),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        size *
+                                                                        0.028,
+                                                                    fontWeight:
+                                                                        FontWeight.w600,
+                                                                    color: AppColors
+                                                                        .primary,
                                                                   ),
-                                                                  const SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Flexible(
-                                                                    child: Text(
-                                                                      postedAgo,
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      style: TextStyle(
-                                                                        fontSize:
-                                                                            size *
-                                                                            0.03,
-                                                                        fontWeight:
-                                                                            FontWeight.normal,
-                                                                        color: Colors
-                                                                            .grey,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                                ),
                                                               ),
                                                             ],
                                                           ),
                                                         ),
+                                                        Text(
+                                                          postedAgo,
+                                                          overflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                size * 0.026,
+                                                            fontWeight:
+                                                                FontWeight.normal,
+                                                            color: Colors
+                                                                .grey,
+                                                          ),
+                                                        ),
                                                       ],
                                                     ),
+                                                    const SizedBox(height: 10),
                                                     Text(
                                                       Jobs.jobTitle.toString(),
                                                       softWrap: true,
@@ -678,7 +779,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                         color: Colors.black,
                                                       ),
                                                     ),
-                                                    const SizedBox(height: 2),
+                                                    const SizedBox(height: 6),
                                                     Row(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
@@ -710,6 +811,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                         ),
                                                       ],
                                                     ),
+                                                    const SizedBox(height: 4),
                                                     Row(
                                                       children: [
                                                         Icon(
@@ -738,20 +840,16 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                         ),
                                                       ],
                                                     ),
+                                                    const SizedBox(height: 6),
                                                     Jobs.totalApplicants != 0
                                                         ? Align(
                                                             alignment: Alignment
                                                                 .bottomRight,
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets.all(
-                                                                    5.0,
-                                                                  ),
-                                                              child: Container(
+                                                            child: Container(
                                                                 decoration: BoxDecoration(
                                                                   borderRadius:
                                                                       BorderRadius.circular(
-                                                                        10,
+                                                                        20,
                                                                       ),
                                                                   gradient: const LinearGradient(
                                                                     colors: [
@@ -766,50 +864,45 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                                         .bottomRight,
                                                                   ),
                                                                 ),
-                                                                height:
-                                                                    size * 0.07,
-                                                                width:
-                                                                    size * 0.3,
-                                                                child: Center(
-                                                                  child: Text(
+                                                                padding: EdgeInsets.symmetric(horizontal: size*0.03, vertical: size*0.015),
+                                                                child: Text(
                                                                     '${Jobs.totalApplicants} Applied',
                                                                     softWrap:
                                                                         true,
                                                                     style: TextStyle(
                                                                       fontSize:
                                                                           size *
-                                                                          0.035,
+                                                                          0.03,
                                                                       fontWeight:
                                                                           FontWeight
-                                                                              .normal,
+                                                                              .w600,
                                                                       color: Colors
                                                                           .white,
                                                                     ),
-                                                                  ),
                                                                 ),
-                                                              ),
                                                             ),
                                                           )
                                                         : Align(
                                                             alignment: Alignment
-                                                                .topRight,
+                                                                .bottomRight,
                                                             child: Text(
                                                               'Be a early Applicant',
                                                               softWrap: true,
                                                               style: TextStyle(
                                                                 fontSize:
                                                                     size *
-                                                                    0.035,
+                                                                    0.03,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .normal,
-                                                                color: Colors
-                                                                    .black54,
+                                                                        .w500,
+                                                                color: AppColors
+                                                                    .primary,
                                                               ),
                                                             ),
                                                           ),
                                                   ],
                                                 ),
+                                              ),
                                               ),
                                             ),
                                           ),
@@ -821,20 +914,13 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                               ),
                             ),
                           ),
-                        Text(
-                          'Applied Jobs Lists',
-                          style: TextStyle(
-                            fontSize: size * 0.035,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 22),
+                        _sectionHeading(context, icon: Icons.assignment_turned_in_outlined, text: 'Applied Jobs Lists'),
+                        const SizedBox(height: 12),
                         if (jobController.isLoading)
                           _buildShimmerAppliedJobs(size)
                         else if (jobController.jobSeekersAppliedLists.isEmpty)
                           _buildShimmerAppliedJobs(size)
-                        // Center(child: Text("No applied jobs found", style: AppTextStyles.caption(context)))
                         else
                           AnimationLimiter(
                             child: ListView.builder(
@@ -859,7 +945,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                     curve: Curves.easeOutBack,
                                     child: FadeInAnimation(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
+                                        padding: const EdgeInsets.only(bottom: 12.0),
                                         child: GestureDetector(
                                           onTap: () {
                                             jobController.getJobsById(
@@ -868,80 +954,48 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                             );
                                             Get.toNamed('/jobViewProfilePage');
                                           },
-                                          child: Container(
+                                          child: _HoverLift(
+                                            liftScale: 1.015,
+                                            borderRadius: BorderRadius.circular(18),
+                                            child: Container(
                                             width: size,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10),
+                                                  BorderRadius.circular(18),
                                               color: Colors.white,
+                                              border: Border.all(color: Colors.grey.shade100),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.grey.withValues(
-                                                    alpha: 0.1,
-                                                  ),
-                                                  spreadRadius: 1,
-                                                  blurRadius: 4,
-                                                  offset: const Offset(0, 2),
+                                                  color: Colors.black.withOpacity(0.05),
+                                                  blurRadius: 12,
+                                                  offset: const Offset(0, 5),
                                                 ),
                                               ],
                                             ),
                                             child: Padding(
                                               padding: const EdgeInsets.all(
-                                                12.0,
+                                                14.0,
                                               ),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      // Container(
-                                                      //     width: size * 0.22,
-                                                      //     height: size * 0.22,
-                                                      //     clipBehavior: Clip.hardEdge,
-                                                      //     decoration: BoxDecoration(
-                                                      //       borderRadius: BorderRadius.circular(10),
-                                                      //       color: Colors.white,
-                                                      //     ),
-                                                      //     child: Image.network(
-                                                      //       logoUrl ?? "",
-                                                      //       fit: BoxFit.cover,
-                                                      //       width: size * 0.26,
-                                                      //       height: size * 0.26,
-                                                      //       errorBuilder: (context, error, stackTrace) {
-                                                      //         return Container(
-                                                      //           decoration: BoxDecoration(
-                                                      //             color: getRandomColor(appliedJobs.orgName.toString()),
-                                                      //           ),
-                                                      //           width: size * 0.12,
-                                                      //           height: size * 0.12,
-                                                      //           child: Center(
-                                                      //             child: Text(
-                                                      //               getFirstLetter(appliedJobs.orgName.toString()),
-                                                      //               style: AppTextStyles.headline(context, color: AppColors.white),
-                                                      //             ),
-                                                      //           ),
-                                                      //         );
-                                                      //       },
-                                                      //     )),
                                                       Container(
-                                                        width: 60,
-                                                        height: 60,
+                                                        width: 54,
+                                                        height: 54,
                                                         decoration:
                                                             BoxDecoration(
                                                               shape: BoxShape
                                                                   .circle,
-                                                              color: Colors
-                                                                  .grey
-                                                                  .shade100,
+                                                              gradient: LinearGradient(colors: [AppColors.primary.withOpacity(0.1), AppColors.secondary.withOpacity(0.1)]),
                                                             ),
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets.all(
-                                                                12,
+                                                                11,
                                                               ),
                                                           child: Image.asset(
                                                             'assets/images/tooth.png',
@@ -956,39 +1010,64 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                               CrossAxisAlignment
                                                                   .start,
                                                           children: [
-                                                            Text(
-                                                              appliedJobs
-                                                                      .orgName
-                                                                      .toString() ??
-                                                                  "N/A",
-                                                              style: TextStyle(
-                                                                fontSize:
-                                                                    size *
-                                                                    0.035,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    appliedJobs
+                                                                            .orgName
+                                                                            .toString() ??
+                                                                        "N/A",
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                          size *
+                                                                          0.035,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .black,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  'Posted On ${DateFormat('MMM dd, yyyy').format(DateTime.parse(appliedJobs.createdDate.toString()))}',
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        size *
+                                                                        0.024,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .normal,
+                                                                    color: Colors
+                                                                        .black45,
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
-                                                            Text(
-                                                              appliedJobs
-                                                                      .jobType
-                                                                      .toString() ??
-                                                                  "N/A",
-                                                              style: TextStyle(
-                                                                fontSize:
-                                                                    size * 0.03,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .normal,
-                                                                color:
-                                                                    Colors.grey,
+                                                            Container(
+                                                              margin: const EdgeInsets.symmetric(vertical: 3),
+                                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                              decoration: BoxDecoration(
+                                                                color: AppColors.primary.withOpacity(0.08),
+                                                                borderRadius: BorderRadius.circular(8),
                                                               ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 5,
+                                                              child: Text(
+                                                                appliedJobs
+                                                                        .jobType
+                                                                        .toString() ??
+                                                                    "N/A",
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      size * 0.028,
+                                                                  fontWeight:
+                                                                      FontWeight.w600,
+                                                                  color:
+                                                                      AppColors.primary,
+                                                                ),
+                                                              ),
                                                             ),
                                                             Text(
                                                               appliedJobs
@@ -1078,29 +1157,6 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                                 ),
                                                               ],
                                                             ),
-                                                            Align(
-                                                              alignment: Alignment
-                                                                  .bottomRight,
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets.all(
-                                                                      5.0,
-                                                                    ),
-                                                                child: Text(
-                                                                  'Posted On ${DateFormat('MMM dd, yyyy').format(DateTime.parse(appliedJobs.createdDate.toString()))}',
-                                                                  style: TextStyle(
-                                                                    fontSize:
-                                                                        size *
-                                                                        0.025,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .normal,
-                                                                    color: Colors
-                                                                        .black54,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
                                                           ],
                                                         ),
                                                       ),
@@ -1108,6 +1164,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                   ),
                                                 ],
                                               ),
+                                            ),
                                             ),
                                           ),
                                         ),
@@ -1133,19 +1190,19 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
 
   Widget _buildShimmerPopularJobs(double size) {
     return SizedBox(
-      height: size * 0.55,
+      height: size * 0.6,
       child: ListView.builder(
         itemCount: 3,
         scrollDirection: Axis.horizontal,
         itemBuilder: (_, __) => Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(8.0),
           child: Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[100]!,
             child: Container(
               width: size * 0.8,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(20),
                 color: Colors.white,
               ),
             ),
@@ -1161,14 +1218,14 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (_, __) => Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.only(bottom: 12.0),
         child: Shimmer.fromColors(
           baseColor: Colors.grey[300]!,
           highlightColor: Colors.grey[100]!,
           child: Container(
             height: size * 0.3,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(18),
               color: Colors.white,
             ),
           ),
@@ -1182,44 +1239,56 @@ Widget _buildRowCard({
   required String title,
   required String count,
   required IconData icon,
-  required Color color,
+  required List<Color> colors,
 }) {
-  return Container(
-    padding: const EdgeInsets.all(10),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border(
-        left: BorderSide(color: color, width: 4),
+  return _HoverLift(
+    liftScale: 1.03,
+    borderRadius: BorderRadius.circular(18),
+    child: Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.grey.shade100),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          )
+        ],
       ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.02),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
-        )
-      ],
-    ),
-    child: Row(
-      children: [
-        Icon(icon, color: color.withOpacity(0.8), size: 28),
-        const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: TextStyle(fontSize: 13, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(9),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: colors),
+              borderRadius: BorderRadius.circular(13),
             ),
-            const SizedBox(height: 4),
-            Text(
-              count,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
+            child: Icon(icon, color: Colors.white, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  count,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+                ),
+              ],
             ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     ),
   );
 }

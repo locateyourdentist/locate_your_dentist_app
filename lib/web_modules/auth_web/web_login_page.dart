@@ -31,6 +31,12 @@ class _WebLoginPageState extends State<WebLoginPage> {
     }
     exit(0);
   }
+  @override
+  void initState() {
+    super.initState();
+    emailController.clear();
+    passwordController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +202,7 @@ class _WebLoginPageState extends State<WebLoginPage> {
                               alignment: Alignment.centerRight,
                               child: TextButton(
                                 onPressed: () {
-                                  Get.toNamed('/forgotPasswordEmailWeb');
+                                  Get.toNamed('/forgotMailWebScreen');
                                 },
                                 child: Text(
                                   "Forgot Password?",

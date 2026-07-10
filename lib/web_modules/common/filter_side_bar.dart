@@ -345,12 +345,10 @@ class _FilterSidebarState extends State<FilterSidebar> {
       ),
     );
   }
-
-  // ================= SECTION TITLE =================
   Widget _sectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      child: Text(title, style:  AppTextStyles.caption(context,fontWeight: FontWeight.bold)),
     );
   }
   Future<void> getLocation() async {
@@ -452,8 +450,6 @@ class _FilterSidebarState extends State<FilterSidebar> {
       padding: const EdgeInsets.all(12),
       child: Row(
         children: [
-
-          // APPLY
           Expanded(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -480,15 +476,15 @@ class _FilterSidebarState extends State<FilterSidebar> {
                   loginController.longitude = null;
                 }
 
-                String safeLat ='12.834';
-                // (distance != "0" && loginController.latitude != null)
-                //     ? loginController.latitude.toString()
-                //     : "";
+                String safeLat =
+                (distance != "0" && loginController.latitude != null)
+                    ? loginController.latitude.toString()
+                    : "";
 
-                String safeLng ='79.704';
-                // (distance != "0" && loginController.longitude != null)
-                //     ? loginController.longitude.toString()
-                //     : "";
+                String safeLng =
+                (distance != "0" && loginController.longitude != null)
+                    ? loginController.longitude.toString()
+                    : "";
                 if( Api.userInfo.read('userType')=="superAdmin") {
                   await   loginController.getProfileDetails('',  loginController.selectedState,
                       loginController.selectedDistricts,

@@ -54,10 +54,8 @@ class _MediaCarouselState extends State<MediaCarousel> {
     double containerHeight;
 
     if (s > 800) {
-      // Web / Tablet
       containerHeight = 200;
     } else {
-      // Mobile
       containerHeight = s * 5;
     }
 
@@ -206,7 +204,7 @@ class _MediaCarouselState extends State<MediaCarousel> {
       mediaWidget = Container(
         color: Colors.grey[200],
         width: double.infinity,
-        height: kIsWeb == "Web" ? s * 0.1 : s * 0.65,
+        height: kIsWeb == "Web" ? s * 0.1 : s * 0.9,
         //s*0.015,
         child: Icon(Icons.image, size: height * 0.012),
       );

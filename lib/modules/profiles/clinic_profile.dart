@@ -299,27 +299,20 @@ class _ClinicProfileState extends State<ClinicProfile>
                                 //       !img.url!.contains('undefined'))
                                 //       .toList(),
                                 // ),
-                                if ((planActive == true &&
-                                        user?.details["plan"]?["basePlan"]?["details"]?["images"] ==
-                                            true) ||
-                                    isAdminUser ||
-                                    userId == editUserId)
+                                if ((planActive == true && user?.details["plan"]?["basePlan"]?["details"]?["images"] == true) || isAdminUser || userId == editUserId)
                                   MediaCarousel(
                                     images: loginController.editImages
-                                        .where(
-                                          (img) =>
+                                        .where((img) =>
                                               img.url != null &&
                                               img.url!.startsWith('http') &&
                                               !img.url!.contains('undefined'),
-                                        )
-                                        .toList(),
+                                        ).toList(),
                                   )
                                 else
                                   Container(
                                     color: Colors.grey[200],
                                     width: double.infinity,
-                                    height: 120,
-                                    //s*0.015,
+                                    height: 220,
                                     child: Icon(Icons.image, size: 15),
                                   ),
                               ],

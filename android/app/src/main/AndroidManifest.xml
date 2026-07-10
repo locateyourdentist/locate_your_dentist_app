@@ -72,6 +72,10 @@
 
                 <data
                     android:scheme="https"
+                    android:host="www.locateyourdentist.com" />
+
+                <data
+                    android:scheme="https"
                     android:host="locateyourdentist.com" />
 
             </intent-filter>

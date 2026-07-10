@@ -38,6 +38,8 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
+    loginController.emailController.clear();
+    loginController.passwordController.clear();
   }
 
   @override
