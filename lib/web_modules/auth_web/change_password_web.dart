@@ -61,7 +61,7 @@ class _ChangePasswordWebPageState extends State<ChangePasswordWebPage> {
                     ),
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(30.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Container(
                         width: 600,
                         padding: EdgeInsets.all(isMobile ? 20 : 40),
@@ -107,7 +107,7 @@ class _ChangePasswordWebPageState extends State<ChangePasswordWebPage> {
                                   controller: loginController.confirmPasswordController,
                                   validator: (v) => (v != loginController.passwordController.text) ? "Passwords do not match" : null,
                                 ),
-                                const SizedBox(height: 30),
+                                const SizedBox(height: 15),
                                 _buildSubmitButton(),
                               ],
                             );

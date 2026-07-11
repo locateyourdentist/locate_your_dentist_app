@@ -160,37 +160,6 @@ class _AddProductState extends State<AddProduct> {
         ? serviceController.selectedServiceId.toString()
         : "0";
   }
-
-  // Future<void> pickImages() async {
-  //   const maxImages = 3;
-  //   final existingCount = loginController.serviceFileImages.length;
-  //   final remaining = maxImages - existingCount;
-  //   if (remaining <= 0) {
-  //     Get.snackbar("Error", "Maximum $maxImages images allowed");
-  //     return;
-  //   }
-  //   try {
-  //     final List<XFile>? selected = await _picker.pickMultiImage();
-  //     if (selected != null && selected.isNotEmpty) {
-  //       final limited = selected.take(remaining).toList();
-  //       for (final x in limited) {
-  //         if (kIsWeb) {
-  //           final bytes = await x.readAsBytes();
-  //           serviceFileImages.add(AppImage(bytes: bytes));
-  //         } else {
-  //           serviceFileImages.add(AppImage(file: File(x.path)));
-  //         }
-  //       }
-  //       loginController.update();
-  //       if (selected.length > remaining) {
-  //         Get.snackbar("Info", "Only $remaining more images allowed");
-  //       }
-  //     }
-  //   } catch (e) {
-  //     debugPrint("Error picking images: $e");
-  //     Get.snackbar("Error", "Failed to pick images");
-  //   }
-  // }
   bool isPicking = false;
 
   Future<void> pickImages() async {

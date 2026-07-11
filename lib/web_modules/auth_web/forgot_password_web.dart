@@ -96,6 +96,12 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
+    // Everything inside the card below should scale off the card's own
+    // width, not the full screen width — the card is capped at 450px, so
+    // on a wide desktop screen `size * 0.0X` produces an oversized avatar
+    // that overflows the available height on shorter viewports.
+    final double cardWidth = size > 800 ? 450 : size * 0.85;
+    final double avatarRadius = (cardWidth * 0.12).clamp(28.0, 40.0);
     return Scaffold(
       body: Form(
         key: _formKeyForgotEmailWeb,
@@ -113,8 +119,10 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
 
             // Centered glass card
             Center(
-              child: Container(
-                width: size > 800 ? 450 : size * 0.85,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Container(
+                width: cardWidth,
                 padding: const EdgeInsets.all(40),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.15),
@@ -139,7 +147,7 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
                       children: [
 
                         CircleAvatar(
-                          radius: size * 0.045,
+                          radius: avatarRadius,
                           backgroundColor: Colors.white,
                           backgroundImage: loginController.appLogoUrl != null
                               ? NetworkImage(loginController.appLogoUrl!)
@@ -147,8 +155,8 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
                           child: loginController.appLogoUrl == null
                               ? Icon(
                             Icons.medical_services,
-                            size: size * 0.12,
-                            color: Colors.blue,
+                            size: avatarRadius * 0.85,
+                            color: Colors.grey,
                           )
                               : null,
                         ),
@@ -161,7 +169,7 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
                             color: AppColors.white,
                           ),
                         ),
-                        SizedBox(height: size * 0.01),
+                        SizedBox(height: cardWidth * 0.01),
                         Text(
                           "Please Enter your Registered Email",
                           style: AppTextStyles.caption(
@@ -169,12 +177,12 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
                             color: AppColors.white,
                           ),
                         ),
-                        SizedBox(height: size * 0.01),
+                        SizedBox(height: cardWidth * 0.01),
 
                         passwordField(),
-                        SizedBox(height: size * 0.02),
+                        SizedBox(height: cardWidth * 0.02),
                         submitButton(),
-                        SizedBox(height: size * 0.01),
+                        SizedBox(height: cardWidth * 0.01),
                         Row(
                           children: [
                             Expanded(
@@ -199,7 +207,7 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
                             ),
                           ],
                         ),
-                        SizedBox(height: size * 0.01),
+                        SizedBox(height: cardWidth * 0.01),
 
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -208,7 +216,7 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
                               "Don't have an account?",
                               style: TextStyle(color: Colors.white70),
                             ),
-                            SizedBox(height: size * 0.005),
+                            SizedBox(height: cardWidth * 0.005),
 
                             TextButton(
                               onPressed: () {
@@ -228,6 +236,7 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
                       ],
                     );
                   },
+                ),
                 ),
               ),
             ),

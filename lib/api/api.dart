@@ -2049,6 +2049,30 @@ class Api {
     }
   }
 
+  Future<http.Response> getSalesListAdmin(String userId) async {
+    String url =
+        "${AppConstants.baseUrl}${AppConstants.serviceURL}${AppConstants.getSaleURL}";
+    print('API getSaleURL $url');
+    String? token = Api.userInfo.read('token');
+    try {
+      final String token = Api.userInfo.read('token') ?? "";
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode({"userId": userId}),
+      );
+      print('api job response ${response.body}');
+      return response;
+    } catch (e) {
+      throw "Failed to fetch job details: $e";
+    }
+  }
+
   Future<http.Response> getCompanyDetails() async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.planUrl}${AppConstants.getCompanyDetailsUrl}";
@@ -3173,6 +3197,56 @@ class Api {
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     print("add service Response: ${response.body}");
+    return response;
+  }
+
+  Future<http.Response> createSalePost(
+    String userId,
+    String userType,
+    String mobileNumber,
+    String message,
+    String price,
+    List<Uint8List>? images,
+  ) async {
+    final url =
+        "${AppConstants.baseUrl}${AppConstants.serviceURL}${AppConstants.createSalePostUrl}";
+    final token = Api.userInfo.read('token') ?? "";
+
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    print('create sale post url$url');
+    request.fields['userId'] = userId;
+    request.fields['userType'] = userType;
+    request.fields['mobileNumber'] = mobileNumber;
+    request.fields['message'] = message;
+    request.fields['price'] = price;
+
+    final now = DateTime.now();
+    String formattedDate =
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+    String formattedTime =
+        "${now.hour.toString().padLeft(2, '0')}-${now.minute.toString().padLeft(2, '0')}-${now.second.toString().padLeft(2, '0')}";
+
+    if (images != null && images.isNotEmpty) {
+      for (int i = 0; i < images.length; i++) {
+        final fileName = "${userId}_${formattedDate}_${formattedTime}_$i";
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'salePostImage',
+            images[i],
+            filename: fileName,
+          ),
+        );
+      }
+    }
+
+    request.headers.addAll({
+      "Authorization": "Bearer $token",
+      "Accept": "application/json",
+    });
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    print("create sale post Response: ${response.body}");
     return response;
   }
 

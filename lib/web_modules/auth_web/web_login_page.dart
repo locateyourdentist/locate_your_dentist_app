@@ -214,8 +214,6 @@ class _WebLoginPageState extends State<WebLoginPage> {
                               ),
                             ),
                             const SizedBox(height: 20),
-
-                            // Login button
                             SizedBox(
                               width: double.infinity,
                               height: 50,

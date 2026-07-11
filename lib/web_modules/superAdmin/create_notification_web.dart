@@ -28,7 +28,7 @@ class _CreateNotificationWebState extends State<CreateNotificationWeb> {
   final notificationController=Get.put(NotificationController());
   final GlobalKey<ScaffoldState> _scaffoldKeyNotification = GlobalKey<ScaffoldState>();
   final loginController=Get.put(LoginController());
-  final ImagePicker _picker = ImagePicker();
+  // final ImagePicker _picker = ImagePicker();
   File? selectedImageFile;
   final _formKeyCreateNotificationWeb = GlobalKey<FormState>();
   final ImagePicker picker = ImagePicker();

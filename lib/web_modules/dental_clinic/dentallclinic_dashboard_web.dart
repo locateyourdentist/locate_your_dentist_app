@@ -309,18 +309,11 @@ class _DentalClinicDashboardWebPageState
                                               image: imgUserType(title[index]),
                                               context: context,
                                               onTap: () async {
-                                                if (title[index] ==
-                                                    "Job Posts/Webinars") {
-                                                  Get.toNamed(
-                                                    '/viewJobWebinarWebPage',
-                                                  );
+                                                if (title[index] == "Job Posts/Webinars") {
+                                                  Get.toNamed('/viewJobWebinarWebPage');
                                                 } else {
-                                                  Api.userInfo.write(
-                                                    'sUserType1',
-                                                    title[index],
-                                                  );
-                                                  await loginController
-                                                      .getProfileDetails(
+                                                  Api.userInfo.write('sUserType1', title[index],);
+                                                  await loginController.getProfileDetails(
                                                         title[index],
                                                         '',
                                                         [],
@@ -416,9 +409,7 @@ class _DentalClinicDashboardWebPageState
 
                                     const SizedBox(height: 20),
                                     SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                          0.9,
+                                      height: MediaQuery.of(context).size.height *0.9,
                                       child: TabBarView(
                                         children: [
                                           _buildJobGrid(

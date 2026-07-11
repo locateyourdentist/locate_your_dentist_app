@@ -86,6 +86,14 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
+    // The OTP boxes live inside the card below, whose width is capped well
+    // under the screen width — size each box off the card's own content
+    // width (card width minus its 40px padding on each side, minus the
+    // package's default 8px right-margin per field) instead of the full
+    // screen width, so 4 boxes always fit regardless of screen size.
+    final double cardWidth = size > 800 ? 450 : size * 0.85;
+    final double otpFieldWidth = ((cardWidth - 80 - 32) / 4).clamp(32.0, 60.0);
+    final double otpFieldHeight = otpFieldWidth * 1.15;
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -102,7 +110,7 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
             ),
             Center(
               child: Container(
-                width: size > 800 ? 450 : size * 0.85,
+                width: cardWidth,
                 padding: const EdgeInsets.all(40),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.15),
@@ -179,8 +187,8 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
                             color: AppColors.white,
                             fontWeight: FontWeight.bold,
                           ),
-                          fieldWidth: size * 0.07,
-                          fieldHeight: size * 0.09,
+                          fieldWidth: otpFieldWidth,
+                          fieldHeight: otpFieldHeight,
                           borderWidth: 3.0,
                           borderRadius: BorderRadius.circular(20),
                           onCodeChanged: (String code) {},

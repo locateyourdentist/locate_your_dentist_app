@@ -239,7 +239,7 @@ class _ForgotChangePasswordPageState extends State<ForgotChangePasswordPage> {
                         ),
                         SizedBox(height: size * 0.005),
                         confirmPasswordField(),
-                        SizedBox(height: size * 0.08),
+                        SizedBox(height: size * 0.04),
                         submitButton(),
                         SizedBox(height: size * 0.01),
                       ],

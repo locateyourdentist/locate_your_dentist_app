@@ -935,61 +935,82 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     .validate()) {
                                                   saveDocument();
                                                   print(
-                                                    "selectedJobType= ${loginController.selectedJobType}",
+                                                    "selectedJobType= ${loginController
+                                                        .selectedJobType}",
                                                   );
                                                   print(
-                                                    "jobTitleController = ${loginController.jobTitleController.text}",
+                                                    "jobTitleController = ${loginController
+                                                        .jobTitleController
+                                                        .text}",
                                                   );
                                                   print(
-                                                    "jobDescController = ${loginController.jobDescController.text}",
+                                                    "jobDescController = ${loginController
+                                                        .jobDescController
+                                                        .text}",
                                                   );
                                                   print(
-                                                    "selectedSalary = ${loginController.selectedSalary}",
+                                                    "selectedSalary = ${loginController
+                                                        .selectedSalary}",
                                                   );
                                                   print(
-                                                    "STATE = ${loginController.stateController.text}",
+                                                    "STATE = ${loginController
+                                                        .stateController.text}",
                                                   );
                                                   print(
-                                                    "DISTRICT = ${loginController.districtController.text}",
+                                                    "DISTRICT = ${loginController
+                                                        .districtController
+                                                        .text}",
                                                   );
                                                   print(
-                                                    "CITY = ${loginController.cityController.text}",
+                                                    "CITY = ${loginController
+                                                        .cityController.text}",
                                                   );
                                                   print(
-                                                    "qualificationJobController = ${loginController.qualificationJobController.text}",
+                                                    "qualificationJobController = ${loginController
+                                                        .qualificationJobController
+                                                        .text}",
                                                   );
                                                   print(
-                                                    "selectedExperience = ${loginController.selectedExperience.toString()}",
+                                                    "selectedExperience = ${loginController
+                                                        .selectedExperience
+                                                        .toString()}",
                                                   );
                                                   print(
-                                                    "name = ${loginController.typeNameController.text.toString()}",
+                                                    "name = ${loginController
+                                                        .typeNameController.text
+                                                        .toString()}",
                                                   );
                                                   print(
-                                                    "CERTIFICATES = ${loginController.certificates}",
+                                                    "CERTIFICATES = ${loginController
+                                                        .certificates}",
                                                   );
                                                   print(
-                                                    'job category${loginController.selectedCategories}',
+                                                    'job category${loginController
+                                                        .selectedCategories}',
                                                   );
                                                   if ((jobController
-                                                                  .startHour !=
-                                                              null &&
-                                                          jobController
-                                                              .startHour!
-                                                              .isNotEmpty) &&
+                                                      .startHour !=
+                                                      null &&
+                                                      jobController
+                                                          .startHour!
+                                                          .isNotEmpty) &&
                                                       (jobController
-                                                                  .startMinutes !=
-                                                              null &&
+                                                          .startMinutes !=
+                                                          null &&
                                                           jobController
                                                               .startMinutes!
                                                               .isNotEmpty) &&
                                                       (jobController
-                                                                  .startPeriod !=
-                                                              null &&
+                                                          .startPeriod !=
+                                                          null &&
                                                           jobController
                                                               .startPeriod!
                                                               .isNotEmpty)) {
                                                     jobStartTime =
-                                                        "${jobController.startHour}:${jobController.startMinutes} ${jobController.startPeriod}";
+                                                    "${jobController
+                                                        .startHour}:${jobController
+                                                        .startMinutes} ${jobController
+                                                        .startPeriod}";
                                                   } else {
                                                     startTime = null;
                                                     showCustomToast(
@@ -999,24 +1020,27 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     return;
                                                   }
                                                   if ((jobController.endHour !=
-                                                              null &&
-                                                          jobController
-                                                              .endHour!
-                                                              .isNotEmpty) &&
+                                                      null &&
+                                                      jobController
+                                                          .endHour!
+                                                          .isNotEmpty) &&
                                                       (jobController
-                                                                  .endMinutes !=
-                                                              null &&
+                                                          .endMinutes !=
+                                                          null &&
                                                           jobController
                                                               .endMinutes!
                                                               .isNotEmpty) &&
                                                       (jobController
-                                                                  .endPeriod !=
-                                                              null &&
+                                                          .endPeriod !=
+                                                          null &&
                                                           jobController
                                                               .endPeriod!
                                                               .isNotEmpty)) {
                                                     jobEndTime =
-                                                        "${jobController.endHour}:${jobController.endMinutes} ${jobController.endPeriod}";
+                                                    "${jobController
+                                                        .endHour}:${jobController
+                                                        .endMinutes} ${jobController
+                                                        .endPeriod}";
                                                   } else {
                                                     endTime = null;
                                                     showCustomToast(
@@ -1026,7 +1050,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     return;
                                                   }
                                                   if (loginController
-                                                          .selectedJobType ==
+                                                      .selectedJobType ==
                                                       null) {
                                                     showCustomToast(
                                                       context,
@@ -1045,7 +1069,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                   }
 
                                                   if (loginController
-                                                          .selectedSalary ==
+                                                      .selectedSalary ==
                                                       null) {
                                                     showCustomToast(
                                                       context,
@@ -1054,7 +1078,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     return;
                                                   }
                                                   if (loginController
-                                                          .selectedExperience ==
+                                                      .selectedExperience ==
                                                       null) {
                                                     showCustomToast(
                                                       context,
@@ -1063,11 +1087,11 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                     return;
                                                   }
                                                   final jobImageBytes =
-                                                      await convertImages(
-                                                        loginController
-                                                                .jobImages ??
-                                                            [],
-                                                      );
+                                                  await convertImages(
+                                                    loginController
+                                                        .jobImages ??
+                                                        [],
+                                                  );
 
                                                   // final jobDescription =
                                                   // _controller.document.toDelta().toJson();
@@ -1077,78 +1101,79 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                   //   List<Map<String, dynamic>>.from(delta),
                                                   // );
                                                   final jobDescription =
-                                                      jsonEncode(
-                                                        _controller.document
-                                                            .toDelta()
-                                                            .toJson(),
-                                                      );
-                                                  // if ((jobController.jobCount ?? 0) > 0) {
-                                                  await jobController.postJobsAdmin(
-                                                    jobController.selectedJobId
-                                                            .toString() ??
-                                                        "0",
-                                                    //jobController.selectedJobId.toString().isNotEmpty? jobController.selectedJobId.toString():"0",
-                                                    loginController
-                                                        .selectUserId!,
-                                                    loginController
-                                                        .selectedUserType!,
-                                                    loginController
-                                                            .selectedJobType ??
-                                                        "",
-                                                    loginController
-                                                        .selectedCategories,
-                                                    loginController
-                                                        .typeNameController
-                                                        .text
-                                                        .toString(),
-                                                    loginController
-                                                        .jobTitleController
-                                                        .text
-                                                        .toString(),
-                                                    jobDescription,
-                                                    loginController
-                                                        .selectedSalary
-                                                        .toString(),
-                                                    loginController
-                                                        .qualificationJobController
-                                                        .text
-                                                        .toString(),
-                                                    loginController
-                                                        .selectedExperience
-                                                        .toString(),
-                                                    Api.userInfo
-                                                            .read('state')
-                                                            .toString() ??
-                                                        "",
-                                                    // loginController.stateController.text.toString(),
-                                                    Api.userInfo
-                                                            .read('district')
-                                                            .toString() ??
-                                                        "",
-                                                    // loginController.districtController.text.toString(),
-                                                    Api.userInfo
-                                                            .read('city')
-                                                            .toString() ??
-                                                        "",
-                                                    //loginController.cityController.text.toString(),
-                                                    jobStartTime.toString(),
-                                                    jobEndTime.toString(),
-                                                    jobImageBytes,
-                                                    //loginController.jobImages.isNotEmpty?loginController.jobImages:[],
-                                                    context,
+                                                  jsonEncode(
+                                                    _controller.document
+                                                        .toDelta()
+                                                        .toJson(),
                                                   );
-                                                  await jobController
-                                                      .getJobListAdmin(context);
-                                                  // }
-                                                  // else{
-                                                  //    showCustomToast(context,  "Please buy new plan");
-                                                  //    showSuccessDialog(context, title:"Alert",message :"Oops! Your plan has expired. Please purchase a new plan to continue posting jobs.",
-                                                  //        onOkPressed: () {
-                                                  //          kIsWeb?Get.toNamed('/viewPlanPageWeb'): Get.toNamed('/viewPlanPage');
-                                                  //        });
-                                                  //  //  planController.checkPlanList.isNotEmpty? showPlanAlerts(planController.checkPlanList??[],context):"";
-                                                  //
-                                                  //  }
+                                                  // if ((jobController.jobCount ?? 0) > 0) {
+                                                  //jobController.selectedJobId.toString().isNotEmpty? jobController.selectedJobId.toString():"0",
+                                                  bool isSameDay = false;
+                                                  if (jobController.job
+                                                      .isNotEmpty) {
+                                                    isSameDay = isWithinOneDay(
+                                                      jobController.job
+                                                          .first.createdDate
+                                                          .toString() ?? "",
+                                                    );
+                                                  }
+                                                  print('sameday$isSameDay');
+                                                  if (isSameDay || jobController
+                                                      .selectedJobId ==
+                                                      "0") {
+                                                    await jobController
+                                                        .postJobsAdmin(
+                                                      jobController
+                                                          .selectedJobId
+                                                          .toString() ?? "0",
+                                                      //jobController.selectedJobId.toString().isNotEmpty? jobController.selectedJobId.toString():"0",
+                                                      loginController
+                                                          .selectUserId!,
+                                                      loginController
+                                                          .selectedUserType!,
+                                                      loginController
+                                                          .selectedJobType ??
+                                                          "",
+                                                      loginController
+                                                          .selectedCategories,
+                                                      loginController
+                                                          .typeNameController
+                                                          .text.toString(),
+                                                      loginController
+                                                          .jobTitleController
+                                                          .text.toString(),
+                                                      jobDescription,
+                                                      loginController
+                                                          .selectedSalary
+                                                          .toString(),
+                                                      loginController
+                                                          .qualificationJobController
+                                                          .text.toString(),
+                                                      loginController.selectedExperience.toString(),
+                                                      Api.userInfo.read('state').toString() ?? "",
+                                                      // loginController.stateController.text.toString(),
+                                                      Api.userInfo.read('district').toString() ?? "",
+                                                      // loginController.districtController.text.toString(),
+                                                      Api.userInfo.read('city').toString() ?? "",
+                                                      //loginController.cityController.text.toString(),
+                                                      jobStartTime.toString(),
+                                                      jobEndTime.toString(),
+                                                      jobImageBytes,
+                                                      //loginController.jobImages.isNotEmpty?loginController.jobImages:[],
+                                                      context,
+                                                    );
+                                                    await jobController.getJobListAdmin(context);
+                                                    // }
+                                                    // else{
+                                                    //    showCustomToast(context,  "Please buy new plan");
+                                                    //    showSuccessDialog(context, title:"Alert",message :"Oops! Your plan has expired. Please purchase a new plan to continue posting jobs.",
+                                                    //        onOkPressed: () {
+                                                    //          kIsWeb?Get.toNamed('/viewPlanPageWeb'): Get.toNamed('/viewPlanPage');
+                                                    //        });
+                                                    //  //  planController.checkPlanList.isNotEmpty? showPlanAlerts(planController.checkPlanList??[],context):"";
+                                                    //
+                                                    //  }
+                                                  }
                                                 }
                                               },
                                               style: ElevatedButton.styleFrom(
@@ -1604,18 +1629,12 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                         "45",
                                                         "50",
                                                         "55",
-                                                      ].contains(
-                                                        loginController
-                                                            .endMinutes,
+                                                      ].contains(loginController.endMinutes
                                                       ))
-                                                      ? loginController
-                                                            .endMinutes
-                                                      : null,
+                                                      ? loginController.endMinutes : null,
                                                   onChanged: (value) {
                                                     setState(() {
-                                                      loginController
-                                                              .endMinutes =
-                                                          value;
+                                                      loginController.endMinutes = value;
                                                     });
                                                   },
                                                 ),
@@ -1805,45 +1824,23 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
 
                                                     final webinarDescription =
                                                         jsonEncode(
-                                                          _controller.document
-                                                              .toDelta()
-                                                              .toJson(),
+                                                          _controller.document.toDelta().toJson(),
                                                         );
                                                     bool isSameDay = false;
-                                                    if (jobController
-                                                        .webinar
-                                                        .isNotEmpty) {
+                                                    if (jobController.webinar.isNotEmpty) {
                                                       isSameDay = isWithinOneDay(
-                                                        jobController
-                                                                .webinar
-                                                                .first
-                                                                .createdDate
-                                                                .toString() ??
-                                                            "",
+                                                        jobController.webinar.first.createdDate.toString() ?? "",
                                                       );
                                                     }
                                                     print('sameday$isSameDay');
-                                                    if (isSameDay ||
-                                                        jobController
-                                                                .selectedWebinarId ==
-                                                            "0") {
+                                                    if (isSameDay || jobController.selectedWebinarId == "0") {
                                                       await jobController.postWebinarAdmin(
                                                         //jobController.selectedWebinarId.toString().isNotEmpty? jobController.selectedWebinarId.toString():"0",
-                                                        jobController
-                                                            .selectedWebinarId
-                                                            .toString(),
-                                                        loginController
-                                                            .selectUserId!,
-                                                        loginController
-                                                            .selectedUserType!,
-                                                        loginController
-                                                            .typeNameController
-                                                            .text
-                                                            .toString(),
-                                                        loginController
-                                                            .webinarTitleJobController
-                                                            .text
-                                                            .toString(),
+                                                        jobController.selectedWebinarId.toString(),
+                                                        loginController.selectUserId!,
+                                                        loginController.selectedUserType!,
+                                                        loginController.typeNameController.text.toString(),
+                                                        loginController.webinarTitleJobController.text.toString(),
                                                         webinarDescription,
                                                         //jobDescriptionPlain,
                                                         // loginController
@@ -1958,7 +1955,7 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
 
     Duration difference = now.difference(created);
 
-    return difference.inHours <= 24;
+    return difference.inHours <= 48;
   }
 
   Future<String?> showSelectionDialog({

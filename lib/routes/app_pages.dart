@@ -90,6 +90,10 @@ class AppRoutes {
 
   static const createServicesPage='/createServicesPage';
   static const viewServicePage='/viewServicePage';
+  static const salePostPage='/salePostPage';
+  static const salePostWebPage='/salePostWebPage';
+  static const salePostListPage='/salePostListPage';
+  static const salePostListWebPage='/salePostListWebPage';
 
   static const viewIncomePage='/viewIncomePage';
   static const viewReportPage='/viewReportPage';

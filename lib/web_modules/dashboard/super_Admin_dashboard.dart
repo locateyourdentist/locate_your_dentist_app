@@ -481,17 +481,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                         AnimationLimiter(
                                           child: GridView.builder(
                                             shrinkWrap: true,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
+                                            physics: const NeverScrollableScrollPhysics(),
                                             itemCount:
-                                                loginController
-                                                        .profileList
-                                                        .length >
-                                                    10
-                                                ? 10
-                                                : loginController
-                                                      .profileList
-                                                      .length,
+                                                loginController.profileList.length > 10
+                                                ? 10 : loginController.profileList.length,
                                             gridDelegate:
                                                 const SliverGridDelegateWithMaxCrossAxisExtent(
                                                   maxCrossAxisExtent: 280,
@@ -587,6 +580,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
                               firstImage,
                               width: double.infinity,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF1F3F6),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: const Icon(
+                                  Icons.image_outlined,
+                                  color: Colors.grey,
+                                  size: 50,
+                                ),
+                              ),
                             )
                           : Container(
                               width: double.infinity,

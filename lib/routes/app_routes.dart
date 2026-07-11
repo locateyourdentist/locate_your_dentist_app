@@ -36,6 +36,8 @@ import 'package:locate_your_dentist/modules/plans/report_page.dart';
 import 'package:locate_your_dentist/modules/plans/view_invoice_list.dart';
 import 'package:locate_your_dentist/modules/plans/view_plan.dart';
 import 'package:locate_your_dentist/modules/product_services/add-products.dart';
+import 'package:locate_your_dentist/modules/product_services/sale_post_page.dart';
+import 'package:locate_your_dentist/modules/product_services/sale_post_list_page.dart';
 import 'package:locate_your_dentist/modules/product_services/add_privacy_policy_mobile.dart';
 import 'package:locate_your_dentist/modules/product_services/view_legal_pages_mobile.dart';
 import 'package:locate_your_dentist/modules/product_services/view_product_services.dart';
@@ -66,6 +68,8 @@ import 'package:locate_your_dentist/web_modules/dashboard/super_Admin_dashboard.
 import 'package:locate_your_dentist/web_modules/dashboard/user_type_list_web.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/view_profile_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/add_services_web.dart';
+import 'package:locate_your_dentist/web_modules/dental_clinic/sale_post_web.dart';
+import 'package:locate_your_dentist/web_modules/dental_clinic/sale_post_list_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/clinic_profile_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/contact_list_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/create_job_web.dart';
@@ -367,6 +371,10 @@ class AppPages {
       middlewares: [SuperAdminMiddleware()],
     ),
     GetPage(name: AppRoutes.createServicesPage, page: () => const AddProduct()),
+    GetPage(name: AppRoutes.salePostPage, page: () => const SalePostPage()),
+    GetPage(name: AppRoutes.salePostWebPage, page: () => const SalePostWebPage()),
+    GetPage(name: AppRoutes.salePostListPage, page: () => const SalePostListPage()),
+    GetPage(name: AppRoutes.salePostListWebPage, page: () => const SalePostListWebPage()),
     GetPage(
       name: AppRoutes.viewServicePage,
       page: () => const ServiceDetailPage(),

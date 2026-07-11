@@ -852,8 +852,8 @@ class JobSeekerAppliedCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               child: _buildNetworkImageSafe(
                 imageUrl,
-                width * 0.15,
-                width * 0.15,
+                130,
+               120,
               ),
             ),
             SizedBox(width: width * 0.01),

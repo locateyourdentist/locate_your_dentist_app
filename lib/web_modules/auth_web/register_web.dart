@@ -418,8 +418,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                       }
                                     },
                                     onStepCancel: () {
-                                      if (currentStep > 0)
+                                      if (currentStep > 0) {
                                         setState(() => currentStep--);
+                                      }
                                     },
                                     controlsBuilder: (context, details) {
                                       return Padding(
@@ -631,9 +632,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                 firstDate: DateTime(1900),
                 lastDate: DateTime.now(),
               );
-              if (p != null)
-                loginController.dobController.text =
-                    "${p.day}-${p.month}-${p.year}";
+              if (p != null) {
+                loginController.dobController.text = "${p.day}-${p.month}-${p.year}";
+              }
             },
           ),
         ),
@@ -1110,20 +1111,22 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         ),
       );
     }
-    if (kIsWeb && image.bytes != null)
+    if (kIsWeb && image.bytes != null) {
       return Image.memory(
         image.bytes!,
         width: 120,
         height: 120,
         fit: BoxFit.cover,
       );
-    if (image.file != null)
+    }
+    if (image.file != null) {
       return Image.file(
         image.file!,
         width: 120,
         height: 120,
         fit: BoxFit.cover,
       );
+    }
     if (image.url != null && image.url!.isNotEmpty) {
       final url = image.url!.toLowerCase();
       if (url.endsWith('.mp4') ||

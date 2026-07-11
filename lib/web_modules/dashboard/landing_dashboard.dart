@@ -402,18 +402,23 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                           Expanded(
                             child: ClipRRect(
                                 borderRadius:  BorderRadius.vertical(top: Radius.circular(20)),
-                                child: firstImage.isNotEmpty
-                                    ? Image.network(
-                                    height:size < 700 ? (130) : 300.0,
-                                    (firstImage.isNotEmpty && isAdminUser||
-                                        ((planActive == true &&
+                                child: (firstImage.isNotEmpty &&
+                                    (isAdminUser ||
+                                        (planActive == true &&
                                             clinic.details["plan"]?["basePlan"]?["details"]?["images"] == true)))
-                                        ? firstImage
-                                        : "",
-                                    // loginController.logoImage.isNotEmpty
-                                    //     ? loginController.logoImage.first ?? ""
-                                    //     : "",
-                                    width: double.infinity, fit: BoxFit.cover)
+                                    ? Image.network(
+                                    firstImage,
+                                    height:size < 700 ? (130) : 300.0,
+                                    width: double.infinity, fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) => Container(
+                                      width: double.infinity,
+                                      height: size < 700 ? (130) : 300.0,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF1F3F6),
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: const Icon(Icons.image_outlined, color: Colors.grey, size: 50),
+                                    ))
                                     : Container(
                                   width: double.infinity,
                                   decoration: BoxDecoration(
@@ -2381,7 +2386,10 @@ Widget platformOverviewSection(context) {
                 children: items.map((item) {
                   return GestureDetector(
                     onTap: (){
-                      Get.toNamed('/registerPageWeb');
+                      Get.toNamed(
+                        '/registerPageWeb',
+                        arguments: {"userId": 0},
+                      );
                     },
                     child: _HoverLift(
                       liftScale: 1.02,

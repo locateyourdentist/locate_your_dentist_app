@@ -59,6 +59,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
 
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       key: _scaffoldKeyContactView,
       drawer: (isLoggedIn && !isDesktop)
           ? const Drawer(width: 250, child: AdminSideBar())

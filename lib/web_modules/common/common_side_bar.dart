@@ -35,41 +35,18 @@ class _AdminSideBarState extends State<AdminSideBar> {
       title: "Delete Account",
       message: "Do you want to Delete this Account?",
       onConfirm: () async {
-        await loginController.deactivateUserAdmin(
-            Api.userInfo.read('userId') ?? "", false, context);
+        await loginController.deactivateUserAdmin(Api.userInfo.read('userId') ?? "", false, context);
         Get.toNamed('/loginPage');
         loginController.update();
       },
     );
   }
 
-  bool isMobile(BuildContext context) =>
-      MediaQuery
-          .of(context)
-          .size
-          .width < 600;
-
-  bool isTablet(BuildContext context) =>
-      MediaQuery
-          .of(context)
-          .size
-          .width >= 600 &&
-          MediaQuery
-              .of(context)
-              .size
-              .width < 1024;
-
-  bool isDesktop(BuildContext context) =>
-      MediaQuery
-          .of(context)
-          .size
-          .width >= 1024;
-
+  bool isMobile(BuildContext context) => MediaQuery.of(context).size.width < 600;
+  bool isTablet(BuildContext context) => MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width < 1024;
+  bool isDesktop(BuildContext context) => MediaQuery.of(context).size.width >= 1024;
   double getSidebarWidth(BuildContext context) {
-    double w = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double w = MediaQuery.of(context).size.width;
     if (isMobile(context)) return w * 0.3;
     if (isTablet(context)) return w * 0.25;
     return w * 0.15;
@@ -80,8 +57,6 @@ class _AdminSideBarState extends State<AdminSideBar> {
     if (isTablet(context)) return 60;
     return 70;
   }
-
-  // 🔹 Icon size
   double getIconSize(BuildContext context) {
     if (isMobile(context)) return 18;
     if (isTablet(context)) return 20;
@@ -95,6 +70,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Dashboard", "page": "/dentalMechanicDashboardWebPage"},
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
+          {"title": "Sales Instrumental Page", "page": "/salePostWebPage"},
           {"title": "Job/Webinars", "page": "/viewJobWebinarWebPage"},
           {"title": "Products", "page": "/myServicesListWebPage"},
           {"title": "Add Branches", "page": "/addBranchesWeb"},
@@ -110,6 +86,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "User List", "page": "/userTypeListWeb"},
           {"title": "Add User", "page": "/registerPageWeb"},
+          {"title": "Sales Instrumental Page", "page": "/salePostWebPage"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "Reports", "page": "/reportPageWeb"},
           {
@@ -133,6 +110,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "User List", "page": "/userTypeListWeb"},
           {"title": "Add User", "page": "/registerPageWeb"},
+          {"title": "Sales Instrumental Page", "page": "/salePostWebPage"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "Reports", "page": "/reportPageWeb"},
           {"title": "Delete Account", "page": "/DeleteAccount"},
@@ -148,6 +126,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "My Purchases", "page": "/myInvoiceListWebPage"},
           {"title": "Services", "page": "/myServicesListWebPage"},
+          {"title": "Sales List Page", "page": "/salePostListWebPage"},
           // {"title": "Text Editor", "page": "/myServicesListWebPage1"},
           {"title": "Job/Webinars", "page": "/viewJobWebinarWebPage"},
           {"title": "Contact Form", "page": "/contactFormListWebPage"},
@@ -164,6 +143,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "My Purchases", "page": "/myInvoiceListWebPage"},
+          {"title": "Sales List Page", "page": "/salePostListWebPage"},
           {"title": "Jobs/Webinars", "page": "/viewJobWebinarWebPage"},
           {"title": "Products", "page": "/myServicesListWebPage"},
           {"title": "Add Profile", "page": "/clinicEditProfile"},
@@ -182,6 +162,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "My Purchases", "page": "/myInvoiceListWebPage"},
           {"title": "Jobs/Webinars", "page": "/viewJobWebinarWebPage"},
+          {"title": "Sales List Page", "page": "/salePostListWebPage"},
           {"title": "Products", "page": "/myServicesListWebPage"},
           {"title": "Add Branches", "page": "/addBranchesWeb"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
@@ -196,6 +177,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Edit Profile", "page": "/viewProfilePageWeb"},
           {"title": "My Subscription", "page": "/viewPlanPageWeb"},
           {"title": "My Purchases", "page": "/myInvoiceListWebPage"},
+          {"title": "Sales List Page", "page": "/salePostListWebPage"},
           {"title": "Jobs/Webinars", "page": "/viewJobWebinarWebPage"},
           {"title": "Products", "page": "/myServicesListWebPage"},
           {"title": "Contact Form", "page": "/contactFormListWebPage"},
@@ -223,13 +205,11 @@ class _AdminSideBarState extends State<AdminSideBar> {
         return [];
     }
   }
-
   @override
   Widget build(BuildContext context) {
     double sidebarWidth = getSidebarWidth(context);
     double avatarSize = getAvatarSize(context);
     double iconSize = getIconSize(context);
-
     return GetBuilder<LoginController>(
       builder: (controller) {
         return Container(
@@ -283,7 +263,6 @@ class _AdminSideBarState extends State<AdminSideBar> {
                   itemBuilder: (context, index) {
                     final setting = settingList[index];
                     final isSelected = index == controller.selectedIndex;
-
                     return ListTile(
                       leading: Icon(
                         _getIcon(setting['title'] ?? ""),
@@ -332,17 +311,12 @@ class _AdminSideBarState extends State<AdminSideBar> {
                           Get.offAllNamed("/viewProfilePageWeb");
                           return;
                         }
-
                         if (setting['title'] == "Add User") {
                           String userId = Api.userInfo.read('userId') ?? "";
                           Api.userInfo.write('selectUId', userId);
-                          Get.offAllNamed(
-                            "/registerPageWeb",
-                            arguments: {"userId": 0},
-                          );
+                          Get.offAllNamed("/registerPageWeb", arguments: {"userId": 0});
                           return;
                         }
-
                         Get.toNamed(setting['page'] ?? "");
                       },
                     );
@@ -382,7 +356,6 @@ class _AdminSideBarState extends State<AdminSideBar> {
       case "Products":
         return Icons.inventory_2_outlined;
 
-     // case "Job/Webinars":
       case "Jobs/Webinars":
         return Icons.work_outline;
 

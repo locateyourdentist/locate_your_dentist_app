@@ -86,6 +86,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
           {"title": "Lab Profile", "page": "/mechanicDashboard"},
           {"title": "Edit Profile", "page": "/clinicEditProfile"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
           {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
           {"title": "Services", "page": "/viewServiceList"},
           {"title": "Change Password", "page": "/changePasswordPage"},
@@ -100,6 +101,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
           {"title": "Add admin", "page": "/registerPage"},
           {"title": "User List", "page": "/userTypeListPage"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
           {"title": "Reports", "page": "/viewReportPage"},
           {"title": "Create Scrolling Ads Post", "page": "/createPostImages"},
           {"title": "Create Notification", "page": "/createNotificationPage"},
@@ -120,6 +122,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
         return [
           {"title": "Dashboard", "page": "/superAdminDashboard"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
           {"title": "User List", "page": "/userTypeListPage"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "Delete Account", "page": "/DeleteAccount"},
@@ -137,6 +140,8 @@ class SettingsSidebarDrawer extends StatelessWidget {
           multipleBranches
               ? {"title": "My Subscription", "page": "/branchListPage"}
               : {"title": "My Subscription", "page": "/viewPlanPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
+          {"title": "Sales List Page", "page": "/salePostListWebPage"},
           {"title": "My Purchases", "page": "/viewInvoiceListPage"},
           {"title": "Services", "page": "/viewServiceList"},
           {"title": "Contact Form", "page": "/viewSenderContactList"},
@@ -152,6 +157,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
         return [
           {"title": "Shop Profile", "page": "/mechanicDashboard"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
           {"title": "My Purchases", "page": "/viewInvoiceListPage"},
           {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
           {"title": "Products", "page": "/viewServiceList"},
@@ -169,6 +175,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
           {"title": "Profile", "page": "/mechanicDashboard"},
           {"title": "Edit Profile", "page": "/clinicEditProfile"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
           {"title": "My Purchases", "page": "/viewInvoiceListPage"},
           {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
           {"title": "Services", "page": "/viewServiceList"},
@@ -198,25 +205,11 @@ class SettingsSidebarDrawer extends StatelessWidget {
     }
   }
   bool isMobile(BuildContext context) =>
-      MediaQuery
-          .of(context)
-          .size
-          .width < 600;
-
+      MediaQuery.of(context).size.width < 600;
   bool isTablet(BuildContext context) =>
-      MediaQuery
-          .of(context)
-          .size
-          .width >= 600 &&
-          MediaQuery
-              .of(context)
-              .size
-              .width < 1024;
+      MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width < 1024;
   double getSidebarWidth(BuildContext context) {
-    double w = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double w = MediaQuery.of(context).size.width;
     if (isMobile(context)) return w * 0.3;
     if (isTablet(context)) return w * 0.25;
     return w * 0.15;
@@ -226,13 +219,11 @@ class SettingsSidebarDrawer extends StatelessWidget {
     if (isTablet(context)) return 60;
     return 70;
   }
-
   double getIconSize(BuildContext context) {
     if (isMobile(context)) return 18;
     if (isTablet(context)) return 20;
     return 22;
   }
-
   @override
   Widget build(BuildContext context) {
     String userType = Api.userInfo.read('userType') ?? "";
@@ -241,8 +232,6 @@ class SettingsSidebarDrawer extends StatelessWidget {
     final menuItems = _getSettingsForUser(userType);
     double sidebarWidth = getSidebarWidth(context);
     double avatarSize = getAvatarSize(context);
-    double iconSize = getIconSize(context);
-
     return Drawer(
       child:  SafeArea(
         child: Container(

@@ -6,6 +6,7 @@ import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
 import 'package:locate_your_dentist/model/serviceModel.dart';
+import 'package:locate_your_dentist/model/salePostModel.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
@@ -14,6 +15,8 @@ class ServiceController extends GetxController {
   var isLoading = false;
   List<ServiceModel> _serviceList = [];
   List<ServiceModel> get serviceList => _serviceList;
+  List<SalePostModel> _salesList = [];
+  List<SalePostModel> get salesList => _salesList;
   List<ServiceModel> _serviceDetails = [];
   List<ServiceModel> get serviceDetails => _serviceDetails;
   final List<dynamic> _privacyDetails = [];
@@ -45,6 +48,33 @@ class ServiceController extends GetxController {
         List<dynamic> services = data["data"];
 
         _serviceList = services.map((e) => ServiceModel.fromJson(e)).toList();
+      } else {
+        //showCustomToast(context,  "can not get service error,${data["message"] ?? "error"}",);
+        //Get.snackbar("Login Failed", data["message"] ?? "error");
+      }
+    } catch (error) {
+      print('job list admin error $error');
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+  Future<void> getSalesListAdmin(String userId, dynamic context) async {
+    var connection = await Connectivity().checkConnectivity();
+    if (connection == ConnectivityResult.none) {
+      Get.snackbar("No Internet", "Please check your connection");
+      return;
+    }
+    isLoading = true;
+    try {
+      print('hii');
+      _salesList = [];
+      final response = await api.getSalesListAdmin(userId);
+      var data = jsonDecode(response.body);
+      if (data["status"].toString().toLowerCase() == "success") {
+        List<dynamic> services = data["data"];
+
+        _salesList = services.map((e) => SalePostModel.fromJson(e)).toList();
       } else {
         //showCustomToast(context,  "can not get service error,${data["message"] ?? "error"}",);
         //Get.snackbar("Login Failed", data["message"] ?? "error");
