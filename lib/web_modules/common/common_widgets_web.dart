@@ -53,6 +53,7 @@ class _CommonFooterState extends State<CommonFooter> {
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
+    planController.getCompanyDetails();
   }
 
   Future<void> launchWebsite(String url) async {
@@ -496,7 +497,7 @@ class _CommonHeaderState extends State<CommonHeader> {
         Get.toNamed(route);
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: Text(
           title,
           style: const TextStyle(
@@ -546,160 +547,162 @@ class _CommonHeaderState extends State<CommonHeader> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Material(
-      elevation: 2,
-      color: Colors.white,
-      child: Container(
-        height: 85,
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Row(
-          children: [
-
-            Row(
-              children: [
-                Container(
-                  height: 55,
-                  width: 55,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: Colors.grey.shade100,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
-                    child: Image.network(
-                      loginController.appLogoUrl ?? "",
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                      const Icon(Icons.image),
+    return SafeArea(
+      child: Material(
+        elevation: 2,
+        color: Colors.white,
+        child: Container(
+          height: 85,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            children: [
+      
+              Row(
+                children: [
+                  Container(
+                    height: 55,
+                    width: 55,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      color: Colors.grey.shade100,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Image.network(
+                        loginController.appLogoUrl ?? "",
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.image),
+                      ),
                     ),
                   ),
-                ),
-
-                const SizedBox(width: 12),
-
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      
+                  const SizedBox(width: 12),
+      
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppConstants.appName,
+                        style: const TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Dental Services Platform",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+      
+              const Spacer(),
+      
+              if (width > 900)
+                Row(
                   children: [
-                    Text(
-                      AppConstants.appName,
-                      style: const TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
+                    navItem("Home", "/"),
+                    navItem("Jobs", "/jobListJobSeekersWebPage"),
+                    navItem("About Us", "/aboutUsWebPage"),
+                    navItem("Contact", "/contactWebPage"),
+                  ],
+                ),
+      
+              if (width > 900) const Spacer(),
+      
+              if (width > 1200)
+                Row(
+                  children: [
+      
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.email_outlined,
+                              color: AppColors.primary, size: 16),
+                          const SizedBox(width: 6),
+                          Text(
+                            planController.emailController.text,
+                            style: AppTextStyles.caption(context),
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
-                      "Dental Services Platform",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
+      
+                    const SizedBox(width: 10),
+      
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.call_outlined,
+                              color: AppColors.primary, size: 16),
+                          const SizedBox(width: 6),
+                          Text(
+                            planController.phoneController.text,
+                            style: AppTextStyles.caption(context),
+                          ),
+                        ],
+                      ),
+                    ),
+      
+                    const SizedBox(width: 12),
+      
+                    socialIcon(
+                      Icons.facebook,
+                          () => launchWebsite("https://facebook.com"),
+                    ),
+      
+                    socialIcon(
+                      Icons.camera_alt_outlined,
+                          () => launchWebsite("https://instagram.com"),
+                    ),
+      
+                    socialIcon(
+                      Icons.alternate_email,
+                          () => launchWebsite("https://youtube.com"),
                     ),
                   ],
                 ),
-              ],
-            ),
-
-            const Spacer(),
-
-            if (width > 900)
-              Row(
-                children: [
-                  navItem("Home", "/"),
-                  navItem("Jobs", "/jobListJobSeekersWebPage"),
-                  navItem("About Us", "/aboutUsWebPage"),
-                  navItem("Contact", "/contactWebPage"),
-                ],
-              ),
-
-            if (width > 900) const Spacer(),
-
-            if (width > 1200)
-              Row(
-                children: [
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.email_outlined,
-                            color: AppColors.primary, size: 16),
-                        const SizedBox(width: 6),
-                        Text(
-                          planController.emailController.text,
-                          style: AppTextStyles.caption(context),
-                        ),
-                      ],
-                    ),
+      
+              const SizedBox(width: 10),
+      
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
                   ),
-
-                  const SizedBox(width: 10),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.call_outlined,
-                            color: AppColors.primary, size: 16),
-                        const SizedBox(width: 6),
-                        Text(
-                          planController.phoneController.text,
-                          style: AppTextStyles.caption(context),
-                        ),
-                      ],
-                    ),
+                ),
+                onPressed: () {
+                  Get.to(() => WebLoginPage());
+                },
+                child: Text(
+                  "Login/Register",
+                  style: AppTextStyles.caption(
+                    context,
+                    color: Colors.white,
                   ),
-
-                  const SizedBox(width: 12),
-
-                  socialIcon(
-                    Icons.facebook,
-                        () => launchWebsite("https://facebook.com"),
-                  ),
-
-                  socialIcon(
-                    Icons.camera_alt_outlined,
-                        () => launchWebsite("https://instagram.com"),
-                  ),
-
-                  socialIcon(
-                    Icons.alternate_email,
-                        () => launchWebsite("https://youtube.com"),
-                  ),
-                ],
-              ),
-
-            const SizedBox(width: 10),
-
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              onPressed: () {
-                Get.to(() => WebLoginPage());
-              },
-              child: Text(
-                "Login/Register",
-                style: AppTextStyles.caption(
-                  context,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1130,4 +1133,87 @@ Widget gradientButton({
       ),
     ),
   );
+}
+
+class PostAdsBannerWeb extends StatelessWidget {
+  const PostAdsBannerWeb({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+    final bool isMobile = width < 700;
+    return InkWell(
+      onTap: () => Get.toNamed('/salePostWebPage'),
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 16 : 24,
+          vertical: isMobile ? 16 : 20,
+        ),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppColors.primary, AppColors.secondary],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.25),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(Icons.campaign_outlined, color: Colors.white, size: 26),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Post your Ads",
+                    style: AppTextStyles.subtitle(context, color: Colors.white),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "List items for sale and reach clinics, shops & labs on our scrolling ads.",
+                    style: AppTextStyles.caption(context, color: Colors.white.withValues(alpha: 0.9)),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30)),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Post Now",
+                    style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.arrow_forward, size: 14, color: AppColors.primary),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

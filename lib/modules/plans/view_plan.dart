@@ -2662,16 +2662,12 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                     child: Center(
                                                                                       child:
                                                                                           GetBuilder<
-                                                                                            PlanController
-                                                                                          >(
+                                                                                            PlanController>(
                                                                                             builder:
-                                                                                                (
-                                                                                                  controller,
-                                                                                                ) {
+                                                                                                (controller) {
                                                                                                   return GestureDetector(
                                                                                                     onTap: () async {
-                                                                                                      if (userType ==
-                                                                                                          "superAdmin") {
+                                                                                                      if (userType == "superAdmin") {
                                                                                                         print(
                                                                                                           'dfid${plan.postImagesPlanId.toString()}name${plan.postPlanName.toString()}price${plan.price.toString()}dura${plan.duration.toString()}',
                                                                                                         );
@@ -2741,10 +2737,8 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                             isBasePlanActive = false;
                                                                                                           }
                                                                                                         }
-                                                                                                        if (isBasePlanActive ==
-                                                                                                                true &&
-                                                                                                            isposterPlanActive ==
-                                                                                                                true) {
+                                                                                                        if (isBasePlanActive == true &&
+                                                                                                            isposterPlanActive == true) {
                                                                                                           showSuccessDialog(
                                                                                                             context,
                                                                                                             title: "Alert",

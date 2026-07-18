@@ -667,6 +667,18 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                             ),
                             SizedBox(height: size*0.02,),
 
+                            _RevealIn(
+                              delay: const Duration(milliseconds: 100),
+                              child: Column(
+                                children: [
+                                  postAdsBannerMobile(context),
+                                  SizedBox(height: size * 0.02),
+                                  scrollingAdsBannerMobile(context),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: size*0.02,),
+
                             GetBuilder<LoginController>(
                                 builder: (controller) {
                                   return _RevealIn(

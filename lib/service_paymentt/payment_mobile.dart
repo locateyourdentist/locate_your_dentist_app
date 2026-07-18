@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'payment_stub.dart';
+import 'package:locate_your_dentist/utills/constants.dart';
 
-class PaymentServiceMobile extends PaymentService {
+class PaymentService {
   Razorpay? _razorpay;
 
   void initRazorpay({
@@ -16,7 +16,6 @@ class PaymentServiceMobile extends PaymentService {
     _razorpay!.on(Razorpay.EVENT_EXTERNAL_WALLET, onWallet);
   }
 
-  @override
   void startPayment(
       double amount, {
         String? name,
@@ -26,7 +25,7 @@ class PaymentServiceMobile extends PaymentService {
         String? mobileNumber,
       }) {
     var options = {
-      'key': 'YOUR_RAZORPAY_KEY',
+      'key': AppConstants.razorPayKey,
       'amount': amount * 100,
       'name': name,
       'description': '$planType - $planName',

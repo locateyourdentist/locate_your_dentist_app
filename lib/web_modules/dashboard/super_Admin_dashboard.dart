@@ -232,30 +232,38 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                       Row(
                                                         children: [
                                                           Expanded(
-                                                            child: StatCard(
-                                                              title:
-                                                                  "Total Users",
-                                                              value: total
-                                                                  .toString(),
-                                                              icon:
-                                                                  Icons.people,
-                                                              color:
-                                                                  Colors.blue,
+                                                            child:GetBuilder<LoginController>(
+                                                                builder: (controller) {
+                                                                  return StatCard(
+                                                                  title:
+                                                                      "Total Users",
+                                                                  value: total
+                                                                      .toString(),
+                                                                  icon:
+                                                                      Icons.people,
+                                                                  color:
+                                                                      Colors.blue,
+                                                                );
+                                                              }
                                                             ),
                                                           ),
                                                           const SizedBox(
                                                             width: 10,
                                                           ),
                                                           Expanded(
-                                                            child: StatCard(
-                                                              title:
-                                                                  "Active Users",
-                                                              value: active
-                                                                  .toString(),
-                                                              icon: Icons
-                                                                  .verified_user,
-                                                              color:
-                                                                  Colors.green,
+                                                            child: GetBuilder<LoginController>(
+                                                                builder: (controller) {
+                                                                  return StatCard(
+                                                                  title:
+                                                                      "Active Users",
+                                                                  value: active
+                                                                      .toString(),
+                                                                  icon: Icons
+                                                                      .verified_user,
+                                                                  color:
+                                                                      Colors.green,
+                                                                );
+                                                              }
                                                             ),
                                                           ),
                                                         ],
@@ -365,6 +373,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                       ),
                                     ),
                                     const SizedBox(height: 40),
+                                    const PostAdsBannerWeb(),
+                                    const SizedBox(height: 24),
                                     Container(
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 15,
@@ -541,12 +551,28 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Widget clinicCard(ProfileModel clinic, BuildContext context) {
-    String firstImage = clinic.images.firstWhere(
-      (img) =>
-          img.toLowerCase().endsWith('.jpg') ||
-          img.toLowerCase().endsWith('.png'),
+    // String firstImage = clinic.images.firstWhere(
+    //   (img) =>
+    //       img.toLowerCase().endsWith('.jpg') ||
+    //       img.toLowerCase().endsWith('.png'),
+    //   orElse: () => "",
+    // );
+    String firstImage = clinic.logoImages.firstWhere(
+          (img) => img.toLowerCase().endsWith('.jpg') ||
+          img.toLowerCase().endsWith('.png') ||
+          img.toLowerCase().endsWith('.jpeg')||
+              img.toLowerCase().endsWith('.webg'),
       orElse: () => "",
     );
+    if (firstImage.isEmpty) {
+      firstImage = clinic.images.firstWhere(
+            (img) => img.toLowerCase().endsWith('.jpg') ||
+            img.toLowerCase().endsWith('.png') ||
+            img.toLowerCase().endsWith('.jpeg')||
+            img.toLowerCase().endsWith('.webg'),
+        orElse: () => "",
+      );
+    }
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0.95, end: 1.0),
       duration: const Duration(milliseconds: 400),

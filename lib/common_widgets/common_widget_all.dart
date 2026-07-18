@@ -1047,3 +1047,131 @@ Widget buildActionButton({
   );
 }
 
+Widget postAdsBannerMobile(BuildContext context) {
+  final double size = MediaQuery.of(context).size.width;
+  return InkWell(
+    onTap: () => Get.toNamed('/salePostPage'),
+    borderRadius: BorderRadius.circular(18),
+    child: Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.primary, AppColors.secondary],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.18),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(Icons.campaign_outlined, color: Colors.white, size: size * 0.06),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Post your Ads",
+                  style: AppTextStyles.body(context, color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "List items for sale and reach clinics, shops & labs.",
+                  style: AppTextStyles.caption(context, color: Colors.white.withOpacity(0.9)),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30)),
+            child: const Icon(Icons.arrow_forward, size: 16, color: AppColors.primary),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget scrollingAdsBannerMobile(BuildContext context) {
+  final double size = MediaQuery.of(context).size.width;
+  return InkWell(
+    onTap: () => Get.toNamed('/createPostImages'),
+    borderRadius: BorderRadius.circular(18),
+    child: Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFF59E0B), Color(0xFFFFC15E)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.18),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(Icons.view_carousel_outlined, color: Colors.white, size: size * 0.06),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Scrolling Ads",
+                  style: AppTextStyles.body(context, color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Create a scrolling ads post for the homepage.",
+                  style: AppTextStyles.caption(context, color: Colors.white.withOpacity(0.9)),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30)),
+            child: const Icon(Icons.arrow_forward, size: 16, color: Color(0xFFF59E0B)),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+

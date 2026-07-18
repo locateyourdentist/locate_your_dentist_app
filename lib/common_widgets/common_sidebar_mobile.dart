@@ -86,7 +86,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
           {"title": "Lab Profile", "page": "/mechanicDashboard"},
           {"title": "Edit Profile", "page": "/clinicEditProfile"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
-          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostListPage"},
           {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
           {"title": "Services", "page": "/viewServiceList"},
           {"title": "Change Password", "page": "/changePasswordPage"},
@@ -101,7 +101,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
           {"title": "Add admin", "page": "/registerPage"},
           {"title": "User List", "page": "/userTypeListPage"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
-          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostListPage"},
           {"title": "Reports", "page": "/viewReportPage"},
           {"title": "Create Scrolling Ads Post", "page": "/createPostImages"},
           {"title": "Create Notification", "page": "/createNotificationPage"},
@@ -122,7 +122,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
         return [
           {"title": "Dashboard", "page": "/superAdminDashboard"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
-          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostListPage"},
           {"title": "User List", "page": "/userTypeListPage"},
           {"title": "Change Password", "page": "/changePasswordPage"},
           {"title": "Delete Account", "page": "/DeleteAccount"},
@@ -140,7 +140,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
           multipleBranches
               ? {"title": "My Subscription", "page": "/branchListPage"}
               : {"title": "My Subscription", "page": "/viewPlanPage"},
-          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostListPage"},
           {"title": "Sales List Page", "page": "/salePostListWebPage"},
           {"title": "My Purchases", "page": "/viewInvoiceListPage"},
           {"title": "Services", "page": "/viewServiceList"},
@@ -157,7 +157,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
         return [
           {"title": "Shop Profile", "page": "/mechanicDashboard"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
-          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostListPage"},
           {"title": "My Purchases", "page": "/viewInvoiceListPage"},
           {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
           {"title": "Products", "page": "/viewServiceList"},
@@ -175,7 +175,7 @@ class SettingsSidebarDrawer extends StatelessWidget {
           {"title": "Profile", "page": "/mechanicDashboard"},
           {"title": "Edit Profile", "page": "/clinicEditProfile"},
           {"title": "My Subscription", "page": "/viewPlanPage"},
-          {"title": "Sales Instrumental Page", "page": "/salePostPage"},
+          {"title": "Sales Instrumental Page", "page": "/salePostListPage"},
           {"title": "My Purchases", "page": "/viewInvoiceListPage"},
           {"title": "Job/Webinars", "page": "/viewJobWebinarPage"},
           {"title": "Services", "page": "/viewServiceList"},

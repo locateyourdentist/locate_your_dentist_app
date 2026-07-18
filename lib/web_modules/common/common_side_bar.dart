@@ -96,6 +96,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Create Notification", "page": "/notificationWebPage"},
           {"title": "Create Plan", "page": "/createPlanPageWeb"},
           {"title": "Add JobCategory", "page": "/jobCategoryWeb"},
+          {"title": "WhatsApp Templates", "page": "/whatsappTemplateManagementPage"},
           {"title": "Settings", "page": "/settingsWebPage"},
           {"title": "Feedback Forms", "page": "/ViewFeedbackFormsPage"},
           {"title": "Add Legal Pages", "page": "/addPrivacyPolicyPage"},
@@ -391,6 +392,9 @@ class _AdminSideBarState extends State<AdminSideBar> {
 
       case "Add JobCategory":
         return Icons.category_outlined;
+
+      case "WhatsApp Templates":
+        return Icons.chat_outlined;
 
       case "Add Legal Pages":
         return Icons.gavel_outlined;

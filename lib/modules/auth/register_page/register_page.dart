@@ -30,15 +30,29 @@ class _RegisterPageState extends State<RegisterPage> {
   String? selectedStateCode;
   Map<String, dynamic> data = {};
   final jobController=Get.put(JobController());
-  final allItems = [
-    "admin",
-    "superAdmin",
-    "Dental Clinic",
-    "Dental Lab",
-    "Dental Shop",
-    "Dental Mechanic",
-    "Job Seekers",
-    "Dental Consultant"
+
+  // final allItems = [
+  //   "admin",
+  //   "superAdmin",
+  //   "Dental Clinic",
+  //   "Dental Lab",
+  //   "Dental Shop",
+  //   "Dental Mechanic",
+  //   "Job Seekers",
+  //   "Dental Consultant"
+  // ];
+  final List<Map<String, String>> allItems = [
+    {"key": "admin", "value": "Admin"},
+    {"key": "superAdmin", "value": "Super Admin"},
+    {"key": "dentist", "value": "Dental Clinic"},
+    {"key": "dentalLab", "value": "Dental Lab"},
+    {"key": "dentalShop", "value": "Dental Shop"},
+    {"key": "dentalMechanic", "value": "Dental Mechanic"},
+    {"key": "Dental jobSeekers", "value": "Job Seekers"},
+    {
+      "key": "dental Professionals",
+      "value": "Dental Consultant"
+    },
   ];
   String uploadImages(String userType) {
     String imageText;
@@ -286,15 +300,30 @@ class _RegisterPageState extends State<RegisterPage> {
     print('dgsw$userType');
     //final adminItems = allItems;
     // final otherItems = allItems.where((e) => e != "admin" && e != "superAdmin").toList();
-    List<String> dropdownItems;
+    // List<String> dropdownItems;
+    // if (userType == "superAdmin") {
+    //   dropdownItems = allItems;
+    // } else if (userType == "admin") {
+    //   dropdownItems =
+    //       allItems.where((e) => e != "superAdmin").toList();
+    // } else {
+    //   dropdownItems =
+    //       allItems.where((e) => e != "admin" && e != "superAdmin").toList();
+    // }
+    List<Map<String, String>> dropdownItems;
+
     if (userType == "superAdmin") {
       dropdownItems = allItems;
     } else if (userType == "admin") {
-      dropdownItems =
-          allItems.where((e) => e != "superAdmin").toList();
+      dropdownItems = allItems
+          .where((e) => e["key"] != "superAdmin")
+          .toList();
     } else {
-      dropdownItems =
-          allItems.where((e) => e != "admin" && e != "superAdmin").toList();
+      dropdownItems = allItems
+          .where((e) =>
+      e["key"] != "admin" &&
+          e["key"] != "superAdmin")
+          .toList();
     }
     return Scaffold(
       backgroundColor: const Color(0xFFFDFDFD),
@@ -439,22 +468,33 @@ class _RegisterPageState extends State<RegisterPage> {
                                       SizedBox(height: size * 0.03),
                                       // if(userType!='superAdmin')
                                       CustomDropdownField(
-                                        hint: "Select UserType",
-                                        fillColor: Colors.grey[100],
-                                        borderColor: AppColors.white,
-                                        items: dropdownItems,
+                                        hint: "User Type",
+                                        items: dropdownItems
+                                            .map((e) => e["value"]!)
+                                            .toList(),
                                         selectedValue: loginController.selectedUserType,
-                                        onChanged: (value) {
+                                        onChanged: (v) {
                                           setState(() {
-                                            loginController.selectedUserType = value;
-                                            print('Selected UserType: ${loginController.selectedUserType}');
+                                            loginController.selectedUserType = v;
                                           });
                                         },
                                       ),
+                                      // CustomDropdownField(
+                                      //   hint: "Select UserType",
+                                      //   items: dropdownItems
+                                      //       .map((e) => e["value"]!)
+                                      //       .toList(),
+                                      //   selectedValue: loginController.selectedUserType,
+                                      //   onChanged: (v) {
+                                      //     setState(() {
+                                      //       loginController.selectedUserType = v;
+                                      //     });
+                                      //   },
+                                      // ),
                                       if (loginController.selectedUserType != null &&
                                           loginController.selectedUserType!.isNotEmpty&&loginController.selectedUserType !='Job Seekers')
                                         Column(children: [
-                                          SizedBox(height: size * 0.01),
+                                          SizedBox(height: size * 0.03),
                                           // if(loginController.selectedUserType !='Job Seekers')
                                           CustomTextField(
                                             hint: loginController.selectedUserType == 'Dental Shop'? "College Name":"${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
@@ -502,7 +542,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                               listItemStyle: AppTextStyles.caption(context, color: Colors.black),),
                                             items: controller.states.map((s) => s.toString()).toList(),
                                             initialItem: controller.states.contains(controller.selectedState) ? controller.selectedState : null,
-                                            onChanged: (val) {
+                                            onChanged: (val)async {
                                               if (val != null) {
                                                 controller.selectedState = val;
                                                 controller.districts.clear();
@@ -511,7 +551,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 controller.selectedVillage = null;
                                                 final state = controller.states.firstWhere((s) => s == val);
                                                 print('state  selected$state');
-                                                controller.fetchDistricts(state.toString());
+                                              await  controller.fetchDistricts(state.toString());
                                                 controller.update();
                                               }
                                             },
@@ -542,7 +582,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 width: 1.5,
                                               ),
                                             ),
-                                            onChanged: (val) {
+                                            onChanged: (val) async{
                                               if (val != null) {
                                                 controller.selectedDistrict = val;
                                                 controller.talukas.clear();
@@ -550,8 +590,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 controller.selectedVillage = null;
                                                 final district = controller.districts.firstWhere((d) => d == val);
                                                 print('sub district selected$district');
-                                                //controller.fetchTalukas(district.toString());
-                                                controller.fetchTalukas(district);
+                                              await  controller.fetchTalukas([district]);
                                                 controller.update();
                                               }
                                             },

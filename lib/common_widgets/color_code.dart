@@ -18,11 +18,11 @@ class AppColors {
  // static const Color secondary = Color(0xFF00BFA5);
   //static const Color primary = Color(0xFF0F7EF5);
   static const Color secondary1 = Color(0xFF12D0C8);
-  // static const Color primary = Color(0xff0A3D72);
-  // static const Color secondary = Color(0xff0A3D72);
-  //
-  static const Color primary = Color(0xFF052A6E);
-  static const Color secondary = Color(0xFF052A6E);
+  static const Color primary = Color(0xff2596be);
+  static const Color secondary = Color(0xff016ac1);
+
+  //static const Color primary = Color(0xFF052A6E);
+  //static const Color secondary = Color(0xFF052A6E);
 
   //static const Color secondary = Color(0xFF16D5C2);
   // Text colors

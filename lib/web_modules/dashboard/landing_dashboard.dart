@@ -404,8 +404,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                 borderRadius:  BorderRadius.vertical(top: Radius.circular(20)),
                                 child: (firstImage.isNotEmpty &&
                                     (isAdminUser ||
-                                        (planActive == true &&
-                                            clinic.details["plan"]?["basePlan"]?["details"]?["images"] == true)))
+                                        (clinic.details["plan"]?["basePlan"]?["details"]?["images"] == true)))
                                     ? Image.network(
                                     firstImage,
                                     height:size < 700 ? (130) : 300.0,
@@ -671,7 +670,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                   Positioned(
                                     left: 20,
                                     right: 20,
-                                    bottom: isMobile ? -240 :size>600? -30:-90,
+                                    bottom: isMobile ? -230 :size>600? -30:-90,
                                     child: Center(
                                       child: _RevealIn(
                                         offsetY: 36,
@@ -1117,12 +1116,10 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                   ),
                                                   onPressed: () async{
                                                     Api.userInfo.write('sUserType1', 'Dental Clinic',);
-                                                    await loginController.getProfileDetails('Dental Clinic', '', [], [],[], 'true', '', '', '', '',
-                                                      context,);
+                                                    await loginController.getProfileDetails('Dental Clinic', '', [], [],[], 'true', '', '', '', '', context);
                                                     // Get.toNamed('/userTypeListWeb');
                                                     Get.toNamed('/viewPatientsListWeb');
-
-                                                  },
+                                                    },
                                                   icon: Text(
                                                     "View All",
                                                     style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.bold),
@@ -1144,14 +1141,12 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                           shrinkWrap: true,
                                                           physics: const NeverScrollableScrollPhysics(),
                                                           itemCount: loginController.profileList.length > 10
-                                                              ? 10
-                                                              : loginController.profileList.length,
+                                                              ? 10 : loginController.profileList.length,
                                                           gridDelegate:  SliverGridDelegateWithMaxCrossAxisExtent(
                                                             maxCrossAxisExtent: 280,
                                                             mainAxisSpacing: 20,
                                                             crossAxisSpacing: 20,
                                                             childAspectRatio: size < 700 ? 0.8 : 0.8,
-
                                                             //childAspectRatio: 0.9,
                                                           ),
                                                           itemBuilder: (context, index) {
@@ -1162,9 +1157,10 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                                     horizontalOffset: 80.0,
                                                                     curve: Curves.easeOutCubic,
                                                                     child: FadeInAnimation(
-                                                                        child: EnlargeOnTapCard(child:AnimatedContainer(
-                                                                            duration: const Duration(milliseconds: 250),
-                                                                            curve: Curves.easeInOutCubic,child: clinicCard(loginController.profileList[index]))))));
+                                                                    child: EnlargeOnTapCard(child:AnimatedContainer(
+                                                                        duration: const Duration(milliseconds: 250),
+                                                                        curve: Curves.easeInOutCubic,
+                                                                        child: clinicCard(loginController.profileList[index]))))));
                                                           },
                                                         ),
                                                       );
@@ -1221,7 +1217,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                               GetBuilder<JobController>(
                                   builder: (jController) {
                                     return  SizedBox(
-                                      height:jobController.webinarListJobSeekers.length>3? 850:530,
+                                      height:jobController.webinarListJobSeekers.length>3? 850:300,
                                       child: WebinarDashboardGrid(
                                         webinarList:
                                         jobController.webinarListJobSeekers.take(6).toList(),
@@ -2066,10 +2062,7 @@ class _HeroBannerState extends State<HeroBanner>
                     ),
                   ),
                 ],
-              )
-
-              /// MOBILE VIEW
-                  : Column(
+              ) : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AnimatedText(
@@ -2118,12 +2111,12 @@ Widget _buildTransparentLoginCard(BuildContext context) {
       ? "iOS"
       : "Unknown";
   return ClipRRect(
-    borderRadius: BorderRadius.circular(24),
+    borderRadius: BorderRadius.circular(14),
     child: BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
       child: Container(
     width: 400,
-    padding: const EdgeInsets.all(24),
+    padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
       gradient: LinearGradient(
         begin: Alignment.topLeft,
@@ -2133,7 +2126,7 @@ Widget _buildTransparentLoginCard(BuildContext context) {
           Colors.white.withOpacity(0.08),
         ],
       ),
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(14),
       border: Border.all(
         color: Colors.white.withOpacity(0.3),
         width: 1.5,
@@ -2148,166 +2141,163 @@ Widget _buildTransparentLoginCard(BuildContext context) {
     ),
     child: Form(
         key: _formKeyLoginFront,
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Welcome Back",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                "Login to your account",
-                style: TextStyle(color: Colors.white70, fontSize: 16),
-              ),
-              const SizedBox(height: 30),
-
-
-              TextField(
-                controller: loginController.emailController,
-                style:  const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: "Email",
-                  hintStyle: AppTextStyles.caption(context,color: AppColors.white),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none),
-                  prefixIcon:  const Icon(Icons.email, color: Colors.white),
+        child: SingleChildScrollView(
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Welcome Back",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold),
                 ),
-              ),
-              const SizedBox(height: 20),
-
-              // Password field
-              TextField(
-                controller: loginController.passwordController,
-                obscureText: _obscurePassword,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  hintStyle: AppTextStyles.caption(
-                    context,
-                    color: AppColors.white,
+                const SizedBox(height: 10),
+                const Text(
+                  "Login to your account",
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                ),
+                const SizedBox(height: 30),
+          
+          
+                TextField(
+                  controller: loginController.emailController,
+                  style:  const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: "Email",
+                    hintStyle: AppTextStyles.caption(context,color: AppColors.white),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.1),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none),
+                    prefixIcon:  const Icon(Icons.email, color: Colors.white),
                   ),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.lock,
-                    color: Colors.white,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: loginController.passwordController,
+                  obscureText: _obscurePassword,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: "Password",
+                    hintStyle: AppTextStyles.caption(
+                      context,
+                      color: AppColors.white,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.1),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.lock,
                       color: Colors.white,
                     ),
-                    onPressed: () {
-                      _obscurePassword = !_obscurePassword;
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                    onPressed: () {
-                      Get.toNamed('/forgotPasswordEmailWeb');
-                    },
-                    child:  Text("Forgot Password?",
-                        style: AppTextStyles.caption(context,color: AppColors.white))),
-              ),
-              const SizedBox(height: 20),
-
-              // Login button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () async{
-
-                    if (_formKeyLoginFront.currentState!.validate()) {
-                      String email = loginController.emailController.text.trim();
-                      String password = loginController.passwordController.text;
-
-                      if (email.isEmpty || password.isEmpty) {
-                        showCustomToast(context, "Please enter email and password",backgroundColor: AppColors.secondary);
-
-                        // ScaffoldMessenger
-                        //     .of(context)
-                        //     .showSnackBar(
-                        //   const SnackBar(
-                        //       content: Text(
-                        //           "Please enter email and password")),
-                        // );
-                        return;
-                      }
-                      await loginController.login(
-                          loginController.emailController.text.toString(),
-                          loginController.passwordController.text.toString(),platform,context);
-                      loginController.emailController.clear();
-                      loginController.passwordController.clear();
-                    } else {
-                      showCustomToast(context,  "Invalid email or password",backgroundColor: AppColors.secondary);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        _obscurePassword = !_obscurePassword;
+                      },
                     ),
                   ),
-                  child:  Text(
-                    "Login",
-                    style:
-                    AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+          
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                      onPressed: () {
+                        Get.toNamed('/forgotPasswordEmailWeb');
+                      },
+                      child:  Text("Forgot Password?",
+                          style: AppTextStyles.caption(context,color: AppColors.white))),
+                ),
+                const SizedBox(height: 20),
+          
+                // Login button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () async{
+          
+                      if (_formKeyLoginFront.currentState!.validate()) {
+                        String email = loginController.emailController.text.trim();
+                        String password = loginController.passwordController.text;
+          
+                        if (email.isEmpty || password.isEmpty) {
+                          showCustomToast(context, "Please enter email and password",backgroundColor: AppColors.secondary);
+          
+                          // ScaffoldMessenger
+                          //     .of(context)
+                          //     .showSnackBar(
+                          //   const SnackBar(
+                          //       content: Text(
+                          //           "Please enter email and password")),
+                          // );
+                          return;
+                        }
+                        await loginController.login(loginController.emailController.text.toString(),loginController.passwordController.text.toString(),platform,context);
+                        loginController.emailController.clear();
+                        loginController.passwordController.clear();
+                      } else {
+                        showCustomToast(context,  "Invalid email or password",backgroundColor: AppColors.secondary);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    child:  Text(
+                      "Login",
+                      style:
+                      AppTextStyles.caption(context,color: AppColors.primary,fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-
-              // Divider
-              Row(
-                children: [
-                  Expanded(
-                      child: Divider(color: Colors.white.withOpacity(0.4))),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text("OR",
+                const SizedBox(height: 20),
+          
+                Row(
+                  children: [
+                    Expanded(
+                        child: Divider(color: Colors.white.withOpacity(0.4))),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text("OR",
+                        style: AppTextStyles.caption(context,color: AppColors.white),
+                      ),),
+                    Expanded(
+                        child: Divider(color: Colors.white.withOpacity(0.4))),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account? ",
                       style: AppTextStyles.caption(context,color: AppColors.white),
-                    ),),
-                  Expanded(
-                      child: Divider(color: Colors.white.withOpacity(0.4))),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't have an account? ",
-                    style: AppTextStyles.caption(context,color: AppColors.white),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.toNamed('/registerPageWeb');
-                    },
-                    child:  Text("Sign Up", style: AppTextStyles.body(context,fontWeight:FontWeight.bold,color: AppColors.white),
-                    ),)
-                ],
-              ),
-            ])),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed('/registerPageWeb');
+                      },
+                      child:  Text("Sign Up", style: AppTextStyles.body(context,fontWeight:FontWeight.bold,color: AppColors.white),
+                      ),)
+                  ],
+                ),
+              ]),
+        )),
       ),
     ),
   );
@@ -2630,7 +2620,6 @@ class AnimatedText extends StatelessWidget {
           },
           child: Text(
             char,
-
             style: GoogleFonts.poppins(
               color: AppColors.white,
               fontSize: isMobile ? 22 : width * 0.022,
@@ -3127,7 +3116,10 @@ class AllServicesDialog extends StatelessWidget {
               onPressed: (){
                 Navigator.pop(context);
               },
-              child: const Text("Close"),
+              child:  Text("Close" , style: AppTextStyles.body(
+                context,
+                color: Colors.black,
+              ),),
             )
 
           ],
@@ -3146,8 +3138,7 @@ Widget _buildMobile(BuildContext context) {
       borderRadius: BorderRadius.circular(20),
       gradient: LinearGradient(
         colors: [
-          Color(0xff042347),
-          Color(0xff0A3D72),
+         AppColors.primary,AppColors.secondary
         ],
       ),
     ),
@@ -3206,39 +3197,40 @@ Widget _buildMobile(BuildContext context) {
             ),
 
             const SizedBox(height: 40),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                side: const BorderSide(color: Colors.white30),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(35),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  side: const BorderSide(color: Colors.white30),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 22,
+                  ),
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                  vertical: 22,
+                onPressed: () {
+                  Get.toNamed('/viewPatientsListWeb');
+
+                },
+                icon: Text(
+                  "Search Nearby Dental Clinics",
+                  style: AppTextStyles.body(
+                    context,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (_) => const AllServicesDialog(),
-                );
-              },
-              icon: Text(
-                "View All Services",
-                style: AppTextStyles.body(
-                  context,
-                  color: Colors.white,
-                ),
-              ),
-              label: const CircleAvatar(
-                radius: 15,
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.arrow_forward,
-                  color: Colors.black,
-                  size: 18,
+                label: const CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.arrow_forward,
+                    color: Colors.black,
+                    size: 18,
+                  ),
                 ),
               ),
             )

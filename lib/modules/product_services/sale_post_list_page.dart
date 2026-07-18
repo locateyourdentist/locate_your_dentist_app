@@ -49,11 +49,7 @@ class _HoverLiftState extends State<_HoverLift> {
   }
 }
 
-/// Placeholder row shape for a sale listing.
-///
-/// TODO: once a "list sale posts" API exists, replace [_samplePosts] with a
-/// real fetch (e.g. inside initState / a RefreshIndicator) and drop the
-/// sample data below.
+
 class _SalePostRow {
   final String message;
   final String price;
@@ -63,9 +59,6 @@ class _SalePostRow {
   final String postedAgo;
   final String imageAsset;
   final List<PickedSaleImage> pickedImages;
-  // TODO: once the real "list sale posts" API exists, every post will come
-  // back with a list of hosted image URLs like this — swap the sample data
-  // below for the API response and this becomes the primary image source.
   final List<String> imageUrls;
 
   const _SalePostRow({
@@ -223,7 +216,6 @@ class _SalePostListPageState extends State<SalePostListPage> {
         bottom: false,
         child: Column(
           children: [
-            /// GRADIENT HEADER
             Container(
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 22),
@@ -361,156 +353,169 @@ class _SalePostListPageState extends State<SalePostListPage> {
                                   BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 12, offset: const Offset(0, 5)),
                                 ],
                               ),
-                              child: Row(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  post.pickedImages.isNotEmpty
-                                      ? Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            for (final img in post.pickedImages)
-                                              Padding(
-                                                padding: const EdgeInsets.only(right: 6),
-                                                child: _HoverLift(
-                                                  liftScale: 1.06,
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  child: GestureDetector(
-                                                    onTap: () => _openSaleImage(img),
-                                                    child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(12),
-                                                      child: img.bytes != null
-                                                          ? Image.memory(img.bytes!, width: 50, height: 50, fit: BoxFit.cover)
-                                                          : img.file != null
-                                                              ? Image.file(img.file!, width: 50, height: 50, fit: BoxFit.cover)
-                                                              : Container(
-                                                                  width: 50,
-                                                                  height: 50,
-                                                                  color: const Color(0xFFF1F3F6),
-                                                                  child: const Icon(Icons.image_outlined, color: Colors.grey),
-                                                                ),
-                                                    ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primary.withOpacity(0.08),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          post.userType,
+                                          style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Text(post.postedAgo, style: AppTextStyles.caption(context, color: Colors.grey.shade500)),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    post.message,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  if (post.pickedImages.isNotEmpty)
+                                    SizedBox(
+                                      height: 96,
+                                      child: ListView(
+                                        scrollDirection: Axis.horizontal,
+                                        children: [
+                                          for (final img in post.pickedImages)
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 8),
+                                              child: _HoverLift(
+                                                liftScale: 1.03,
+                                                borderRadius: BorderRadius.circular(12),
+                                                child: GestureDetector(
+                                                  onTap: () => _openSaleImage(img),
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                    child: img.bytes != null
+                                                        ? Image.memory(img.bytes!, width: 96, height: 96, fit: BoxFit.cover)
+                                                        : img.file != null
+                                                            ? Image.file(img.file!, width: 96, height: 96, fit: BoxFit.cover)
+                                                            : Container(
+                                                                width: 96,
+                                                                height: 96,
+                                                                color: const Color(0xFFF1F3F6),
+                                                                child: const Icon(Icons.image_outlined, color: Colors.grey),
+                                                              ),
                                                   ),
                                                 ),
                                               ),
-                                          ],
-                                        )
-                                      : post.imageUrls.isNotEmpty
-                                          ? Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                for (final url in post.imageUrls)
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(right: 6),
-                                                    child: _HoverLift(
-                                                      liftScale: 1.06,
-                                                      borderRadius: BorderRadius.circular(12),
-                                                      child: GestureDetector(
-                                                        onTap: () => _openSaleImageUrl(url),
-                                                        child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(12),
-                                                          child: Image.network(
-                                                            url,
-                                                            width: 50,
-                                                            height: 50,
-                                                            fit: BoxFit.cover,
-                                                            loadingBuilder: (context, child, progress) {
-                                                              if (progress == null) return child;
-                                                              return Container(
-                                                                width: 50,
-                                                                height: 50,
-                                                                color: const Color(0xFFF1F3F6),
-                                                                child: const Center(
-                                                                  child: SizedBox(
-                                                                    width: 16,
-                                                                    height: 16,
-                                                                    child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
-                                                                  ),
-                                                                ),
-                                                              );
-                                                            },
-                                                            errorBuilder: (context, error, stackTrace) => Container(
-                                                              width: 50,
-                                                              height: 50,
-                                                              color: const Color(0xFFF1F3F6),
-                                                              child: const Icon(Icons.image_outlined, color: Colors.grey),
+                                            ),
+                                        ],
+                                      ),
+                                    )
+                                  else if (post.imageUrls.isNotEmpty)
+                                    SizedBox(
+                                      height: 96,
+                                      child: ListView(
+                                        scrollDirection: Axis.horizontal,
+                                        children: [
+                                          for (final url in post.imageUrls)
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 8),
+                                              child: _HoverLift(
+                                                liftScale: 1.03,
+                                                borderRadius: BorderRadius.circular(12),
+                                                child: GestureDetector(
+                                                  onTap: () => _openSaleImageUrl(url),
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                    child: Image.network(
+                                                      url,
+                                                      width: 96,
+                                                      height: 96,
+                                                      fit: BoxFit.cover,
+                                                      loadingBuilder: (context, child, progress) {
+                                                        if (progress == null) return child;
+                                                        return Container(
+                                                          width: 96,
+                                                          height: 96,
+                                                          color: const Color(0xFFF1F3F6),
+                                                          child: const Center(
+                                                            child: SizedBox(
+                                                              width: 16,
+                                                              height: 16,
+                                                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
                                                             ),
                                                           ),
-                                                        ),
+                                                        );
+                                                      },
+                                                      errorBuilder: (context, error, stackTrace) => Container(
+                                                        width: 96,
+                                                        height: 96,
+                                                        color: const Color(0xFFF1F3F6),
+                                                        child: const Icon(Icons.image_outlined, color: Colors.grey),
                                                       ),
                                                     ),
                                                   ),
-                                              ],
-                                            )
-                                          : ClipRRect(
-                                          borderRadius: BorderRadius.circular(14),
-                                          child: Image.asset(
-                                            post.imageAsset,
-                                            width: 64,
-                                            height: 64,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) => Container(
-                                              width: 64,
-                                              height: 64,
-                                              decoration: BoxDecoration(
-                                                gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
-                                                borderRadius: BorderRadius.circular(14),
-                                              ),
-                                              child: _userTypeIcon(post.userType),
-                                            ),
-                                          ),
-                                        ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.primary.withOpacity(0.08),
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                              child: Text(
-                                                post.userType,
-                                                style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.w600),
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            Text(post.postedAgo, style: AppTextStyles.caption(context, color: Colors.grey.shade500)),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Text(
-                                          post.message,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.w600),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            Text("₹${post.price}", style: AppTextStyles.body(context, color: AppColors.primary, fontWeight: FontWeight.bold)),
-                                            if (post.negotiable) ...[
-                                              const SizedBox(width: 8),
-                                              Container(
-                                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.green.withOpacity(0.1),
-                                                  borderRadius: BorderRadius.circular(20),
                                                 ),
-                                                child: Text("Negotiable", style: AppTextStyles.caption(context, color: Colors.green, fontWeight: FontWeight.w600)),
                                               ),
-                                            ],
-                                            const Spacer(),
-                                            Icon(Icons.call, size: 14, color: Colors.grey.shade500),
-                                            const SizedBox(width: 4),
-                                            Text(post.mobileNumber, style: AppTextStyles.caption(context, color: Colors.grey.shade600)),
-                                          ],
+                                            ),
+                                        ],
+                                      ),
+                                    )
+                                  else
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(14),
+                                      child: Image.asset(
+                                        post.imageAsset,
+                                        width: double.infinity,
+                                        height: 96,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) => Container(
+                                          width: double.infinity,
+                                          height: 96,
+                                          decoration: BoxDecoration(
+                                            gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
+                                            borderRadius: BorderRadius.circular(14),
+                                          ),
+                                          child: Center(child: _userTypeIcon(post.userType)),
+                                        ),
+                                      ),
+                                    ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          "₹${post.price}",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppTextStyles.body(context, color: AppColors.primary, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      if (post.negotiable) ...[
+                                        const SizedBox(width: 8),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.withOpacity(0.1),
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                          child: Text("Negotiable", style: AppTextStyles.caption(context, color: Colors.green, fontWeight: FontWeight.w600)),
                                         ),
                                       ],
-                                    ),
+                                      const Spacer(),
+                                      Icon(Icons.call, size: 14, color: Colors.grey.shade500),
+                                      const SizedBox(width: 4),
+                                      Flexible(
+                                        child: Text(
+                                          post.mobileNumber,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: AppTextStyles.caption(context, color: Colors.grey.shade600),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

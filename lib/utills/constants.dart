@@ -1,7 +1,7 @@
 
 class AppConstants{
   static const baseUrl=
-    //'http://192.168.31.117:3000/';
+   // 'http://192.168.31.117:3000/';
    'https://locateyourdentist.onrender.com/';
   static const razorPayKey='rzp_test_RzNhGYRP9d54Ca';
   static const webFireBaseVAPID_KEY='BPIa_iU8vOaJk3MquVBrNP0ONtl1Kcf7eMhhArQTXn33d_yPxnsVxcpDulrLu5ijuifyCXZH2MFAWHy7olnTM5o';
@@ -131,5 +131,16 @@ class AppConstants{
   static const String receiverContactListUrl='receiverIdContactLists';
   static const String contactFilterSearchUrl='filterContactLists';
 
+  //whatsapp templates
+  static const String whatsappTemplateUrl='lyd/whatsapp-templates/';
+  static const String getWhatsappTemplatesUrl='get_whatsapp_templates';
+  static const String getWhatsappTemplateByIdUrl='get_whatsapp_template_byId';
+  static const String createWhatsappTemplateUrl='create_whatsapp_template';
+  static const String updateWhatsappTemplateUrl='update_whatsapp_template';
+  static const String autoSaveWhatsappTemplateUrl='autosave_whatsapp_template';
+  static const String duplicateWhatsappTemplateUrl='duplicate_whatsapp_template';
+  static const String deleteWhatsappTemplateUrl='delete_whatsapp_template';
+  static const String submitWhatsappTemplateToMetaUrl='submit_whatsapp_template_meta';
+  static const String restoreWhatsappTemplateVersionUrl='restore_whatsapp_template_version';
 
 }

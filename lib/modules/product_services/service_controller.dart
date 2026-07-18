@@ -59,7 +59,7 @@ class ServiceController extends GetxController {
       update();
     }
   }
-  Future<void> getSalesListAdmin(String userId, dynamic context) async {
+  Future<void> getSalesListAdmin(String userType,String search, dynamic context) async {
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
@@ -69,7 +69,7 @@ class ServiceController extends GetxController {
     try {
       print('hii');
       _salesList = [];
-      final response = await api.getSalesListAdmin(userId);
+      final response = await api.getSalesListAdmin(userType,search);
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> services = data["data"];

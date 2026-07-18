@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
+import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/dashboard/crop_screen.dart';
@@ -66,6 +67,37 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
   }
 
   Future<void> pickImages(BuildContext context) async {
+    bool isBasePlanActive = false;
+    bool isPosterPlanActive = false;
+    if (planController.checkPlanList.isNotEmpty) {
+      final planDetails = planController.checkPlanList[0]["details"]?["plan"];
+      isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
+      isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
+    }
+
+    if (!isBasePlanActive) {
+      showSuccessDialog(
+        context,
+        title: "Alert",
+        message: "Oops! Base plan not Activated.please activate base plan..",
+        onOkPressed: () {},
+      );
+      return;
+    }
+
+    if (!isPosterPlanActive) {
+      showSuccessDialog(
+        context,
+        title: "Poster Plan Required",
+        message:
+            "You need an active poster plan to post scrolling ads. Please choose a plan to continue.",
+        onOkPressed: () {
+          Get.toNamed('/viewPlanPageWeb');
+        },
+      );
+      return;
+    }
+
     final List<XFile> pickedImages = await picker.pickMultiImage();
     if (pickedImages == null || pickedImages.isEmpty) return;
 

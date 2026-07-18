@@ -125,4 +125,6 @@ class AppRoutes {
   static const viewInvoiceListPage='/viewInvoiceListPage';
   static const paymentPageWeb='/paymentPageWeb';
 
+  static const whatsappTemplateManagementPage='/whatsappTemplateManagementPage';
+
 }

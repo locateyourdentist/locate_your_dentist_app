@@ -180,6 +180,16 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
                       ),
                     ),
                     const SizedBox(height: 30,),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: postAdsBannerMobile(context),
+                    ),
+                    const SizedBox(height: 12,),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: scrollingAdsBannerMobile(context),
+                    ),
+                    const SizedBox(height: 20,),
                     // SizedBox(
                     //   height: size * 0.45,
                     //   child: AnimationLimiter(

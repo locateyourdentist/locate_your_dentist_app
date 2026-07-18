@@ -9,6 +9,7 @@ import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
 import 'package:locate_your_dentist/modules/product_services/sale_post_controller.dart';
 import '../../common_widgets/color_code.dart';
+import '../../common_widgets/common_bottom_navigation.dart';
 
 /// Hover/lift affordance (desktop & web pointers) used purely for a modern,
 /// tactile feel on tappable cards/tiles; does not intercept taps.
@@ -558,7 +559,7 @@ class _SalePostPageState extends State<SalePostPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 60),
                     ],
                   ),
                 ),
@@ -567,6 +568,7 @@ class _SalePostPageState extends State<SalePostPage> {
           ],
         ),
       ),
+      bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
   }
 }

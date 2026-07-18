@@ -15,7 +15,6 @@ Future<void> showBranchSelectionDialog({
 }) async {
   final loginController = Get.put(LoginController());
   loginController.getBranchDetails(context);
-
   final savedUserId = Api.userInfo.read('userId');
   String? selectedName;
   String? selectedUserId = savedUserId;
@@ -27,7 +26,6 @@ Future<void> showBranchSelectionDialog({
         builder: (controller) {
           final branches = controller.userBranchesList;
           final size = MediaQuery.of(context).size.width;
-
           return StatefulBuilder(
             builder: (context, setState) {
               return Container(

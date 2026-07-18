@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
+import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
+import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/modules/product_services/sale_post_controller.dart';
 import '../../common_widgets/color_code.dart';
 
-/// Hover/lift affordance used purely for a modern, tactile feel on
-/// tappable cards/tiles; does not intercept taps.
+
 class _HoverLift extends StatefulWidget {
   final Widget child;
   final double liftScale;
@@ -93,6 +94,7 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
   final mobileController = TextEditingController();
   final messageController = TextEditingController();
   final priceController = TextEditingController();
+  final PlanController planController = Get.put(PlanController());
 
   final List<String> userTypes = const [
     "Dental Clinic",
@@ -108,6 +110,12 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
   bool _isPicking = false;
 
   static const int maxImages = 3;
+
+  @override
+  void initState() {
+    super.initState();
+    planController.checkPlansStatus(Api.userInfo.read('userId') ?? "", context);
+  }
 
   @override
   void dispose() {
@@ -164,12 +172,43 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
       return;
     }
 
+    bool isBasePlanActive = false;
+    bool isPosterPlanActive = false;
+    if (planController.checkPlanList.isNotEmpty) {
+      final planDetails = planController.checkPlanList[0]["details"]?["plan"];
+      isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
+      isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
+    }
+
+    if (!isBasePlanActive) {
+      showSuccessDialog(
+        context,
+        title: "Alert",
+        message: "Oops! Base plan not Activated.please activate base plan..",
+        onOkPressed: () {
+          Get.toNamed('/viewPlanPageWeb');
+        },
+      );
+      return;
+    }
+
+    if (!isPosterPlanActive) {
+      showSuccessDialog(
+        context,
+        title: "Poster Plan Required",
+        message:
+            "You need an active poster plan to post a sale listing. Please choose a plan to continue.",
+        onOkPressed: () {
+          Get.toNamed('/viewPlanPageWeb');
+        },
+      );
+      return;
+    }
+
     final imageBytes = await Future.wait(images.map((img) async {
       return img.bytes ?? await img.file!.readAsBytes();
     }));
 
-    // "negotiable" is deliberately left out of the API payload below — it's
-    // a local/UI-only flag, not something the backend needs to store.
     try {
       final response = await Api().createSalePost(
         Api.userInfo.read('userId') ?? "",

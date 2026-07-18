@@ -6,7 +6,7 @@ import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
-import 'package:locate_your_dentist/service_paymentt/payment_stub.dart';
+import 'package:locate_your_dentist/service_paymentt/payment_service.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 
@@ -36,7 +36,7 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
   void initState() {
     super.initState();
 
-    final args = Get.arguments as Map<String, dynamic>;
+    final args = (Get.arguments as Map<String, dynamic>?) ?? {};
     amount = (args['amount'] ?? 0).toDouble();
     name = args['name'] ?? '';
     planName = args['planName'] ?? '';
@@ -261,25 +261,27 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
 
                                       const SizedBox(height: 30),
 
-                                      SizedBox(
-                                        width: double.infinity,
-                                        child: ElevatedButton(
-                                          onPressed: startPayment,
-                                          style: ElevatedButton.styleFrom(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 16,
+                                      Center(
+                                        child: SizedBox(
+                                          width: 200,
+                                          child: ElevatedButton(
+                                            onPressed: startPayment,
+                                            style: ElevatedButton.styleFrom(
+                                              padding: const EdgeInsets.symmetric(
+                                                vertical: 16,
+                                              ),
+                                              backgroundColor: AppColors.primary,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
                                             ),
-                                            backgroundColor: AppColors.primary,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                          ),
-                                          child: const Text(
-                                            "Pay Now",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
+                                            child: const Text(
+                                              "Pay Now",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                              ),
                                             ),
                                           ),
                                         ),

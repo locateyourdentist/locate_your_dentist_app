@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
+import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/modules/product_services/sale_post_controller.dart';
@@ -85,28 +86,27 @@ String _timeAgo(DateTime date) {
   return "${diff.inDays} day(s) ago";
 }
 
-_SalePostRow _rowFromItem(SalePostItem item) {
-  return _SalePostRow(
-    message: item.message.isEmpty ? "No description provided" : item.message,
-    price: item.price.isEmpty ? "N/A" : item.price,
-    negotiable: item.negotiable,
-    userType: item.userType,
-    mobileNumber: item.mobileNumber,
-    postedAgo: _timeAgo(item.postedAt),
-    imageAsset: "assets/images/tooth.png",
-    pickedImages: item.images,
-  );
-}
-
-// Converts a real, API-fetched sale post into the same row shape the UI
-// already knows how to render (alongside locally-submitted and sample rows).
+// _SalePostRow _rowFromItem(SalePostItem item) {
+//   return _SalePostRow(
+//     message: item.message.isEmpty ? "No description provided" : item.message,
+//     price: item.price.isEmpty ? "N/A" : item.price,
+//     negotiable: item.negotiable,
+//     userType: item.userType,
+//     mobileNumber: item.mobileNumber,
+//     postedAgo: _timeAgo(item.postedAt),
+//     imageAsset: "assets/images/tooth.png",
+//     pickedImages: item.images,
+//   );
+// }
+//
+//
 _SalePostRow _rowFromApiModel(SalePostModel model) {
   final message = model.message ?? "";
   final price = model.price ?? "";
   return _SalePostRow(
     message: message.isEmpty ? "No description provided" : message,
     price: price.isEmpty ? "N/A" : price,
-    negotiable: false, // not stored server-side; local/UI-only concept
+    negotiable: false,
     userType: model.userType ?? "",
     mobileNumber: model.mobileNumber ?? "",
     postedAgo: _timeAgo(model.createdDate ?? DateTime.now()),
@@ -133,63 +133,6 @@ void _openSaleImageUrl(String url) {
   });
 }
 
-const List<_SalePostRow> _samplePosts = [
-  _SalePostRow(
-    message: "Lightly used dental chair, excellent condition, service history available.",
-    price: "45,000",
-    negotiable: true,
-    userType: "Dental Clinic",
-    mobileNumber: "98765 43210",
-    postedAgo: "2 days ago",
-    imageAsset: "assets/images/dental_clinic1.png",
-    imageUrls: [
-      "https://picsum.photos/seed/dentalchair1/400/400",
-      "https://picsum.photos/seed/dentalchair2/400/400",
-      "https://picsum.photos/seed/dentalchair3/400/400",
-    ],
-  ),
-  _SalePostRow(
-    message: "Autoclave sterilizer, barely used, moving out of city so selling urgently.",
-    price: "12,500",
-    negotiable: false,
-    userType: "Dental Shop",
-    mobileNumber: "98765 11122",
-    postedAgo: "5 days ago",
-    imageAsset: "assets/images/dental_shop1.png",
-    imageUrls: [
-      "https://picsum.photos/seed/autoclave1/400/400",
-      "https://picsum.photos/seed/autoclave2/400/400",
-    ],
-  ),
-  _SalePostRow(
-    message: "Set of dental hand instruments, bulk lot, good for a new clinic setup.",
-    price: "6,000",
-    negotiable: true,
-    userType: "Dental Lab",
-    mobileNumber: "91234 56789",
-    postedAgo: "1 week ago",
-    imageAsset: "assets/images/dental_lab1.png",
-    imageUrls: [
-      "https://picsum.photos/seed/instruments1/400/400",
-      "https://picsum.photos/seed/instruments2/400/400",
-      "https://picsum.photos/seed/instruments3/400/400",
-    ],
-  ),
-  _SalePostRow(
-    message: "Portable X-ray unit, well maintained, includes carrying case.",
-    price: "28,000",
-    negotiable: true,
-    userType: "Dental Mechanic",
-    mobileNumber: "90000 22334",
-    postedAgo: "2 weeks ago",
-    imageAsset: "assets/images/dental_mechanic1.png",
-    imageUrls: [
-      "https://picsum.photos/seed/xray1/400/400",
-      "https://picsum.photos/seed/xray2/400/400",
-    ],
-  ),
-];
-
 class SalePostListWebPage extends StatefulWidget {
   const SalePostListWebPage({super.key});
 
@@ -203,6 +146,7 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
   final salePostController = Get.put(SalePostController());
   String _query = "";
   final serviceController = Get.put(ServiceController());
+  final PlanController planController = Get.put(PlanController());
 
   @override
   void dispose() {
@@ -212,8 +156,8 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
 
   List<_SalePostRow> get _allPosts => [
         ...serviceController.salesList.map(_rowFromApiModel),
-        ...salePostController.posts.map(_rowFromItem),
-        ..._samplePosts,
+      // ...salePostController.posts.map(_rowFromItem),
+        //..._samplePosts,
       ];
 
   List<_SalePostRow> get _filtered {
@@ -247,7 +191,7 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
     _refresh();
   }
   Future<void> _refresh() async {
-    await serviceController.getSalesListAdmin(Api.userInfo.read('userId') ?? "", context);
+    await serviceController.getSalesListAdmin( "","",context);
   }
   @override
   Widget build(BuildContext context) {
@@ -527,7 +471,7 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                                                       ),
                                                     ),
                                                   ),
-                                        const SizedBox(width: 14),
+                                        const SizedBox(width: 10),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,

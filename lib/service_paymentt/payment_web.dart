@@ -1,8 +1,7 @@
 import 'dart:js' as js;
-import 'payment_stub.dart';
+import 'package:locate_your_dentist/utills/constants.dart';
 
-class PaymentServiceWeb extends PaymentService {
-  @override
+class PaymentService {
   void startPayment(
       double amount, {
         String? name,
@@ -13,7 +12,7 @@ class PaymentServiceWeb extends PaymentService {
       }) {
     js.context.callMethod('eval', ["""
       var options = {
-        "key": "YOUR_RAZORPAY_KEY",
+        "key": "${AppConstants.razorPayKey}",
         "amount": ${amount * 100},
         "name": "$name",
         "description": "$planName",

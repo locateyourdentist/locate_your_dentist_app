@@ -522,7 +522,7 @@ class _ClinicEditProfileState extends State<ClinicEditProfile> {
                                       width: 1.5,
                                     ),
                                   ),
-                                  onChanged: (val) {
+                                  onChanged: (val)async {
                                     if (val != null) {
                                       controller.selectedDistrict = val;
                                       controller.talukas.clear();
@@ -533,7 +533,7 @@ class _ClinicEditProfileState extends State<ClinicEditProfile> {
                                       _villageCtrl.value = null;
                                       final district = controller.districts.firstWhere((d) => d == val);
                                       print('sub district selected$district');
-                                      controller.fetchTalukas(district);
+                                     await controller.fetchTalukas(district);
                                       controller.update();
                                     }
                                   },
@@ -567,13 +567,13 @@ class _ClinicEditProfileState extends State<ClinicEditProfile> {
                                       ),
                                       controller: _talukaCtrl,
                                       excludeSelected: false,
-                                      onChanged: (val) {
+                                      onChanged: (val)async {
                                         // setState(() => loginController.selectedTaluka = val);
                                         setState(() => loginController.selectedTalukas = [val!]);
                                         if (val != null) {
                                           _villageCtrl.value = null;
                                           loginController.villages.clear();
-                                          loginController.fetchVillages(loginController.selectedTalukas);
+                                        await  loginController.fetchVillages(loginController.selectedTalukas);
                                           loginController.update();
                                         }
                                       },),
@@ -622,7 +622,7 @@ class _ClinicEditProfileState extends State<ClinicEditProfile> {
                             ),
                           ]),
                       SizedBox(height: size * 0.02),
-                      if (Api.userInfo.read('userType') != 'superAdmin' && Api.userInfo.read('userType') != 'admin')
+                    //  if (Api.userInfo.read('userType') != 'superAdmin' && Api.userInfo.read('userType') != 'admin')
                         GetBuilder<LoginController>(
                             builder: (controller) {
                               return Column(

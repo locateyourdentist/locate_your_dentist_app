@@ -146,6 +146,8 @@ class _DentalMechanicWebDashboardState
                                         );
                                       },
                                     ),
+                                  const PostAdsBannerWeb(),
+                                  const SizedBox(height: 20),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 20.0,

@@ -257,6 +257,8 @@ class _DentalClinicDashboardWebPageState
                                     ),
 
                                     const SizedBox(height: 24),
+                                    const PostAdsBannerWeb(),
+                                    const SizedBox(height: 24),
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [

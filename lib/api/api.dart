@@ -2049,7 +2049,7 @@ class Api {
     }
   }
 
-  Future<http.Response> getSalesListAdmin(String userId) async {
+  Future<http.Response> getSalesListAdmin(String userType,String search) async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.serviceURL}${AppConstants.getSaleURL}";
     print('API getSaleURL $url');
@@ -2064,7 +2064,7 @@ class Api {
           "Accept": "application/json",
           "Authorization": "Bearer $token",
         },
-        body: jsonEncode({"userId": userId}),
+        body: jsonEncode({"userType": userType,"search":search}),
       );
       print('api job response ${response.body}');
       return response;

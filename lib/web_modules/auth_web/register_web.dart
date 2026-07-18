@@ -37,27 +37,55 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   late QuillController _controller;
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
-  final allItems = [
-    "admin",
-    "superAdmin",
-    "Dental Clinic",
-    "Dental Lab",
-    "Dental Shop",
-    "Dental Mechanic",
-    "Job Seekers",
-    "Dental Consultant",
+  // final allItems = [
+  //   "admin",
+  //   "superAdmin",
+  //   "Dental Clinic",
+  //   "Dental Lab",
+  //   "Dental Shop",
+  //   "Dental Mechanic",
+  //   "Job Seekers",
+  //   "Dental Consultant",
+  // ];
+  final List<Map<String, String>> allItems = [
+    {"key": "Admin", "value": "Admin"},
+    {"key": "Super Admin", "value": "Super Admin"},
+    {"key": "Dentist", "value": "Dental Clinic"},
+    {"key": "Dental Lab", "value": "Dental Lab"},
+    {"key": "Dental Shop", "value": "Dental Shop"},
+    {"key": "Dental Mechanic", "value": "Dental Mechanic"},
+    {"key": "Dental jobSeekers", "value": "Job Seekers"},
+    {
+      "key": "dental Professionals",
+      "value": "Dental Consultant"
+    },
   ];
-
-  List<String> get filteredItems {
+  // List<String> get filteredItems {
+  //   final userType = Api.userInfo.read('userType');
+  //
+  //   if (userType != 'superAdmin') {
+  //     return allItems.where((e) => e != "admin" && e != "superAdmin").toList();
+  //   }
+  //
+  //   return allItems;
+  // }
+  List<Map<String, String>> get filteredItems {
     final userType = Api.userInfo.read('userType');
 
-    if (userType != 'superAdmin') {
-      return allItems.where((e) => e != "admin" && e != "superAdmin").toList();
+    if (userType == "superAdmin") {
+      return allItems;
+    } else if (userType == "admin") {
+      return allItems
+          .where((e) => e["key"] != "superAdmin")
+          .toList();
+    } else {
+      return allItems
+          .where((e) =>
+      e["key"] != "admin" &&
+          e["key"] != "superAdmin")
+          .toList();
     }
-
-    return allItems;
   }
-
   final int maxFiles = 3;
   bool isPicking = false;
 
@@ -703,12 +731,32 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // CustomDropdownField(
+        //   hint: "User Type",
+        //   items: filteredItems,
+        //   selectedValue: loginController.selectedUserType,
+        //   onChanged: (v) =>
+        //       setState(() => loginController.selectedUserType = v),
+        // ),
         CustomDropdownField(
           hint: "User Type",
-          items: filteredItems,
+          items: filteredItems
+              .map((e) => e["key"]!)
+              .toList(),
           selectedValue: loginController.selectedUserType,
-          onChanged: (v) =>
-              setState(() => loginController.selectedUserType = v),
+          onChanged: (value) {
+            setState(() {
+              loginController.selectedUserType = value;
+
+              final selected = filteredItems.firstWhere(
+                    (e) => e["value"] == value,
+              );
+
+              loginController.selectedUserType = selected["value"]!;
+
+              print(loginController.selectedUserType); // dentist
+            });
+          },
         ),
         const SizedBox(height: 15),
 
