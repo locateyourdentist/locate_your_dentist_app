@@ -7,6 +7,7 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/modules/product_services/sale_post_controller.dart';
 import 'package:locate_your_dentist/model/salePostModel.dart';
+import 'package:locate_your_dentist/common_widgets/sale_share_utils.dart';
 import '../../common_widgets/color_code.dart';
 import '../../modules/product_services/service_controller.dart';
 
@@ -55,6 +56,7 @@ class _HoverLiftState extends State<_HoverLift> {
 
 
 class _SalePostRow {
+  final String? id;
   final String message;
   final String price;
   final bool negotiable;
@@ -66,6 +68,7 @@ class _SalePostRow {
   final List<String> imageUrls;
 
   const _SalePostRow({
+    this.id,
     required this.message,
     required this.price,
     required this.negotiable,
@@ -104,6 +107,7 @@ _SalePostRow _rowFromApiModel(SalePostModel model) {
   final message = model.message ?? "";
   final price = model.price ?? "";
   return _SalePostRow(
+    id: model.id,
     message: message.isEmpty ? "No description provided" : message,
     price: price.isEmpty ? "N/A" : price,
     negotiable: false,
@@ -220,12 +224,7 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
       drawer: (isLoggedIn && !isDesktop)
           ? const Drawer(width: 250, child: AdminSideBar())
           : null,
-      appBar: CommonWebAppBar(
-        height: isMobile ? 60 : 80,
-        title: "LOCATE YOUR DENTIST",
-        onLogout: () {},
-        onNotification: () {},
-      ),
+      appBar: buildAppBar(context),
       body: Row(
         children: [
           if (isDesktop && isLoggedIn) const AdminSideBar(),
@@ -282,7 +281,7 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                               liftScale: 1.04,
                               borderRadius: BorderRadius.circular(14),
                               child: ElevatedButton.icon(
-                                onPressed: () => Get.toNamed('/salePostWebPage'),
+                                onPressed: () => Api.userInfo.read('token')==null?Get.toNamed('/registerPageWeb'):Get.toNamed('/salePostWebPage'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
@@ -363,7 +362,15 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                                 return _HoverLift(
                                   liftScale: 1.015,
                                   borderRadius: BorderRadius.circular(18),
-                                  child: Container(
+                                  child: Material(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(18),
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(18),
+                                      onTap: post.id == null
+                                          ? null
+                                          : () => Get.toNamed('/salePostDetailWebPage/${post.id}'),
+                                      child: Container(
                                     padding: const EdgeInsets.all(18),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -391,9 +398,9 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                                                           child: ClipRRect(
                                                             borderRadius: BorderRadius.circular(12),
                                                             child: img.bytes != null
-                                                                ? Image.memory(img.bytes!, width: 52, height: 52, fit: BoxFit.cover)
+                                                                ? Image.memory(img.bytes!, width: 152, height: 152, fit: BoxFit.cover)
                                                                 : img.file != null
-                                                                    ? Image.file(img.file!, width: 52, height: 52, fit: BoxFit.cover)
+                                                                    ? Image.file(img.file!, width: 152, height: 152, fit: BoxFit.cover)
                                                                     : Container(
                                                                         width: 52,
                                                                         height: 52,
@@ -422,8 +429,8 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                                                                 borderRadius: BorderRadius.circular(12),
                                                                 child: Image.network(
                                                                   url,
-                                                                  width: 52,
-                                                                  height: 52,
+                                                                  width: 152,
+                                                                  height: 152,
                                                                   fit: BoxFit.cover,
                                                                   loadingBuilder: (context, child, progress) {
                                                                     if (progress == null) return child;
@@ -457,12 +464,12 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                                                     borderRadius: BorderRadius.circular(14),
                                                     child: Image.asset(
                                                       post.imageAsset,
-                                                      width: 68,
-                                                      height: 68,
+                                                      width: 150,
+                                                      height: 150,
                                                       fit: BoxFit.cover,
                                                       errorBuilder: (context, error, stackTrace) => Container(
-                                                        width: 68,
-                                                        height: 68,
+                                                        width: 150,
+                                                        height: 150,
                                                         decoration: BoxDecoration(
                                                           gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
                                                           borderRadius: BorderRadius.circular(14),
@@ -488,6 +495,21 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                                                   ),
                                                   const Spacer(),
                                                   Text(post.postedAgo, style: AppTextStyles.caption(context, color: Colors.grey.shade500)),
+                                                  const SizedBox(width: 6),
+                                                  InkWell(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    onTap: () => shareSalePost(
+                                                      message: post.message,
+                                                      price: post.price,
+                                                      mobileNumber: post.mobileNumber,
+                                                      userType: post.userType,
+                                                      imageUrl: post.imageUrls.isNotEmpty ? post.imageUrls.first : null,
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(4.0),
+                                                      child: Icon(Icons.share_outlined, size: 16, color: AppColors.primary),
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                               const SizedBox(height: 8),
@@ -519,7 +541,7 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                                           ),
                                         ),
                                     ]),)
-                                  );
+                                    )));
                               },
                             );
                           },

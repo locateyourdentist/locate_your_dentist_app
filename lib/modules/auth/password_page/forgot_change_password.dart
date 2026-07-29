@@ -70,15 +70,8 @@ class _ForgotChangePasswordState extends State<ForgotChangePassword> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image.asset(
-                //   'assets/images/logo.jpg',
-                //   width: double.infinity,
-                //   height: size * 0.25,
-                //   fit: BoxFit.cover,
-                // ),
-                SizedBox(height: size * 0.03),
 
-                //Center(child: Text('Change Password',style: AppTextStyles.subtitle(context,color: AppColors.black),)),
+
                 SizedBox(height: size * 0.06),
                 Text(
                   'new Password',

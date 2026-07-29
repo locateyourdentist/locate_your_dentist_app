@@ -86,9 +86,6 @@ Future<void> setupFCM() async {
 
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     try {
-      // On iOS, getToken() throws `apns-token-not-set` if the APNS token
-      // isn't available yet (always the case on the Simulator, which can't
-      // register for remote push). Guard on it so startup doesn't break.
       if (Platform.isIOS) {
         final apnsToken = await messaging.getAPNSToken();
         if (apnsToken == null) {
@@ -246,11 +243,11 @@ Future<void> main() async {
     requestSoundPermission: true,
   );
 
-  const InitializationSettings initSettings =
-  InitializationSettings(android: androidInit, iOS: darwinInit, macOS: darwinInit);
-  await flutterLocalNotificationsPlugin.initialize(
-    settings: initSettings,
-  );
+  // const InitializationSettings initSettings =
+  // InitializationSettings(android: androidInit, iOS: darwinInit, macOS: darwinInit);
+  // await flutterLocalNotificationsPlugin.initialize(
+  //   settings: initSettings,
+  // );
  // await flutterLocalNotificationsPlugin.initialize(initSettings);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -885,6 +885,15 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
               width: 42,
               height: 42,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(Icons.image_outlined, color: Colors.white.withValues(alpha: 0.6), size: 28),
+              ),
             ),
           )
         : const Icon(Icons.local_hospital, color: Colors.white, size: 32);

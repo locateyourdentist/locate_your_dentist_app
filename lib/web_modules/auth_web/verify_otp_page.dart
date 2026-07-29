@@ -86,11 +86,6 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
-    // The OTP boxes live inside the card below, whose width is capped well
-    // under the screen width — size each box off the card's own content
-    // width (card width minus its 40px padding on each side, minus the
-    // package's default 8px right-margin per field) instead of the full
-    // screen width, so 4 boxes always fit regardless of screen size.
     final double cardWidth = size > 800 ? 450 : size * 0.85;
     final double otpFieldWidth = ((cardWidth - 80 - 32) / 4).clamp(32.0, 60.0);
     final double otpFieldHeight = otpFieldWidth * 1.15;
@@ -142,8 +137,8 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
                                   ? loginController.appLogoUrl!
                                   : "",
                               fit: BoxFit.cover,
-                              width: size * 0.15,
-                              height: size * 0.12,
+                              width: 80,
+                              height: 80,
                               errorBuilder: (_, __, ___) => Container(
                                 color: Colors.white.withValues(alpha: 0.3),
                                 child: Icon(

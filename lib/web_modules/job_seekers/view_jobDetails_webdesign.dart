@@ -9,6 +9,7 @@ import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
+import 'package:locate_your_dentist/common_widgets/job_share_utils.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
@@ -70,7 +71,7 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
   }
 
   Future<void> _refresh() async {
-    final selectJobId = Api.userInfo.read('selectJobId') ?? "";
+    final selectJobId = Get.parameters['id'] ?? Api.userInfo.read('selectJobId') ?? "";
     await jobController.getJobsById(selectJobId, context);
     await jobController.getAppliedJobsAdmin(selectJobId, context);
     await jobController.getJobSeekersAppliedLists(
@@ -341,6 +342,30 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                                             color: Colors.white,
                                                           ),
                                                     ),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 6),
+                                                InkWell(
+                                                  onTap: () => shareJobPost(
+                                                    jobTitle: job.jobTitle ?? '',
+                                                    orgName: job.orgName ?? '',
+                                                    jobType: job.jobType,
+                                                    salary: job.salary,
+                                                    location:
+                                                        "${job.city ?? ''}, ${job.district ?? ''}, ${job.state ?? ''}",
+                                                    description:
+                                                        plainTextFromDelta(
+                                                          job.jobDescription,
+                                                        ),
+                                                    imageUrl: url.isNotEmpty
+                                                        ? url
+                                                        : null,
+                                                    jobId: targetJobId,
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.share_outlined,
+                                                    color: AppColors.primary,
+                                                    size: screenWidth * 0.016,
                                                   ),
                                                 ),
                                               ],

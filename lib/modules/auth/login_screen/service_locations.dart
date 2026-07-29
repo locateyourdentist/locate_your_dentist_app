@@ -1,9 +1,59 @@
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 
 class LocationService {
+  /// Same as [getCurrentLocation], but on web — where browsers block a site
+  /// from reopening its own permission prompt once blocked, and the
+  /// geolocator web plugin often reports plain `denied` rather than
+  /// `deniedForever` even after a permanent block — shows a dialog with
+  /// instructions and a "Try Again" button instead of just a snackbar,
+  /// for ANY non-granted permission state, not just deniedForever.
+  static Future<Position?> getCurrentLocationWithPrompt(BuildContext context) async {
+    if (!kIsWeb) return getCurrentLocation();
+
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        if (!context.mounted) return null;
+        final retry = await showEnableLocationDialog(context);
+        return (retry && context.mounted)
+            ? getCurrentLocationWithPrompt(context)
+            : null;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        if (!context.mounted) return null;
+        final retry = await showEnableLocationDialog(context);
+        return (retry && context.mounted)
+            ? getCurrentLocationWithPrompt(context)
+            : null;
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      Get.snackbar("Location Found", "Your current location has been captured.");
+      return position;
+    } catch (e) {
+      Get.snackbar(
+        "Location Error",
+        "Couldn't get your location: $e",
+        duration: const Duration(seconds: 5),
+      );
+      return null;
+    }
+  }
+
   static Future<Position?> getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
 

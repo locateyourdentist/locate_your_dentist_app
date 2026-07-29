@@ -760,8 +760,7 @@ class _CreatePlanState extends State<CreatePlan> {
                                         planController.isAreaWise,
                                         context,
                                       );
-                                    } else if (planController.selectedString ==
-                                        "PostImagePlan") {
+                                    } else if (planController.selectedString == "PostImagePlan") {
                                       await planController.createPostImagesPlans(
                                         planController.selectedUserType!,
                                         postImagePlanId!,

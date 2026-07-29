@@ -180,7 +180,7 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
       isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
     }
 
-    if (!isBasePlanActive) {
+    if (Api.userInfo.read('userType')=='superAdmin'||!isBasePlanActive) {
       showSuccessDialog(
         context,
         title: "Alert",

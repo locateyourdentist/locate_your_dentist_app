@@ -154,7 +154,8 @@ class _ViewListServicesWebsiteState extends State<ViewListServicesWebsite> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     child: Column(
                       children: [
-                        Expanded(child: Image.network(imgUrl,height:isMobile ? (width * 0.65) : 300.0,width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(color: Colors.grey[200], child: const Icon(Icons.image)))),
+                        Expanded(child: Image.network(imgUrl,height:isMobile ? (width * 0.65) : 300.0,width: double.infinity, fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(height:isMobile ? (width * 0.65) : 300.0,width: double.infinity, color: Colors.grey[200], child: const Icon(Icons.image)))),
                         Padding(
                           padding: const EdgeInsets.all(10),
                           child: Column(

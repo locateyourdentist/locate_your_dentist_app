@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
+import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
+import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
@@ -17,6 +20,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, Uint8List;
 import 'dart:io' show File;
+
+import '../../main.dart';
 
 class RegisterWebPage extends StatefulWidget {
   const RegisterWebPage({super.key});
@@ -37,16 +42,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   late QuillController _controller;
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
-  // final allItems = [
-  //   "admin",
-  //   "superAdmin",
-  //   "Dental Clinic",
-  //   "Dental Lab",
-  //   "Dental Shop",
-  //   "Dental Mechanic",
-  //   "Job Seekers",
-  //   "Dental Consultant",
-  // ];
   final List<Map<String, String>> allItems = [
     {"key": "Admin", "value": "Admin"},
     {"key": "Super Admin", "value": "Super Admin"},
@@ -60,7 +55,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       "value": "Dental Consultant"
     },
   ];
-  // List<String> get filteredItems {
+ // List<String> get filteredItems {
   //   final userType = Api.userInfo.read('userType');
   //
   //   if (userType != 'superAdmin') {
@@ -93,16 +88,43 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   void initState() {
     super.initState();
     _controller = QuillController.basic();
+    loginController.pinCodeController.addListener(_onPinCodeChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _refresh();
     });
   }
   @override
   void dispose() {
+    loginController.pinCodeController.removeListener(_onPinCodeChanged);
     _focusNode.dispose();
     _scrollController.dispose();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _onPinCodeChanged() {
+    if (loginController.pinCodeController.text.trim().length == 6) {
+      _fetchLatLngFromAddress();
+    }
+  }
+  Future<void> _fetchLatLngFromAddress() async {
+    final state = loginController.selectedState ?? '';
+    final district = loginController.selectedDistrict ?? '';
+    final pincode = loginController.pinCodeController.text.trim();
+    if (state.isEmpty && district.isEmpty && pincode.length != 6) return;
+
+    final location = await loginController.getLatLng(
+      state: state,
+      district: district,
+      taluka: loginController.selectedTaluka ?? '',
+      area: loginController.selectedVillage ?? '',
+      pincode: pincode,
+    );
+    if (location != null) {
+      loginController.latitude = location['latitude'];
+      loginController.longitude = location['longitude'];
+      loginController.update();
+    }
   }
   Future<void> setProfileData(user) async {
     loginController.selectedState = user.address?.state ?? "";
@@ -174,7 +196,21 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   }
 
   Future<void> getLocation() async {
-    final position = await LocationService.getCurrentLocation();
+    const AndroidInitializationSettings androidInit =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const DarwinInitializationSettings darwinInit =
+    DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+    const InitializationSettings initSettings =
+    InitializationSettings(android: androidInit, iOS: darwinInit, macOS: darwinInit);
+    await flutterLocalNotificationsPlugin.initialize(
+      settings: initSettings,
+    );
+    final position = await LocationService.getCurrentLocationWithPrompt(context);
     if (position != null) {
       loginController.latitude = position.latitude;
       loginController.longitude = position.longitude;
@@ -183,6 +219,8 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         position.longitude,
       );
       planController.currentLocation = address;
+      planController.update();
+      loginController.update();
     }
   }
 
@@ -440,6 +478,11 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                         if (_formKeyRegisterWeb.currentState!
                                             .validate()) {
                                           await _handleRegistration();
+                                        } else {
+                                          final missing = _missingRequiredFields();
+                                          if (missing.isNotEmpty) {
+                                            showMissingFieldsDialog(context, missing);
+                                          }
                                         }
                                       } else {
                                         setState(() => currentStep++);
@@ -544,7 +587,46 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     );
   }
 
+  /// Mirrors the required fields' default CustomTextField validators, but
+  /// aggregated into one list — Form.validate() alone only shows inline red
+  /// text under each field, easy to miss when it's on a different Stepper
+  /// step than the one currently visible.
+  List<String> _missingRequiredFields() {
+    final missing = <String>[];
+    final isNewRegistration = Api.userInfo.read('token') == null ||
+        Get.arguments?['userId'] == "0";
+
+    if (loginController.fullNameController.text.trim().isEmpty) missing.add("Full Name");
+    if (loginController.dobController.text.trim().isEmpty) missing.add("DOB");
+    if (loginController.emailController.text.trim().isEmpty) missing.add("Email");
+    if (loginController.mobileController.text.trim().isEmpty) missing.add("Mobile");
+    if (isNewRegistration) {
+      if (loginController.passwordController.text.trim().isEmpty) missing.add("Password");
+      if (loginController.confirmPasswordController.text.trim().isEmpty) missing.add("Confirm Password");
+    }
+    if ((loginController.selectedUserType ?? '').isEmpty) {
+      missing.add("User Type");
+    } else if (loginController.selectedUserType != 'Job Seekers' &&
+        loginController.typeNameController.text.trim().isEmpty) {
+      missing.add(loginController.selectedUserType == 'Dental Shop' ? "Shop Name" : "Business Name");
+    }
+    if (loginController.addressLine1Controller.text.trim().isEmpty) missing.add("Address Line 1");
+    if (loginController.addressLine2Controller.text.trim().isEmpty) missing.add("Address Line 2");
+    if ((loginController.selectedState ?? '').isEmpty) missing.add("State");
+    if ((loginController.selectedDistrict ?? '').isEmpty) missing.add("District");
+    if ((loginController.selectedTaluka ?? '').isEmpty) missing.add("Taluka/Town");
+    if ((loginController.selectedVillage ?? '').isEmpty) missing.add("Area");
+    if (loginController.pinCodeController.text.trim().isEmpty) missing.add("Pin Code");
+
+    return missing;
+  }
+
   Future<void> _handleRegistration() async {
+    if ((loginController.selectedUserType ?? '').isEmpty) {
+      showCustomToast(context, "Please select a user type before submitting");
+      setState(() => currentStep = 0);
+      return;
+    }
     // final imageBytes = await _convertAppImages(loginController.editImages);
     final imageBytes = await _convertAppImage2s(loginController.images1);
     final logoBytes = await _convertAppImage2s(loginController.logoImages1);
@@ -558,22 +640,21 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         .where((e) => e.url != null && e.bytes == null && e.file == null)
         .map((e) => e.url!)
         .toList();
-    final location = await loginController.getLatLng(
-      state: loginController.selectedState ?? '',
-      district: loginController.selectedDistrict ?? '',
-      taluka: loginController.selectedTaluka ?? '',
-      area: loginController.selectedVillage ?? '',
-      pincode: loginController.pinCodeController.text,
-    );
+    if (loginController.latitude == null || loginController.longitude == null) {
+      final location = await loginController.getLatLng(
+        state: loginController.selectedState ?? '',
+        district: loginController.selectedDistrict ?? '',
+        taluka: loginController.selectedTaluka ?? '',
+        area: loginController.selectedVillage ?? '',
+        pincode: loginController.pinCodeController.text,
+      );
 
-    print(location);
-    if (location != null) {
-      loginController.latitude = location['latitude'];
-      loginController.longitude = location['longitude'];
-      print('lat${loginController.latitude}');
-    } else {
-      loginController.latitude = null;
-      loginController.longitude = null;
+      print(location);
+      if (location != null) {
+        loginController.latitude = location['latitude'];
+        loginController.longitude = location['longitude'];
+        print('lat${loginController.latitude}');
+      }
     }
     await loginController.registerUser(
       userId: (Api.userInfo.read('token') == null || Get.arguments?['userId'] == "0" || Get.arguments?['branchId'] == "0")
@@ -601,7 +682,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       location: loginController.locationController.text,
       website: loginController.websiteController.text,
       description: jsonEncode(_controller.document.toDelta().toJson()),
-      adminId:Get.arguments?['branchId'] == "0"?Api.userInfo.read('userId'):loginController.selectUserId! ,
+      adminId:Get.arguments?['branchId'] == "0"?Api.userInfo.read('userId'):loginController.selectUserId,
       isAdmin: branchId == "0" ? "true" : "false",
       latitude: loginController.latitude?.toString() ?? "",
       longitude: loginController.longitude?.toString() ?? "",
@@ -719,6 +800,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             hint: "Website Link",
             icon: Icons.web,
             controller: loginController.websiteController,
+            validator: (value) => null,
             // fillColor: AppColors.white,
             // borderColor: AppColors.grey,
           ),
@@ -749,7 +831,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
               loginController.selectedUserType = value;
 
               final selected = filteredItems.firstWhere(
-                    (e) => e["value"] == value,
+                    (e) => e["key"] == value,
               );
 
               loginController.selectedUserType = selected["value"]!;
@@ -877,8 +959,12 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
               c.selectedState = v;
               c.selectedDistrict = null;
               c.selectedTaluka = null;
+              c.selectedVillage = null;
+              c.latitude = null;
+              c.longitude = null;
               c.districts.clear();
               c.talukas.clear();
+              c.villages.clear();
               c.fetchDistricts(v);
               c.update();
             }
@@ -913,9 +999,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             if (v != null) {
               c.selectedDistrict = v;
               c.selectedTaluka = null;
+              c.selectedVillage = null;
+              c.latitude = null;
+              c.longitude = null;
               c.talukas.clear();
+              c.villages.clear();
               c.fetchTalukas([v]);
               c.update();
+              _fetchLatLngFromAddress();
             }
           },
         );
@@ -950,8 +1041,11 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
               c.selectedTaluka = v;
               c.villages.clear();
               c.selectedVillage = null;
+              c.latitude = null;
+              c.longitude = null;
               c.fetchVillages([v]);
               c.update();
+              _fetchLatLngFromAddress();
             }
           },
         );
@@ -985,6 +1079,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             if (v != null) {
               c.selectedVillage = v;
               c.update();
+              _fetchLatLngFromAddress();
             }
           },
         );

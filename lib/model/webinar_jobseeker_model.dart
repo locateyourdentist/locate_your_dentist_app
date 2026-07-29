@@ -59,7 +59,7 @@ class WebinarJobSeekers {
       id: json["_id"],
       webinarTitle: json["webinarTitle"],
       webinarDescription:
-      parseJobDescription(json["webinarDescription"]), // ✅ fixed
+      parseJobDescription(json["webinarDescription"]),
       orgName: json["orgName"],
       webinarId: json["webinarId"],
       webinarImage: json["webinarImage"],

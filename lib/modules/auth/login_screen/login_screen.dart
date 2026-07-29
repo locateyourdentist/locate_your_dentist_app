@@ -11,7 +11,7 @@ import 'package:locate_your_dentist/main.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import '../../../common_widgets/custom_toast.dart';
 
-//sxsd
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
   @override

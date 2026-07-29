@@ -491,8 +491,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       //     });
                                       //   },
                                       // ),
-                                      if (loginController.selectedUserType != null &&
-                                          loginController.selectedUserType!.isNotEmpty&&loginController.selectedUserType !='Job Seekers')
+                                      if (loginController.selectedUserType!= null &&
+                                          loginController.selectedUserType!.isNotEmpty&&loginController.selectedUserType!='Job Seekers')
                                         Column(children: [
                                           SizedBox(height: size * 0.03),
                                           // if(loginController.selectedUserType !='Job Seekers')

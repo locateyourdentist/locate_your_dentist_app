@@ -20,6 +20,8 @@ import 'package:locate_your_dentist/web_modules/dashboard/dental_problems.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/jobseekers_joblist_home.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/view_clinic_patients.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/webinar_dashboard_web.dart';
+import 'package:locate_your_dentist/web_modules/dashboard/sales_ad_carousel_section.dart';
+import 'package:locate_your_dentist/modules/product_services/service_controller.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
@@ -175,6 +177,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
   final loginController = Get.put(LoginController());
   final planController = Get.put(PlanController());
   final jobController = Get.put(JobController());
+  final serviceController = Get.put(ServiceController());
   // final notificationController = Get.put(NotificationController());
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
@@ -271,14 +274,15 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
     _refresh();
   }
   Future<void> _refresh() async {
-    if (!kIsWeb) {
-      await getLocation();
-    }
+    // if (!kIsWeb) {
+    //   await getLocation();
+    // }
     await loginController.getProfileDetails('Dental Clinic', '', [], [],[], "true", '', '', '', '', context);
     await loginController.fetchStates();
     await loginController.getAppLogoImage(context);
     await planController.getUploadImages(userType: "Dental Clinic", context: context);
     await jobController.getWebinarListJobSeekers('','',context);
+    await serviceController.getSalesListAdmin('', '', context);
     await jobController.getJobListJobSeekers(
       search: searchController.text.trim(),
       state: null,
@@ -993,7 +997,11 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                   ),
 
                                 const SizedBox(height: 30),
-
+                                GetBuilder<ServiceController>(
+                                  builder: (sController) {
+                                    return SalesAdCarouselSection(posts: sController.salesList);
+                                  },
+                                ),
                                 //CompleteCareSection(),
                                 const SizedBox(height: 30),
                                 isMobile
@@ -1229,6 +1237,8 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                             ],
                           ),
                           const SizedBox(height: 40),
+
+
 
                           userTypesSection(),
                           const SizedBox(height: 60),

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
+import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textfield.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
+import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/modules/product_services/sale_post_controller.dart';
 import '../../common_widgets/color_code.dart';
 import '../../common_widgets/common_bottom_navigation.dart';
@@ -89,6 +91,7 @@ class _SalePostPageState extends State<SalePostPage> {
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
   final salePostController = Get.put(SalePostController());
+  final PlanController planController = Get.put(PlanController());
 
   final mobileController = TextEditingController();
   final messageController = TextEditingController();
@@ -157,6 +160,53 @@ class _SalePostPageState extends State<SalePostPage> {
     setState(() => images.removeAt(index));
   }
 
+  // Future<void> _submitSalePost() async {
+  //   if (!_formKey.currentState!.validate()) return;
+  //   if (selectedUserType == null) {
+  //     Get.snackbar("Missing info", "Please select a user type");
+  //     return;
+  //   }
+  //
+  //   final imageBytes = await Future.wait(images.map((img) async {
+  //     return img.bytes ?? await img.file!.readAsBytes();
+  //   }));
+  //
+  //   try {
+  //     final response = await Api().createSalePost(
+  //       Api.userInfo.read('userId') ?? "",
+  //       selectedUserType!,
+  //       mobileController.text.trim(),
+  //       messageController.text.trim(),
+  //       priceController.text.trim(),
+  //       imageBytes,
+  //     );
+  //     debugPrint("create sale post status: ${response.statusCode}");
+  //   } catch (e) {
+  //     debugPrint("create sale post error: $e");
+  //   }
+  //
+  //   salePostController.addPost(
+  //     SalePostItem(
+  //       id: DateTime.now().microsecondsSinceEpoch.toString(),
+  //       mobileNumber: mobileController.text.trim(),
+  //       message: messageController.text.trim(),
+  //       price: priceController.text.trim(),
+  //       negotiable: negotiable,
+  //       userType: selectedUserType!,
+  //       images: images
+  //           .map((img) => PickedSaleImage(bytes: img.bytes, file: img.file))
+  //           .toList(),
+  //       postedAt: DateTime.now(),
+  //     ),
+  //   );
+  //
+  //   showCustomToast(
+  //     context,
+  //     "Listing posted",
+  //     backgroundColor: AppColors.primary,
+  //   );
+  //   Get.offNamed('/salePostListPage');
+  // }
   Future<void> _submitSalePost() async {
     if (!_formKey.currentState!.validate()) return;
     if (selectedUserType == null) {
@@ -164,12 +214,43 @@ class _SalePostPageState extends State<SalePostPage> {
       return;
     }
 
+    bool isBasePlanActive = false;
+    bool isPosterPlanActive = false;
+    if (planController.checkPlanList.isNotEmpty) {
+      final planDetails = planController.checkPlanList[0]["details"]?["plan"];
+      isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
+      isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
+    }
+
+    if (Api.userInfo.read('userType')=='superAdmin'||!isBasePlanActive) {
+      showSuccessDialog(
+        context,
+        title: "Alert",
+        message: "Oops! Base plan not Activated.please activate base plan..",
+        onOkPressed: () {
+          Get.toNamed('/viewPlanPageWeb');
+        },
+      );
+      return;
+    }
+
+    if (!isPosterPlanActive) {
+      showSuccessDialog(
+        context,
+        title: "Poster Plan Required",
+        message:
+        "You need an active poster plan to post a sale listing. Please choose a plan to continue.",
+        onOkPressed: () {
+          Get.toNamed('/viewPlanPageWeb');
+        },
+      );
+      return;
+    }
+
     final imageBytes = await Future.wait(images.map((img) async {
       return img.bytes ?? await img.file!.readAsBytes();
     }));
 
-    // "negotiable" is deliberately left out of the API payload below — it's
-    // a local/UI-only flag, not something the backend needs to store.
     try {
       final response = await Api().createSalePost(
         Api.userInfo.read('userId') ?? "",
@@ -204,7 +285,7 @@ class _SalePostPageState extends State<SalePostPage> {
       "Listing posted",
       backgroundColor: AppColors.primary,
     );
-    Get.offNamed('/salePostListPage');
+    Get.offNamed('/salePostListWebPage');
   }
 
   Widget _sectionCard({required String title, required IconData icon, required Widget child}) {

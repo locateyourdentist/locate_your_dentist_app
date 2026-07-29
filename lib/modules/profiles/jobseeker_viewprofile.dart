@@ -132,6 +132,9 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
       Api.userInfo.read('selectUId') ?? "",
       context,
     );
+    print('sd${Api.userInfo.read('selectUId')??""}');
+    await loginController.fetchStates();
+    await loginController.getProfileByUserId(Api.userInfo.read('selectUId')??"", context);
     loadJobDescription(loginController.descriptionData);
   }
 
@@ -168,25 +171,8 @@ class _JobSeekerProfilePageState extends State<JobSeekerProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                    if (!hasData)
-                      SizedBox(
-                        height: size * 1.2,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.person_off_outlined, size: 70, color: Colors.grey.shade300),
-                            const SizedBox(height: 12),
-                            Center(
-                              child: Text(
-                                'No data found',
-                                style: AppTextStyles.caption(context),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     if (hasData) ...[
-                      /// GRADIENT HERO HEADER
+
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 12, 16, 46),

@@ -54,11 +54,23 @@ class DoctorCardWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   child: doctor.logoImages.isNotEmpty
                       ? Image.network(
-                          doctor.logoImages.first,
-                          width: size * 0.22,
-                          height: size * 0.22,
-                          fit: BoxFit.cover,
-                        )
+                    doctor.logoImages.first,
+                    width: size * 0.22,
+                    height: size * 0.22,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: size * 0.22,
+                        height: size * 0.22,
+                        color: Colors.grey.shade200,
+                        child: const Icon(
+                          Icons.image,
+                          color: Colors.grey,
+                          size: 40,
+                        ),
+                      );
+                    },
+                  )
                       : Container(
                           width: size * 0.2,
                           height: size * 0.2,

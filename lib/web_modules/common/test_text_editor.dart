@@ -56,7 +56,7 @@ class _EditorPageState extends State<EditorPage> {
     });
 
     final response = await dio.post(
-      "http://192.168.31.117:3000/lyd/user/uploadImages",
+      "https://locateyourdentist.onrender.com/lyd/user/uploadImages",
       data: formData,
     );
 

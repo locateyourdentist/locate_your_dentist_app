@@ -8,61 +8,6 @@ import 'package:locate_your_dentist/utills/constants.dart';
 
 class Api {
   static final userInfo = GetStorage();
-
-  // Future<List<dynamic>> getStates() async {
-  //   try {
-  //     final headers = {
-  //       "X-CSCAPI-KEY": AppConstants.stateCityApiKey,
-  //     };
-  //
-  //     final uri = Uri.parse(
-  //       "https://api.countrystatecity.in/v1/countries/IN/states",
-  //     );
-  //
-  //     final response = await http.get(uri, headers: {  "X-CSCAPI-KEY": AppConstants.stateCityApiKey,});
-  //
-  //     print("STATUS CODE: ${response.statusCode}");
-  //     print("BODY: ${response.body}");
-  //
-  //     if (response.statusCode == 200) {
-  //       return jsonDecode(response.body) as List<dynamic>;
-  //     } else {
-  //       throw Exception("API error ${response.statusCode}");
-  //     }
-  //   } catch (e) {
-  //     print("API ERROR: $e");
-  //     rethrow;
-  //   }
-  // }
-  //
-  //
-  // Future<List<dynamic>> getCities(String stateCode) async {
-  //   try {
-  //     final headers = {
-  //       "X-CSCAPI-KEY": AppConstants.stateCityApiKey,
-  //     };
-  //
-  //     final uri = Uri.parse(
-  //       "https://api.countrystatecity.in/v1/countries/IN/states/$stateCode/cities",
-  //     );
-  //
-  //     final response = await http.get(uri, headers: headers);
-  //
-  //     print("CITY API STATUS: ${response.statusCode}");
-  //     print("CITY API BODY: ${response.body}");
-  //
-  //     if (response.statusCode == 200) {
-  //       return jsonDecode(response.body) as List<dynamic>;
-  //     } else {
-  //       throw Exception(
-  //         "City API failed ${response.statusCode}: ${response.body}",
-  //       );
-  //     }
-  //   } catch (e) {
-  //     print("CITY API ERROR: $e");
-  //     rethrow;
-  //   }
-  // }
   Future<List<Map<String, String>>> fetchCountries() async {
     final response = await http.get(
       Uri.parse('https://api.countrystatecity.in/v1/countries'),
@@ -199,151 +144,6 @@ class Api {
       throw "save token failed: $e";
     }
   }
-
-  // Future<http.Response> registerUser(String userId, String userType,
-  //     String fullName, String? martialStatus, String dob,
-  //     String mobile,
-  //     String email,
-  //     // String address,
-  //     String? confirmPassword,
-  //     String taluk,
-  //     String district,
-  //     String city,
-  //     String area,
-  //     String pinCode,
-  //     String? typeName, List<String>? jobCategory,
-  //     // List<Uint8List>? logoImage,
-  //     // List<Uint8List>? image,
-  //     // List<Uint8List>? certificate,
-  //     List<Uint8List>? logoImage,
-  //     List<Uint8List>? image,
-  //     List<Uint8List>? certificate,
-  //     List<String>? oldImageUrl,
-  //     List<String>? oldCertificatesUrl, List<String>? logoUrl,
-  //     final Map<String, dynamic>? details, String? description,
-  //     String? location, String? website, String? latitude, String? longitude,
-  //     String? adminId, String? isAdmin) async {
-  //   var url = Uri.parse(
-  //       "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants
-  //           .registerUrl}");
-  //   print('url$url');
-  //   var request = http.MultipartRequest('POST', url);
-  //
-  //   // Fields
-  //   request.fields['userId'] = userId;
-  //   request.fields['name'] = fullName;
-  //   request.fields['dob'] = dob;
-  //   //request.fields['martialStatus']=martialStatus??"";
-  //   request.fields['description'] = description ?? "";
-  //   request.fields['password'] = confirmPassword ?? "";
-  //   request.fields['userType'] = userType;
-  //   request.fields['email'] = email;
-  //   request.fields['mobileNumber'] = mobile;
-  //   request.fields['location'] = location ?? "";
-  //   request.fields['adminId'] = adminId ?? "";
-  //   request.fields['isAdmin'] = isAdmin ?? 'false';
-  //   request.fields['address'] = jsonEncode({
-  //     "state": taluk ?? "",
-  //     "district": district ?? "",
-  //     "city": city ?? "",
-  //     "area": area ?? "",
-  //     "pincode": pinCode ?? "",
-  //     "latitude": latitude,
-  //     "longitude": longitude,
-  //     // "address": address??"",
-  //   });
-  //   request.fields['details'] = jsonEncode({
-  //     "name": typeName ?? "",
-  //     "description": description ?? "",
-  //     "website": website ?? "",
-  //     "jobCategory": jobCategory ?? "",
-  //     ...?details?["details"] as Map<String, dynamic>?,
-  //   });
-  //   request.fields['oldImageUrl'] = jsonEncode(oldImageUrl);
-  //   request.fields['oldCertificatesUrl'] = jsonEncode(oldCertificatesUrl);
-  //   request.fields['logoImageUrl'] = jsonEncode(logoUrl);
-  //   // request.fields['details'] = jsonEncode({
-  //   //   "name": typeName??"",
-  //   //    "description":description??"",
-  //   //   // "services":services??"",
-  //   //   "website":website??"",
-  //   //   // "specialisation":specialisation??"",
-  //   //    ...details!["details"]
-  //   // });
-  //   // if (image != null) {
-  //   //   for (var img in image) {
-  //   //     request.files.add(await http.MultipartFile.fromPath('image', img.path));
-  //   //   }
-  //   // }
-  //   // if (logoImage != null) {
-  //   //   for (var logo in logoImage) {
-  //   //     request.files.add(
-  //   //         await http.MultipartFile.fromPath('logoImage', logo.path));
-  //   //   }
-  //   // }
-  //   // if (certificate != null) {
-  //   //   for (var cert in certificate) {
-  //   //     request.files.add(
-  //   //         await http.MultipartFile.fromPath('certificates', cert.path));
-  //   //   }
-  //   // }
-  //   if (image != null) {
-  //     for (int i = 0; i < image.length; i++) {
-  //       request.files.add(
-  //         http.MultipartFile.fromBytes(
-  //           'image',
-  //           image[i],
-  //           filename: 'image_$i.jpg', // provide a name
-  //         ),
-  //       );
-  //     }
-  //   }
-  //
-  //   if (logoImage != null) {
-  //     for (int i = 0; i < logoImage.length; i++) {
-  //       request.files.add(
-  //         http.MultipartFile.fromBytes(
-  //           'logoImage',
-  //           logoImage[i],
-  //           filename: 'logo_$i.jpg',
-  //         ),
-  //       );
-  //     }
-  //   }
-  //
-  //   if (certificate != null) {
-  //     for (int i = 0; i < certificate.length; i++) {
-  //       request.files.add(
-  //         http.MultipartFile.fromBytes(
-  //           'certificates',
-  //           certificate[i],
-  //           filename: 'cert_$i.jpg',
-  //         ),
-  //       );
-  //     }
-  //   }
-  //   request.fields.forEach((key, value) {
-  //     print("$key : $value");
-  //   });
-  //   request.files.forEach((file) {
-  //     print("Field: ${file.field}, Filename: ${file.filename}, Path: ${file
-  //         .filename}");
-  //   });
-  //   try {
-  //     var streamedResponse = await request.send();
-  //
-  //     var response = await http.Response.fromStream(streamedResponse);
-  //     print("REGISTER RESPONSE = ${response.body}");
-  //
-  //     if (response.statusCode != 200) {
-  //       throw "Registration failed: Server returned ${response.statusCode}";
-  //     }
-  //
-  //     return response;
-  //   } catch (e) {
-  //     throw "Registration failed: $e";
-  //   }
-  // }
   Future<http.Response> registerUser(
     String userId,
     String userType,
@@ -485,7 +285,10 @@ class Api {
     print("FILES COUNT: ${request.files.length}");
 
     try {
-      var streamedResponse = await request.send();
+      var streamedResponse = await request.send().timeout(
+        const Duration(seconds: 45),
+        onTimeout: () => throw "Request timed out. Please check your connection and try again.",
+      );
       var response = await http.Response.fromStream(streamedResponse);
 
       print("REGISTER RESPONSE = ${response.body}");
@@ -513,11 +316,6 @@ class Api {
       final headers = <String, String>{
         'Content-Type': 'application/json',
       };
-
-      // if (token != null) {
-      //   headers['Authorization'] = 'Bearer $token';
-      // }
-
       Map<String, dynamic?> filters = {
         'userType': userType,
         'state': state,
@@ -542,11 +340,6 @@ class Api {
           cleanedFilters[key] = value;
         }
       });
-      // filters.forEach((key, value) {
-      //   if (value != null && value.isNotEmpty) {
-      //     cleanedFilters[key] = value;
-      //   }
-      // });
       final body = jsonEncode(
           {'search': searchText, 'filters': cleanedFilters});
       print('req body$body');
@@ -2947,15 +2740,6 @@ class Api {
         "startTime": startTime,
         "endTime": endTime,
       });
-      // if (jobImage1 != null) {
-      //   for (int i = 0; i < jobImage1.length; i++) {
-      //     request.files.add(http.MultipartFile.fromBytes(
-      //       'jobImage',
-      //       jobImage1[i],
-      //    //   filename: 'job_$userId$i.jpg',
-      //     ));
-      //   }
-      // }
       if (jobImage1 != null && jobImage1.isNotEmpty) {
         for (int i = 0; i < jobImage1.length; i++) {
           request.files.add(
@@ -2967,23 +2751,6 @@ class Api {
           );
         }
       }
-
-      // if (jobImage1 != null) {
-      //   for (var img in jobImage1) {
-      //     request.files.add(await http.MultipartFile.fromPath('jobImage', img));
-      //   }
-      // }
-      // if (jobImage1 != null) {
-      //   for (var img in jobImage1) {
-      //     request.files.add(
-      //       http.MultipartFile.fromBytes(
-      //         'jobImage',
-      //         img,
-      //         //filename: 'job_$userId$jobId$DateTime.jpg',
-      //       ),
-      //     );
-      //   }
-      // }
       request.headers.addAll({
         "Authorization": "Bearer $token",
         "Accept": "application/json",
@@ -3047,17 +2814,6 @@ class Api {
       request.fields['state'] = state;
       request.fields['city'] = city;
       request.fields['district'] = district;
-
-      // request.fields['details'] = jsonEncode({
-      //   "startTime": startTime,
-      //   "endTime": endTime,
-      // });
-
-      // if (contactImage1 != null) {
-      //   for (var img in contactImage1) {
-      //     request.files.add(await http.MultipartFile.fromPath('contactImage', img));
-      //   }
-      // }
       if (contactImage1 != null) {
         for (int i = 0; i < contactImage1.length; i++) {
           request.files.add(
@@ -3180,15 +2936,6 @@ class Api {
         );
       }
     }
-    // if (serviceImages != null) {
-    //   for (int i = 0; i < serviceImages.length; i++) {
-    //     request.files.add(http.MultipartFile.fromBytes(
-    //       'serviceImage',
-    //       serviceImages[i],
-    //       filename: "$userId$i.jpg",
-    //     ));
-    //   }
-    // }
     request.headers.addAll({
       "Authorization": "Bearer $token",
       "Accept": "application/json",
@@ -3282,22 +3029,6 @@ class Api {
         "startTime": startTime,
         "endTime": endTime,
       });
-
-      // if (webinarImage1 != null) {
-      //   var imageLength = await webinarImage1.length();
-      //   var multipartFile = http.MultipartFile(
-      //     'webinarImage',
-      //     webinarImage1.openRead(),
-      //     imageLength,
-      //     filename: webinarImage1.path.split('/').last,
-      //   );
-      //   request.files.add(multipartFile);
-      // }
-      // if (webinarImage1 != null) {
-      //   for (var img in webinarImage1) {
-      //     request.files.add(await http.MultipartFile.fromPath('webinarImage', img));
-      //   }
-      // }
       if (webinarImage1 != null) {
         final timestamp = DateTime.now().millisecondsSinceEpoch;
         for (int i = 0; i < webinarImage1.length; i++) {
@@ -3410,34 +3141,6 @@ class Api {
       throw "Failed to fetch job details: $e";
     }
   }
-
-  // Future<http.Response> getWebinarById(
-  //     String webinarId,String isActive
-  //     ) async {
-  //   String url =
-  //       "${AppConstants.baseUrl}${AppConstants.jobUrl}${AppConstants.getWebinarById}";
-  //   print('API getJob id Url $url');
-  //   String? token = Api.userInfo.read('token');
-  //   try {
-  //     final headers = <String, String>{
-  //       'Content-Type': 'application/json',
-  //     };
-  //
-  //     if (token != null) {
-  //       headers['Authorization'] = 'Bearer $token';
-  //     }
-  //     final response = await http.post(
-  //       Uri.parse(url),
-  //       headers: headers,
-  //       body: jsonEncode({'webinarId':int.parse(webinarId),'isActive':isActive}),);
-  //     print('request$webinarId');
-  //     print(jsonEncode({'webinarId': webinarId, 'isActive': isActive}));
-  //     print('API response: ${response.body}');
-  //     return response;
-  //   } catch (e) {
-  //     throw "Failed to fetch job details: $e";
-  //   }
-  // }
   Future<http.Response> getWebinarById(
     String webinarId,
     String isActive,
@@ -3450,14 +3153,6 @@ class Api {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
     };
-    // bool activeFlag;
-    // if (isActive.toLowerCase() == "true") {
-    //   activeFlag = true;
-    // } else if (isActive.toLowerCase() == "false") {
-    //   activeFlag = false;
-    // } else {
-    //   activeFlag = false;
-    // }
     bool activeFlag =
         (isActive == true || isActive.toString().toLowerCase() == "true");
     final body = {

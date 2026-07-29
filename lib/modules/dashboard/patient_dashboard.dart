@@ -492,8 +492,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOutBack,
           child: AnimatedRotation(
-            turns:  0, // 45°
-            //turns: isOpen ? 0.125 : 0, // 45°
+            turns:  0,
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
             child: Container(

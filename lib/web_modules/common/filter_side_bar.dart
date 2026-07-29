@@ -527,7 +527,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 loginController.selectedTaluka = null;
                 loginController.selectedJobType = null;
                 loginController.selectedSalary = null;
-
+                loginController.selectedDistricts.clear();
                 loginController.selectedDistance1 = 0.0;
                 loginController.latitude = null;
                 loginController.longitude = null;

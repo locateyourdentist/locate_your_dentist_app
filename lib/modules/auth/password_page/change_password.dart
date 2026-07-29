@@ -142,15 +142,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                           if (value.length < 4) {
                             return "Password must be at least 6 characters";
                           }
-                          // if (!RegExp(r'[a-z]').hasMatch(value)) {
-                          //   return "Password must contain at least one lowercase letter";
-                          // }
-                          // if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                          //   return "Password must contain at least one uppercase letter";
-                          // }
-                          // if (!RegExp(r'[0-9]').hasMatch(value)) {
-                          //   return "Password must contain at least one number";
-                          // }
                           if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
                             return "Password must contain at least one special character";
                           }
@@ -158,8 +149,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                         },
                       ),
                       SizedBox(height: size * 0.03),
-                      // Text('Confirm Password',style: AppTextStyles.caption(context,color: AppColors.black,fontWeight: FontWeight.bold),),
-                      // SizedBox(height: size * 0.03),
 
                       CustomTextField(
                         hint: "Confirm Password",

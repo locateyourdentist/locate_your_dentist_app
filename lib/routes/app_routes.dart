@@ -111,6 +111,7 @@ import '../web_modules/dashboard/view_clinic_patients.dart';
 import '../web_modules/dental_mechanic_lab_shop/create_contact_web_page.dart';
 import '../web_modules/dental_mechanic_lab_shop/dental_mechanic_dashboard.dart';
 import '../whatsapp_templates/pages/whatsapp_template_management_page.dart';
+import '../web_modules/dental_clinic/sale_post_detail_web.dart';
 
 class AppPages {
   static final List<GetPage> page = [
@@ -461,6 +462,10 @@ class AppPages {
       page: () => const ViewJobPageWeb(),
     ),
     GetPage(
+      name: '${AppRoutes.viewJobDetailWebPage}/:id',
+      page: () => const ViewJobPageWeb(),
+    ),
+    GetPage(
       name: AppRoutes.viewWebinarDetailWebPage,
       page: () => const WebinarViewWebPage(),
     ),
@@ -491,6 +496,10 @@ class AppPages {
       name: AppRoutes.whatsappTemplateManagementPage,
       page: () => const WhatsappTemplateManagementPage(),
       middlewares: [SuperAdminMiddleware()],
+    ),
+    GetPage(
+      name: '${AppRoutes.salePostDetailWebPage}/:id',
+      page: () => const SalePostDetailWebPage(),
     ),
   ];
 }

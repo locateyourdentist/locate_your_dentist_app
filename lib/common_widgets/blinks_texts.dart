@@ -32,7 +32,7 @@ class _BlinkingTextState extends State<BlinkingText>
         setState(() {
           _visible = !_visible;
         });
-        _blinkText(); // repeat
+        _blinkText();
       }
     });
   }

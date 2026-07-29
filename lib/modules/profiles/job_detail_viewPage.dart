@@ -6,6 +6,7 @@ import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
+import 'package:locate_your_dentist/common_widgets/job_share_utils.dart';
 import 'package:locate_your_dentist/model/AppliedJobSeekerList_model.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
@@ -351,6 +352,27 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                   ),
                                 ),
                               ),
+                                const SizedBox(width: 10),
+                                InkWell(
+                                  onTap: () => shareJobPost(
+                                    jobTitle: job.jobTitle ?? '',
+                                    orgName: job.orgName ?? '',
+                                    jobType: job.jobType,
+                                    salary: job.salary,
+                                    location:
+                                        "${job.city ?? ''}, ${job.district ?? ''}, ${job.state ?? ''}",
+                                    description: plainTextFromDelta(
+                                      job.jobDescription,
+                                    ),
+                                    imageUrl: url.isNotEmpty ? url : null,
+                                    jobId: targetJobId,
+                                  ),
+                                  child: Icon(
+                                    Icons.share_outlined,
+                                    color: AppColors.primary,
+                                    size: size * 0.06,
+                                  ),
+                                ),
                                 const SizedBox(width: 10),
 
                                 GetBuilder<LoginController>(

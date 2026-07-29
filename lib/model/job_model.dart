@@ -118,19 +118,10 @@ class JobModel {
       id: json["_id"]?.toString(),
       jobTitle: json["jobTitle"]?.toString(),
       jobDescription: parseJobDescription(json['jobDescription']),
-      // jobDescription: json['jobDescription'] != null
-      //     ? List<Map<String, dynamic>>.from(json['jobDescription'])
-      //     : [],
-      //jobDescription: json["jobDescription"]?.toString(),
       companyDescription: json["companyDescription"]?.toString(),
       jobType: json["jobType"]?.toString(),
       details: json["details"] != null ? Map<String, dynamic>.from(json["details"]) : null,
       jobImage: parseToList(json["jobImage"]),
-     // jobCategory: parseToList(json["jobCategory"]),
-     //  jobCategory: json['jobCategory'] != null
-     //      ? List<String>.from(
-     //      (json['jobCategory'] as List).map((e) => e.toString()))
-     //      : [],
       jobCategory: parseToList(json["jobCategory"]),
       createdDate: json["createdDate"] != null ? DateTime.tryParse(json["createdDate"].toString()) : null,
       updatedDate: json["updatedDate"] != null ? DateTime.tryParse(json["updatedDate"].toString()) : null,

@@ -390,47 +390,6 @@ class LoginController extends GetxController {
     update();
   }
 
-  // Future<Map<String, double>?> getLatLng({
-  //   required String state,
-  //   required String district,
-  //   required String taluka,
-  //   required String area,
-  //   required String pincode,
-  // }) async {
-  //   List<String> searchQueries = [
-  //     "$area, $taluka, $district, $state, India",
-  //     "$taluka, $district, $state, India",
-  //     "$district, $state, India",
-  //     "$pincode, India",
-  //   ];
-  //
-  //   for (String address in searchQueries) {
-  //     final url =
-  //         "https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(address)}&format=json&limit=1";
-  //
-  //     print("Trying: $address");
-  //
-  //     final response = await http.get(
-  //       Uri.parse(url),
-  //       headers: {"User-Agent": "FlutterApp"},
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       final data = jsonDecode(response.body);
-  //
-  //       if (data is List && data.isNotEmpty) {
-  //         return {
-  //           "latitude": double.parse(data[0]["lat"]),
-  //           "longitude": double.parse(data[0]["lon"]),
-  //         };
-  //       }
-  //      latitude=double.parse(data[0]["lat"]);
-  //       longitude=double.parse(data[0]["lon"]);
-  //     }
-  //   }
-  //
-  //   return null;
-  // }
   Future<Map<String, double>?> getLatLng({
     required String state,
     required String district,
@@ -530,44 +489,6 @@ class LoginController extends GetxController {
       print(e);
     }
   }
-  // Future<void> fetchDistricts(String state) async {
-  //   try {
-  //     final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}districts/$state';
-  //     print('dist url$url');
-  //     final res = await http.get(Uri.parse(url));
-  //     if (res.statusCode == 200) {
-  //       final decoded = jsonDecode(res.body);
-  //       districts = List<String>.from(
-  //         decoded is List ? decoded : decoded["districts"] ?? decoded["data"] ?? [],
-  //       );
-  //       print('Districts: $districts');
-  //       update();
-  //       selectedDistrict = null;
-  //       selectedTaluka = null;
-  //       talukas = [];
-  //       villages = [];
-  //       selectedVillage = null;
-  //     }
-  //   } catch (e) {
-  //     print("Error fetching districts: $e");
-  //   }
-  // }
-  // Future<void> fetchTalukas(String district) async {
-  //   try {
-  //     final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}subdistricts/$district';
-  //     final res = await http.get(Uri.parse(url));
-  //     if (res.statusCode == 200) {
-  //       final decoded = jsonDecode(res.body);
-  //       talukas = List<String>.from(
-  //         decoded is List ? decoded : decoded["subDistricts"] ?? decoded["data"] ?? [],
-  //       );
-  //       print('talukas: $talukas');
-  //       update();
-  //     }
-  //   } catch (e) {
-  //     print("Error fetching talukas: $e");
-  //   }
-  // }
   Future<void> fetchTalukas(List<String> districts) async {
     try {
       final res = await http.post(
@@ -1264,6 +1185,12 @@ class LoginController extends GetxController {
     } catch (e, st) {
       print("Register Exception: $e");
       print("Stack Trace: $st");
+      await showSuccessDialog(
+        context,
+        title: "Error",
+        message: "Registration failed: $e",
+        onOkPressed: () {},
+      );
     } finally {
       isLoading = false;
       isLoadingRegister=false;

@@ -46,19 +46,6 @@ class CommonImageCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(borderRadius),
               child:
-                  // (imageUrl != null && imageUrl!.isNotEmpty)
-                  //     ? Image.network(
-                  //   imageUrl!,
-                  //   fit: BoxFit.cover,
-                  //   width: double.infinity,
-                  //   height: double.infinity,
-                  //   errorBuilder: (context, error, stackTrace) => Image.asset(
-                  //     assetFallback!,
-                  //     fit: BoxFit.cover,
-                  //     width: double.infinity,
-                  //     height: double.infinity,
-                  //   ),
-                  // ) :
                   Image.asset(
                     imageUrl!,
                     fit: BoxFit.cover,

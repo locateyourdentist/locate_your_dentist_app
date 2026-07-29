@@ -80,10 +80,7 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
   final otp2 = TextEditingController();
   final otp3 = TextEditingController();
   final otp4 = TextEditingController();
-  //final otp5 = TextEditingController();
-  //final otp6 = TextEditingController();
 
-  // bool isLoading = false;
 
   Widget otpBox(TextEditingController controller) {
     return SizedBox(
@@ -248,23 +245,6 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
                     ),
                     SizedBox(height: size * 0.1),
 
-                    // OtpTextField(
-                    //   numberOfFields: 4,
-                    //   focusedBorderColor:AppColors.primary,
-                    //   borderColor: AppColors.primary,
-                    //   showFieldAsBox: true,
-                    //   fieldWidth: size * 0.18,
-                    //   fieldHeight: size * 0.18,
-                    //   borderWidth: 3.0,
-                    //   borderRadius: BorderRadius.circular(20),
-                    //   onCodeChanged: (String code) {
-                    //   },
-                    //   onSubmit: (String verificationCode){
-                    //     Api.userInfo.read('otpMail',);
-                    //     loginController.verifyOtpPassword(Api.userInfo.read('otpMail')??"", verificationCode,context);
-                    //
-                    //   },
-                    // ),
                     Text(
                       Api.userInfo.read('otpMail') ?? "",
                       //  widget.email,
@@ -283,8 +263,6 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
                         otpBox(otp2),
                         otpBox(otp3),
                         otpBox(otp4),
-                        // otpBox(otp5),
-                        // otpBox(otp6),
                       ],
                     ),
 

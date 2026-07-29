@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -50,9 +51,6 @@ class SplashController extends GetxController
   @override
   void onReady() {
     super.onReady();
-    // Navigation must run after the first frame, not during onInit (which
-    // fires while the SplashScreen is still building). onReady is scheduled
-    // via a post-frame callback, so Get.offAllNamed() is safe here.
     checkToken();
   }
 
@@ -77,6 +75,21 @@ class SplashController extends GetxController
     print("platform $platform");
     String? token = Api.userInfo.read('token');
     print('spalsh token$token');
+
+    if (platform == "Web") {
+      final requestedPath = Uri.parse(
+        PlatformDispatcher.instance.defaultRouteName,
+      ).path;
+      const publicDeepLinkPrefixes = [
+        '/viewJobDetailWebPage/',
+        '/salePostDetailWebPage/',
+      ];
+      if (publicDeepLinkPrefixes.any((p) => requestedPath.startsWith(p))) {
+        Get.offAllNamed(requestedPath);
+        return;
+      }
+    }
+
     if (token == null || token.isEmpty) {
       platform == "Web"
           ? Get.offAllNamed("/")

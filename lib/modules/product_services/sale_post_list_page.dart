@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:locate_your_dentist/common_widgets/common_bottom_navigation.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/product_services/sale_post_controller.dart';
+import 'package:locate_your_dentist/modules/product_services/service_controller.dart';
+import 'package:locate_your_dentist/model/salePostModel.dart';
+import 'package:locate_your_dentist/common_widgets/sale_share_utils.dart';
 import '../../common_widgets/color_code.dart';
 
 /// Hover/lift affordance used purely for a modern, tactile feel on
@@ -51,6 +54,7 @@ class _HoverLiftState extends State<_HoverLift> {
 
 
 class _SalePostRow {
+  final String? id;
   final String message;
   final String price;
   final bool negotiable;
@@ -62,6 +66,7 @@ class _SalePostRow {
   final List<String> imageUrls;
 
   const _SalePostRow({
+    this.id,
     required this.message,
     required this.price,
     required this.negotiable,
@@ -82,16 +87,19 @@ String _timeAgo(DateTime date) {
   return "${diff.inDays} day(s) ago";
 }
 
-_SalePostRow _rowFromItem(SalePostItem item) {
+_SalePostRow _rowFromApiModel(SalePostModel model) {
+  final message = model.message ?? "";
+  final price = model.price ?? "";
   return _SalePostRow(
-    message: item.message.isEmpty ? "No description provided" : item.message,
-    price: item.price.isEmpty ? "N/A" : item.price,
-    negotiable: item.negotiable,
-    userType: item.userType,
-    mobileNumber: item.mobileNumber,
-    postedAgo: _timeAgo(item.postedAt),
+    id: model.id,
+    message: message.isEmpty ? "No description provided" : message,
+    price: price.isEmpty ? "N/A" : price,
+    negotiable: false,
+    userType: model.userType ?? "",
+    mobileNumber: model.mobileNumber ?? "",
+    postedAgo: _timeAgo(model.createdDate ?? DateTime.now()),
     imageAsset: "assets/images/tooth.png",
-    pickedImages: item.images,
+    imageUrls: model.images ?? [],
   );
 }
 
@@ -113,50 +121,6 @@ void _openSaleImageUrl(String url) {
   });
 }
 
-const List<_SalePostRow> _samplePosts = [
-  _SalePostRow(
-    message: "Lightly used dental chair, excellent condition, service history available.",
-    price: "45,000",
-    negotiable: true,
-    userType: "Dental Clinic",
-    mobileNumber: "98765 43210",
-    postedAgo: "2 days ago",
-    imageAsset: "assets/images/dental_clinic1.png",
-    imageUrls: [
-      "https://picsum.photos/seed/dentalchair1/400/400",
-      "https://picsum.photos/seed/dentalchair2/400/400",
-      "https://picsum.photos/seed/dentalchair3/400/400",
-    ],
-  ),
-  _SalePostRow(
-    message: "Autoclave sterilizer, barely used, moving out of city so selling urgently.",
-    price: "12,500",
-    negotiable: false,
-    userType: "Dental Shop",
-    mobileNumber: "98765 11122",
-    postedAgo: "5 days ago",
-    imageAsset: "assets/images/dental_shop1.png",
-    imageUrls: [
-      "https://picsum.photos/seed/autoclave1/400/400",
-      "https://picsum.photos/seed/autoclave2/400/400",
-    ],
-  ),
-  _SalePostRow(
-    message: "Set of dental hand instruments, bulk lot, good for a new clinic setup.",
-    price: "6,000",
-    negotiable: true,
-    userType: "Dental Lab",
-    mobileNumber: "91234 56789",
-    postedAgo: "1 week ago",
-    imageAsset: "assets/images/dental_lab1.png",
-    imageUrls: [
-      "https://picsum.photos/seed/instruments1/400/400",
-      "https://picsum.photos/seed/instruments2/400/400",
-      "https://picsum.photos/seed/instruments3/400/400",
-    ],
-  ),
-];
-
 class SalePostListPage extends StatefulWidget {
   const SalePostListPage({super.key});
 
@@ -166,8 +130,18 @@ class SalePostListPage extends StatefulWidget {
 
 class _SalePostListPageState extends State<SalePostListPage> {
   final searchController = TextEditingController();
-  final salePostController = Get.put(SalePostController());
+  final serviceController = Get.put(ServiceController());
   String _query = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _refresh();
+  }
+
+  Future<void> _refresh() async {
+    await serviceController.getSalesListAdmin('', '', context);
+  }
 
   @override
   void dispose() {
@@ -175,10 +149,8 @@ class _SalePostListPageState extends State<SalePostListPage> {
     super.dispose();
   }
 
-  List<_SalePostRow> get _allPosts => [
-        ...salePostController.posts.map(_rowFromItem),
-        ..._samplePosts,
-      ];
+  List<_SalePostRow> get _allPosts =>
+      serviceController.salesList.map(_rowFromApiModel).toList();
 
   List<_SalePostRow> get _filtered {
     final all = _allPosts;
@@ -208,6 +180,12 @@ class _SalePostListPageState extends State<SalePostListPage> {
 
   @override
   Widget build(BuildContext context) {
+    return GetBuilder<ServiceController>(
+      builder: (controller) => _buildScaffold(context),
+    );
+  }
+
+  Widget _buildScaffold(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     final posts = _filtered;
     return Scaffold(
@@ -371,6 +349,22 @@ class _SalePostListPageState extends State<SalePostListPage> {
                                       ),
                                       const Spacer(),
                                       Text(post.postedAgo, style: AppTextStyles.caption(context, color: Colors.grey.shade500)),
+                                      const SizedBox(width: 6),
+                                      InkWell(
+                                        borderRadius: BorderRadius.circular(20),
+                                        onTap: () => shareSalePost(
+                                          message: post.message,
+                                          price: post.price,
+                                          mobileNumber: post.mobileNumber,
+                                          userType: post.userType,
+                                          imageUrl: post.imageUrls.isNotEmpty ? post.imageUrls.first : null,
+                                          postId: post.id,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Icon(Icons.share_outlined, size: 16, color: AppColors.primary),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(height: 8),

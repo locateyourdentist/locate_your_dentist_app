@@ -41,44 +41,46 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
 
   // Submit Button
   Widget submitButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: () async {
-          if (_formKeyForgotEmailWeb.currentState!.validate()) {
-            Api.userInfo.write('otpMail', loginController.emailController.text);
-            await loginController.forgotPassword(
-              loginController.emailController.text,
-              context,
-            );
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 5,
-        ),
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AppColors.primary, AppColors.secondary],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              "Submit",
-              style: AppTextStyles.caption(
+    return Center(
+      child: SizedBox(
+        width: 250,
+        height: 50,
+        child: ElevatedButton(
+          onPressed: () async {
+            if (_formKeyForgotEmailWeb.currentState!.validate()) {
+              Api.userInfo.write('otpMail', loginController.emailController.text);
+              await loginController.forgotPassword(
+                loginController.emailController.text,
                 context,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 5,
+          ),
+          child: Ink(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [AppColors.primary, AppColors.secondary],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                "Submit",
+                style: AppTextStyles.caption(
+                  context,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -180,7 +182,7 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
                         SizedBox(height: cardWidth * 0.01),
 
                         passwordField(),
-                        SizedBox(height: cardWidth * 0.02),
+                        SizedBox(height: cardWidth * 0.05),
                         submitButton(),
                         SizedBox(height: cardWidth * 0.01),
                         Row(

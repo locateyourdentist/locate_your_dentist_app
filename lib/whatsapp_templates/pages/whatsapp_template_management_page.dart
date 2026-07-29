@@ -52,10 +52,7 @@ class _WhatsappTemplateManagementPageState
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: listController,
-      builder: (context, _) => _buildScaffold(context),
-    );
+    return _buildScaffold(context);
   }
 
   Widget _buildScaffold(BuildContext context) {
@@ -169,10 +166,13 @@ class _WhatsappTemplateManagementPageState
           Expanded(child: body),
         ],
       ),
-      bottomNavigationBar: ActionBarWidget(
-        controller: builderController,
-        existingTemplates: listController.templates,
-        onSaved: listController.fetchTemplates,
+      bottomNavigationBar: AnimatedBuilder(
+        animation: listController,
+        builder: (context, _) => ActionBarWidget(
+          controller: builderController,
+          existingTemplates: listController.templates,
+          onSaved: listController.fetchTemplates,
+        ),
       ),
     );
   }

@@ -464,6 +464,103 @@ void showDeactivateConfirmDialog({
   );
 }
 
+/// Shown when a required-field check finds empty/unselected fields before
+/// submitting a multi-step form (e.g. registration) — Form.validate() alone
+/// only shows inline red text under each field, which is easy to miss when
+/// the offending field is on a different step than the one currently shown.
+void showMissingFieldsDialog(BuildContext context, List<String> missingFields) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      title: Row(
+        children: [
+          const Icon(Icons.error_outline, color: AppColors.error),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              "Please complete these fields",
+              style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: missingFields
+            .map(
+              (field) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  children: [
+                    const Icon(Icons.close, color: AppColors.error, size: 16),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(field, style: AppTextStyles.caption(context))),
+                  ],
+                ),
+              ),
+            )
+            .toList(),
+      ),
+      actions: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text("OK", style: AppTextStyles.caption(context, color: AppColors.white)),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Shown when location is blocked on web, where browsers deliberately don't
+/// allow a site to reopen its own permission prompt or jump to browser
+/// settings — the user has to do that manually. Returns true if the user
+/// wants to retry after fixing it, false if they chose to skip.
+Future<bool> showEnableLocationDialog(BuildContext context) async {
+  final retry = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      title: Row(
+        children: [
+          const Icon(Icons.location_off_outlined, color: AppColors.error),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              "Location access needed",
+              style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      content: Text(
+        "Click the padlock or site-info icon next to your browser's address bar → Location → Allow, then try again.",
+        style: AppTextStyles.caption(context),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text("Skip", style: AppTextStyles.caption(context, color: AppColors.grey)),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text("Try Again", style: AppTextStyles.caption(context, color: AppColors.white)),
+        ),
+      ],
+    ),
+  );
+  return retry ?? false;
+}
+
 void showUpdateDialog(String storeUrl) {
   Get.dialog(
     AlertDialog(

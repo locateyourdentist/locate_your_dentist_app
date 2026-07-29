@@ -64,17 +64,6 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Handle
-                // Center(
-                //   child: Container(
-                //     width: 60,
-                //     height: 5,
-                //     decoration: BoxDecoration(
-                //       color: Colors.grey[300],
-                //       borderRadius: BorderRadius.circular(10),
-                //     ),
-                //   ),
-                // ),
                 const SizedBox(height: 15),
 
                 Center(
@@ -86,11 +75,6 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                 ),
                 const SizedBox(height: 25),
                 _sectionTitle("Distance"),
-                // _selectableHorizontal(
-                //   options: ["5 Km", "10 Km", "15 Km", "20 Km"],
-                //   selectedValue: loginController.selectedDistance,
-                //   onSelect: (val) => setState(() => loginController.selectedDistance = val),
-                // ),
                 _selectableHorizontal(
                   options: ["5 Km", "10 Km", "15 Km", "20 Km"],
                   selectedValue: loginController.selectedDistance != null
@@ -128,14 +112,6 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                 const SizedBox(height: 20),
 
                 _sectionTitle("Select Location"),
-               // Row(
-               //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-               //   children: [
-               //
-               //  Expanded(child:Api.userInfo.read('userType') != 'admin'? _stateDropdown(width):SizedBox(width: 2,)),
-               //  const SizedBox(width: 20),
-               //  Expanded(child: _districtDropdown()),
-               // ],),
                 Row(
                   children: [
                     if (Api.userInfo.read('userType') != 'admin')
