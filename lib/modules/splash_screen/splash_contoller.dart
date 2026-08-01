@@ -76,18 +76,38 @@ class SplashController extends GetxController
     String? token = Api.userInfo.read('token');
     print('spalsh token$token');
 
-    if (platform == "Web") {
-      final requestedPath = Uri.parse(
-        PlatformDispatcher.instance.defaultRouteName,
-      ).path;
-      const publicDeepLinkPrefixes = [
-        '/viewJobDetailWebPage/',
-        '/salePostDetailWebPage/',
-      ];
-      if (publicDeepLinkPrefixes.any((p) => requestedPath.startsWith(p))) {
+    final requestedPath = Uri.parse(
+      PlatformDispatcher.instance.defaultRouteName,
+    ).path;
+
+    // App Links (tapping a shared https://locateyourdentist.com/... link
+    // with the app installed) land here the same way a browser deep link
+    // does on web, so both platforms need to honor the requested page
+    // instead of always falling through to the dashboard below.
+    if (requestedPath.startsWith('/viewJobDetailWebPage/')) {
+      final jobId = requestedPath.split('/').last;
+      if (platform == "Web") {
         Get.offAllNamed(requestedPath);
-        return;
+      } else if (jobId.isNotEmpty) {
+        Api.userInfo.write('selectJobId', jobId);
+        Get.offAllNamed('/jobViewProfilePage');
       }
+      return;
+    }
+    if (requestedPath.startsWith('/viewWebinarDetailWebPage/')) {
+      final webinarId = requestedPath.split('/').last;
+      if (platform == "Web") {
+        Get.offAllNamed(requestedPath);
+      } else if (webinarId.isNotEmpty) {
+        Api.userInfo.write('webinarId', webinarId);
+        Get.offAllNamed('/viewWebinarPage');
+      }
+      return;
+    }
+    if (platform == "Web" &&
+        requestedPath.startsWith('/salePostDetailWebPage/')) {
+      Get.offAllNamed(requestedPath);
+      return;
     }
 
     if (token == null || token.isEmpty) {

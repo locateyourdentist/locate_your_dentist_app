@@ -577,31 +577,15 @@ class _CreatePlanState extends State<CreatePlan> {
                                       return;
                                     int days =
                                         int.tryParse(
-                                          planController
-                                              .durationDaysController
-                                              .text,
-                                        ) ??
-                                        0;
-                                    int months =
-                                        int.tryParse(
-                                          planController
-                                              .durationMonthsController
-                                              .text,
-                                        ) ??
-                                        0;
+                                          planController.durationDaysController.text,) ?? 0;
+                                    int months = int.tryParse(planController.durationMonthsController.text) ?? 0;
 
                                     int duration = days + (months * 30);
 
                                     String durationDays = duration.toString();
-                                    if (planController.selectedUserType ==
-                                            null ||
-                                        planController
-                                            .selectedUserType!
-                                            .isEmpty) {
-                                      showCustomToast(
-                                        context,
-                                        "Please select user type",
-                                      );
+                                    if (planController.selectedUserType == null ||
+                                        planController.selectedUserType!.isEmpty) {
+                                      showCustomToast(context, "Please select user type",);
                                       return;
                                     }
                                     List<String> features = [];
@@ -641,16 +625,10 @@ class _CreatePlanState extends State<CreatePlan> {
                                         planController.isLocationAndroid,
                                         planController.isMobileNumber,
                                         planController.isServices,
-                                        planController
-                                            .imageCountController
-                                            .text,
+                                        planController.imageCountController.text,
                                         planController.imageSizeController.text,
-                                        planController
-                                            .videoCountController
-                                            .text,
-                                        planController
-                                            .videoCountController
-                                            .text,
+                                        planController.videoCountController.text,
+                                        planController.videoCountController.text,
                                         features.toSet().toList(),
                                         context,
                                       );

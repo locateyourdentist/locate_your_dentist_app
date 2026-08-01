@@ -9,6 +9,7 @@ import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../common_widgets/color_code.dart';
+import '../../common_widgets/webinar_share_utils.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
 
@@ -244,7 +245,33 @@ void initState(){
                                    ),
 
                        const SizedBox(height: 20),
-                       Text("Webinar Description", style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold)),
+                       Row(
+                         children: [
+                           Expanded(
+                             child: Text("Webinar Description", style: AppTextStyles.body(context,color: AppColors.black,fontWeight: FontWeight.bold)),
+                           ),
+                           InkWell(
+                             onTap: () => shareWebinarPost(
+                               webinarTitle: webinar.webinarTitle ?? '',
+                               orgName: webinar.orgName ?? '',
+                               place: webinar.place,
+                               date: formatDate(webinar.createdDate?.toString()),
+                               startTime: webinar.startTime,
+                               endTime: webinar.endTime,
+                               description: plainTextFromDelta(webinar.webinarDescription),
+                               imageUrl: loginController.webinarFileImages.isNotEmpty
+                                   ? loginController.webinarFileImages.first.url.toString()
+                                   : null,
+                               webinarId: webinar.webinarId?.toString(),
+                             ),
+                             child: Icon(
+                               Icons.share_outlined,
+                               color: AppColors.primary,
+                               size: size * 0.06,
+                             ),
+                           ),
+                         ],
+                       ),
                                    const SizedBox(height: 10),
                    // Text(webinar.webinarDescription.toString()??"N/A",
                    //  //webinarData["webinarDescription"],
@@ -281,7 +308,7 @@ void initState(){
                     },
                       child:Text(webinar.webinarLink.toString()??"N/A",
                       //webinarData["webinarDescription"],
-                      style: TextStyle(fontSize:size*0.03,color: Colors.blueAccent,decoration:TextDecoration.underline, fontWeight: FontWeight.normal)
+                      style: TextStyle(fontSize:size*0.035,color: Colors.blueAccent,decoration:TextDecoration.underline, fontWeight: FontWeight.normal)
                                    ),),
                                    const SizedBox(height: 15),
                    if ((Api.userInfo.read('userType') ?? "") == 'Job Seekers')

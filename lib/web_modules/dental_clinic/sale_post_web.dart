@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -92,7 +94,7 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
   final salePostController = Get.put(SalePostController());
 
   final mobileController = TextEditingController();
-  final messageController = TextEditingController();
+  final QuillController messageQuillController = QuillController.basic();
   final priceController = TextEditingController();
   final PlanController planController = Get.put(PlanController());
 
@@ -120,7 +122,7 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
   @override
   void dispose() {
     mobileController.dispose();
-    messageController.dispose();
+    messageQuillController.dispose();
     priceController.dispose();
     super.dispose();
   }
@@ -171,6 +173,13 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
       Get.snackbar("Missing info", "Please select a user type");
       return;
     }
+    if (messageQuillController.document.toPlainText().trim().isEmpty) {
+      Get.snackbar("Missing info", "Please describe the item you're selling");
+      return;
+    }
+    final messageJson = jsonEncode(
+      messageQuillController.document.toDelta().toJson(),
+    );
 
     bool isBasePlanActive = false;
     bool isPosterPlanActive = false;
@@ -209,25 +218,42 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
       return img.bytes ?? await img.file!.readAsBytes();
     }));
 
+    Map<String, dynamic> responseData = {};
     try {
       final response = await Api().createSalePost(
         Api.userInfo.read('userId') ?? "",
         selectedUserType!,
         mobileController.text.trim(),
-        messageController.text.trim(),
+        messageJson,
         priceController.text.trim(),
         imageBytes,
       );
       debugPrint("create sale post status: ${response.statusCode}");
+      responseData = jsonDecode(response.body);
     } catch (e) {
       debugPrint("create sale post error: $e");
+      if (mounted) {
+        Get.snackbar("Error", "Failed to post listing: $e");
+      }
+      return;
+    }
+
+    if (responseData['status']?.toString().toLowerCase() != 'success') {
+      if (mounted) {
+        showCustomToast(
+          context,
+          responseData['message']?.toString() ?? "Failed to post listing",
+          backgroundColor: Colors.redAccent,
+        );
+      }
+      return;
     }
 
     salePostController.addPost(
       SalePostItem(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         mobileNumber: mobileController.text.trim(),
-        message: messageController.text.trim(),
+        message: messageJson,
         price: priceController.text.trim(),
         negotiable: negotiable,
         userType: selectedUserType!,
@@ -238,11 +264,11 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
       ),
     );
 
-    showCustomToast(
-      context,
-      "Listing posted",
-      backgroundColor: AppColors.primary,
-    );
+    // showCustomToast(
+    //   context,
+    //   "Listing posted",
+    //   backgroundColor: AppColors.primary,
+    // );
     Get.offNamed('/salePostListWebPage');
   }
 
@@ -524,12 +550,36 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                               ),
                               const SizedBox(height: 16),
                               _fieldLabel("Message"),
-                              CustomTextField(
-                                hint: "Describe the item you're selling...",
-                                controller: messageController,
-                                maxLines: 4,
-                                fillColor: Colors.grey.shade100,
-                                borderColor: Colors.white,
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  border: Border.all(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  children: [
+                                    QuillSimpleToolbar(
+                                      controller: messageQuillController,
+                                      config: const QuillSimpleToolbarConfig(
+                                        embedButtons: [],
+                                        showBackgroundColorButton: false,
+                                        showSearchButton: false,
+                                        multiRowsDisplay: false,
+                                      ),
+                                    ),
+                                    const Divider(height: 1),
+                                    SizedBox(
+                                      height: 350,
+                                      child: QuillEditor.basic(
+                                        controller: messageQuillController,
+                                        config: const QuillEditorConfig(
+                                          placeholder: "Describe the item you're selling...",
+                                          padding: EdgeInsets.all(10),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               const SizedBox(height: 4),
                               InkWell(

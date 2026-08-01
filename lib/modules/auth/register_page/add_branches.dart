@@ -23,16 +23,22 @@ class _AddBranchesState extends State<AddBranches> {
     super.initState();
     _refresh();
   }
-  Future<void> _refresh() async {
-    await loginController.getBranchDetails(context);
+  Future<void> getLocation() async {
     final position = await LocationService.getCurrentLocation();
+
     if (position != null) {
       loginController.latitude = position.latitude;
       loginController.longitude = position.longitude;
-      print('latt${loginController.latitude}long${loginController.longitude}');
-      debugPrint(
-          'User location: Lat ${position.latitude}, Lng ${position.longitude}');
+      print('latitude ${loginController.latitude}');
+      print('longitude ${loginController.longitude}');
+
+    } else {
+      Get.snackbar('Location', 'Unable to get location');
     }
+  }
+  Future<void> _refresh() async {
+    await loginController.getBranchDetails(context);
+    getLocation();
   }
   @override
   Widget build(BuildContext context) {

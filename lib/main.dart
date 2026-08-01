@@ -140,7 +140,11 @@ Future<void> main() async {
       firebaseMessagingBackgroundHandler,
     );
 
-    await setupFCM();
+    // Fire-and-forget: requestPermission() waits on the user answering the
+    // OS notification-permission dialog, which has nothing to render behind
+    // it before runApp() — awaiting here would block the entire app from
+    // ever showing a first frame if that dialog goes unanswered.
+    setupFCM();
     FirebaseMessaging.onMessage.listen(
           (RemoteMessage message) async {
 

@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -94,7 +96,7 @@ class _SalePostPageState extends State<SalePostPage> {
   final PlanController planController = Get.put(PlanController());
 
   final mobileController = TextEditingController();
-  final messageController = TextEditingController();
+  final QuillController messageQuillController = QuillController.basic();
   final priceController = TextEditingController();
 
   final List<String> userTypes = const [
@@ -115,7 +117,7 @@ class _SalePostPageState extends State<SalePostPage> {
   @override
   void dispose() {
     mobileController.dispose();
-    messageController.dispose();
+    messageQuillController.dispose();
     priceController.dispose();
     super.dispose();
   }
@@ -213,6 +215,13 @@ class _SalePostPageState extends State<SalePostPage> {
       Get.snackbar("Missing info", "Please select a user type");
       return;
     }
+    if (messageQuillController.document.toPlainText().trim().isEmpty) {
+      Get.snackbar("Missing info", "Please describe the item you're selling");
+      return;
+    }
+    final messageJson = jsonEncode(
+      messageQuillController.document.toDelta().toJson(),
+    );
 
     bool isBasePlanActive = false;
     bool isPosterPlanActive = false;
@@ -251,25 +260,42 @@ class _SalePostPageState extends State<SalePostPage> {
       return img.bytes ?? await img.file!.readAsBytes();
     }));
 
+    Map<String, dynamic> responseData = {};
     try {
       final response = await Api().createSalePost(
         Api.userInfo.read('userId') ?? "",
         selectedUserType!,
         mobileController.text.trim(),
-        messageController.text.trim(),
+        messageJson,
         priceController.text.trim(),
         imageBytes,
       );
       debugPrint("create sale post status: ${response.statusCode}");
+      responseData = jsonDecode(response.body);
     } catch (e) {
       debugPrint("create sale post error: $e");
+      if (mounted) {
+        Get.snackbar("Error", "Failed to post listing: $e");
+      }
+      return;
+    }
+
+    if (responseData['status']?.toString().toLowerCase() != 'success') {
+      if (mounted) {
+        showCustomToast(
+          context,
+          responseData['message']?.toString() ?? "Failed to post listing",
+          backgroundColor: Colors.redAccent,
+        );
+      }
+      return;
     }
 
     salePostController.addPost(
       SalePostItem(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         mobileNumber: mobileController.text.trim(),
-        message: messageController.text.trim(),
+        message: messageJson,
         price: priceController.text.trim(),
         negotiable: negotiable,
         userType: selectedUserType!,
@@ -527,12 +553,36 @@ class _SalePostPageState extends State<SalePostPage> {
                             ),
                             const SizedBox(height: 16),
                             _fieldLabel("Message"),
-                            CustomTextField(
-                              hint: "Describe the item you're selling...",
-                              controller: messageController,
-                              maxLines: 4,
-                              fillColor: Colors.grey.shade100,
-                              borderColor: Colors.white,
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                children: [
+                                  QuillSimpleToolbar(
+                                    controller: messageQuillController,
+                                    config: const QuillSimpleToolbarConfig(
+                                      embedButtons: [],
+                                      showBackgroundColorButton: false,
+                                      showSearchButton: false,
+                                      multiRowsDisplay: false,
+                                    ),
+                                  ),
+                                  const Divider(height: 1),
+                                  SizedBox(
+                                    height: 300,
+                                    child: QuillEditor.basic(
+                                      controller: messageQuillController,
+                                      config: const QuillEditorConfig(
+                                        placeholder: "Describe the item you're selling...",
+                                        padding: EdgeInsets.all(10),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 16),
                             _fieldLabel("Price"),

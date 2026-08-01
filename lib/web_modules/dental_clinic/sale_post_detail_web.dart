@@ -7,6 +7,7 @@ import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:locate_your_dentist/common_widgets/sale_share_utils.dart';
+import 'package:locate_your_dentist/common_widgets/quill_message_utils.dart';
 import 'package:locate_your_dentist/model/salePostModel.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
@@ -123,7 +124,8 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
 
   Widget _buildDetail(BuildContext context, SalePostModel post) {
     final images = post.images ?? [];
-    final message = (post.message ?? '').isEmpty ? "No description provided" : post.message!;
+    final plainMessage = quillMessageToPlainText(post.message);
+    final message = plainMessage.isEmpty ? "No description provided" : plainMessage;
     final price = (post.price ?? '').isEmpty ? "N/A" : post.price!;
     final userType = post.userType ?? '';
     final mobileNumber = post.mobileNumber ?? '';

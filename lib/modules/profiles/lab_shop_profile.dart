@@ -503,96 +503,97 @@ class _LabProfileState extends State<LabProfile>
                                 ),
                               SizedBox(height: size * 0.02),
                               if (isAdminUser)
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
                                           "Active/Inactive",
-                                          textAlign: TextAlign.center,
-                                          style: AppTextStyles.body(
+                                          style: AppTextStyles.caption(
                                             context,
-                                            fontWeight: FontWeight.bold,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
-                                        const SizedBox(width: 6),
-                                        GetBuilder<LoginController>(
-                                          init: LoginController(),
-                                          builder: (controller) {
-                                            return Switch(
-                                              value: loginController
-                                                  .userData
-                                                  .first
-                                                  .isActive,
-                                              activeThumbColor:
+                                      ),
+                                      GetBuilder<LoginController>(
+                                        init: LoginController(),
+                                        builder: (controller) {
+                                          return Switch(
+                                            value: loginController
+                                                .userData
+                                                .first
+                                                .isActive,
+                                            activeThumbColor:
+                                                loginController
+                                                    .userData
+                                                    .first
+                                                    .isActive
+                                                ? Colors.green
+                                                : Colors.red,
+                                            activeTrackColor: AppColors.primary
+                                                .withValues(alpha: 0.5),
+                                            inactiveThumbColor: Colors.red,
+                                            inactiveTrackColor:
+                                                Colors.grey.shade400,
+                                            onChanged: (value) {
+                                              showDeactivateConfirmDialog(
+                                                context: context,
+                                                isActivating: value,
+                                                onConfirm: () async {
                                                   loginController
-                                                      .userData
-                                                      .first
-                                                      .isActive
-                                                  ? Colors.green
-                                                  : Colors.red,
-                                              activeTrackColor: AppColors
-                                                  .primary
-                                                  .withValues(alpha: 0.5),
-                                              inactiveThumbColor: Colors.red,
-                                              inactiveTrackColor:
-                                                  Colors.grey.shade400,
-                                              onChanged: (value) {
-                                                showDeactivateConfirmDialog(
-                                                  context: context,
-                                                  isActivating: value,
-                                                  onConfirm: () async {
-                                                    loginController
+                                                              .userData
+                                                              .first
+                                                              .isActive ==
+                                                          true
+                                                      ? await loginController
+                                                            .deactivateUserAdmin(
+                                                              loginController
+                                                                      .userData
+                                                                      .first
+                                                                      .userId ??
+                                                                  "",
+                                                              false,
+                                                              context,
+                                                            )
+                                                      : await loginController
+                                                            .deactivateUserAdmin(
+                                                              loginController
+                                                                      .userData
+                                                                      .first
+                                                                      .userId ??
+                                                                  "",
+                                                              true,
+                                                              context,
+                                                            );
+                                                  print(
+                                                    "${loginController.userData.first.isActive ?? ""} "
+                                                    "active status",
+                                                  );
+                                                  await loginController
+                                                      .getProfileByUserId(
+                                                        loginController
                                                                 .userData
                                                                 .first
-                                                                .isActive ==
-                                                            true
-                                                        ? await loginController
-                                                              .deactivateUserAdmin(
-                                                                loginController
-                                                                        .userData
-                                                                        .first
-                                                                        .userId ??
-                                                                    "",
-                                                                false,
-                                                                context,
-                                                              )
-                                                        : await loginController
-                                                              .deactivateUserAdmin(
-                                                                loginController
-                                                                        .userData
-                                                                        .first
-                                                                        .userId ??
-                                                                    "",
-                                                                true,
-                                                                context,
-                                                              );
-                                                    print(
-                                                      "${loginController.userData.first.isActive ?? ""} "
-                                                      "active status",
-                                                    );
-                                                    await loginController
-                                                        .getProfileByUserId(
-                                                          loginController
-                                                                  .userData
-                                                                  .first
-                                                                  .userId ??
-                                                              "",
-                                                          context,
-                                                        );
-                                                    loginController.update();
-                                                  },
-                                                );
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                                                .userId ??
+                                                            "",
+                                                        context,
+                                                      );
+                                                  loginController.update();
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
                               Row(
@@ -700,51 +701,71 @@ class _LabProfileState extends State<LabProfile>
                               ),
                               const SizedBox(height: 15),
 
-                              const Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "Description",
-                                  textAlign: TextAlign.center,
-                                  softWrap: true,
-                                  style: TextStyle(
-                                    color: AppColors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade50,
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              // Text( loginController.userData.first.details["description"]??"A dental clinic provides comprehensive oral health care services, including routine check-ups, teeth cleaning, preventive care, restorative treatments, and cosmetic dentistry. The clinic is dedicated to maintaining healthy smiles through modern equipment, skilled professionals, and a comfortable, patient-friendly environment.",
-                              // ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: IgnorePointer(
-                                  child: QuillEditor(
-                                    controller: _controller,
-                                    scrollController: _scrollController,
-                                    focusNode: FocusNode(),
-                                    config: const QuillEditorConfig(
-                                      showCursor: false,
-                                      expands: false,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Description",
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(height: 6),
+                                    IgnorePointer(
+                                      child: QuillEditor(
+                                        controller: _controller,
+                                        scrollController: _scrollController,
+                                        focusNode: FocusNode(),
+                                        config: const QuillEditorConfig(
+                                          showCursor: false,
+                                          expands: false,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                //Text( getPlainText(job.jobDescription), style: AppTextStyles.caption(context, fontWeight: FontWeight.normal, color: AppColors.black, height: 1.5)),
                               ),
                               const SizedBox(height: 20),
 
-                              TabBar(
-                                controller: _tabController,
-                                labelColor: AppColors.black,
-                                unselectedLabelColor: Colors.black,
-                                unselectedLabelStyle: AppTextStyles.caption(
-                                  context,
-                                  fontWeight: FontWeight.bold,
+                              Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
-                                tabs: [
-                                  const Tab(text: 'Our Products'),
-                                  if (userType == 'superAdmin')
-                                    const Tab(text: 'Certification'),
-                                ],
+                                child: TabBar(
+                                  controller: _tabController,
+                                  indicator: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(26),
+                                    color: AppColors.primary,
+                                  ),
+                                  indicatorSize: TabBarIndicatorSize.tab,
+                                  dividerColor: Colors.transparent,
+                                  labelColor: Colors.white,
+                                  unselectedLabelColor: Colors.grey.shade600,
+                                  labelStyle: AppTextStyles.caption(
+                                    context,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  unselectedLabelStyle: AppTextStyles.caption(
+                                    context,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                  tabs: [
+                                    const Tab(text: 'Our Products'),
+                                    if (userType == 'superAdmin')
+                                      const Tab(text: 'Certification'),
+                                  ],
+                                ),
                               ),
 
                               SizedBox(
@@ -849,16 +870,25 @@ class _LabProfileState extends State<LabProfile>
                                                                         ),
                                                                     child: Container(
                                                                       decoration: BoxDecoration(
-                                                                        border: Border.all(
-                                                                          color:
-                                                                              AppColors.grey,
-                                                                          width:
-                                                                              0.3,
-                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
                                                                         borderRadius:
                                                                             BorderRadius.circular(
-                                                                              10,
+                                                                              14,
                                                                             ),
+                                                                        boxShadow: [
+                                                                          BoxShadow(
+                                                                            color: Colors.black.withValues(
+                                                                              alpha: 0.05,
+                                                                            ),
+                                                                            blurRadius:
+                                                                                10,
+                                                                            offset: const Offset(
+                                                                              0,
+                                                                              4,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                       height:
                                                                           size *

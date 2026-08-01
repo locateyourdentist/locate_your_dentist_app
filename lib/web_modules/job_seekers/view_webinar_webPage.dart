@@ -12,6 +12,7 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/web_modules/dashboard/view_profile_web.dart';
+import 'package:locate_your_dentist/common_widgets/webinar_share_utils.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
 class WebinarViewWebPage extends StatefulWidget {
@@ -69,15 +70,13 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
   }
 
   Future<void> _refresh() async {
+    final webinarId = Get.parameters['id'] ?? Api.userInfo.read('webinarId') ?? "";
     await jobController.getWebinarById(
-      Api.userInfo.read('webinarId') ?? "",
+      webinarId,
       Api.userInfo.read('activeStatus1') ?? "",
       context,
     );
-    await jobController.getAppliedWebinarsAdmin(
-      Api.userInfo.read('webinarId') ?? "",
-      context,
-    );
+    await jobController.getAppliedWebinarsAdmin(webinarId, context);
     loadJobDescription(jobController.webDescriptionData);
   }
 
@@ -406,9 +405,35 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "About Webinar",
-          style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                "About Webinar",
+                style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+              ),
+            ),
+            InkWell(
+              onTap: () => shareWebinarPost(
+                webinarTitle: webinar.webinarTitle ?? '',
+                orgName: webinar.orgName ?? '',
+                place: webinar.place,
+                date: formatDate(webinar.createdDate?.toString()),
+                startTime: webinar.startTime,
+                endTime: webinar.endTime,
+                description: plainTextFromDelta(webinar.webinarDescription),
+                imageUrl: loginController.webinarFileImages.isNotEmpty
+                    ? loginController.webinarFileImages.first.url.toString()
+                    : null,
+                webinarId: webinar.webinarId?.toString(),
+              ),
+              child: Icon(
+                Icons.share_outlined,
+                color: AppColors.primary,
+                size: 20,
+              ),
+            ),
+          ],
         ),
         // const SizedBox(height: 10),
         Padding(

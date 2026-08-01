@@ -8,6 +8,7 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/modules/product_services/sale_post_controller.dart';
 import 'package:locate_your_dentist/model/salePostModel.dart';
 import 'package:locate_your_dentist/common_widgets/sale_share_utils.dart';
+import 'package:locate_your_dentist/common_widgets/quill_message_utils.dart';
 import '../../common_widgets/color_code.dart';
 import '../../modules/product_services/service_controller.dart';
 
@@ -104,7 +105,7 @@ String _timeAgo(DateTime date) {
 //
 //
 _SalePostRow _rowFromApiModel(SalePostModel model) {
-  final message = model.message ?? "";
+  final message = quillMessageToPlainText(model.message);
   final price = model.price ?? "";
   return _SalePostRow(
     id: model.id,

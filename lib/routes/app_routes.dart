@@ -470,6 +470,10 @@ class AppPages {
       page: () => const WebinarViewWebPage(),
     ),
     GetPage(
+      name: '${AppRoutes.viewWebinarDetailWebPage}/:id',
+      page: () => const WebinarViewWebPage(),
+    ),
+    GetPage(
       name: AppRoutes.dentalMechanicDashboardWebPage,
       page: () => const DentalMechanicWebDashboard(),
     ),
