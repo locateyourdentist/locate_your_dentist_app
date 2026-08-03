@@ -398,12 +398,16 @@ class LoginController extends GetxController {
     required String pincode,
   }) async {
     try {
+      String joinParts(List<String> parts) {
+        return parts.where((p) => p.trim().isNotEmpty).join(", ");
+      }
+
       final List<String> addresses = [
-        "$area, $taluka, $district, $state, India",
-        "$taluka, $district, $state, India",
-        "$district, $state, India",
-        "$pincode, India",
-      ];
+        joinParts([area, taluka, district, state, "India"]),
+        joinParts([taluka, district, state, "India"]),
+        joinParts([district, state, "India"]),
+        joinParts([pincode, "India"]),
+      ].where((a) => a.isNotEmpty).toSet().toList();
 
       for (String address in addresses) {
         final url =

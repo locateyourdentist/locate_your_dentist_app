@@ -33,6 +33,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   final GlobalKey<ScaffoldState> _scaffoldKeyRegister =
       GlobalKey<ScaffoldState>();
   int currentStep = 0;
+  bool _isSubmittingRegistration = false;
   final ImagePicker _picker = ImagePicker();
   final _formKeyRegisterWeb = GlobalKey<FormState>();
   final loginController = Get.put(LoginController());
@@ -586,11 +587,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       ),
     );
   }
-
-  /// Mirrors the required fields' default CustomTextField validators, but
-  /// aggregated into one list — Form.validate() alone only shows inline red
-  /// text under each field, easy to miss when it's on a different Stepper
-  /// step than the one currently visible.
   List<String> _missingRequiredFields() {
     final missing = <String>[];
     final isNewRegistration = Api.userInfo.read('token') == null ||
@@ -622,6 +618,16 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   }
 
   Future<void> _handleRegistration() async {
+    if (_isSubmittingRegistration) return;
+    _isSubmittingRegistration = true;
+    try {
+      await _submitRegistration();
+    } finally {
+      _isSubmittingRegistration = false;
+    }
+  }
+
+  Future<void> _submitRegistration() async {
     if ((loginController.selectedUserType ?? '').isEmpty) {
       showCustomToast(context, "Please select a user type before submitting");
       setState(() => currentStep = 0);

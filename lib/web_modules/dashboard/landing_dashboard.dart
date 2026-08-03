@@ -1186,60 +1186,58 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                           const SizedBox(height: 40),
                           const Center(child: _SectionBadge(text: "Careers", icon: Icons.work_outline)),
                           const SizedBox(height: 12),
-                          Center(child: Text("Latest Career Openings", style: AppTextStyles.subtitle(context, color: AppColors.primary,
-                          ))),
-                          //const SizedBox(height: 20),
-
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: GetBuilder<JobController>(
-                              builder: (jController) {
-                                return JobSeekersDashboardGrid(
-                                  jobList: jController.jobListJobSeekers,
-                                  isLoading: jController.isLoading,
-                                );
-                              },
-                            ),
-                          ),
-                          Column(
-                            children: [
-
-                              const SizedBox(height: 20),
-
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 10,
-                                ),
-                                child: Text(
-                                  "Upcoming Webinars",
-                                  style: AppTextStyles.subtitle(
-                                    context,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                              ),
-
-                              //const SizedBox(height: 20),
-
-                              GetBuilder<JobController>(
-                                  builder: (jController) {
-                                    return  SizedBox(
-                                      height:jobController.webinarListJobSeekers.length>3? 850:300,
-                                      child: WebinarDashboardGrid(
-                                        webinarList:
-                                        jobController.webinarListJobSeekers.take(6).toList(),
-                                        controller: jobController,
-                                      ),
-                                    );
-                                  }
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 40),
-
-
-
+                          // Center(child: Text("Latest Career Openings", style: AppTextStyles.subtitle(context, color: AppColors.primary,
+                          // ))),
+                          // //const SizedBox(height: 20),
+                          //
+                          // Padding(
+                          //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          //   child: GetBuilder<JobController>(
+                          //     builder: (jController) {
+                          //       return JobSeekersDashboardGrid(
+                          //         jobList: jController.jobListJobSeekers,
+                          //         isLoading: jController.isLoading,
+                          //       );
+                          //     },
+                          //   ),
+                          // ),
+                          // Column(
+                          //   children: [
+                          //
+                          //     const SizedBox(height: 20),
+                          //
+                          //     Padding(
+                          //       padding: const EdgeInsets.symmetric(
+                          //         horizontal: 20,
+                          //         vertical: 10,
+                          //       ),
+                          //       child: Text(
+                          //         "Upcoming Webinars",
+                          //         style: AppTextStyles.subtitle(
+                          //           context,
+                          //           color: AppColors.primary,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //
+                          //     //const SizedBox(height: 20),
+                          //
+                          //     GetBuilder<JobController>(
+                          //         builder: (jController) {
+                          //           return  SizedBox(
+                          //             height:jobController.webinarListJobSeekers.length>3? 850:300,
+                          //             child: WebinarDashboardGrid(
+                          //               webinarList:
+                          //               jobController.webinarListJobSeekers.take(6).toList(),
+                          //               controller: jobController,
+                          //             ),
+                          //           );
+                          //         }
+                          //     ),
+                          //   ],
+                          // ),
+                          // const SizedBox(height: 40),
+                          //
                           userTypesSection(),
                           const SizedBox(height: 60),
                         ],
