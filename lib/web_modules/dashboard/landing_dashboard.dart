@@ -2298,7 +2298,7 @@ Widget _buildTransparentLoginCard(BuildContext context) {
                     ),
                     TextButton(
                       onPressed: () {
-                        Get.toNamed('/registerPageWeb');
+                        Get.toNamed('/registerPageWeb',arguments: {'userId':'0'});
                       },
                       child:  Text("Sign Up", style: AppTextStyles.body(context,fontWeight:FontWeight.bold,color: AppColors.white),
                       ),)

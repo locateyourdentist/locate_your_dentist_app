@@ -77,6 +77,9 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
       context,
     );
     await jobController.getAppliedWebinarsAdmin(webinarId, context);
+    if ((Api.userInfo.read('userType') ?? "") == 'Job Seekers') {
+      await jobController.getWebinarListJobSeekers('', '', context);
+    }
     loadJobDescription(jobController.webDescriptionData);
   }
 
@@ -476,6 +479,45 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
             ),
           ),
         ),
+        if ((Api.userInfo.read('userType') ?? "") == 'Job Seekers') ...[
+          const SizedBox(height: 20),
+          GetBuilder<JobController>(
+            builder: (controller) {
+              final bool isWebinarApplied = controller.webinarListJobSeekers
+                  .any((j) => j.webinarId.toString() == webinar.webinarId.toString());
+              return Center(
+                child: ElevatedButton.icon(
+                  onPressed: isWebinarApplied
+                      ? null
+                      : () async {
+                          await jobController.applyWebinarJobSeekers(
+                            webinar.webinarId.toString() ?? '',
+                            Api.userInfo.read('userId') ?? '',
+                            Api.userInfo.read('userType') ?? '',
+                            context,
+                          );
+                        },
+                  icon: Icon(
+                    Icons.link,
+                    color: isWebinarApplied ? AppColors.primary : AppColors.white,
+                  ),
+                  label: Text(
+                    isWebinarApplied ? "Applied" : "Join Webinar",
+                    style: AppTextStyles.body(
+                      context,
+                      color: isWebinarApplied ? AppColors.primary : AppColors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isWebinarApplied ? AppColors.white : AppColors.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ],
     );
   }

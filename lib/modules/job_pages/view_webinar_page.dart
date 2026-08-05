@@ -314,7 +314,7 @@ void initState(){
                    if ((Api.userInfo.read('userType') ?? "") == 'Job Seekers')
                                    Center(
                     child: ElevatedButton.icon(
-                      onPressed: ()async {
+                      onPressed: isWebinarApplied==true ? null : ()async {
                         print(webinar.webinarDescription.toString()??"");
                       await  jobController.applyWebinarJobSeekers(
                           webinar.webinarId.toString() ?? '',

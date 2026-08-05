@@ -32,8 +32,6 @@ class _FilterSidebarState extends State<FilterSidebar> {
 
   @override
   Widget build(BuildContext context) {
-    final token = Api.userInfo.read('token');
-
     return GetBuilder<LoginController>(
       builder: (controller) {
         return SingleChildScrollView(

@@ -56,15 +56,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       "value": "Dental Consultant"
     },
   ];
- // List<String> get filteredItems {
-  //   final userType = Api.userInfo.read('userType');
-  //
-  //   if (userType != 'superAdmin') {
-  //     return allItems.where((e) => e != "admin" && e != "superAdmin").toList();
-  //   }
-  //
-  //   return allItems;
-  // }
   List<Map<String, String>> get filteredItems {
     final userType = Api.userInfo.read('userType');
 
@@ -72,13 +63,13 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       return allItems;
     } else if (userType == "admin") {
       return allItems
-          .where((e) => e["key"] != "superAdmin")
+          .where((e) => e["key"] != "Super Admin")
           .toList();
     } else {
       return allItems
           .where((e) =>
-      e["key"] != "admin" &&
-          e["key"] != "superAdmin")
+      e["key"] != "Admin" &&
+          e["key"] != "Super Admin")
           .toList();
     }
   }
@@ -180,7 +171,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
     return {};
   }
-
   Future<void> _refresh() async {
     await getLocation();
     loadJobDescription(loginController.descriptionData);
@@ -195,11 +185,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     });    print('userid is${Get.arguments?['userId']}ss');
     if (Get.arguments?['userId'] == "0") loginController.clearProfileData();
   }
-
   Future<void> getLocation() async {
     const AndroidInitializationSettings androidInit =
     AndroidInitializationSettings('@mipmap/ic_launcher');
-
     const DarwinInitializationSettings darwinInit =
     DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -234,7 +222,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       return '';
     }
   }
-
   void loadJobDescription(dynamic data) {
     try {
       List<Map<String, dynamic>> delta = [
@@ -689,7 +676,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       website: loginController.websiteController.text,
       description: jsonEncode(_controller.document.toDelta().toJson()),
       adminId:Get.arguments?['branchId'] == "0"?Api.userInfo.read('userId'):loginController.selectUserId,
-      isAdmin: branchId == "0" ? "true" : "false",
+      isAdmin: Get.arguments?['branchId'] == "0" ? "true" : "false",
       latitude: loginController.latitude?.toString() ?? "",
       longitude: loginController.longitude?.toString() ?? "",
       jobCategory: loginController.selectedUserType == 'Job Seekers'

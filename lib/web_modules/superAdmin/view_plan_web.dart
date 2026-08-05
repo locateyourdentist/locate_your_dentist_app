@@ -787,6 +787,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
         'price': plan.price,
         'duration': plan.duration,
         'userType': plan.userType,
+        'details': plan.details ?? {},
       });
     }
 

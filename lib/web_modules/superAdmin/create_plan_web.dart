@@ -175,6 +175,8 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
       planController.selectedString = args['selectedString'] ?? "";
       planController.selectedUserType = args['userType'] ?? "";
       final details = Map<String, dynamic>.from(args['details'] ?? {});
+      planController.postImageCountController.text =
+          (details['postImageCount'] ?? "").toString();
       postImagePlanId = (planController.selectPostImageId ?? "").isNotEmpty
           ? planController.selectPostImageId!
           : "0";
@@ -418,6 +420,13 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                               CustomTextField(
                                                 hint: "Job Count",
                                                 controller: planController.countDaysController,
+                                                maxLength: 3,
+                                                keyboardType: TextInputType.number,
+                                              ),
+                                            if (planController.selectedString == "PostImagePlan")
+                                              CustomTextField(
+                                                hint: "Number of Posts Allowed",
+                                                controller: planController.postImageCountController,
                                                 maxLength: 3,
                                                 keyboardType: TextInputType.number,
                                               ),
@@ -669,6 +678,7 @@ class _CreatePlanWebState extends State<CreatePlanWeb> {
                                                         planController.priceController.text,planController.markPriceController.text,
                                                         durationDays,
                                                         //planController.durationDaysController.text,
+                                                        planController.postImageCountController.text,
                                                         context,
                                                       );
                                                     }

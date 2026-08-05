@@ -1415,6 +1415,7 @@ class Api {
     String price,
     String markPrice,
     String duration,
+    String postImageCount,
   ) async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.planUrl}${AppConstants.createPostImagePlanUrl}";
@@ -1430,6 +1431,7 @@ class Api {
         'duration': duration,
         'details': {
           markPrice: markPrice,
+          'postImageCount': postImageCount,
           // 'state': isStateWise1,
           // 'district': isDistrictWise1,
           // 'city': isCityWise1,

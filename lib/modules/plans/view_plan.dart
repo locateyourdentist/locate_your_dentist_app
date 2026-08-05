@@ -2682,14 +2682,9 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                             'postImagesPlanId': plan.postImagesPlanId.toString(),
                                                                                                             'price': plan.price.toString(),
                                                                                                             'duration': plan.duration.toString(),
-                                                                                                            'details': {
-                                                                                                              // 'state': plan.details?.state,
-                                                                                                              // 'district': plan.details?.district,
-                                                                                                              // 'city': plan.details?.city,
-                                                                                                              // 'area': plan.details?.area,
-                                                                                                            },
+                                                                                                            'details': plan.details ?? {},
                                                                                                             // 'features': plan.features,
-                                                                                                            'selectedString': "Scrolling Ads Plan",
+                                                                                                            'selectedString': "PostImagePlan",
                                                                                                             'userType': plan.userType,
                                                                                                           },
                                                                                                         );

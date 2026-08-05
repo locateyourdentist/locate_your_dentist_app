@@ -345,7 +345,7 @@ class JobController extends GetxController {
         );
         await notificationController.createNotification(
           jobSeekerId,
-          'Job Seekers',
+          '',
           true,
           'job',
           "The status of your job application at $orgName has changed.",
@@ -714,11 +714,6 @@ class JobController extends GetxController {
                 "Already applied for this Webinar",
                 backgroundColor: AppColors.primary,
               );
-        showCustomToast(
-          context,
-          "Already applied for this Webinar",
-          backgroundColor: AppColors.primary,
-        );
       } else {
         showCustomToast(
           context,

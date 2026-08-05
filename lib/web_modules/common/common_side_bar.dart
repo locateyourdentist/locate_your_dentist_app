@@ -147,7 +147,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Sales List Page", "page": "/salePostListWebPage"},
           {"title": "Jobs/Webinars", "page": "/viewJobWebinarWebPage"},
           {"title": "Products", "page": "/myServicesListWebPage"},
-          {"title": "Add Profile", "page": "/clinicEditProfile"},
+          // {"title": "Add Profile", "page": "/clinicEditProfile"},
           {"title": "Add Branches", "page": "/addBranchesWeb"},
           {"title": "Change Password", "page": "/changePasswordWeb"},
           {"title": "Delete Account", "page": "/DeleteAccount"},

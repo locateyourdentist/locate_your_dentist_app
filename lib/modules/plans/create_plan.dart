@@ -196,6 +196,8 @@ class _CreatePlanState extends State<CreatePlan> {
       // planController.isDistrictWise = details['district'] ?? false;
       // planController.isCityWise = details['city'] ?? false;
       // planController.isAreaWise = details['area'] ?? false;
+      planController.postImageCountController.text =
+          (details['postImageCount'] ?? "").toString();
       postImagePlanId = (planController.selectPostImageId ?? "").isNotEmpty
           ? planController.selectPostImageId!
           : "0";
@@ -459,6 +461,13 @@ class _CreatePlanState extends State<CreatePlan> {
                               CustomTextField(
                                 hint: "Job Count",
                                 controller: planController.countDaysController,
+                                maxLength: 3,
+                                keyboardType: TextInputType.number,
+                              ),
+                            if (planController.selectedString == "PostImagePlan")
+                              CustomTextField(
+                                hint: "Number of Posts Allowed",
+                                controller: planController.postImageCountController,
                                 maxLength: 3,
                                 keyboardType: TextInputType.number,
                               ),
@@ -747,6 +756,7 @@ class _CreatePlanState extends State<CreatePlan> {
                                         planController.markPriceController.text,
                                         durationDays,
                                         //planController.durationDaysController.text,
+                                        planController.postImageCountController.text,
                                         context,
                                       );
                                     }

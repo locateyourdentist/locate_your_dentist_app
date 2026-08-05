@@ -90,6 +90,7 @@ class AppImage2 {
   TextEditingController videoCountController=TextEditingController();
   TextEditingController imageSizeController=TextEditingController();
   TextEditingController videoSizeController=TextEditingController();
+  TextEditingController postImageCountController=TextEditingController();
 
   TextEditingController countDaysController=TextEditingController();
   TextEditingController titleController=TextEditingController();
@@ -941,7 +942,7 @@ class AppImage2 {
 
   // Future<void> createPostImagesPlans(String userType,String postImagesPlanId,String postPlanName,String price,String duration,bool isStateWise1,
   // bool isDistrictWise1,bool isCityWise1,bool isAreaWise1,dynamic context) async {
-  Future<void> createPostImagesPlans(String userType,String postImagesPlanId,String postPlanName,String price,String markPrice,String duration,dynamic context) async {
+  Future<void> createPostImagesPlans(String userType,String postImagesPlanId,String postPlanName,String price,String markPrice,String duration,String postImageCount,dynamic context) async {
   var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       Get.snackbar("No Internet", "Please check your connection");
@@ -949,7 +950,7 @@ class AppImage2 {
     }
     isLoading=true;
     try {
-      final response = await api.createPostImagePlans(  userType, postImagesPlanId, postPlanName, price,markPrice, duration);
+      final response = await api.createPostImagePlans(  userType, postImagesPlanId, postPlanName, price,markPrice, duration, postImageCount);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
         showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
@@ -960,6 +961,7 @@ class AppImage2 {
         durationDaysController.clear();
         durationMonthsController.clear();
         markPriceController.clear();
+        postImageCountController.clear();
         isStateWise=false;
         isDistrictWise=false;
         isCityWise=false;

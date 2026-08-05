@@ -49,6 +49,7 @@ class _UploadImagesState extends State<UploadImages> {
     } else {
       controller.selectedUserType = userType;
     }
+    await controller.checkPlansStatus(Api.userInfo.read('userId') ?? "", context);
     await refreshData();
   }
 
@@ -71,6 +72,37 @@ class _UploadImagesState extends State<UploadImages> {
   }
 
   Future<void> pickAndCropImage() async {
+    bool isBasePlanActive = false;
+    bool isPosterPlanActive = false;
+    if (controller.checkPlanList.isNotEmpty) {
+      final planDetails = controller.checkPlanList[0]["details"]?["plan"];
+      isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
+      isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
+    }
+
+    if (!isBasePlanActive) {
+      showSuccessDialog(
+        context,
+        title: "Alert",
+        message: "Oops! Base plan not Activated.please activate base plan..",
+        onOkPressed: () {},
+      );
+      return;
+    }
+
+    if (!isPosterPlanActive) {
+      showSuccessDialog(
+        context,
+        title: "Poster Plan Required",
+        message:
+            "You need an active poster plan to post scrolling ads. Please choose a plan to continue.",
+        onOkPressed: () {
+          Get.toNamed('/viewPlanPage');
+        },
+      );
+      return;
+    }
+
     if (controller.editUploadImage1.length >= 20) {
       Get.snackbar("Limit reached", "You can upload only 20 images total.");
       return;

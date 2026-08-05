@@ -229,44 +229,48 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                             child: isMobile
                                                 ? Column(
                                                     children: [
-                                                      Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child:GetBuilder<LoginController>(
-                                                                builder: (controller) {
-                                                                  return StatCard(
-                                                                  title:
-                                                                      "Total Users",
-                                                                  value: total
-                                                                      .toString(),
-                                                                  icon:
-                                                                      Icons.people,
-                                                                  color:
-                                                                      Colors.blue,
-                                                                );
-                                                              }
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Expanded(
-                                                            child: GetBuilder<LoginController>(
-                                                                builder: (controller) {
-                                                                  return StatCard(
-                                                                  title:
-                                                                      "Active Users",
-                                                                  value: active
-                                                                      .toString(),
-                                                                  icon: Icons
-                                                                      .verified_user,
-                                                                  color:
-                                                                      Colors.green,
-                                                                );
-                                                              }
-                                                            ),
-                                                          ),
-                                                        ],
+                                                      GetBuilder<LoginController>(
+                                                          builder: (controller) {
+                                                            return Row(
+                                                            children:<Widget> [
+                                                              Expanded(
+                                                                child:GetBuilder<LoginController>(
+                                                                    builder: (controller) {
+                                                                      return StatCard(
+                                                                      title:
+                                                                          "Total Users",
+                                                                      value: total
+                                                                          .toString(),
+                                                                      icon:
+                                                                          Icons.people,
+                                                                      color:
+                                                                          Colors.blue,
+                                                                    );
+                                                                  }
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Expanded(
+                                                                child: GetBuilder<LoginController>(
+                                                                    builder: (controller) {
+                                                                      return StatCard(
+                                                                      title:
+                                                                          "Active Users",
+                                                                      value: active
+                                                                          .toString(),
+                                                                      icon: Icons
+                                                                          .verified_user,
+                                                                      color:
+                                                                          Colors.green,
+                                                                    );
+                                                                  }
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        }
                                                       ),
                                                       const SizedBox(
                                                         height: 10,

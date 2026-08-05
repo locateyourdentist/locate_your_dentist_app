@@ -232,11 +232,6 @@ Future<void> main() async {
       print("NOTIFICATION CLICKED");
     });
   }
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
-
   const AndroidInitializationSettings androidInit =
   AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -247,12 +242,17 @@ Future<void> main() async {
     requestSoundPermission: true,
   );
 
-  // const InitializationSettings initSettings =
-  // InitializationSettings(android: androidInit, iOS: darwinInit, macOS: darwinInit);
-  // await flutterLocalNotificationsPlugin.initialize(
-  //   settings: initSettings,
-  // );
- // await flutterLocalNotificationsPlugin.initialize(initSettings);
+  const InitializationSettings initSettings = InitializationSettings(
+    android: androidInit,
+    iOS: darwinInit,
+    macOS: darwinInit,
+  );
+  await flutterLocalNotificationsPlugin.initialize(settings: initSettings);
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isShowOnboard = prefs.getBool('isShowOnboard') ?? false;

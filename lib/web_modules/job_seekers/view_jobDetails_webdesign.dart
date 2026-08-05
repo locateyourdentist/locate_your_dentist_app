@@ -729,22 +729,25 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
                                                     child: SizedBox(
                                                       width: screenWidth * 0.19,
                                                       child: ElevatedButton(
-                                                        onPressed: () async {
-                                                          await jobController
-                                                              .applyJobsJobSeekers(
-                                                                job.jobId ?? '',
-                                                                Api.userInfo.read(
-                                                                      'userId',
-                                                                    ) ??
-                                                                    '',
-                                                                job.userType ??
-                                                                    '',
-                                                                job.orgName ??
-                                                                    '',
-                                                                context,
-                                                              );
-                                                          setState(() {});
-                                                        },
+                                                        onPressed: isJobApplied
+                                                            ? null
+                                                            : () async {
+                                                                await jobController
+                                                                    .applyJobsJobSeekers(
+                                                                      job.jobId ??
+                                                                          '',
+                                                                      Api.userInfo.read(
+                                                                            'userId',
+                                                                          ) ??
+                                                                          '',
+                                                                      job.userType ??
+                                                                          '',
+                                                                      job.orgName ??
+                                                                          '',
+                                                                      context,
+                                                                    );
+                                                                setState(() {});
+                                                              },
                                                         style: ElevatedButton.styleFrom(
                                                           backgroundColor:
                                                               isJobApplied

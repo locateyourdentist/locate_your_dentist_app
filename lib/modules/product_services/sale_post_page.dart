@@ -115,6 +115,12 @@ class _SalePostPageState extends State<SalePostPage> {
   static const int maxImages = 3;
 
   @override
+  void initState() {
+    super.initState();
+    planController.checkPlansStatus(Api.userInfo.read('userId') ?? "", context);
+  }
+
+  @override
   void dispose() {
     mobileController.dispose();
     messageQuillController.dispose();
@@ -231,13 +237,13 @@ class _SalePostPageState extends State<SalePostPage> {
       isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
     }
 
-    if (Api.userInfo.read('userType')=='superAdmin'||!isBasePlanActive) {
+    if (!isBasePlanActive) {
       showSuccessDialog(
         context,
         title: "Alert",
         message: "Oops! Base plan not Activated.please activate base plan..",
         onOkPressed: () {
-          Get.toNamed('/viewPlanPageWeb');
+          Get.toNamed('/viewPlanPage');
         },
       );
       return;
@@ -250,7 +256,7 @@ class _SalePostPageState extends State<SalePostPage> {
         message:
         "You need an active poster plan to post a sale listing. Please choose a plan to continue.",
         onOkPressed: () {
-          Get.toNamed('/viewPlanPageWeb');
+          Get.toNamed('/viewPlanPage');
         },
       );
       return;
