@@ -463,6 +463,7 @@ class AppPages {
     ),
     GetPage(
       name: '${AppRoutes.viewJobDetailWebPage}/:id',
+   //   viewJobDetailWebPage: (context) => const ViewJobPageWeb(),
       page: () => const ViewJobPageWeb(),
     ),
     GetPage(

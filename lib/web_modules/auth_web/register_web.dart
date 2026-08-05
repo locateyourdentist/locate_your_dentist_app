@@ -789,13 +789,18 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             // borderColor: AppColors.grey,
           ),
           // const SizedBox(height: 15),
-          CustomTextField(
-            hint: "Website Link",
-            icon: Icons.web,
-            controller: loginController.websiteController,
-            validator: (value) => null,
-            // fillColor: AppColors.white,
-            // borderColor: AppColors.grey,
+          Column(
+            children: [
+              CustomTextField(
+                hint: "Website Link",
+                icon: Icons.web,
+                controller: loginController.websiteController,
+                validator: (value) => null,
+                // fillColor: AppColors.white,
+                // borderColor: AppColors.grey,
+              ),
+              Text('**Not Mandatory **',style: AppTextStyles.caption(context,color: Colors.redAccent),)
+            ],
           ),
         ),
       ],
@@ -1083,11 +1088,27 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   Widget _step3() {
     return Column(
       children: [
-        const Text("Upload Certificate"),
+         Text("Upload Certificate",  style: AppTextStyles.caption(
+          context,fontWeight: FontWeight.bold
+        ),),
+    Text(
+    '* This field is optional. You can upload your certificate after registration.',
+    style: AppTextStyles.caption(
+    context,
+    color: Colors.redAccent,
+    ),),
         const SizedBox(height: 10),
         _buildCertificatePicker(),
         const SizedBox(height: 20),
-        const Text("Upload Image"),
+         Text("Upload Image",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+        const SizedBox(height: 5),
+        Text(
+          '* This field is optional. You can upload your certificate after registration.',
+          style: AppTextStyles.caption(
+            context,
+            color: Colors.redAccent,
+          ),
+        ),
         const SizedBox(height: 10),
 
         _buildImagePicker(),
@@ -1095,14 +1116,21 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         if (Api.userInfo.read('userId') != null)
           Column(
             children: [
-              const Text("Upload Video"),
+               Text("Upload Video",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
               const SizedBox(height: 10),
 
               _buildVideoPicker(),
               const SizedBox(height: 20),
             ],
           ),
-        const Text("Logo / Profile Image"),
+         Text("Logo / Profile Image",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+        const SizedBox(height: 5),
+        Text(
+          '* This field is optional. You can upload your certificate after registration.',
+          style: AppTextStyles.caption(
+            context,
+            color: Colors.redAccent,
+          ),),
         const SizedBox(height: 10),
         _buildLogoPicker(),
       ],

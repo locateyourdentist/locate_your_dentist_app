@@ -124,9 +124,15 @@ Future<void> main() async {
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
-    );
+    ).timeout(const Duration(seconds: 10));
   } on FirebaseException catch (e) {
-    if (e.code != 'duplicate-app') rethrow;
+    if (e.code != 'duplicate-app') {
+      debugPrint("Firebase init failed: ${e.code} ${e.message}");
+    }
+  } catch (e) {
+    // A hung/unreachable Firebase init (e.g. stale Play Services on the
+    // device) must not block runApp() forever — surface it and continue.
+    debugPrint("Firebase init failed or timed out: $e");
   }
 // if(!kIsWeb) {
 //   FirebaseMessaging.onBackgroundMessage(
@@ -247,7 +253,13 @@ Future<void> main() async {
     iOS: darwinInit,
     macOS: darwinInit,
   );
-  await flutterLocalNotificationsPlugin.initialize(settings: initSettings);
+  try {
+    await flutterLocalNotificationsPlugin
+        .initialize(settings: initSettings)
+        .timeout(const Duration(seconds: 10));
+  } catch (e) {
+    debugPrint("Local notifications init failed or timed out: $e");
+  }
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<

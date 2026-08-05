@@ -142,9 +142,7 @@ class _RegisterPageState extends State<RegisterPage> {
       );
       print('sou$source');
       if (source == null) return;
-
       XFile? pickedFile;
-
       if (source == "image") {
         pickedFile = await _picker.pickImage(
           source: ImageSource.gallery,
@@ -172,7 +170,6 @@ class _RegisterPageState extends State<RegisterPage> {
           print('video$selectedFile');
         }
       }
-
       loginController.images.add(selectedFile);
 
     } catch (e) {
@@ -739,6 +736,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                         // fillColor: AppColors.white,
                                         // borderColor: AppColors.grey,
                                       ),
+                                      Text('**Not Mandatory **',style: AppTextStyles.caption(context,color: Colors.redAccent),),
+
                                       SizedBox(height: size * 0.01),
 
                                       if (loginController.selectedUserType!=null&&loginController.selectedUserType != "Dental Mechanic") ...[
@@ -780,7 +779,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                       ],
                                       if (loginController.selectedUserType != null &&
                                           loginController.selectedUserType != "Dental Mechanic") ...[
-
                                         SizedBox(
                                           height: loginController.certificates.isNotEmpty? size*0.35:30,
                                           child: loginController.certificates.isEmpty
@@ -797,7 +795,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 final file = loginController.certificates[index];
                                                 final path = file.path;
                                                 final isPdf = path.toLowerCase().endsWith(".pdf");
-
                                                 return Stack(
                                                   children: [
                                                     GestureDetector(
@@ -846,7 +843,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                               }
                                           ),),
                                         Center(child: Text("** maximum 3 images/pdf allowed",
-                                          style: TextStyle(color: Colors.redAccent,fontSize: size*0.019,fontWeight: FontWeight.normal),))
+                                          style: TextStyle(color: Colors.redAccent,fontSize: size*0.019,fontWeight: FontWeight.normal),)),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          '* This field is optional. You can upload your certificate after registration.',
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: Colors.redAccent,
+                                          ),),
                                       ],
                                       //SizedBox(height: size * 0.03),
                                       if (loginController.selectedUserType == 'Dental Clinic'||loginController.selectedUserType=='Dental Shop'||loginController.selectedUserType=='Dental Mechanic'||loginController.selectedUserType=='Dental Lab') ...[

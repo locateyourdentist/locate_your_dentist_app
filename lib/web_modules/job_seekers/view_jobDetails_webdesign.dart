@@ -44,21 +44,16 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
       } else if (data is String) {
         delta = List<Map<String, dynamic>>.from(jsonDecode(data));
       }
-
       _controller = QuillController(
         document: Document.fromJson(delta),
         selection: const TextSelection.collapsed(offset: 0),
       );
-
-      setState(() {});
     } catch (e) {
       print("Quill load error: $e");
-
       _controller = QuillController.basic();
       setState(() {});
     }
   }
-
   @override
   void initState() {
     super.initState();
@@ -69,7 +64,6 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
     );
     WidgetsBinding.instance.addPostFrameCallback((_) => _refresh());
   }
-
   Future<void> _refresh() async {
     final selectJobId = Get.parameters['id'] ?? Api.userInfo.read('selectJobId') ?? "";
     await jobController.getJobsById(selectJobId, context);
@@ -80,7 +74,6 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
     );
     loadJobDescription(jobController.jobDescriptionData);
   }
-
   Widget _networkImageSafe(
     String? url, {
     required double width,
@@ -120,7 +113,6 @@ class _ViewJobPageWebState extends State<ViewJobPageWeb> {
       ),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
