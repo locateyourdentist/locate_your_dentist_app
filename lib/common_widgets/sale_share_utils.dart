@@ -1,10 +1,20 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
+import 'package:locate_your_dentist/utills/constants.dart';
 
+/// Points at the backend's server-rendered `/sale/:id` preview page
+/// (routes/sale_post_public_routes.js on the API server) — deliberately NOT
+/// Uri.base.origin/the site's own domain. www.locateyourdentist.com is a
+/// separate Render Static Site (the Flutter build) with no knowledge of
+/// this route; only the backend's own origin (AppConstants.baseUrl) serves
+/// it. That preview page carries proper Open Graph tags for link previews
+/// (WhatsApp, etc.) and links onward into the app.
 String? saleDetailUrl(String? postId) {
-  if (postId == null || postId.isEmpty || !kIsWeb) return null;
-  return '${Uri.base.origin}/salePostDetailWebPage/$postId';
+  if (postId == null || postId.isEmpty) return null;
+  final origin = AppConstants.baseUrl.endsWith('/')
+      ? AppConstants.baseUrl.substring(0, AppConstants.baseUrl.length - 1)
+      : AppConstants.baseUrl;
+  return '$origin/sale/$postId';
 }
 
 Future<void> shareSalePost({
@@ -36,20 +46,16 @@ Future<void> shareSalePost({
     try {
       final response = await http.get(Uri.parse(imageUrl));
       if (response.statusCode == 200) {
-        await Share.shareXFiles(
-          [
-            XFile.fromData(
-              response.bodyBytes,
-              name: 'sale_ad.jpg',
-              mimeType: 'image/jpeg',
-            ),
-          ],
-          text: shareText,
-        );
+        await Share.shareXFiles([
+          XFile.fromData(
+            response.bodyBytes,
+            name: 'sale_ad.jpg',
+            mimeType: 'image/jpeg',
+          ),
+        ], text: shareText);
         return;
       }
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
   await Share.share(shareText);

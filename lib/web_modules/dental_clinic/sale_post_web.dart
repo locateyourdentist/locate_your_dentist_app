@@ -16,12 +16,15 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/modules/product_services/sale_post_controller.dart';
 import '../../common_widgets/color_code.dart';
 
-
 class _HoverLift extends StatefulWidget {
   final Widget child;
   final double liftScale;
   final BorderRadius? borderRadius;
-  const _HoverLift({required this.child, this.liftScale = 1.02, this.borderRadius});
+  const _HoverLift({
+    required this.child,
+    this.liftScale = 1.02,
+    this.borderRadius,
+  });
 
   @override
   State<_HoverLift> createState() => _HoverLiftState();
@@ -90,7 +93,8 @@ class SalePostWebPage extends StatefulWidget {
 class _SalePostWebPageState extends State<SalePostWebPage> {
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
-  final GlobalKey<ScaffoldState> _scaffoldKeySalePost = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeySalePost =
+      GlobalKey<ScaffoldState>();
   final salePostController = Get.put(SalePostController());
 
   final mobileController = TextEditingController();
@@ -181,6 +185,7 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
       messageQuillController.document.toDelta().toJson(),
     );
 
+    final bool isSuperAdmin = Api.userInfo.read('userType') == 'superAdmin';
     bool isBasePlanActive = false;
     bool isPosterPlanActive = false;
     if (planController.checkPlanList.isNotEmpty) {
@@ -188,35 +193,37 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
       isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
       isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
     }
+    if (isSuperAdmin) {
+      if (!isBasePlanActive) {
+        showSuccessDialog(
+          context,
+          title: "Alert",
+          message: "Oops! Base plan is not activated. Please activate your base plan.",
+          onOkPressed: () {
+            Get.toNamed('/viewPlanPageWeb');
+          },
+        );
+        return;
+      }
 
-    if (Api.userInfo.read('userType')=='superAdmin'||!isBasePlanActive) {
-      showSuccessDialog(
-        context,
-        title: "Alert",
-        message: "Oops! Base plan not Activated.please activate base plan..",
-        onOkPressed: () {
-          Get.toNamed('/viewPlanPageWeb');
-        },
-      );
-      return;
+      if (!isPosterPlanActive) {
+        showSuccessDialog(
+          context,
+          title: "Poster Plan Required",
+          message:
+          "You need an active Poster Plan to post a sale listing. Please activate a plan to continue.",
+          onOkPressed: () {
+            Get.toNamed('/viewPlanPageWeb');
+          },
+        );
+        return;
+      }
     }
-
-    if (!isPosterPlanActive) {
-      showSuccessDialog(
-        context,
-        title: "Poster Plan Required",
-        message:
-            "You need an active poster plan to post a sale listing. Please choose a plan to continue.",
-        onOkPressed: () {
-          Get.toNamed('/viewPlanPageWeb');
-        },
-      );
-      return;
-    }
-
-    final imageBytes = await Future.wait(images.map((img) async {
-      return img.bytes ?? await img.file!.readAsBytes();
-    }));
+    final imageBytes = await Future.wait(
+      images.map((img) async {
+        return img.bytes ?? await img.file!.readAsBytes();
+      }),
+    );
 
     Map<String, dynamic> responseData = {};
     try {
@@ -272,7 +279,11 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
     Get.offNamed('/salePostListWebPage');
   }
 
-  Widget _sectionCard({required String title, required IconData icon, required Widget child}) {
+  Widget _sectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -296,7 +307,9 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
+                  gradient: const LinearGradient(
+                    colors: [AppColors.primary, AppColors.secondary],
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon, size: 16, color: Colors.white),
@@ -304,7 +317,11 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
               const SizedBox(width: 12),
               Text(
                 title,
-                style: AppTextStyles.body(context, color: AppColors.black, fontWeight: FontWeight.bold),
+                style: AppTextStyles.body(
+                  context,
+                  color: AppColors.black,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -320,7 +337,11 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         label,
-        style: AppTextStyles.caption(context, color: Colors.grey.shade600, fontWeight: FontWeight.w600),
+        style: AppTextStyles.caption(
+          context,
+          color: Colors.grey.shade600,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -362,13 +383,15 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: IconButton(
-                              icon: const Icon(Icons.menu, color: AppColors.black),
-                              onPressed: () =>
-                                  _scaffoldKeySalePost.currentState?.openDrawer(),
+                              icon: const Icon(
+                                Icons.menu,
+                                color: AppColors.black,
+                              ),
+                              onPressed: () => _scaffoldKeySalePost.currentState
+                                  ?.openDrawer(),
                             ),
                           ),
 
-                
                         Container(
                           width: double.infinity,
                           padding: EdgeInsets.symmetric(
@@ -398,7 +421,11 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                                   color: Colors.white.withOpacity(0.16),
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.sell_outlined, color: Colors.white, size: 26),
+                                child: const Icon(
+                                  Icons.sell_outlined,
+                                  color: Colors.white,
+                                  size: 26,
+                                ),
                               ),
                               const SizedBox(width: 18),
                               Expanded(
@@ -407,12 +434,18 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                                   children: [
                                     Text(
                                       "Sell an Item",
-                                      style: AppTextStyles.subtitle(context, color: Colors.white),
+                                      style: AppTextStyles.subtitle(
+                                        context,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       "Post details for buyers to reach you",
-                                      style: AppTextStyles.caption(context, color: Colors.white.withOpacity(0.85)),
+                                      style: AppTextStyles.caption(
+                                        context,
+                                        color: Colors.white.withOpacity(0.85),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -433,12 +466,20 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                                 spacing: 12,
                                 runSpacing: 12,
                                 children: [
-                                  for (int index = 0; index < images.length; index++)
+                                  for (
+                                    int index = 0;
+                                    index < images.length;
+                                    index++
+                                  )
                                     Stack(
                                       children: [
                                         ClipRRect(
-                                          borderRadius: BorderRadius.circular(14),
-                                          child: images[index].preview(size: 120),
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
+                                          child: images[index].preview(
+                                            size: 120,
+                                          ),
                                         ),
                                         Positioned(
                                           top: 6,
@@ -451,7 +492,11 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                                                 color: Colors.black54,
                                                 shape: BoxShape.circle,
                                               ),
-                                              child: const Icon(Icons.close, size: 14, color: Colors.white),
+                                              child: const Icon(
+                                                Icons.close,
+                                                size: 14,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -467,9 +512,15 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                                           width: 120,
                                           height: 120,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(14),
-                                            color: AppColors.primary.withOpacity(0.06),
-                                            border: Border.all(color: AppColors.primary.withOpacity(0.25)),
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                            color: AppColors.primary
+                                                .withOpacity(0.06),
+                                            border: Border.all(
+                                              color: AppColors.primary
+                                                  .withOpacity(0.25),
+                                            ),
                                           ),
                                           child: Icon(
                                             Icons.add_a_photo_outlined,
@@ -484,7 +535,10 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                               const SizedBox(height: 10),
                               Text(
                                 "Up to $maxImages photos",
-                                style: AppTextStyles.caption(context, color: Colors.grey.shade500),
+                                style: AppTextStyles.caption(
+                                  context,
+                                  color: Colors.grey.shade500,
+                                ),
                               ),
                             ],
                           ),
@@ -502,21 +556,25 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                                 builder: (context, constraints) {
                                   final twoColumn = constraints.maxWidth > 600;
                                   final userTypeField = Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       _fieldLabel("Posting As"),
                                       CustomDropdownField(
                                         hint: "Select user type",
                                         items: userTypes,
                                         selectedValue: selectedUserType,
-                                        onChanged: (val) => setState(() => selectedUserType = val),
+                                        onChanged: (val) => setState(
+                                          () => selectedUserType = val,
+                                        ),
                                         fillColor: Colors.grey.shade100,
                                         borderColor: Colors.white,
                                       ),
                                     ],
                                   );
                                   final priceField = Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       _fieldLabel("Price"),
                                       CustomTextField(
@@ -530,7 +588,8 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                                   );
                                   if (!twoColumn) {
                                     return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         userTypeField,
                                         const SizedBox(height: 16),
@@ -539,7 +598,8 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                                     );
                                   }
                                   return Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Expanded(child: userTypeField),
                                       const SizedBox(width: 20),
@@ -573,7 +633,8 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                                       child: QuillEditor.basic(
                                         controller: messageQuillController,
                                         config: const QuillEditorConfig(
-                                          placeholder: "Describe the item you're selling...",
+                                          placeholder:
+                                              "Describe the item you're selling...",
                                           padding: EdgeInsets.all(10),
                                         ),
                                       ),
@@ -584,20 +645,28 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                               const SizedBox(height: 4),
                               InkWell(
                                 borderRadius: BorderRadius.circular(12),
-                                onTap: () => setState(() => negotiable = !negotiable),
+                                onTap: () =>
+                                    setState(() => negotiable = !negotiable),
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
                                   child: Row(
                                     children: [
                                       Text(
                                         "Price is negotiable",
-                                        style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.w600),
+                                        style: AppTextStyles.caption(
+                                          context,
+                                          color: AppColors.black,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                       const Spacer(),
                                       Switch(
                                         value: negotiable,
                                         activeColor: AppColors.primary,
-                                        onChanged: (val) => setState(() => negotiable = val),
+                                        onChanged: (val) =>
+                                            setState(() => negotiable = val),
                                       ),
                                     ],
                                   ),
@@ -629,7 +698,9 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                                     if (value == null || value.trim().isEmpty) {
                                       return "Mobile number cannot be empty";
                                     }
-                                    if (!RegExp(r'^[0-9]{10}$').hasMatch(value.trim())) {
+                                    if (!RegExp(
+                                      r'^[0-9]{10}$',
+                                    ).hasMatch(value.trim())) {
                                       return "Enter a valid 10-digit mobile number";
                                     }
                                     return null;
@@ -649,14 +720,21 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
                               onPressed: _submitSalePost,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
-                                padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 18),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 60,
+                                  vertical: 18,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
                               child: Text(
                                 "Post Sale Instruments",
-                                style: AppTextStyles.body(context, color: Colors.white, fontWeight: FontWeight.bold),
+                                style: AppTextStyles.body(
+                                  context,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),

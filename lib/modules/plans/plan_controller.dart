@@ -485,16 +485,16 @@ class AppImage2 {
         Api.userInfo.read('userType')=='superAdmin';
         final userType = Api.userInfo.read('userType');
 
-        // _basePlanList = basePlans
-        //     .map((e) => PlanModel.fromJson(e))
-        //     .where((plan) {
-        //   if (userType == 'admin' || userType == 'superAdmin') {
-        //     return true; // allow all plans
-        //   } else {
-        //     return plan.planName.toString().toLowerCase() != 'free';
-        //   }
-        // }).toList();
-        _basePlanList = basePlans.map((e) => PlanModel.fromJson(e)).toList();
+        _basePlanList = basePlans
+            .map((e) => PlanModel.fromJson(e))
+            .where((plan) {
+          if (userType == 'admin' || userType == 'superAdmin') {
+            return true; // allow all plans
+          } else {
+            return plan.planName.toString().toLowerCase() != 'free';
+          }
+        }).toList();
+        //_basePlanList = basePlans.map((e) => PlanModel.fromJson(e)).toList();
         update();
       } else {
         showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
@@ -579,7 +579,16 @@ class AppImage2 {
       if ( data["status"].toString().toLowerCase() == "success") {
         List<dynamic> addOnsPlans = data["data"];
         update();
-        _addOnsPlanList = addOnsPlans.map((e) => AddOnsPlanModel.fromJson(e)).toList();
+       // _addOnsPlanList = addOnsPlans.map((e) => AddOnsPlanModel.fromJson(e)).toList();
+        _addOnsPlanList = addOnsPlans
+            .map((e) => AddOnsPlanModel.fromJson(e))
+            .where((plan) {
+          if (userType == 'admin' || userType == 'superAdmin') {
+            return true; // allow all plans
+          } else {
+            return plan.addOnsPlanName.toString().toLowerCase() != 'free';
+          }
+        }).toList();
       } else {
         showCustomToast(context,  "Plan can not get error ${data["message"] ?? "error"}",);
       }
@@ -604,7 +613,16 @@ class AppImage2 {
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
         List<dynamic> jobPlans = data["data"];
-        _jobPlanList = jobPlans.map((e) => JobPlanModel.fromJson(e)).toList();
+      //  _jobPlanList = jobPlans.map((e) => JobPlanModel.fromJson(e)).toList();
+        _jobPlanList = jobPlans
+            .map((e) => JobPlanModel.fromJson(e))
+            .where((plan) {
+          if (userType == 'admin' || userType == 'superAdmin') {
+            return true;
+          } else {
+            return plan.jobPlanName.toString().toLowerCase() != 'free';
+          }
+        }).toList();
         update();
       } else {
         showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
@@ -630,7 +648,16 @@ class AppImage2 {
       if ( data["status"].toString().toLowerCase() == "success") {
         List<dynamic> webinarPlans = data["data"];
         update();
-        _webinarPlanList = webinarPlans.map((e) => WebinarPlan.fromJson(e)).toList();
+       // _webinarPlanList = webinarPlans.map((e) => WebinarPlan.fromJson(e)).toList();
+        _webinarPlanList = webinarPlans
+            .map((e) => WebinarPlan.fromJson(e))
+            .where((plan) {
+          if (userType == 'admin' || userType == 'superAdmin') {
+            return true;
+          } else {
+            return plan.webinarPlanName.toString().toLowerCase() != 'free';
+          }
+        }).toList();
       } else {
         showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
       }
@@ -655,7 +682,16 @@ class AppImage2 {
       if ( data["status"].toString().toLowerCase() == "success"){
         List<dynamic> postImagePlanList = data["data"];
         update();
-        _postImagePlanList = postImagePlanList.map((e) => PostImagePlan.fromJson(e)).toList();
+       // _postImagePlanList = postImagePlanList.map((e) => PostImagePlan.fromJson(e)).toList();
+        _postImagePlanList = postImagePlanList
+            .map((e) => PostImagePlan.fromJson(e))
+            .where((plan) {
+          if (userType == 'admin' || userType == 'superAdmin') {
+            return true;
+          } else {
+            return plan.postPlanName.toString().toLowerCase() != 'free';
+          }
+        }).toList();
       } else {
         showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
       }

@@ -2759,8 +2759,7 @@ class CompleteCareSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         gradient: LinearGradient(
           colors: [
-            Color(0xff042347),
-            Color(0xff0A3D72),
+         AppColors.primary,AppColors.secondary
           ],
         ),
       ),

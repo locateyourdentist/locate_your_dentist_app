@@ -415,7 +415,7 @@ class _JobCategoryScreenWebState extends State<JobCategoryScreenWeb> {
                                       context,
                                     );
 
-                                    fetchCategories();
+                                    await fetchCategories();
                                   },
                                 );
                               },

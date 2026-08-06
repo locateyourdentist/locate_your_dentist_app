@@ -21,7 +21,11 @@ class _HoverLift extends StatefulWidget {
   final Widget child;
   final double liftScale;
   final BorderRadius? borderRadius;
-  const _HoverLift({required this.child, this.liftScale = 1.02, this.borderRadius});
+  const _HoverLift({
+    required this.child,
+    this.liftScale = 1.02,
+    this.borderRadius,
+  });
 
   @override
   State<_HoverLift> createState() => _HoverLiftState();
@@ -229,6 +233,7 @@ class _SalePostPageState extends State<SalePostPage> {
       messageQuillController.document.toDelta().toJson(),
     );
 
+    final bool isSuperAdmin = Api.userInfo.read('userType') == 'superAdmin';
     bool isBasePlanActive = false;
     bool isPosterPlanActive = false;
     if (planController.checkPlanList.isNotEmpty) {
@@ -237,7 +242,7 @@ class _SalePostPageState extends State<SalePostPage> {
       isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
     }
 
-    if (!isBasePlanActive) {
+    if (!isSuperAdmin && !isBasePlanActive) {
       showSuccessDialog(
         context,
         title: "Alert",
@@ -249,12 +254,12 @@ class _SalePostPageState extends State<SalePostPage> {
       return;
     }
 
-    if (!isPosterPlanActive) {
+    if (!isSuperAdmin && !isPosterPlanActive) {
       showSuccessDialog(
         context,
         title: "Poster Plan Required",
         message:
-        "You need an active poster plan to post a sale listing. Please choose a plan to continue.",
+            "You need an active poster plan to post a sale listing. Please choose a plan to continue.",
         onOkPressed: () {
           Get.toNamed('/viewPlanPage');
         },
@@ -262,9 +267,11 @@ class _SalePostPageState extends State<SalePostPage> {
       return;
     }
 
-    final imageBytes = await Future.wait(images.map((img) async {
-      return img.bytes ?? await img.file!.readAsBytes();
-    }));
+    final imageBytes = await Future.wait(
+      images.map((img) async {
+        return img.bytes ?? await img.file!.readAsBytes();
+      }),
+    );
 
     Map<String, dynamic> responseData = {};
     try {
@@ -320,7 +327,11 @@ class _SalePostPageState extends State<SalePostPage> {
     Get.offNamed('/salePostListWebPage');
   }
 
-  Widget _sectionCard({required String title, required IconData icon, required Widget child}) {
+  Widget _sectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -344,7 +355,9 @@ class _SalePostPageState extends State<SalePostPage> {
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
+                  gradient: const LinearGradient(
+                    colors: [AppColors.primary, AppColors.secondary],
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon, size: 15, color: Colors.white),
@@ -352,7 +365,11 @@ class _SalePostPageState extends State<SalePostPage> {
               const SizedBox(width: 10),
               Text(
                 title,
-                style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold),
+                style: AppTextStyles.caption(
+                  context,
+                  color: AppColors.black,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -368,7 +385,11 @@ class _SalePostPageState extends State<SalePostPage> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         label,
-        style: AppTextStyles.caption(context, color: Colors.grey.shade600, fontWeight: FontWeight.w600),
+        style: AppTextStyles.caption(
+          context,
+          color: Colors.grey.shade600,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -473,21 +494,28 @@ class _SalePostPageState extends State<SalePostPage> {
                                     ? images.length + 1
                                     : images.length,
                                 itemBuilder: (context, index) {
-                                  if (index == images.length && images.length < maxImages) {
+                                  if (index == images.length &&
+                                      images.length < maxImages) {
                                     return _HoverLift(
                                       liftScale: 1.04,
                                       borderRadius: BorderRadius.circular(14),
                                       child: GestureDetector(
                                         onTap: pickImages,
                                         child: Container(
-                                          margin: const EdgeInsets.only(right: 10),
+                                          margin: const EdgeInsets.only(
+                                            right: 10,
+                                          ),
                                           width: 90,
                                           height: 90,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(14),
-                                            color: AppColors.primary.withOpacity(0.06),
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                            color: AppColors.primary
+                                                .withOpacity(0.06),
                                             border: Border.all(
-                                              color: AppColors.primary.withOpacity(0.25),
+                                              color: AppColors.primary
+                                                  .withOpacity(0.25),
                                               style: BorderStyle.solid,
                                             ),
                                           ),
@@ -508,7 +536,9 @@ class _SalePostPageState extends State<SalePostPage> {
                                     child: Stack(
                                       children: [
                                         ClipRRect(
-                                          borderRadius: BorderRadius.circular(14),
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
                                           child: img.preview(size: 90),
                                         ),
                                         Positioned(
@@ -522,7 +552,11 @@ class _SalePostPageState extends State<SalePostPage> {
                                                 color: Colors.black54,
                                                 shape: BoxShape.circle,
                                               ),
-                                              child: const Icon(Icons.close, size: 14, color: Colors.white),
+                                              child: const Icon(
+                                                Icons.close,
+                                                size: 14,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -535,7 +569,10 @@ class _SalePostPageState extends State<SalePostPage> {
                             const SizedBox(height: 8),
                             Text(
                               "Up to $maxImages photos",
-                              style: AppTextStyles.caption(context, color: Colors.grey.shade500),
+                              style: AppTextStyles.caption(
+                                context,
+                                color: Colors.grey.shade500,
+                              ),
                             ),
                           ],
                         ),
@@ -553,7 +590,8 @@ class _SalePostPageState extends State<SalePostPage> {
                               hint: "Select user type",
                               items: userTypes,
                               selectedValue: selectedUserType,
-                              onChanged: (val) => setState(() => selectedUserType = val),
+                              onChanged: (val) =>
+                                  setState(() => selectedUserType = val),
                               fillColor: Colors.grey.shade100,
                               borderColor: Colors.white,
                             ),
@@ -582,7 +620,8 @@ class _SalePostPageState extends State<SalePostPage> {
                                     child: QuillEditor.basic(
                                       controller: messageQuillController,
                                       config: const QuillEditorConfig(
-                                        placeholder: "Describe the item you're selling...",
+                                        placeholder:
+                                            "Describe the item you're selling...",
                                         padding: EdgeInsets.all(10),
                                       ),
                                     ),
@@ -604,21 +643,29 @@ class _SalePostPageState extends State<SalePostPage> {
                               liftScale: 1.0,
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(12),
-                                onTap: () => setState(() => negotiable = !negotiable),
+                                onTap: () =>
+                                    setState(() => negotiable = !negotiable),
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
                                   child: Row(
                                     children: [
                                       Expanded(
                                         child: Text(
                                           "Price is negotiable",
-                                          style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.w600),
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: AppColors.black,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                       ),
                                       Switch(
                                         value: negotiable,
                                         activeColor: AppColors.primary,
-                                        onChanged: (val) => setState(() => negotiable = val),
+                                        onChanged: (val) =>
+                                            setState(() => negotiable = val),
                                       ),
                                     ],
                                   ),
@@ -648,7 +695,9 @@ class _SalePostPageState extends State<SalePostPage> {
                                 if (value == null || value.trim().isEmpty) {
                                   return "Mobile number cannot be empty";
                                 }
-                                if (!RegExp(r'^[0-9]{10}$').hasMatch(value.trim())) {
+                                if (!RegExp(
+                                  r'^[0-9]{10}$',
+                                ).hasMatch(value.trim())) {
                                   return "Enter a valid 10-digit mobile number";
                                 }
                                 return null;
@@ -691,7 +740,11 @@ class _SalePostPageState extends State<SalePostPage> {
                             ),
                             child: Text(
                               "Post Sale Instruments",
-                              style: AppTextStyles.body(context, color: Colors.white, fontWeight: FontWeight.bold),
+                              style: AppTextStyles.body(
+                                context,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),

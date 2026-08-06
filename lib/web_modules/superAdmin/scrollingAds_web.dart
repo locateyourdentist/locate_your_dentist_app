@@ -542,8 +542,9 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     image.isActive = val;
     controller.editUploadImage1[index] = image;
     controller.update();
+    final bool isSuperAdmin = Api.userInfo.read('userType') == 'superAdmin';
 
-    if (image.planId == null || image.planId == "0") {
+    if (!isSuperAdmin && (image.planId == null || image.planId == "0")) {
       Get.snackbar("Error", "Please select a plan first");
       return;
     }
@@ -556,10 +557,9 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     List<Uint8List> currentFile = image.bytes != null ? [image.bytes!] : [];
 
     String currentUserId = Api.userInfo.read('userId')?.toString() ?? "";
-    String storedUserType = Api.userInfo.read('userType')?.toString() ?? "";
-    String targetUserType = (storedUserType.toLowerCase() == 'superadmin')
+    String targetUserType = isSuperAdmin
         ? (controller.selectedUserType ?? "Dental Clinic")
-        : storedUserType;
+        : userType;
 
     if (currentUserId.isEmpty || targetUserType.isEmpty) {
       Get.snackbar("Error", "Missing session data. Please login again.");

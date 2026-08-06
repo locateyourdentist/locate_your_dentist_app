@@ -34,6 +34,15 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       GlobalKey<ScaffoldState>();
   int currentStep = 0;
   bool _isSubmittingRegistration = false;
+  // The User Type dropdown's `items` are built from each entry's "key"
+  // (e.g. "Dentist"), but loginController.selectedUserType stores the
+  // corresponding "value" (e.g. "Dental Clinic") that the rest of the form
+  // and the backend expect. Binding the dropdown's selectedValue directly to
+  // loginController.selectedUserType meant it never matched any item in
+  // `items` (wrong vocabulary), so the dropdown always reverted to showing
+  // the hint after a selection. This tracks the selected key separately so
+  // the dropdown's own display stays in sync.
+  String? _selectedUserTypeKey;
   final ImagePicker _picker = ImagePicker();
   final _formKeyRegisterWeb = GlobalKey<FormState>();
   final loginController = Get.put(LoginController());
@@ -44,17 +53,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
   final List<Map<String, String>> allItems = [
-    {"key": "Admin", "value": "Admin"},
-    {"key": "Super Admin", "value": "Super Admin"},
+    {"key": "Admin", "value": "admin"},
+    {"key": "Super Admin", "value": "superAdmin"},
     {"key": "Dentist", "value": "Dental Clinic"},
     {"key": "Dental Lab", "value": "Dental Lab"},
     {"key": "Dental Shop", "value": "Dental Shop"},
     {"key": "Dental Mechanic", "value": "Dental Mechanic"},
     {"key": "Dental jobSeekers", "value": "Job Seekers"},
-    {
-      "key": "dental Professionals",
-      "value": "Dental Consultant"
-    },
+    {"key": "dental Professionals", "value": "Dental Consultant"},
   ];
   List<Map<String, String>> get filteredItems {
     final userType = Api.userInfo.read('userType');
@@ -62,17 +68,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     if (userType == "superAdmin") {
       return allItems;
     } else if (userType == "admin") {
-      return allItems
-          .where((e) => e["key"] != "Super Admin")
-          .toList();
+      return allItems.where((e) => e["key"] != "Super Admin").toList();
     } else {
       return allItems
-          .where((e) =>
-      e["key"] != "Admin" &&
-          e["key"] != "Super Admin")
+          .where((e) => e["key"] != "Admin" && e["key"] != "Super Admin")
           .toList();
     }
   }
+
   final int maxFiles = 3;
   bool isPicking = false;
 
@@ -85,6 +88,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       _refresh();
     });
   }
+
   @override
   void dispose() {
     loginController.pinCodeController.removeListener(_onPinCodeChanged);
@@ -99,6 +103,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       _fetchLatLngFromAddress();
     }
   }
+
   Future<void> _fetchLatLngFromAddress() async {
     final state = loginController.selectedState ?? '';
     final district = loginController.selectedDistrict ?? '';
@@ -118,6 +123,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       loginController.update();
     }
   }
+
   Future<void> setProfileData(user) async {
     loginController.selectedState = user.address?.state ?? "";
     loginController.selectedDistrict = user.address?.district ?? "";
@@ -138,6 +144,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
     loginController.update();
   }
+
   Map<String, int> getPlanLimits() {
     if (loginController.userData.isEmpty) {
       loginController.maxFilesImage = 2;
@@ -171,6 +178,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
 
     return {};
   }
+
   Future<void> _refresh() async {
     await getLocation();
     loadJobDescription(loginController.descriptionData);
@@ -178,28 +186,43 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     if (loginController.userData.isNotEmpty) {
       await setProfileData(loginController.userData.first);
       getPlanLimits();
+      _syncSelectedUserTypeKey();
     }
     await jobController.getJobCategoryLists("", context);
     setState(() {
       branchId = Get.arguments?['branchId'] ?? "";
-    });    print('userid is${Get.arguments?['userId']}ss');
+    });
+    print('userid is${Get.arguments?['userId']}ss');
     if (Get.arguments?['userId'] == "0") loginController.clearProfileData();
   }
+
+  void _syncSelectedUserTypeKey() {
+    final currentValue = loginController.selectedUserType;
+    if (currentValue == null || currentValue.isEmpty) return;
+    final match = filteredItems.where((e) => e["value"] == currentValue);
+    if (match.isNotEmpty) {
+      _selectedUserTypeKey = match.first["key"];
+    }
+  }
+
   Future<void> getLocation() async {
     const AndroidInitializationSettings androidInit =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     const DarwinInitializationSettings darwinInit =
-    DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+        DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
+    const InitializationSettings initSettings = InitializationSettings(
+      android: androidInit,
+      iOS: darwinInit,
+      macOS: darwinInit,
     );
-    const InitializationSettings initSettings =
-    InitializationSettings(android: androidInit, iOS: darwinInit, macOS: darwinInit);
-    await flutterLocalNotificationsPlugin.initialize(
-      settings: initSettings,
+    await flutterLocalNotificationsPlugin.initialize(settings: initSettings);
+    final position = await LocationService.getCurrentLocationWithPrompt(
+      context,
     );
-    final position = await LocationService.getCurrentLocationWithPrompt(context);
     if (position != null) {
       loginController.latitude = position.latitude;
       loginController.longitude = position.longitude;
@@ -222,6 +245,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       return '';
     }
   }
+
   void loadJobDescription(dynamic data) {
     try {
       List<Map<String, dynamic>> delta = [
@@ -295,6 +319,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       isPicking = false;
     }
   }
+
   Future<void> pickMedia(String source) async {
     final isVideo = source == "video";
 
@@ -359,6 +384,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         ),
     ];
   }
+
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
@@ -368,7 +394,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     return Scaffold(
       key: _scaffoldKeyRegister,
       backgroundColor: AppColors.scaffoldBg,
-      drawer: (isLoggedIn && !isDesktop) ? const Drawer(width: 250, child: AdminSideBar()) : null,
+      drawer: (isLoggedIn && !isDesktop)
+          ? const Drawer(width: 250, child: AdminSideBar())
+          : null,
       body: Row(
         children: [
           if (isLoggedIn && isDesktop) const AdminSideBar(),
@@ -411,7 +439,10 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                     horizontal: isMobile ? 12.0 : 0,
                                   ),
                                   child: Text(
-                                    loginController.fullNameController.text.isNotEmpty
+                                    loginController
+                                            .fullNameController
+                                            .text
+                                            .isNotEmpty
                                         ? "Edit Details"
                                         : "Register New User",
                                     style: AppTextStyles.body(
@@ -467,9 +498,13 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                             .validate()) {
                                           await _handleRegistration();
                                         } else {
-                                          final missing = _missingRequiredFields();
+                                          final missing =
+                                              _missingRequiredFields();
                                           if (missing.isNotEmpty) {
-                                            showMissingFieldsDialog(context, missing);
+                                            showMissingFieldsDialog(
+                                              context,
+                                              missing,
+                                            );
                                           }
                                         }
                                       } else {
@@ -574,32 +609,47 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       ),
     );
   }
+
   List<String> _missingRequiredFields() {
     final missing = <String>[];
-    final isNewRegistration = Api.userInfo.read('token') == null ||
-        Get.arguments?['userId'] == "0";
+    final isNewRegistration =
+        Api.userInfo.read('token') == null || Get.arguments?['userId'] == "0";
 
-    if (loginController.fullNameController.text.trim().isEmpty) missing.add("Full Name");
+    if (loginController.fullNameController.text.trim().isEmpty)
+      missing.add("Full Name");
     if (loginController.dobController.text.trim().isEmpty) missing.add("DOB");
-    if (loginController.emailController.text.trim().isEmpty) missing.add("Email");
-    if (loginController.mobileController.text.trim().isEmpty) missing.add("Mobile");
+    if (loginController.emailController.text.trim().isEmpty)
+      missing.add("Email");
+    if (loginController.mobileController.text.trim().isEmpty)
+      missing.add("Mobile");
     if (isNewRegistration) {
-      if (loginController.passwordController.text.trim().isEmpty) missing.add("Password");
-      if (loginController.confirmPasswordController.text.trim().isEmpty) missing.add("Confirm Password");
+      if (loginController.passwordController.text.trim().isEmpty)
+        missing.add("Password");
+      if (loginController.confirmPasswordController.text.trim().isEmpty)
+        missing.add("Confirm Password");
     }
     if ((loginController.selectedUserType ?? '').isEmpty) {
       missing.add("User Type");
     } else if (loginController.selectedUserType != 'Job Seekers' &&
         loginController.typeNameController.text.trim().isEmpty) {
-      missing.add(loginController.selectedUserType == 'Dental Shop' ? "Shop Name" : "Business Name");
+      missing.add(
+        loginController.selectedUserType == 'Dental Shop'
+            ? "Shop Name"
+            : "Business Name",
+      );
     }
-    if (loginController.addressLine1Controller.text.trim().isEmpty) missing.add("Address Line 1");
-    if (loginController.addressLine2Controller.text.trim().isEmpty) missing.add("Address Line 2");
+    if (loginController.addressLine1Controller.text.trim().isEmpty)
+      missing.add("Address Line 1");
+    if (loginController.addressLine2Controller.text.trim().isEmpty)
+      missing.add("Address Line 2");
     if ((loginController.selectedState ?? '').isEmpty) missing.add("State");
-    if ((loginController.selectedDistrict ?? '').isEmpty) missing.add("District");
-    if ((loginController.selectedTaluka ?? '').isEmpty) missing.add("Taluka/Town");
+    if ((loginController.selectedDistrict ?? '').isEmpty)
+      missing.add("District");
+    if ((loginController.selectedTaluka ?? '').isEmpty)
+      missing.add("Taluka/Town");
     if ((loginController.selectedVillage ?? '').isEmpty) missing.add("Area");
-    if (loginController.pinCodeController.text.trim().isEmpty) missing.add("Pin Code");
+    if (loginController.pinCodeController.text.trim().isEmpty)
+      missing.add("Pin Code");
 
     return missing;
   }
@@ -650,9 +700,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       }
     }
     await loginController.registerUser(
-      userId: (Api.userInfo.read('token') == null || Get.arguments?['userId'] == "0" || Get.arguments?['branchId'] == "0")
+      userId:
+          (Api.userInfo.read('token') == null ||
+              Get.arguments?['userId'] == "0" ||
+              Get.arguments?['branchId'] == "0")
           ? "0"
-          : (loginController.userData.isNotEmpty ? loginController.userData.first.userId ?? "" : ""),
+          : (loginController.userData.isNotEmpty
+                ? loginController.userData.first.userId ?? ""
+                : ""),
       userType: loginController.selectedUserType!,
       fullName: loginController.fullNameController.text,
       dob: loginController.dobController.text,
@@ -675,7 +730,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       location: loginController.locationController.text,
       website: loginController.websiteController.text,
       description: jsonEncode(_controller.document.toDelta().toJson()),
-      adminId:Get.arguments?['branchId'] == "0"?Api.userInfo.read('userId'):loginController.selectUserId,
+      adminId: Get.arguments?['branchId'] == "0"
+          ? Api.userInfo.read('userId')
+          : loginController.selectUserId,
       isAdmin: Get.arguments?['branchId'] == "0" ? "true" : "false",
       latitude: loginController.latitude?.toString() ?? "",
       longitude: loginController.longitude?.toString() ?? "",
@@ -735,7 +792,8 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                 lastDate: DateTime.now(),
               );
               if (p != null) {
-                loginController.dobController.text = "${p.day}-${p.month}-${p.year}";
+                loginController.dobController.text =
+                    "${p.day}-${p.month}-${p.year}";
               }
             },
           ),
@@ -799,7 +857,10 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                 // fillColor: AppColors.white,
                 // borderColor: AppColors.grey,
               ),
-              Text('**Not Mandatory **',style: AppTextStyles.caption(context,color: Colors.redAccent),)
+              Text(
+                '**Not Mandatory **',
+                style: AppTextStyles.caption(context, color: Colors.redAccent),
+              ),
             ],
           ),
         ),
@@ -820,16 +881,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         // ),
         CustomDropdownField(
           hint: "User Type",
-          items: filteredItems
-              .map((e) => e["key"]!)
-              .toList(),
-          selectedValue: loginController.selectedUserType,
+          items: filteredItems.map((e) => e["key"]!).toList(),
+          selectedValue: _selectedUserTypeKey,
           onChanged: (value) {
             setState(() {
-              loginController.selectedUserType = value;
+              _selectedUserTypeKey = value;
 
               final selected = filteredItems.firstWhere(
-                    (e) => e["key"] == value,
+                (e) => e["key"] == value,
               );
 
               loginController.selectedUserType = selected["value"]!;
@@ -1088,26 +1147,25 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
   Widget _step3() {
     return Column(
       children: [
-         Text("Upload Certificate",  style: AppTextStyles.caption(
-          context,fontWeight: FontWeight.bold
-        ),),
-    Text(
-    '* This field is optional. You can upload your certificate after registration.',
-    style: AppTextStyles.caption(
-    context,
-    color: Colors.redAccent,
-    ),),
+        Text(
+          "Upload Certificate",
+          style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          '* This field is optional. You can upload your certificate after registration.',
+          style: AppTextStyles.caption(context, color: Colors.redAccent),
+        ),
         const SizedBox(height: 10),
         _buildCertificatePicker(),
         const SizedBox(height: 20),
-         Text("Upload Image",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+        Text(
+          "Upload Image",
+          style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 5),
         Text(
           '* This field is optional. You can upload your certificate after registration.',
-          style: AppTextStyles.caption(
-            context,
-            color: Colors.redAccent,
-          ),
+          style: AppTextStyles.caption(context, color: Colors.redAccent),
         ),
         const SizedBox(height: 10),
 
@@ -1116,21 +1174,28 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         if (Api.userInfo.read('userId') != null)
           Column(
             children: [
-               Text("Upload Video",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+              Text(
+                "Upload Video",
+                style: AppTextStyles.caption(
+                  context,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 10),
 
               _buildVideoPicker(),
               const SizedBox(height: 20),
             ],
           ),
-         Text("Logo / Profile Image",style: AppTextStyles.caption(context,fontWeight: FontWeight.bold),),
+        Text(
+          "Logo / Profile Image",
+          style: AppTextStyles.caption(context, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 5),
         Text(
           '* This field is optional. You can upload your certificate after registration.',
-          style: AppTextStyles.caption(
-            context,
-            color: Colors.redAccent,
-          ),),
+          style: AppTextStyles.caption(context, color: Colors.redAccent),
+        ),
         const SizedBox(height: 10),
         _buildLogoPicker(),
       ],
