@@ -76,12 +76,16 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                 const SizedBox(height: 25),
                 _sectionTitle("Distance"),
                 _selectableHorizontal(
-                  options: ["5 Km", "10 Km", "15 Km", "20 Km"],
+                  options: ["around 5 Km", "around 10 Km", "around 15 Km", "around 20 Km"],
                   selectedValue: loginController.selectedDistance != null
                       ? "${loginController.selectedDistance} Km"
                       : null,
+                   // onSelect: (val) {
+                  //   final numericValue = val.replaceAll(" Km", "");
                   onSelect: (val) {
-                    final numericValue = val.replaceAll(" Km", "");
+    final numericValue = val
+        .replaceAll("around ", "")
+        .replaceAll(" Km", "");
                     setState(() {
                       loginController.selectedDistance = numericValue;
                     });

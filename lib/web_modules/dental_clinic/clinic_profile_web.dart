@@ -254,7 +254,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
             height: 800,
             child: TabBarView(
               children: [
-                _buildDescriptionTab(),
+                _buildDescriptionTab(user),
                 _buildServicesTab(width, isMobile, planActive, isAdminUser, user, Api.userInfo.read('userId')??""),
                 _buildImagesTab(),
                 if (isAdminUser) _buildCertificatesTab(user),
@@ -266,7 +266,7 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
     );
   }
 
-  Widget _buildDescriptionTab() {
+  Widget _buildDescriptionTab(dynamic user) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: _cardDecoration(),
@@ -289,6 +289,12 @@ class _ClinicProfileWebState extends State<ClinicProfileWeb> with SingleTickerPr
                 ),
               ),
             ),
+            if (user != null &&
+                (user.userType == 'Dental Consultant' || user.userType == 'Dental Lab'))
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: buildProfessionalDetailsCard(context, user),
+              ),
           ],
         ),
       ),

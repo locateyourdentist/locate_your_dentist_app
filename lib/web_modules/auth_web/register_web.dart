@@ -739,11 +739,12 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       jobCategory: loginController.selectedUserType == 'Job Seekers'
           ? (loginController.selectedCategories ?? [])
           : [],
-      details: loginController.selectedUserType == 'Dental Consultant'
+      details: (loginController.selectedUserType == 'Dental Consultant' ||
+              loginController.selectedUserType == 'Dental Lab')
           ? {
               "availableTiming": loginController.buildAvailableTimingPayload(),
-              "availableLocation": loginController.selectedAvailableLocations,
-              "degree": loginController.selectedDegree ?? "",
+              "availableLocations": loginController.selectedAvailableLocations,
+              "degreeName": loginController.selectedDegree ?? "",
               "otherDegree": loginController.otherDegreeController.text,
             }
           : null,
@@ -953,7 +954,8 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
           maxLength: 6,
         ),
         const SizedBox(height: 15),
-        if (loginController.selectedUserType == 'Dental Consultant')
+        if (loginController.selectedUserType == 'Dental Consultant' ||
+            loginController.selectedUserType == 'Dental Lab')
           GetBuilder<LoginController>(
             builder: (controller) {
               return Padding(

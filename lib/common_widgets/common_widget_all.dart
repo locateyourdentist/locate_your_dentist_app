@@ -1187,3 +1187,85 @@ Widget scrollingAdsBannerMobile(BuildContext context) {
   );
 }
 
+// Shows Available Timing / Available Location / Degree for profile view
+// screens. Returns an empty widget when none of those are set.
+Widget buildProfessionalDetailsCard(BuildContext context, dynamic user) {
+  if (user == null) return const SizedBox.shrink();
+  if (user.userType != 'Dental Consultant' && user.userType != 'Dental Lab') {
+    return const SizedBox.shrink();
+  }
+
+  final Map details = user.details ?? {};
+  final String degree = (details["degreeName"] ?? "").toString();
+  final String otherDegree = (details["otherDegree"] ?? "").toString();
+  final List locations =
+      details["availableLocations"] is List ? details["availableLocations"] as List : [];
+  final List timings =
+      details["availableTiming"] is List ? details["availableTiming"] as List : [];
+
+  if (degree.isEmpty && locations.isEmpty && timings.isEmpty) {
+    return const SizedBox.shrink();
+  }
+
+  return Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: Colors.grey.shade50,
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Professional Details",
+          style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        if (degree.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(
+              degree == 'Other Specialities' && otherDegree.isNotEmpty
+                  ? "Degree: $degree ($otherDegree)"
+                  : "Degree: $degree",
+              style: AppTextStyles.caption(context, color: AppColors.black),
+            ),
+          ),
+        if (locations.isNotEmpty) ...[
+          Text(
+            "Available Locations",
+            style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: locations
+                .map((loc) => Chip(label: Text(loc.toString())))
+                .toList(),
+          ),
+          const SizedBox(height: 10),
+        ],
+        if (timings.isNotEmpty) ...[
+          Text(
+            "Available Timing",
+            style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 6),
+          ...timings.map((slot) {
+            final Map slotMap = slot is Map ? slot : {};
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                "${slotMap["slot"] ?? ""}: ${slotMap["from"] ?? ""} - ${slotMap["to"] ?? ""}",
+                style: AppTextStyles.caption(context, color: AppColors.black),
+              ),
+            );
+          }),
+        ],
+      ],
+    ),
+  );
+}
+

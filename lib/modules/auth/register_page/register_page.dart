@@ -740,7 +740,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                       SizedBox(height: size * 0.01),
 
-                                      if (loginController.selectedUserType == 'Dental Consultant')
+                                      if (loginController.selectedUserType == 'Dental Consultant' ||
+                                          loginController.selectedUserType == 'Dental Lab')
                                         GetBuilder<LoginController>(
                                           builder: (controller) {
                                             return Column(
@@ -1207,11 +1208,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                                         longitude: loginController.longitude.toString()??"",
                                                         jobCategory:loginController.selectedCategories,
                                                         isAdmin: "false",
-                                                        details: loginController.selectedUserType == 'Dental Consultant'
+                                                        details: (loginController.selectedUserType == 'Dental Consultant' ||
+                                                                loginController.selectedUserType == 'Dental Lab')
                                                             ? {
                                                                 "availableTiming": loginController.buildAvailableTimingPayload(),
-                                                                "availableLocation": loginController.selectedAvailableLocations,
-                                                                "degree": loginController.selectedDegree ?? "",
+                                                                "availableLocations": loginController.selectedAvailableLocations,
+                                                                "degreeName": loginController.selectedDegree ?? "",
                                                                 "otherDegree": loginController.otherDegreeController.text,
                                                               }
                                                             : null,

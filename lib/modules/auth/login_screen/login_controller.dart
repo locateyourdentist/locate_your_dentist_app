@@ -1058,7 +1058,7 @@ class LoginController extends GetxController {
         pgDegree.text = pg["degree"] ?? "";
         pgPercentage.text = pg["percentage"] ?? "";
 
-        final availableLocation = user.details["availableLocation"];
+        final availableLocation = user.details["availableLocations"];
         if (availableLocation is List) {
           selectedAvailableLocations = availableLocation.map((e) => e.toString()).toList();
         } else if (availableLocation is String && availableLocation.isNotEmpty) {
@@ -1066,7 +1066,7 @@ class LoginController extends GetxController {
         } else {
           selectedAvailableLocations = [];
         }
-        selectedDegree = user.details["degree"] ?? "";
+        selectedDegree = user.details["degreeName"] ?? "";
         otherDegreeController.text = user.details["otherDegree"] ?? "";
         final timing = user.details["availableTiming"];
         selectedAvailableTiming = [];

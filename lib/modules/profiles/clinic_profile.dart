@@ -726,6 +726,16 @@ class _ClinicProfileState extends State<ClinicProfile>
                                         ],
                                       ),
                                     ),
+                                  if (user != null &&
+                                      (user.userType == 'Dental Consultant' ||
+                                          user.userType == 'Dental Lab'))
+                                    Padding(
+                                      padding: EdgeInsets.only(top: size * 0.02),
+                                      child: buildProfessionalDetailsCard(
+                                        context,
+                                        user,
+                                      ),
+                                    ),
                                   SizedBox(height: size * 0.05),
                                   Container(
                                     padding: const EdgeInsets.all(4),

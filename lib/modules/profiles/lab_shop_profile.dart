@@ -736,6 +736,17 @@ class _LabProfileState extends State<LabProfile>
                               ),
                               const SizedBox(height: 20),
 
+                              if (user != null &&
+                                  (user.userType == 'Dental Consultant' ||
+                                      user.userType == 'Dental Lab'))
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 20),
+                                  child: buildProfessionalDetailsCard(
+                                    context,
+                                    user,
+                                  ),
+                                ),
+
                               Container(
                                 padding: const EdgeInsets.all(4),
                                 decoration: BoxDecoration(

@@ -214,8 +214,8 @@ class Api {
       "collegeDetails": details?["collegeDetails"] ?? {},
       "experienceDetails": details?["experienceDetails"] ?? [],
       "availableTiming": details?["availableTiming"] ?? [],
-      "availableLocation": details?["availableLocation"] ?? [],
-      "degree": details?["degree"] ?? "",
+      "availableLocations": details?["availableLocations"] ?? [],
+      "degreeName": details?["degreeName"] ?? "",
       "otherDegree": details?["otherDegree"] ?? "",
     };
 

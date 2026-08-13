@@ -346,7 +346,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: AppColors.primary,
-                                    fontSize: 14,
+                                    fontSize: 14,fontWeight:FontWeight.bold,
                                     decoration: TextDecoration.underline,
                                   )))
                             ],
