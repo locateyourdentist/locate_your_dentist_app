@@ -213,6 +213,10 @@ class Api {
       "jobCategory": jobCategory ?? [],
       "collegeDetails": details?["collegeDetails"] ?? {},
       "experienceDetails": details?["experienceDetails"] ?? [],
+      "availableTiming": details?["availableTiming"] ?? [],
+      "availableLocation": details?["availableLocation"] ?? [],
+      "degree": details?["degree"] ?? "",
+      "otherDegree": details?["otherDegree"] ?? "",
     };
 
     request.fields['details'] = jsonEncode(detailsData);

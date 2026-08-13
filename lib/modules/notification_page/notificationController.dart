@@ -40,12 +40,15 @@ class NotificationController extends GetxController {
     Uint8List? notificationImage1,
     // List<File>? notificationImage1,
   }) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       _notificationList = [];
       final response = await api.createNotification(
@@ -137,12 +140,15 @@ class NotificationController extends GetxController {
   // }
 
   Future<void> getNotificationListAdmin(dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       _notificationList = [];
       final response = await api.getNotificationListAdmin();
@@ -181,12 +187,15 @@ class NotificationController extends GetxController {
   }
 
   Future<void> updateNotificationListAdmin(dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       final response = await api.updateNotificationListAdmin();
       var data = jsonDecode(response.body);

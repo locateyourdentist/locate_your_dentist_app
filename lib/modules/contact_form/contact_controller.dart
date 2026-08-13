@@ -32,12 +32,15 @@ class ContactController extends GetxController{
   final notificationController=Get.put(NotificationController());
 
   Future<void> postContactDetail(String senderUserId,String receiverUserId,String email,String mobileNumber,String clinicName,String doctorName, String materialDescription,String state,String district,String city,contactImage1,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.postContactDetail( senderUserId, receiverUserId, email, mobileNumber, clinicName, doctorName,  materialDescription, state, district, city,contactImage1);
       var data = jsonDecode(response.body);
@@ -62,12 +65,15 @@ class ContactController extends GetxController{
     }
   }
   Future<void> postPublicContactDetail(String email,String mobileNumber,String name, String description,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.postPublicContactDetail(   email, mobileNumber, name,  description);
       var data = jsonDecode(response.body);
@@ -93,12 +99,15 @@ class ContactController extends GetxController{
   }
 
   Future<void> postFilterResults(String receiverUserId,String senderUserId,String state,String district,String city,String status, String search,String fromDate,String toDate,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _filterContactLists=[];
       final response = await api.contactFilterSearch( receiverUserId, senderUserId, state, district, city, status,  search, fromDate, toDate,);
@@ -118,12 +127,15 @@ class ContactController extends GetxController{
     }
   }
   Future<void> getSenderContactFormLists(String senderId,String fromDate,String toDate,String search,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _senderContactLists=[];
       final response = await api.getSenderContactLists( senderId, fromDate, toDate, search,);
@@ -166,12 +178,15 @@ class ContactController extends GetxController{
   }
 
   Future<void> getFeedbackFormLists(String fromDate,String toDate,String search,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _publicContactFormLists=[];
       final response = await api.getFeedbackFormLists(fromDate, toDate, search,);
@@ -195,12 +210,15 @@ class ContactController extends GetxController{
   }
 
   Future<void> getReceiverContactFormLists(String receiverId,String fromDate,String toDate,String search,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _receiverContactLists=[];
       final response = await api.getReceiverContactFormLists( receiverId, fromDate, toDate, search,);

@@ -250,12 +250,15 @@ class AppImage2 {
   }
   Future<void> addCompanyDetails(String userId,String companyName,String gst,
    Map<String, dynamic> address,String email,String phone,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.addCompanyDetails(  userId, companyName, gst,
             address, email, phone,);
@@ -275,12 +278,15 @@ class AppImage2 {
   }
   Future<void> addContactDetailsStateWise({ required Map<String, dynamic>? details,
     required BuildContext context,}) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.addContactDetailsStateWise( details);
       var data = jsonDecode(response.body);
@@ -300,12 +306,15 @@ class AppImage2 {
     }
   }
   Future<void> addPrivacyPolicyContent( String category,String details,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.addPrivacyPolicyContent( category, details,);
       var data = jsonDecode(response.body);
@@ -324,12 +333,15 @@ class AppImage2 {
   }
   Future<void> addGstDetails(String userId,String state,String cgst,
      String sgst,String igst,bool showGst,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.addGstDetails(userId, state, cgst, sgst,igst, showGst,);
       var data = jsonDecode(response.body);
@@ -356,12 +368,15 @@ class AppImage2 {
   required double amount,
   required TaxSummary taxSummary,
   required Company company,context})async{
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.saveInvoicePdf(userId:  userId,planId: planId,planName: planName,planType:planType,startDate:startDate,endDate:endDate,amount: amount,taxSummary: taxSummary, company: company);
       var data = jsonDecode(response.body);
@@ -379,12 +394,15 @@ class AppImage2 {
     }
   }
   Future<void> getGstDetails(dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _getGstList=[];
       final response = await api.getGstDetailsList( );
@@ -410,12 +428,15 @@ class AppImage2 {
     }
   }
   Future<void> getInvoiceDetails(dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _invoiceList=[];
       final response = await api.getInvoiceList( );
@@ -435,12 +456,15 @@ class AppImage2 {
   }
 
   Future<void> getInvoiceById(String invoiceId,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _invoiceDetails=[];
       final response = await api.getInvoiceById(invoiceId);
@@ -469,12 +493,15 @@ class AppImage2 {
     }
   }
   Future<void> getBasePlanList(String userType,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _basePlanList=[];
       final response = await api.getBasePlanList( userType,);
@@ -507,12 +534,15 @@ class AppImage2 {
     }
   }
   Future<void> getIncomeDetailsByPlan({String? state,String? fromDate,String? toDate,dynamic context}) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.getIncomeDetails(state:state,fromDate: fromDate,
         toDate: toDate, );
@@ -533,12 +563,15 @@ class AppImage2 {
     }
   }
   Future<void> getExpense({String? state,String? month,String? year,dynamic context}) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _expenses=[];
       final response = await api.getExpenseDetails(state:state,month: month,
@@ -566,12 +599,15 @@ class AppImage2 {
     }
   }
   Future<void> getAddOnPlansList( String userType,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _addOnsPlanList=[];
       final response = await api.getAddOnsPlanList( userType,);
@@ -601,12 +637,15 @@ class AppImage2 {
   }
 
   Future<void> getJobPlansList(String userType, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _jobPlanList=[];
       final response = await api.getJobPlanList( userType,);
@@ -635,12 +674,15 @@ class AppImage2 {
     }
   }
   Future<void> getWebinarPlansList(String userType, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _webinarPlanList=[];
       final response = await api.getWebinarPlanList( userType,);
@@ -669,12 +711,15 @@ class AppImage2 {
     }
   }
   Future<void> getPostImagePlanList(String userType, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _postImagePlanList=[];
       final response = await api.getPostImagePlanList( userType,);
@@ -703,12 +748,15 @@ class AppImage2 {
     }
   }
   Future<void> checkPlansStatus(String userId, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _checkPlanList=[];
       final response = await api.checkPlansStatus( userId,);
@@ -732,12 +780,15 @@ class AppImage2 {
 
   Future<void> createPlans( String userType,String planId,String planName,String price,String markPrice,String duration,bool isImageAndroid1,bool isVideoAndroid1,
       bool isLocationAndroid1,bool isMobileNumber1,bool isServices1,String imageCount,String imageSize,String videoCount,String videoSize,List<String> features,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createBasePlan(userType,planId,planName,price, markPrice,duration, isImageAndroid1,isVideoAndroid1, isLocationAndroid1, isMobileNumber1, isServices1, imageCount, imageSize, videoCount, videoSize,features);
       var data = jsonDecode(response.body);
@@ -772,12 +823,15 @@ class AppImage2 {
     }
   }
   Future<bool> createUserPlans( String userId,String planId,String planName,String price,String startDate,String endDate,imageCount,imageSize,videoCount,videoSize,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return false;
     }
-    isLoading=true;
     try {
       final response = await api.createUserBasePlan( userId, planId, planName,price, startDate, endDate,imageCount,imageSize,videoCount,videoSize,);
       var data = jsonDecode(response.body);
@@ -814,12 +868,15 @@ class AppImage2 {
     }
   }
   Future<void> addExpenseDetail( String state,String title,String amount,String category,String month,String year,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.addExpenseDetail( state,title, amount, category, month, year);
       var data = jsonDecode(response.body);
@@ -842,12 +899,15 @@ class AppImage2 {
   }
     Future<void> createAddonsPlans( String userType,String addOnsPlanId,String addOnsPlanName,String price,String markPrice,String duration,bool isStateWise1,
       bool isDistrictWise1,bool isCityWise1,bool isAreaWise1,List<String> features,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createAddonsPlans( userType, addOnsPlanId, addOnsPlanName, price, markPrice, duration, isStateWise1, isDistrictWise1, isCityWise1, isAreaWise1, features);
       var data = jsonDecode(response.body);
@@ -878,12 +938,15 @@ class AppImage2 {
   }
 
   Future<void> createUserAddonsPlans( String userId,String addOnsPlanId,String addOnsPlanName,String price,String startDate,String endDate, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createAddonsUserPlans(userId, addOnsPlanId, addOnsPlanName,price, startDate, endDate,);
       var data = jsonDecode(response.body);
@@ -904,12 +967,15 @@ class AppImage2 {
   }
   Future<void> createJobPlans( String userType,String jobPlansId,String jobPlanName,String price,String markPrice,String duration,bool isStateWise1,
   bool isDistrictWise1,bool isCityWise1,bool isAreaWise1,String count,List<String> features,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createJobPlans(userType, jobPlansId, jobPlanName, price, markPrice,duration, isStateWise,
        isDistrictWise, isCityWise, isAreaWise, count, features);
@@ -941,12 +1007,15 @@ class AppImage2 {
   }
   Future<void> createWebinarPlans(String userType,String webinarPlanId,String webinarPlanName,String price,String markPrice,String duration,bool isStateWise1,
   bool isDistrictWise1,bool isCityWise1,bool isAreaWise1,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createWebinarPlan(userType, webinarPlanId, webinarPlanName, price, duration, markPrice, isStateWise1, isDistrictWise1, isCityWise1, isAreaWise1);
       var data = jsonDecode(response.body);
@@ -979,12 +1048,15 @@ class AppImage2 {
   // Future<void> createPostImagesPlans(String userType,String postImagesPlanId,String postPlanName,String price,String duration,bool isStateWise1,
   // bool isDistrictWise1,bool isCityWise1,bool isAreaWise1,dynamic context) async {
   Future<void> createPostImagesPlans(String userType,String postImagesPlanId,String postPlanName,String price,String markPrice,String duration,String postImageCount,dynamic context) async {
-  var connection = await Connectivity().checkConnectivity();
+    isLoading=true;
+    update();
+    var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createPostImagePlans(  userType, postImagesPlanId, postPlanName, price,markPrice, duration, postImageCount);
       var data = jsonDecode(response.body);
@@ -1015,12 +1087,15 @@ class AppImage2 {
     }
   }
   Future<void> createUserJobPlans( String userId,String jobPlansId,String jobPlanName,String price,String startDate,String endDate,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createJobUserPlans(userId, jobPlansId, jobPlanName,price,startDate, endDate);
       var data = jsonDecode(response.body);
@@ -1040,12 +1115,15 @@ class AppImage2 {
   }
 
   Future<void> createUserWebinarPlans( String userId,String webinarPlanId,String webinarUserPlansName,String price,String startDate,String endDate,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createWebinarUserPlan( userId, webinarPlanId, webinarUserPlansName, price,startDate, endDate);
       var data = jsonDecode(response.body);
@@ -1064,12 +1142,15 @@ class AppImage2 {
     }
   }
   Future<void> createUserPostImagePlans( String userId,String postImagesPlanId,String postPlanName,String price,String startDate,String endDate,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createPostImageUserPlans( userId, postImagesPlanId, postPlanName,price,startDate, endDate);
       var data = jsonDecode(response.body);
@@ -1089,12 +1170,15 @@ class AppImage2 {
   }
   Future<void> getUploadImages(
   {String? userId,required  String userType,dynamic context}) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     _posterImage=[];
     editUploadImage1=[];
     try {
@@ -1150,12 +1234,15 @@ class AppImage2 {
   Future<void> uploadImagesUserType(String userId, String userType,String imageId,String startDate,String endDate,String isActive,
       List<Uint8List>posterImage,
       dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _checkPlanList=[];
       final response = await api.uploadImagesUserType( userId,userType, imageId, startDate, endDate,isActive,posterImage);

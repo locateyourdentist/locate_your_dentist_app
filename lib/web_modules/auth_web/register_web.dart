@@ -739,6 +739,14 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       jobCategory: loginController.selectedUserType == 'Job Seekers'
           ? (loginController.selectedCategories ?? [])
           : [],
+      details: loginController.selectedUserType == 'Dental Consultant'
+          ? {
+              "availableTiming": loginController.buildAvailableTimingPayload(),
+              "availableLocation": loginController.selectedAvailableLocations,
+              "degree": loginController.selectedDegree ?? "",
+              "otherDegree": loginController.otherDegreeController.text,
+            }
+          : null,
       context: context,
     );
   }
@@ -945,6 +953,143 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
           maxLength: 6,
         ),
         const SizedBox(height: 15),
+        if (loginController.selectedUserType == 'Dental Consultant')
+          GetBuilder<LoginController>(
+            builder: (controller) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Available Timing', style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: ['Morning', 'Evening'].map((timing) {
+                        final selected = controller.selectedAvailableTiming.contains(timing);
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FilterChip(
+                                label: Text(timing),
+                                selected: selected,
+                                onSelected: (val) {
+                                  if (val) {
+                                    controller.selectedAvailableTiming.add(timing);
+                                  } else {
+                                    controller.selectedAvailableTiming.remove(timing);
+                                    controller.timingFrom.remove(timing);
+                                    controller.timingTo.remove(timing);
+                                  }
+                                  controller.update();
+                                },
+                              ),
+                              if (selected) ...[
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: OutlinedButton(
+                                        onPressed: () => controller.pickTiming(context, timing, true),
+                                        child: Text(
+                                          controller.timingFrom[timing] != null
+                                              ? controller.formatTimeOfDay(controller.timingFrom[timing])
+                                              : "From",
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: OutlinedButton(
+                                        onPressed: () => controller.pickTiming(context, timing, false),
+                                        child: Text(
+                                          controller.timingTo[timing] != null
+                                              ? controller.formatTimeOfDay(controller.timingTo[timing])
+                                              : "To",
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 15),
+                    Text('Available Location (max 5)', style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    if (controller.selectedAvailableLocations.isNotEmpty)
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: controller.selectedAvailableLocations.map((loc) {
+                          return Chip(
+                            label: Text(loc),
+                            onDeleted: () => controller.removeAvailableLocation(loc),
+                          );
+                        }).toList(),
+                      ),
+                    if (controller.selectedAvailableLocations.length < 5) ...[
+                      const SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: CustomTextField(
+                              hint: "Add a location",
+                              icon: Icons.location_on,
+                              controller: loginController.availableLocationController,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.add_circle, color: AppColors.primary),
+                            onPressed: () => controller.addAvailableLocation(),
+                          ),
+                        ],
+                      ),
+                    ],
+                    const SizedBox(height: 15),
+                    DefaultTextStyle(
+                      style: AppTextStyles.caption(context, color: Colors.black, fontWeight: FontWeight.normal),
+                      child: CustomDropdown<String>.search(
+                        hintText: "Select Degree",
+                        items: controller.degreeList,
+                        initialItem: controller.degreeList.contains(controller.selectedDegree) ? controller.selectedDegree : null,
+                        decoration: CustomDropdownDecoration(
+                          hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                          headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                          listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                          closedFillColor: Colors.grey[100],
+                          expandedFillColor: Colors.white,
+                          closedBorder: Border.all(color: AppColors.white, width: 1.5),
+                          expandedBorder: Border.all(color: AppColors.primary, width: 1.5),
+                        ),
+                        onChanged: (val) {
+                          controller.selectedDegree = val;
+                          if (val != 'Other Specialities') {
+                            controller.otherDegreeController.clear();
+                          }
+                          controller.update();
+                        },
+                      ),
+                    ),
+                    if (controller.selectedDegree == 'Other Specialities') ...[
+                      const SizedBox(height: 15),
+                      CustomTextField(
+                        hint: "Specify Speciality",
+                        icon: Icons.edit,
+                        controller: controller.otherDegreeController,
+                      ),
+                    ],
+                  ],
+                ),
+              );
+            },
+          ),
         _buildRichTextEditor(),
       ],
     );

@@ -33,12 +33,15 @@ class ServiceController extends GetxController {
   bool isTitleSidebarOpen = false;
   String? tempSelectedTitle;
   Future<void> getServiceListAdmin(String userId, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _serviceList = [];
@@ -60,12 +63,15 @@ class ServiceController extends GetxController {
     }
   }
   Future<void> getSalesListAdmin(String userType,String search, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _salesList = [];
@@ -118,13 +124,16 @@ class ServiceController extends GetxController {
   }
 
   Future<void> getServiceDetailAdmin(String serviceId, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
     try {
-      isLoading = true;
       print('Getting service details...');
       _serviceDetails = [];
       final response = await api.getServiceDetailAdmin(serviceId);
@@ -187,12 +196,15 @@ class ServiceController extends GetxController {
   }
 
   Future<void> deactivateService(String serviceId, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       _serviceList = [];
       final response = await api.deactivateService(serviceId);
@@ -225,12 +237,15 @@ class ServiceController extends GetxController {
     List<String>? serviceImageUrl,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       final response = await api.createServiceAdmin(
         serviceId,

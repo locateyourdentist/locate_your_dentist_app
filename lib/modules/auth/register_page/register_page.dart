@@ -740,6 +740,142 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                       SizedBox(height: size * 0.01),
 
+                                      if (loginController.selectedUserType == 'Dental Consultant')
+                                        GetBuilder<LoginController>(
+                                          builder: (controller) {
+                                            return Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text('Available Timing', style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
+                                                SizedBox(height: size * 0.01),
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: ['Morning', 'Evening'].map((timing) {
+                                                    final selected = controller.selectedAvailableTiming.contains(timing);
+                                                    return Padding(
+                                                      padding: EdgeInsets.only(bottom: size * 0.02),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          FilterChip(
+                                                            label: Text(timing),
+                                                            selected: selected,
+                                                            onSelected: (val) {
+                                                              if (val) {
+                                                                controller.selectedAvailableTiming.add(timing);
+                                                              } else {
+                                                                controller.selectedAvailableTiming.remove(timing);
+                                                                controller.timingFrom.remove(timing);
+                                                                controller.timingTo.remove(timing);
+                                                              }
+                                                              controller.update();
+                                                            },
+                                                          ),
+                                                          if (selected) ...[
+                                                            SizedBox(height: size * 0.015),
+                                                            Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child: OutlinedButton(
+                                                                    onPressed: () => controller.pickTiming(context, timing, true),
+                                                                    child: Text(
+                                                                      controller.timingFrom[timing] != null
+                                                                          ? controller.formatTimeOfDay(controller.timingFrom[timing])
+                                                                          : "From",
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: size * 0.02),
+                                                                Expanded(
+                                                                  child: OutlinedButton(
+                                                                    onPressed: () => controller.pickTiming(context, timing, false),
+                                                                    child: Text(
+                                                                      controller.timingTo[timing] != null
+                                                                          ? controller.formatTimeOfDay(controller.timingTo[timing])
+                                                                          : "To",
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                                SizedBox(height: size * 0.03),
+                                                Text('Available Location (max 5)', style: AppTextStyles.caption(context, fontWeight: FontWeight.bold)),
+                                                SizedBox(height: size * 0.01),
+                                                if (controller.selectedAvailableLocations.isNotEmpty)
+                                                  Wrap(
+                                                    spacing: 8,
+                                                    runSpacing: 8,
+                                                    children: controller.selectedAvailableLocations.map((loc) {
+                                                      return Chip(
+                                                        label: Text(loc),
+                                                        onDeleted: () => controller.removeAvailableLocation(loc),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                if (controller.selectedAvailableLocations.length < 5) ...[
+                                                  SizedBox(height: size * 0.01),
+                                                  Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Expanded(
+                                                        child: CustomTextField(
+                                                          hint: "Add a location",
+                                                          icon: Icons.location_on,
+                                                          controller: loginController.availableLocationController,
+                                                        ),
+                                                      ),
+                                                      IconButton(
+                                                        icon: Icon(Icons.add_circle, color: AppColors.primary),
+                                                        onPressed: () => controller.addAvailableLocation(),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                                SizedBox(height: size * 0.03),
+                                                DefaultTextStyle(
+                                                  style: AppTextStyles.caption(context, color: Colors.black, fontWeight: FontWeight.normal),
+                                                  child: CustomDropdown<String>.search(
+                                                    hintText: "Select Degree",
+                                                    items: controller.degreeList,
+                                                    initialItem: controller.degreeList.contains(controller.selectedDegree) ? controller.selectedDegree : null,
+                                                    decoration: CustomDropdownDecoration(
+                                                      hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
+                                                      headerStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                      listItemStyle: AppTextStyles.caption(context, color: Colors.black),
+                                                      closedFillColor: Colors.grey[100],
+                                                      expandedFillColor: Colors.white,
+                                                      closedBorder: Border.all(color: AppColors.white, width: 1.5),
+                                                      expandedBorder: Border.all(color: AppColors.primary, width: 1.5),
+                                                    ),
+                                                    onChanged: (val) {
+                                                      controller.selectedDegree = val;
+                                                      if (val != 'Other Specialities') {
+                                                        controller.otherDegreeController.clear();
+                                                      }
+                                                      controller.update();
+                                                    },
+                                                  ),
+                                                ),
+                                                if (controller.selectedDegree == 'Other Specialities') ...[
+                                                  SizedBox(height: size * 0.03),
+                                                  CustomTextField(
+                                                    hint: "Specify Speciality",
+                                                    icon: Icons.edit,
+                                                    controller: controller.otherDegreeController,
+                                                  ),
+                                                ],
+                                                SizedBox(height: size * 0.03),
+                                              ],
+                                            );
+                                          },
+                                        ),
+
                                       if (loginController.selectedUserType!=null&&loginController.selectedUserType != "Dental Mechanic") ...[
                                         SizedBox(height: size * 0.02),
                                         ElevatedButton(
@@ -1071,6 +1207,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                                         longitude: loginController.longitude.toString()??"",
                                                         jobCategory:loginController.selectedCategories,
                                                         isAdmin: "false",
+                                                        details: loginController.selectedUserType == 'Dental Consultant'
+                                                            ? {
+                                                                "availableTiming": loginController.buildAvailableTimingPayload(),
+                                                                "availableLocation": loginController.selectedAvailableLocations,
+                                                                "degree": loginController.selectedDegree ?? "",
+                                                                "otherDegree": loginController.otherDegreeController.text,
+                                                              }
+                                                            : null,
                                                         context: context,
                                                       );
 

@@ -71,7 +71,7 @@ dependencies:
   shimmer:
   fl_chart:
   flutter_quill: ^11.5.1
-  # flutter_quill:
+#  flutter_quill:
   flutter_quill_extensions:
   permission_handler:
   excel:
