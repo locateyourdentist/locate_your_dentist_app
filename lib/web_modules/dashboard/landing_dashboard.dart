@@ -179,6 +179,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
   final jobController = Get.put(JobController());
   final serviceController = Get.put(ServiceController());
   // final notificationController = Get.put(NotificationController());
+  final SingleSelectController<String?> _stateCtrl = SingleSelectController(null);
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   final TextEditingController searchController = TextEditingController();
@@ -279,6 +280,18 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
     // }
     await loginController.getProfileDetails('Dental Clinic', '', [], [],[], "true", '', '', '', '', context);
     await loginController.fetchStates();
+    if (loginController.selectedState == null || loginController.selectedState!.isEmpty) {
+      final tamilNadu = loginController.states.cast<String>().firstWhere(
+        (s) => s.toLowerCase().contains('tamil'),
+        orElse: () => '',
+      );
+      if (tamilNadu.isNotEmpty) {
+        loginController.selectedState = tamilNadu;
+        if (mounted) _stateCtrl.value = tamilNadu;
+        await loginController.fetchDistricts(tamilNadu);
+      }
+      loginController.update();
+    }
     await loginController.getAppLogoImage(context);
     await planController.getUploadImages(userType: "Dental Clinic", context: context);
     await jobController.getWebinarListJobSeekers('','',context);
@@ -561,6 +574,51 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
         }
     );
   }
+  Widget _professionLoginButton() {
+    return _HoverLift(
+      liftScale: 1.04,
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          gradient: const LinearGradient(
+            colors: [Colors.white, Color(0xFFF3F8FF)],
+          ),
+          border: Border.all(color: Colors.white.withOpacity(0.8), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.35),
+              blurRadius: 22,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: ElevatedButton.icon(
+          onPressed: () {
+            Get.toNamed('/webLoginPage');
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+          ),
+          icon: const Icon(Icons.medical_services_outlined, color: AppColors.primary, size: 18),
+          label: Text(
+            "Dental Profession SignIn/Login",
+            style: AppTextStyles.caption(
+              context,
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   bool getPlanActive() {
     final userData = loginController.userData;
     if (userData.isEmpty) return false;
@@ -662,6 +720,14 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                       ),
                                     ),
                                   ),
+                                  Positioned(
+                                    top: 20,
+                                    left: isMobile ? 0 : null,
+                                    right: isMobile ? 0 : 24,
+                                    child: isMobile
+                                        ? Center(child: _professionLoginButton())
+                                        : _professionLoginButton(),
+                                  ),
                                   if(!isMobile)
                                     Positioned(
                                       right: 80,
@@ -684,20 +750,49 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                             ? MediaQuery.of(context).size.width * 0.62
                                             : 1500,
                                         margin: const EdgeInsets.symmetric(horizontal: 20),
-                                        padding: const EdgeInsets.all(15),
+                                        padding: const EdgeInsets.all(3),
                                         decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.97),
-                                          borderRadius: BorderRadius.circular(24),
-                                          border: Border.all(color: Colors.white.withOpacity(0.6)),
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [AppColors.primary, AppColors.secondary],
+                                          ),
+                                          borderRadius: BorderRadius.circular(26),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: AppColors.primary.withOpacity(.18),
-                                              blurRadius: 35,
-                                              offset: const Offset(0, 16),
+                                              color: AppColors.primary.withOpacity(.35),
+                                              blurRadius: 40,
+                                              offset: const Offset(0, 18),
                                             ),
                                           ],
                                         ),
-                                        child: Wrap(
+                                        child: Container(
+                                          padding: const EdgeInsets.all(15),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(0.97),
+                                            borderRadius: BorderRadius.circular(23),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(Icons.search_rounded, color: AppColors.primary, size: 20),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    "Find Nearby Dental Clinics Instantly",
+                                                    style: AppTextStyles.caption(
+                                                      context,
+                                                      color: AppColors.primary,
+                                                      fontWeight: FontWeight.bold,
+                                                    ).copyWith(letterSpacing: 0.3),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 12),
+                                              Wrap(
                                           spacing: 15,
                                           runSpacing: 15,
                                           alignment: WrapAlignment.center,
@@ -715,6 +810,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
                                                     child: CustomDropdown<String>.search(
                                                       hintText: "State",
                                                       items: controller.states.map((e) => e.toString()).toList(),
+                                                      controller: _stateCtrl,
                                                       onChanged: (val)async {
                                                         if (val != null) {
                                                           controller.selectedState = val;
@@ -950,6 +1046,9 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
 
 
                                           ],
+                                        ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -1806,6 +1905,7 @@ class _LandingPageState extends State<LandingPage> with TickerProviderStateMixin
   @override
   void dispose() {
     _fadeController.dispose();
+    _stateCtrl.dispose();
     //  _controller.dispose();
     super.dispose();
   }

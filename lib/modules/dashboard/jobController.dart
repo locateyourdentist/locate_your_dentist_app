@@ -113,12 +113,15 @@ class JobController extends GetxController {
   //   selection: const TextSelection.collapsed(offset: 0),
   //   );
   Future<void> getJobListAdmin(dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _jobList = [];
@@ -150,12 +153,15 @@ class JobController extends GetxController {
     String? salary,
     dynamic context,
   }) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _jobListJobSeekers = [];
@@ -189,12 +195,15 @@ class JobController extends GetxController {
     String endDate,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _webinarListJobSeekers = [];
@@ -220,12 +229,15 @@ class JobController extends GetxController {
   }
 
   Future<void> checkJobPlanStatus(String userId, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       final response = await api.checkJobPlanStatus(userId);
       var data = jsonDecode(response.body);
@@ -247,12 +259,15 @@ class JobController extends GetxController {
   }
 
   Future<void> getAppliedJobsAdmin(String jobId, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _jobIdListAdmin = [];
@@ -280,12 +295,15 @@ class JobController extends GetxController {
     String webinarId,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _appliedWebinarList = [];
@@ -317,12 +335,15 @@ class JobController extends GetxController {
     String orgName,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _jobIdListAdmin = [];
@@ -371,12 +392,15 @@ class JobController extends GetxController {
     String isActive,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _jobIdListAdmin = [];
@@ -400,12 +424,15 @@ class JobController extends GetxController {
     String jobCategory,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _jobIdListAdmin = [];
@@ -433,12 +460,15 @@ class JobController extends GetxController {
     String isActive,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _jobIdListAdmin = [];
@@ -461,12 +491,15 @@ class JobController extends GetxController {
   }
 
   Future<void> getJobCategoryLists(String? userType, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _jobCategoryAdmin = [];
@@ -489,12 +522,15 @@ class JobController extends GetxController {
   }
 
   Future<void> deleteJobCategoryLists(String? id, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _jobCategoryAdmin = [];
@@ -521,12 +557,15 @@ class JobController extends GetxController {
     String isActive,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       _jobIdListAdmin = [];
       final response = await api.updateWebinarStatusAdmin(webinarId, isActive);
@@ -548,12 +587,15 @@ class JobController extends GetxController {
     String jobSeekerId,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       _jobSeekersAppliedLists = [];
       final response = await api.getJobSeekersAppliedLists(jobSeekerId);
@@ -577,12 +619,15 @@ class JobController extends GetxController {
   }
 
   Future<void> getWebinarListAdmin(dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       _webinarList = [];
@@ -613,12 +658,15 @@ class JobController extends GetxController {
     String orgName,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       final response = await api.applyJobsJobseekers(
@@ -685,12 +733,15 @@ class JobController extends GetxController {
     String userType,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('hii');
       final response = await api.applyWebinarsJobseekers(
@@ -748,12 +799,15 @@ class JobController extends GetxController {
     jobImage1,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       // final response = await api.postJobsAdmin( jobId, userId, userType, jobType,jobCategory, orgName,  jobTitle, jobDescription, salary, qualification, experience, state, district, city, startTime, endTime,jobImage1);
       final response = await api.postJobsAdmin(
@@ -855,12 +909,15 @@ class JobController extends GetxController {
     webinarImage1,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       final response = await api.postWebinarAdmin(
         webinarId,
@@ -927,12 +984,15 @@ class JobController extends GetxController {
   }
 
   Future<void> getJobsById(String jobId, context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('API request for jobId: $jobId');
       _job = [];
@@ -1089,12 +1149,15 @@ class JobController extends GetxController {
     String isActive,
     context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       print('API request for jobId: $webinarId');
       _webinar = [];
@@ -1187,12 +1250,15 @@ class JobController extends GetxController {
     String? jobStatus,
     dynamic context,
   ) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading = true;
     try {
       final response = await api.createJobMail(
         userId,

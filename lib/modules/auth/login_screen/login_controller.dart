@@ -196,6 +196,84 @@ class LoginController extends GetxController {
   TextEditingController pgPercentage = TextEditingController();
   bool showPGDetails = false;
   PGDetailsModel pgDetails = PGDetailsModel();
+  final TextEditingController availableLocationController = TextEditingController();
+  List<String> selectedAvailableLocations = [];
+  String? selectedDegree;
+  List<String> selectedAvailableTiming = [];
+  Map<String, TimeOfDay?> timingFrom = {};
+  Map<String, TimeOfDay?> timingTo = {};
+  final TextEditingController otherDegreeController = TextEditingController();
+
+  String formatTimeOfDay(TimeOfDay? time) {
+    if (time == null) return "";
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
+  TimeOfDay? parseTimeOfDay(String? value) {
+    if (value == null || value.isEmpty) return null;
+    final match = RegExp(r'^(\d{1,2}):(\d{2})\s*(AM|PM)$', caseSensitive: false).firstMatch(value.trim());
+    if (match == null) return null;
+    int hour = int.parse(match.group(1)!);
+    final minute = int.parse(match.group(2)!);
+    final period = match.group(3)!.toUpperCase();
+    if (period == 'PM' && hour != 12) hour += 12;
+    if (period == 'AM' && hour == 12) hour = 0;
+    return TimeOfDay(hour: hour, minute: minute);
+  }
+
+  Future<void> pickTiming(BuildContext context, String slot, bool isFrom) async {
+    final defaultFrom = slot == 'Morning' ? const TimeOfDay(hour: 9, minute: 0) : const TimeOfDay(hour: 18, minute: 0);
+    final defaultTo = slot == 'Morning' ? const TimeOfDay(hour: 11, minute: 0) : const TimeOfDay(hour: 20, minute: 0);
+    final initial = isFrom ? (timingFrom[slot] ?? defaultFrom) : (timingTo[slot] ?? defaultTo);
+    final picked = await showTimePicker(context: context, initialTime: initial);
+    if (picked != null) {
+      if (isFrom) {
+        timingFrom[slot] = picked;
+      } else {
+        timingTo[slot] = picked;
+      }
+      update();
+    }
+  }
+
+  List<Map<String, String>> buildAvailableTimingPayload() {
+    return selectedAvailableTiming.map((slot) {
+      return {
+        "slot": slot,
+        "from": formatTimeOfDay(timingFrom[slot]),
+        "to": formatTimeOfDay(timingTo[slot]),
+      };
+    }).toList();
+  }
+
+  void addAvailableLocation() {
+    final text = availableLocationController.text.trim();
+    if (text.isEmpty || selectedAvailableLocations.length >= 5) return;
+    if (!selectedAvailableLocations.contains(text)) {
+      selectedAvailableLocations.add(text);
+    }
+    availableLocationController.clear();
+    update();
+  }
+
+  void removeAvailableLocation(String location) {
+    selectedAvailableLocations.remove(location);
+    update();
+  }
+  final List<String> degreeList = [
+    'Consultant',
+    'Endodontist',
+    'Prosthodontist',
+    'OMFS',
+    'Orthodontist',
+    'Pedodontist',
+    'Periodontist',
+    'Implantologist',
+    'Other Specialities',
+  ];
   String? branchUserId;
   List<String> selectedCategories = [];
   List<Map<String, dynamic>> descriptionData = [];
@@ -226,6 +304,13 @@ class LoginController extends GetxController {
     pgCollege.clear();
     pgDegree.clear();
     pgPercentage.clear();
+    availableLocationController.clear();
+    selectedAvailableLocations = [];
+    otherDegreeController.clear();
+    selectedDegree = null;
+    selectedAvailableTiming = [];
+    timingFrom = {};
+    timingTo = {};
     selectedMartialStatus = "";
     selectUserId = "";
     experienceList.clear();
@@ -544,12 +629,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> login(String email,String password,String platform,context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       print('$email pas$password');
       final response = await api.loginUser(email, password);
@@ -597,7 +685,7 @@ class LoginController extends GetxController {
         // print("read fcm token${Api.userInfo.read('fcmToken')}");
         // final token = await FirebaseMessaging.instance.getToken();
         // print('userid$userId1 usertype$userType1 token$fcmToken');
-        await saveFcmToken(userId1,userType1,fcmToken,context);
+        saveFcmToken(userId1,userType1,fcmToken,context);
         showCustomToast(context, "Login successful", backgroundColor: AppColors.secondary);
 
         platform != "Web"
@@ -619,12 +707,15 @@ class LoginController extends GetxController {
     Api.userInfo.erase();
   }
   Future<void> switchAccountLogin(String userId,String platform,context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _refresh();
 //Api.userInfo.erase();
@@ -673,7 +764,7 @@ class LoginController extends GetxController {
         print("read fcm token${Api.userInfo.read('fcmToken')}");
         //final token = await FirebaseMessaging.instance.getToken();
         print('userid$userId1 usertype$userType1 token$fcmToken');
-        await saveFcmToken(userId1,userType1,fcmToken,context);
+        saveFcmToken(userId1,userType1,fcmToken,context);
         showCustomToast(context, "Account Switched successfully", backgroundColor: AppColors.secondary);
         Navigator.pop(context);
         platform != "Web"
@@ -692,12 +783,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> deactivateUserAdmin(String userId,bool isActive, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       print('hii');
       final response = await api.deactivateUserAdmin( userId,isActive);
@@ -715,12 +809,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> deleteAwsFile(String fileUrl, String name,dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       print('hii');
       final response = await api.deleteAwsFile( fileUrl,name);
@@ -738,12 +835,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> saveFcmToken(String userId, String userType,String fcmToken,context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.saveFcmToken( userId,  userType, fcmToken);
       var data = jsonDecode(response.body);
@@ -764,12 +864,15 @@ class LoginController extends GetxController {
       String? state,
       List<String>? district,
       List<String>? city,List<String>? area,String? isActive,String?latitude,String? longitude,String distance,String? searchText, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _profileList=[];
       final response = await api.getUserDetails(userType: userType,state:state,district:district,city:city,area:area,latitude:latitude, longitude:longitude, distance:distance,searchText:searchText,isActive:isActive,);
@@ -803,12 +906,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> getBranchDetails( dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       _userBranchesList=[];
       final response = await api.getBranchDetails();
@@ -846,13 +952,16 @@ class LoginController extends GetxController {
     }
   }
   Future<void> getProfileByUserId(String userId, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
     try {
-      isLoading = true;
       final response = await api.getProfileByUserId(userId);
       var data = jsonDecode(response.body);
       if (data["status"] == "Success") {
@@ -948,6 +1057,36 @@ class LoginController extends GetxController {
         pgCollege.text = pg["name"] ?? "";
         pgDegree.text = pg["degree"] ?? "";
         pgPercentage.text = pg["percentage"] ?? "";
+
+        final availableLocation = user.details["availableLocation"];
+        if (availableLocation is List) {
+          selectedAvailableLocations = availableLocation.map((e) => e.toString()).toList();
+        } else if (availableLocation is String && availableLocation.isNotEmpty) {
+          selectedAvailableLocations = [availableLocation];
+        } else {
+          selectedAvailableLocations = [];
+        }
+        selectedDegree = user.details["degree"] ?? "";
+        otherDegreeController.text = user.details["otherDegree"] ?? "";
+        final timing = user.details["availableTiming"];
+        selectedAvailableTiming = [];
+        timingFrom = {};
+        timingTo = {};
+        if (timing is List) {
+          for (final entry in timing) {
+            if (entry is Map) {
+              final slot = entry["slot"]?.toString() ?? "";
+              if (slot.isEmpty) continue;
+              selectedAvailableTiming.add(slot);
+              timingFrom[slot] = parseTimeOfDay(entry["from"]?.toString());
+              timingTo[slot] = parseTimeOfDay(entry["to"]?.toString());
+            } else {
+              selectedAvailableTiming.add(entry.toString());
+            }
+          }
+        } else if (timing is String && timing.isNotEmpty) {
+          selectedAvailableTiming = [timing];
+        }
 
         experienceList.clear();
         for (var e in user.experienceDetails) {
@@ -1051,13 +1190,17 @@ class LoginController extends GetxController {
     // String? services,
     String? location,String? website,String? latitude,String? longitude,String? adminId,String? isAdmin
   }) async {
+    isLoading=true;
+    isLoadingRegister=true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading=false;
+      isLoadingRegister=false;
+      update();
       showCustomToast(context,  "No Internet.Please check your connection",);
       return;
     }
-    isLoading=true;
-    isLoadingRegister=true;
     try {
       Future<List<Uint8List>?> convertToBytes(dynamic input) async {
         if (input == null) return null;
@@ -1172,6 +1315,13 @@ class LoginController extends GetxController {
         emailController.clear();
         websiteController.clear();
         descriptionController.clear();
+        availableLocationController.clear();
+        selectedAvailableLocations=[];
+        otherDegreeController.clear();
+        selectedDegree=null;
+        selectedAvailableTiming=[];
+        timingFrom={};
+        timingTo={};
         images = [];
         certificates = [];
         selectedUserType=null;
@@ -1203,12 +1353,15 @@ class LoginController extends GetxController {
   }
 
   Future<void> changePassword(String userId,String oldPassword, String newPassword, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.changePassword(  userId, oldPassword,  newPassword);
       var data = jsonDecode(response.body);
@@ -1231,12 +1384,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> forgotChangePassword(String mail, String newPassword, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.forgotChangePassword( mail, newPassword);
       var data = jsonDecode(response.body);
@@ -1257,12 +1413,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> forgotPassword(String mail,  dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.forgotPassword( mail  );
       var data = jsonDecode(response.body);
@@ -1285,12 +1444,15 @@ class LoginController extends GetxController {
   }
   //Future<void> addAppLogoImage(XFile ?logoImage1,dynamic context) async {
   Future<void> addAppLogoImage(Uint8List bytes,  context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.addAppLogo(bytes  );
       var data = jsonDecode(response.body);
@@ -1315,12 +1477,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> getAppLogoImage(dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.getAppLogo( );
       var data = jsonDecode(response.body);
@@ -1339,12 +1504,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> getAllContacts(dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.getAllContacts( );
       var data = jsonDecode(response.body);
@@ -1390,12 +1558,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> verifyOtpPassword(String mail,String otp,  dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.verifyOtpPassword( mail,otp  );
       var data = jsonDecode(response.body);
@@ -1417,12 +1588,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> sentMailUser(String userId,String? title, String? Subject, String? message, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createMail( userId,title!,Subject,message);
       var data = jsonDecode(response.body);
@@ -1440,12 +1614,15 @@ class LoginController extends GetxController {
     }
   }
   Future<void> sentMailPlan(String userId,String? title, String? Subject, String? planType, dynamic context) async {
+    isLoading = true;
+    update();
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    isLoading=true;
     try {
       final response = await api.createPlanMail(userId,title!,Subject,planType);
       var data = jsonDecode(response.body);
