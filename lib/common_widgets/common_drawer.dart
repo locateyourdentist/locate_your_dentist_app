@@ -42,6 +42,7 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
     loginController.latitude=null;
     loginController.longitude=null;
     loginController.selectedCategories.clear();
+    loginController.resetUserTypeFilters();
     loginController.fetchStates();
     jobController.getJobCategoryLists("", context);
   }
@@ -74,6 +75,98 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                   ),
                 ),
                 const SizedBox(height: 25),
+                _sectionTitle("User Type"),
+                CustomDropdownField(
+                  hint: "Select User Type",
+                  fillColor: AppColors.white,
+                  borderColor: Colors.grey.shade300,
+                  items: const [
+                    "Dental Clinic",
+                    "Dental Lab",
+                    "Dental Shop",
+                    "Dental Mechanic",
+                    "Dental Consultant",
+                    "Job Seekers",
+                  ],
+                  selectedValue: loginController.filterUserType,
+                  onChanged: (value) {
+                    loginController.filterUserType = value;
+                    if (value != 'Dental Consultant') {
+                      loginController.filterSelectedDegree = null;
+                      loginController.filterSelectedAvailableLocations = [];
+                      loginController.filterSelectedTimingSlots = [];
+                    }
+                    loginController.update();
+                  },
+                ),
+                if (loginController.filterUserType == 'Dental Consultant') ...[
+                  const SizedBox(height: 20),
+                  _sectionTitle("Degree"),
+                  CustomDropdownField(
+                    hint: "Select Degree",
+                    fillColor: AppColors.white,
+                    borderColor: Colors.grey.shade300,
+                    items: loginController.degreeList,
+                    selectedValue: loginController.filterSelectedDegree,
+                    onChanged: (value) {
+                      loginController.filterSelectedDegree = value;
+                      loginController.update();
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  _sectionTitle("Available Timing"),
+                  Wrap(
+                    spacing: 8,
+                    children: ["Morning", "Evening"].map((slot) {
+                      final selected = loginController.filterSelectedTimingSlots.contains(slot);
+                      return FilterChip(
+                        label: Text(slot, style: AppTextStyles.caption(context)),
+                        selected: selected,
+                        onSelected: (val) {
+                          if (val) {
+                            loginController.filterSelectedTimingSlots.add(slot);
+                          } else {
+                            loginController.filterSelectedTimingSlots.remove(slot);
+                          }
+                          loginController.update();
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 20),
+                  _sectionTitle("Available Location"),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: loginController.filterAvailableLocationController,
+                          decoration: const InputDecoration(
+                            isDense: true,
+                            hintText: "Add a location",
+                            border: OutlineInputBorder(),
+                          ),
+                          onSubmitted: (_) => loginController.addFilterAvailableLocation(),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.add_circle, color: AppColors.primary),
+                        onPressed: () => loginController.addFilterAvailableLocation(),
+                      ),
+                    ],
+                  ),
+                  if (loginController.filterSelectedAvailableLocations.isNotEmpty)
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: loginController.filterSelectedAvailableLocations.map((loc) {
+                        return Chip(
+                          label: Text(loc, style: AppTextStyles.caption(context)),
+                          onDeleted: () => loginController.removeFilterAvailableLocation(loc),
+                        );
+                      }).toList(),
+                    ),
+                ],
+                const SizedBox(height: 20),
                 _sectionTitle("Distance"),
                 _selectableHorizontal(
                   options: ["around 5 Km", "around 10 Km", "around 15 Km", "around 20 Km"],

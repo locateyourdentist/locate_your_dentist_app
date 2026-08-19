@@ -66,16 +66,24 @@ class _FilterDialogContentState extends State<FilterDialogContent> {
                         /// Distance
                         _sectionTitle("Distance"),
 
-                        Wrap(
-                          spacing: 10,
-                          children: [
-                            "5 Km",
-                            "10 Km",
-                            "15 Km",
-                            "20 Km",
-                          ].map((e) => _distanceChip(e)).toList(),
-                        ),
-
+                        // Wrap(
+                        //   spacing: 10,
+                        //   children: [
+                        //     "5 Km",
+                        //     "10 Km",
+                        //     "15 Km",
+                        //     "20 Km",
+                        //   ].map((e) => _distanceChip(e)).toList(),
+                        // ),
+                    Wrap(
+                      spacing: 10,
+                      children: [
+                        "Around 5 Km",
+                        "Around 10 Km",
+                        "Around 15 Km",
+                        "Around 20 Km",
+                      ].map((e) => _distanceChip("Around $e Km", e)).toList(),
+                    ),
                         const SizedBox(height: 20),
 
                         _sectionTitle("State"),
@@ -256,22 +264,38 @@ class _FilterDialogContentState extends State<FilterDialogContent> {
   }
 
   /// DISTANCE CHIP
-  Widget _distanceChip(String value) {
-    final selected = loginController.selectedDistance == value;
+  // Widget _distanceChip(String value) {
+  //   final selected = loginController.selectedDistance == value;
 
-    return ChoiceChip(
-      label: Text(value),
-      selected: selected,
-      selectedColor: AppColors.primary,
-      labelStyle: TextStyle(color: selected ? Colors.white : Colors.black),
-      onSelected: (_) {
-        setState(() {
-          loginController.selectedDistance = value;
-        });
-      },
-    );
-  }
+  //   return ChoiceChip(
+  //     label: Text(value),
+  //     selected: selected,
+  //     selectedColor: AppColors.primary,
+  //     labelStyle: TextStyle(color: selected ? Colors.white : Colors.black),
+  //     onSelected: (_) {
+  //       setState(() {
+  //         loginController.selectedDistance = value;
+  //       });
+  //     },
+  //   );
+  // }
+Widget _distanceChip(String label, String value) {
+  final selected = loginController.selectedDistance == value;
 
+  return ChoiceChip(
+    label: Text(label),
+    selected: selected,
+    selectedColor: AppColors.primary,
+    labelStyle: TextStyle(
+      color: selected ? Colors.white : Colors.black,
+    ),
+    onSelected: (_) {
+      setState(() {
+        loginController.selectedDistance = value;
+      });
+    },
+  );
+}
   /// DROPDOWN DECORATION
   InputDecoration _dropdownDecoration() {
     return InputDecoration(

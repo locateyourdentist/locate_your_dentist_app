@@ -141,18 +141,9 @@ class ContactController extends GetxController{
       final response = await api.getSenderContactLists( senderId, fromDate, toDate, search,);
       var data = jsonDecode(response.body);
       if ( data["status"].toString().toLowerCase() == "success") {
-       // List<dynamic> jobs = data["data"];
-       // _senderContactLists = jobs.map((e) => ContactModel.fromJson(e)).toList();
         List<dynamic> jobs = data["data"];
         _senderContactLists =
             jobs.map((e) => ContactModel.fromJson(e)).toList();
-        // if (jobs.isNotEmpty) {
-        //   List images = jobs[0]["contactImage"] ?? [];
-        //   editImages = images
-        //       .map((u) => AppImage(url: u.toString().replaceAll("\\", "/")))
-        //       .toList();
-        // }
-
         _senderContactLists =
             jobs.map((e) => ContactModel.fromJson(e)).toList();
 

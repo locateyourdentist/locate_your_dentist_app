@@ -193,7 +193,10 @@ class _SalePostWebPageState extends State<SalePostWebPage> {
       isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
       isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
     }
-    if (isSuperAdmin) {
+    print("userType = [${Api.userInfo.read('userType')}]");
+    print("isSuperAdmin = $isSuperAdmin");
+
+    if (!isSuperAdmin) {
       if (!isBasePlanActive) {
         showSuccessDialog(
           context,

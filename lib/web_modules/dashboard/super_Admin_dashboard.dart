@@ -417,11 +417,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                           }
                                           if (Api.userInfo.read('userType') ==
                                               "admin") {
+
                                             await loginController
                                                 .getProfileDetails(
                                                   '',
-                                                  Api.userInfo.read('state') ??
-                                                      "",
+                                                  Api.userInfo.read('state') ?? "",
                                                   [],
                                                   [],
                                                   [],
@@ -429,8 +429,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                   '',
                                                   '',
                                                   '',
-                                                  searchController.text
-                                                      .toString(),
+                                                  searchController.text.toString(),
                                                   context,
                                                 );
                                           }
@@ -843,7 +842,7 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
                 return GestureDetector(
                   onTap: () async {
                     Api.userInfo.write('selectedUserType1', typeKey);
-                    Api.userInfo.write('sUserType1', typeKey);
+                  await  Api.userInfo.write('sUserType1', typeKey,);
                     await loginController.getProfileDetails(
                       typeKey,
                       '',

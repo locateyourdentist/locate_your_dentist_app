@@ -19,8 +19,6 @@ import '../../common_widgets/common_drawer.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
-import '../../common_widgets/platform_helper.dart';
-
 
 class PatientDashboard extends StatefulWidget {
   const PatientDashboard({super.key});
@@ -212,11 +210,12 @@ class _PatientDashboardState extends State<PatientDashboard> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(50),
+                            border: Border.all(color: AppColors.primary, width: 1.5),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.15),
-                                spreadRadius: 2,
-                                blurRadius: 6,
+                                color: AppColors.primary.withOpacity(0.25),
+                                spreadRadius: 1,
+                                blurRadius: 8,
                                 offset: const Offset(0, 3),
                               ),
                             ],
@@ -307,6 +306,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                                       loginController.selectedSalary=null;
                                                       loginController.selectedJobType=null;
                                                       loginController.selectedCategories.clear();
+                                                      loginController.resetUserTypeFilters();
                                                       loginController.update();
                                                     });
                                                   },
@@ -346,7 +346,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: AppColors.primary,
-                                    fontSize: 14,fontWeight:FontWeight.bold,
+                                    fontSize: 16,fontWeight:FontWeight.bold,
                                     decoration: TextDecoration.underline,
                                   )))
                             ],

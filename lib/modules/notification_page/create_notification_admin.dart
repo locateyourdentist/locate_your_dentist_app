@@ -508,29 +508,6 @@ class _CreateNotificationAdminState extends State<CreateNotificationAdmin> {
                                     if (notificationController.notificationImage.isNotEmpty) {
                                       imageBytes = await notificationController.notificationImage.first.readAsBytes();
                                     }
-                                    // notificationController.createNotification(
-                                    //     Api.userInfo.read('userId'),
-                                    //     notificationController.selectedUserType!,
-                                    //   notificationController.selectedTitle=="Others"? notificationController.titleController.text:notificationController.selectedTitle.toString(),
-                                    //     notificationController.messageController.text,
-                                    //     loginController.selectedState.toString(),
-                                    //     loginController.selectedDistrict.toString(),
-                                    //     loginController.selectedTaluka.toString(),
-                                    //     loginController.selectedVillage.toString(),
-                                    //     context,
-                                    //   // notificationImage1:
-                                    //   // notificationController.notificationImage.isNotEmpty
-                                    //   //     ? notificationController.notificationImage.first
-                                    //   //     : null, // notificationImage1:
-                                    //   // notificationController.notificationImage.isNotEmpty
-                                    //   //     ? notificationController.notificationImage.first
-                                    //   //     : null,
-                                    //     // notificationImage1: notificationController
-                                    //     //     .notificationImage.isNotEmpty
-                                    //     //     ? notificationController.notificationImage
-                                    //     //     : [],
-                                    //     notificationImage1
-                                    //     );
                                     print('noti img${notificationImage}');
                                     notificationController.createNotification(
                                       '',

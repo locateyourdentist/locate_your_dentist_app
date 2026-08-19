@@ -134,8 +134,6 @@ class _CompanyFormState extends State<CompanyForm> {
                     icon: Icons.phone,
                     controller: planController.phoneController,
                     keyboardType: TextInputType.phone,
-                    // fillColor: Colors.white,
-                    // borderColor: Colors.grey,
                     maxLength: 10,
                   ),
                   SizedBox(height: size * 3),

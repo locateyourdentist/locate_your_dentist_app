@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -16,8 +14,6 @@ import 'package:locate_your_dentist/model/webinar_model.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
-import 'dart:convert';
-import 'package:flutter_quill/flutter_quill.dart';
 
 class JobController extends GetxController {
   var isLoading = false;

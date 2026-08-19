@@ -30,17 +30,6 @@ class _RegisterPageState extends State<RegisterPage> {
   String? selectedStateCode;
   Map<String, dynamic> data = {};
   final jobController=Get.put(JobController());
-
-  // final allItems = [
-  //   "admin",
-  //   "superAdmin",
-  //   "Dental Clinic",
-  //   "Dental Lab",
-  //   "Dental Shop",
-  //   "Dental Mechanic",
-  //   "Job Seekers",
-  //   "Dental Consultant"
-  // ];
   final List<Map<String, String>> allItems = [
     {"key": "admin", "value": "Admin"},
     {"key": "superAdmin", "value": "Super Admin"},
@@ -50,7 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
     {"key": "dentalMechanic", "value": "Dental Mechanic"},
     {"key": "Dental jobSeekers", "value": "Job Seekers"},
     {
-      "key": "dental Professionals",
+      "key": "Dental Professionals",
       "value": "Dental Consultant"
     },
   ];

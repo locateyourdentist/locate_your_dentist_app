@@ -41,6 +41,14 @@ class _CreateJobPostState extends State<CreateJobPost> {
   late QuillController _controller;
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
+  // The Job and Webinar sections are mutually exclusive (toggled by
+  // selectedString), but Flutter still swaps one QuillEditor out for the
+  // other within the same build. Sharing a single ScrollController/FocusNode
+  // between them let the outgoing editor's scroll position still be attached
+  // when the incoming one attached, tripping "ScrollController attached to
+  // multiple scroll views". Each editor now gets its own.
+  final FocusNode _focusNodeWebinar = FocusNode();
+  final ScrollController _scrollControllerWebinar = ScrollController();
 
   String? jobId;
   String? job;
@@ -1225,8 +1233,8 @@ class _CreateJobPostState extends State<CreateJobPost> {
                                 ),
                                 child: QuillEditor(
                                   controller: _controller,
-                                  scrollController: _scrollController,
-                                  focusNode: _focusNode,
+                                  scrollController: _scrollControllerWebinar,
+                                  focusNode: _focusNodeWebinar,
                                   config: QuillEditorConfig(
                                     placeholder: "Enter webinar description...",
                                     padding: const EdgeInsets.all(16),

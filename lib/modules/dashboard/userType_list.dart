@@ -369,16 +369,27 @@ class _userTypeListState extends State<userTypeList> {
                                             String safeLng =
                                             useLocation ? (loginController.longitude?.toString() ?? "") : "";
                                             filteredProfiles.map((e) => searchController.text.toString());
+                                            final filterDegree = loginController.filterUserType == 'Dental Consultant'
+                                                ? loginController.filterSelectedDegree
+                                                : null;
+                                            final filterLocations = loginController.filterUserType == 'Dental Consultant'
+                                                ? loginController.filterSelectedAvailableLocations
+                                                : null;
+                                            final filterTiming = loginController.filterUserType == 'Dental Consultant'
+                                                ? loginController.filterSelectedTimingSlots
+                                                : null;
                                             if( Api.userInfo.read('userType')=="superAdmin") {
-                                              await   loginController.getProfileDetails('',  loginController.selectedState,
+                                              await   loginController.getProfileDetails(loginController.filterUserType ?? '',  loginController.selectedState,
                                                   loginController.selectedDistricts,
                                                   loginController.selectedTalukas,[], '',safeLat,
-                                                  safeLng,distance,searchController.text.toString(),  context);
+                                                  safeLng,distance,searchController.text.toString(),  context,
+                                                  degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming);
                                             }
                                            else if( Api.userInfo.read('userType')=="admin") {
-                                              await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistricts,
+                                              await loginController.getProfileDetails(loginController.filterUserType ?? '', Api.userInfo.read('state') ?? "", loginController.selectedDistricts,
                                                   loginController.selectedTalukas,loginController.selectedVillages, '',safeLat,
-                                                  safeLng,distance,searchController.text.toString(), context);
+                                                  safeLng,distance,searchController.text.toString(), context,
+                                                  degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming);
                                             }
                                             else{
                                               await  loginController.getProfileDetails(
@@ -388,6 +399,7 @@ class _userTypeListState extends State<userTypeList> {
                                                 loginController.selectedTalukas,loginController.selectedVillages,'true',safeLat,
                                                 safeLng,distance, searchController.text.toString(),
                                                 context,
+                                                degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming,
                                               );
                                             }
                                             Navigator.pop(context);
@@ -401,6 +413,7 @@ class _userTypeListState extends State<userTypeList> {
                                               loginController.selectedUserType=null;
                                                loginController.selectedTaluka=null;
                                               loginController.selectedState=null;
+                                              loginController.resetUserTypeFilters();
                                             });
                                           },
                                         ),

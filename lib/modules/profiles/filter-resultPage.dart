@@ -192,6 +192,15 @@ class _FilterResultPageState extends State<FilterResultPage> {
                                                   String safeLng =
                                                   useLocation ? (loginController.longitude?.toString() ?? "") : "";
                                                   filteredProfiles.map((e) => searchController.text.toString());
+                                                  final filterDegree = loginController.filterUserType == 'Dental Consultant'
+                                                      ? loginController.filterSelectedDegree
+                                                      : null;
+                                                  final filterLocations = loginController.filterUserType == 'Dental Consultant'
+                                                      ? loginController.filterSelectedAvailableLocations
+                                                      : null;
+                                                  final filterTiming = loginController.filterUserType == 'Dental Consultant'
+                                                      ? loginController.filterSelectedTimingSlots
+                                                      : null;
                                                   Api.userInfo.read('token')==null?
                                                   await loginController.getProfileDetails(
                                                     "Dental Clinic",
@@ -201,11 +210,12 @@ class _FilterResultPageState extends State<FilterResultPage> {
                                                     safeLat,safeLng, distance,searchController.text.toString(),context,
                                                   ):
                                                   await loginController.getProfileDetails(
-                                                    "",
+                                                    loginController.filterUserType ?? "",
                                                     loginController.selectedState,
                                                     loginController.selectedDistricts,
                                                     loginController.selectedTalukas,loginController.selectedVillages,"true",
                                                     safeLat,safeLng, distance,searchController.text.toString(),context,
+                                                    degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming,
                                                   )
 
                                                   ;
@@ -219,6 +229,7 @@ class _FilterResultPageState extends State<FilterResultPage> {
                                                     loginController.selectedUserType=null;
                                                     loginController.selectedState=null;
                                                     loginController.selectedDistrict=null;
+                                                    loginController.resetUserTypeFilters();
                                                   });
                                                 },
                                               ),

@@ -53,6 +53,98 @@ class _FilterSidebarState extends State<FilterSidebar> {
                     child: Column(
                       children: [
 
+                        _sectionTitle("User Type"),
+
+                        _dropdown(
+                          "User Type",
+                          const [
+                            "Dental Clinic",
+                            "Dental Lab",
+                            "Dental Shop",
+                            "Dental Mechanic",
+                            "Dental Consultant",
+                            "Job Seekers",
+                          ],
+                          loginController.filterUserType,
+                              (val) {
+                            loginController.filterUserType = val;
+                            if (val != 'Dental Consultant') {
+                              loginController.filterSelectedDegree = null;
+                              loginController.filterSelectedAvailableLocations = [];
+                              loginController.filterSelectedTimingSlots = [];
+                            }
+                            loginController.update();
+                          },
+                        ),
+
+                        if (loginController.filterUserType == 'Dental Consultant') ...[
+                          const Divider(),
+                          _sectionTitle("Degree"),
+                          _dropdown(
+                            "Degree",
+                            loginController.degreeList,
+                            loginController.filterSelectedDegree,
+                                (val) {
+                              loginController.filterSelectedDegree = val;
+                              loginController.update();
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          _sectionTitle("Available Timing"),
+                          Wrap(
+                            spacing: 8,
+                            children: ["Morning", "Evening"].map((slot) {
+                              final selected = loginController.filterSelectedTimingSlots.contains(slot);
+                              return FilterChip(
+                                label: Text(slot, style: AppTextStyles.caption(context)),
+                                selected: selected,
+                                onSelected: (val) {
+                                  if (val) {
+                                    loginController.filterSelectedTimingSlots.add(slot);
+                                  } else {
+                                    loginController.filterSelectedTimingSlots.remove(slot);
+                                  }
+                                  loginController.update();
+                                },
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 10),
+                          _sectionTitle("Available Location"),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: loginController.filterAvailableLocationController,
+                                  decoration: const InputDecoration(
+                                    isDense: true,
+                                    hintText: "Add a location",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onSubmitted: (_) => loginController.addFilterAvailableLocation(),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.add_circle, color: AppColors.primary),
+                                onPressed: () => loginController.addFilterAvailableLocation(),
+                              ),
+                            ],
+                          ),
+                          if (loginController.filterSelectedAvailableLocations.isNotEmpty)
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: loginController.filterSelectedAvailableLocations.map((loc) {
+                                return Chip(
+                                  label: Text(loc, style: AppTextStyles.caption(context)),
+                                  onDeleted: () => loginController.removeFilterAvailableLocation(loc),
+                                );
+                              }).toList(),
+                            ),
+                        ],
+
+                        const Divider(),
+
                         _sectionTitle("Distance"),
 
                         Slider(
@@ -483,14 +575,26 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 (distance != "0" && loginController.longitude != null)
                     ? loginController.longitude.toString()
                     : "";
+                final filterDegree = loginController.filterUserType == 'Dental Consultant'
+                    ? loginController.filterSelectedDegree
+                    : null;
+                final filterLocations = loginController.filterUserType == 'Dental Consultant'
+                    ? loginController.filterSelectedAvailableLocations
+                    : null;
+                final filterTiming = loginController.filterUserType == 'Dental Consultant'
+                    ? loginController.filterSelectedTimingSlots
+                    : null;
+
                 if( Api.userInfo.read('userType')=="superAdmin") {
-                  await   loginController.getProfileDetails('',  loginController.selectedState,
+                  await   loginController.getProfileDetails(loginController.filterUserType ?? '',  loginController.selectedState,
                       loginController.selectedDistricts,
-                      loginController.selectedTalukas, loginController.selectedVillages,'',safeLat,safeLng, distance,searchController.text.toString(),  context);
+                      loginController.selectedTalukas, loginController.selectedVillages,'',safeLat,safeLng, distance,searchController.text.toString(),  context,
+                      degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming);
                 }
                 else if( Api.userInfo.read('userType')=="admin") {
-                  await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistricts,
-                      loginController.selectedTalukas,  loginController.selectedVillages,'',safeLat,safeLng, distance,searchController.text.toString(), context);
+                  await loginController.getProfileDetails(loginController.filterUserType ?? '', Api.userInfo.read('state') ?? "", loginController.selectedDistricts,
+                      loginController.selectedTalukas,  loginController.selectedVillages,'',safeLat,safeLng, distance,searchController.text.toString(), context,
+                      degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming);
                 }
                 else{
                   await  loginController.getProfileDetails(
@@ -499,6 +603,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                     loginController.selectedDistricts,
                     loginController.selectedTalukas,loginController.selectedVillages,'true',safeLat,safeLng, distance, searchController.text.toString(),
                     context,
+                    degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming,
                   );
                 }
               },
@@ -530,6 +635,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 loginController.latitude = null;
                 loginController.longitude = null;
                   loginController.selectedVillages.clear();
+                loginController.resetUserTypeFilters();
                 loginController.update();
               },
               child: Text(

@@ -13,12 +13,8 @@ import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-
-import '../../web_modules/common/common_side_bar.dart';
 import '../../web_modules/job_seekers/view_jobWebinar_web.dart';
 
-/// Hover/lift affordance (desktop & web pointers) used purely for a modern,
-/// tactile feel on tappable cards/tiles; does not intercept taps.
 class _HoverLift extends StatefulWidget {
   final Widget child;
   final double liftScale;
@@ -200,12 +196,23 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
               (distance != "0" && loginController.longitude != null)
                   ? loginController.longitude.toString()
                   : "";
+              final effectiveUserType = loginController.filterUserType ?? userType ?? "";
+              final filterDegree = effectiveUserType == 'Dental Consultant'
+                  ? loginController.filterSelectedDegree
+                  : null;
+              final filterLocations = effectiveUserType == 'Dental Consultant'
+                  ? loginController.filterSelectedAvailableLocations
+                  : null;
+              final filterTiming = effectiveUserType == 'Dental Consultant'
+                  ? loginController.filterSelectedTimingSlots
+                  : null;
               await loginController.getProfileDetails(
-                userType ?? "",
+                effectiveUserType,
                 loginController.selectedState,
                 loginController.selectedDistricts,
                 loginController.selectedTalukas,loginController.selectedVillages,"true",safeLat,safeLng, distance,'',
                 context,
+                degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming,
               );
               Get.back();
             },
@@ -215,6 +222,7 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                 loginController.selectedUserType=null;
                 loginController.selectedState=null;
                 loginController.selectedDistrict=null;
+                loginController.resetUserTypeFilters();
               });
             },
           ),

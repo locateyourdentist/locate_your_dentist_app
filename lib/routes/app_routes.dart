@@ -12,7 +12,6 @@ import 'package:locate_your_dentist/modules/dashboard/jobseekers_dashboard.dart'
 import 'package:locate_your_dentist/modules/dashboard/mechanic_dashboard.dart';
 import 'package:locate_your_dentist/modules/dashboard/patient_dashboard.dart';
 import 'package:locate_your_dentist/modules/dashboard/post_images_admin.dart';
-import 'package:locate_your_dentist/modules/dashboard/superAdmin.dart';
 import 'package:locate_your_dentist/modules/dashboard/userType_list.dart';
 import 'package:locate_your_dentist/modules/job_pages/add_job_category.dart';
 import 'package:locate_your_dentist/modules/job_pages/applied_job_list.dart';
@@ -314,7 +313,7 @@ class AppPages {
     GetPage(name: AppRoutes.onBoardScreen, page: () => const OnBoardPage()),
     GetPage(
       name: AppRoutes.superAdminDashboard,
-      page: () => const SuperAdminDashboardPage(),
+      page: () => const AdminDashboard(),
       middlewares: [SuperAdminMiddleware()],
     ),
     GetPage(name: AppRoutes.userTypeListPage, page: () => const userTypeList()),

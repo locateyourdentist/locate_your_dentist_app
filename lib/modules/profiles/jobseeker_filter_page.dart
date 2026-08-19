@@ -160,6 +160,7 @@ class _JobSeekerFilterState extends State<JobSeekerFilter> {
                               loginController.selectedJobType = null;
                               loginController.selectedSalary = null;
                               loginController.selectedCategories.clear();
+                              loginController.resetUserTypeFilters();
                             });
                             Navigator.pop(context);
                           },

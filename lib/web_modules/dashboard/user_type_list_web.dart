@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -26,15 +27,17 @@ class _ModernUserTableState extends State<ModernUserTable> {
   final TextEditingController searchController = TextEditingController();
   final ScrollController _horizontalScrollController = ScrollController();
   bool isExporting = false;
+  Timer? _searchDebounce;
 
   @override
   void initState() {
     super.initState();
-   // _refresh();
+    _refresh();
   }
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     searchController.dispose();
     _horizontalScrollController.dispose();
     super.dispose();
@@ -196,7 +199,10 @@ class _ModernUserTableState extends State<ModernUserTable> {
             ),
             child: TextField(
               controller: searchController,
-              onChanged: (value) => _performSearch(),
+              onChanged: (value) {
+                _searchDebounce?.cancel();
+                _searchDebounce = Timer(const Duration(milliseconds: 450), _performSearch);
+              },
               decoration: const InputDecoration(
                 icon: Icon(Icons.search, color: Colors.grey),
                 hintText: "Search...",

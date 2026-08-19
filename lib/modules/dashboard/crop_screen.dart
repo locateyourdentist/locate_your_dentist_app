@@ -46,34 +46,6 @@ class _CropScreenState extends State<CropScreen> {
           ),
         ),
       ),
-      // body: Stack(
-      //   children: [
-      //     Crop(
-      //       image: widget.imageBytes,
-      //       controller: _controller,
-      //
-      //       aspectRatio: 1,
-      //
-      //   //    initialSize: 0.8,
-      //
-      //       baseColor: Colors.black,
-      //       maskColor: Colors.black.withOpacity(0.6),
-      //
-      //       onCropped: (result) {
-      //         setState(() => _isCropping = false);
-      //
-      //         if (result is CropSuccess) {
-      //           Navigator.pop(context, result.croppedImage);
-      //         } else {
-      //           Navigator.pop(context, null);
-      //         }
-      //       },
-      //     ),
-      //
-      //     if (_isCropping)
-      //       const Center(child: CircularProgressIndicator()),
-      //   ],
-      // ),
       body: Stack(
         children: [
           SizedBox.expand(

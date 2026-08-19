@@ -34,14 +34,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       GlobalKey<ScaffoldState>();
   int currentStep = 0;
   bool _isSubmittingRegistration = false;
-  // The User Type dropdown's `items` are built from each entry's "key"
-  // (e.g. "Dentist"), but loginController.selectedUserType stores the
-  // corresponding "value" (e.g. "Dental Clinic") that the rest of the form
-  // and the backend expect. Binding the dropdown's selectedValue directly to
-  // loginController.selectedUserType meant it never matched any item in
-  // `items` (wrong vocabulary), so the dropdown always reverted to showing
-  // the hint after a selection. This tracks the selected key separately so
-  // the dropdown's own display stays in sync.
   String? _selectedUserTypeKey;
   final ImagePicker _picker = ImagePicker();
   final _formKeyRegisterWeb = GlobalKey<FormState>();
@@ -60,7 +52,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     {"key": "Dental Shop", "value": "Dental Shop"},
     {"key": "Dental Mechanic", "value": "Dental Mechanic"},
     {"key": "Dental jobSeekers", "value": "Job Seekers"},
-    {"key": "dental Professionals", "value": "Dental Consultant"},
+    {"key": "Dental Professionals", "value": "Dental Consultant"},
   ];
   List<Map<String, String>> get filteredItems {
     final userType = Api.userInfo.read('userType');

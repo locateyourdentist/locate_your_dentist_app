@@ -196,11 +196,7 @@ class _BranchSelectionPageState extends State<BranchSelectionPage>
                                     : Platform.isIOS
                                     ? "iOS"
                                     : "Unknown";
-                                // await loginController.switchAccountLogin(
-                                //   selectedUserId.toString(),platform,context);
-                                // Navigator.pop(context);
-                                //  await loginController.getProfileByUserId(selectedUserId.toString(), context);
-                              },
+                                },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: selectedUserId == null
                               ? AppColors.transparent

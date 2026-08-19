@@ -171,54 +171,6 @@ class _SalePostPageState extends State<SalePostPage> {
   void _removeImage(int index) {
     setState(() => images.removeAt(index));
   }
-
-  // Future<void> _submitSalePost() async {
-  //   if (!_formKey.currentState!.validate()) return;
-  //   if (selectedUserType == null) {
-  //     Get.snackbar("Missing info", "Please select a user type");
-  //     return;
-  //   }
-  //
-  //   final imageBytes = await Future.wait(images.map((img) async {
-  //     return img.bytes ?? await img.file!.readAsBytes();
-  //   }));
-  //
-  //   try {
-  //     final response = await Api().createSalePost(
-  //       Api.userInfo.read('userId') ?? "",
-  //       selectedUserType!,
-  //       mobileController.text.trim(),
-  //       messageController.text.trim(),
-  //       priceController.text.trim(),
-  //       imageBytes,
-  //     );
-  //     debugPrint("create sale post status: ${response.statusCode}");
-  //   } catch (e) {
-  //     debugPrint("create sale post error: $e");
-  //   }
-  //
-  //   salePostController.addPost(
-  //     SalePostItem(
-  //       id: DateTime.now().microsecondsSinceEpoch.toString(),
-  //       mobileNumber: mobileController.text.trim(),
-  //       message: messageController.text.trim(),
-  //       price: priceController.text.trim(),
-  //       negotiable: negotiable,
-  //       userType: selectedUserType!,
-  //       images: images
-  //           .map((img) => PickedSaleImage(bytes: img.bytes, file: img.file))
-  //           .toList(),
-  //       postedAt: DateTime.now(),
-  //     ),
-  //   );
-  //
-  //   showCustomToast(
-  //     context,
-  //     "Listing posted",
-  //     backgroundColor: AppColors.primary,
-  //   );
-  //   Get.offNamed('/salePostListPage');
-  // }
   Future<void> _submitSalePost() async {
     if (!_formKey.currentState!.validate()) return;
     if (selectedUserType == null) {
@@ -241,32 +193,32 @@ class _SalePostPageState extends State<SalePostPage> {
       isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
       isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
     }
+    if (!isSuperAdmin) {
+      if (!isBasePlanActive) {
+        showSuccessDialog(
+          context,
+          title: "Alert",
+          message: "Oops! Base plan not Activated.please activate base plan..",
+          onOkPressed: () {
+            Get.toNamed('/viewPlanPage');
+          },
+        );
+        return;
+      }
 
-    if (!isSuperAdmin && !isBasePlanActive) {
-      showSuccessDialog(
-        context,
-        title: "Alert",
-        message: "Oops! Base plan not Activated.please activate base plan..",
-        onOkPressed: () {
-          Get.toNamed('/viewPlanPage');
-        },
-      );
-      return;
+      if (!isPosterPlanActive) {
+        showSuccessDialog(
+          context,
+          title: "Poster Plan Required",
+          message:
+          "You need an active poster plan to post a sale listing. Please choose a plan to continue.",
+          onOkPressed: () {
+            Get.toNamed('/viewPlanPage');
+          },
+        );
+        return;
+      }
     }
-
-    if (!isSuperAdmin && !isPosterPlanActive) {
-      showSuccessDialog(
-        context,
-        title: "Poster Plan Required",
-        message:
-            "You need an active poster plan to post a sale listing. Please choose a plan to continue.",
-        onOkPressed: () {
-          Get.toNamed('/viewPlanPage');
-        },
-      );
-      return;
-    }
-
     final imageBytes = await Future.wait(
       images.map((img) async {
         return img.bytes ?? await img.file!.readAsBytes();

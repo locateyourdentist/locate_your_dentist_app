@@ -462,17 +462,4 @@ class _ViewContactListState extends State<ViewContactList> {
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );
   }
-
-  Widget _statusChip(String? status) {
-    Color color = Colors.orange;
-
-    if (status == "Viewed") color = Colors.blue;
-    if (status == "Responded") color = Colors.green;
-
-    return Chip(
-      label: Text(status ?? "Pending"),
-      backgroundColor: color.withValues(alpha: 0.15),
-      labelStyle: TextStyle(color: color),
-    );
-  }
 }

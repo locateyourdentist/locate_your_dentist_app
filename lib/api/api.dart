@@ -310,7 +310,8 @@ class Api {
   Future<http.Response> getUserDetails({String? userType,
     String? state,
     List<String>? district,
-    List<String>? city,List<String>? area, String? latitude, String? longitude, String? distance, String? isActive, String? searchText}) async {
+    List<String>? city,List<String>? area, String? latitude, String? longitude, String? distance, String? isActive, String? searchText,
+    String? degreeName, List<String>? availableLocations, List<String>? availableTiming}) async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants
         .getProfileListUrl}";
@@ -329,7 +330,10 @@ class Api {
         'latitude': latitude,
         'longitude': longitude,
         'distance': distance,
-        'isActive': isActive
+        'isActive': isActive,
+        'degreeName': degreeName,
+        'availableLocations': availableLocations,
+        'availableTiming': availableTiming,
       };
       Map<String, dynamic> cleanedFilters = {};
 

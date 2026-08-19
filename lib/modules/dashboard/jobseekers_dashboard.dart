@@ -307,6 +307,7 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
             loginController.selectedUserType = null;
             loginController.selectedState = null;
             loginController.selectedDistrict = null;
+            loginController.resetUserTypeFilters();
           });
         },
       ),

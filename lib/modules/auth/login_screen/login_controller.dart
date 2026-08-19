@@ -204,6 +204,40 @@ class LoginController extends GetxController {
   Map<String, TimeOfDay?> timingTo = {};
   final TextEditingController otherDegreeController = TextEditingController();
 
+  // Filter-sidebar state (browsing/admin user list). Kept separate from
+  // selectedDegree/selectedAvailableLocations/selectedAvailableTiming above
+  // since those represent the profile currently being viewed/edited -
+  // reusing them here would clobber that profile's data whenever the
+  // filter sidebar is opened.
+  String? filterUserType;
+  String? filterSelectedDegree;
+  List<String> filterSelectedAvailableLocations = [];
+  final TextEditingController filterAvailableLocationController = TextEditingController();
+  List<String> filterSelectedTimingSlots = [];
+
+  void addFilterAvailableLocation() {
+    final text = filterAvailableLocationController.text.trim();
+    if (text.isEmpty) return;
+    if (!filterSelectedAvailableLocations.contains(text)) {
+      filterSelectedAvailableLocations.add(text);
+    }
+    filterAvailableLocationController.clear();
+    update();
+  }
+
+  void removeFilterAvailableLocation(String location) {
+    filterSelectedAvailableLocations.remove(location);
+    update();
+  }
+
+  void resetUserTypeFilters() {
+    filterUserType = null;
+    filterSelectedDegree = null;
+    filterSelectedAvailableLocations = [];
+    filterAvailableLocationController.clear();
+    filterSelectedTimingSlots = [];
+  }
+
   String formatTimeOfDay(TimeOfDay? time) {
     if (time == null) return "";
     final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
@@ -863,7 +897,8 @@ class LoginController extends GetxController {
   Future<void> getProfileDetails(String? userType,
       String? state,
       List<String>? district,
-      List<String>? city,List<String>? area,String? isActive,String?latitude,String? longitude,String distance,String? searchText, dynamic context) async {
+      List<String>? city,List<String>? area,String? isActive,String?latitude,String? longitude,String distance,String? searchText, dynamic context,
+      {String? degreeName, List<String>? availableLocations, List<String>? availableTiming}) async {
     isLoading = true;
     update();
     var connection = await Connectivity().checkConnectivity();
@@ -875,7 +910,7 @@ class LoginController extends GetxController {
     }
     try {
       _profileList=[];
-      final response = await api.getUserDetails(userType: userType,state:state,district:district,city:city,area:area,latitude:latitude, longitude:longitude, distance:distance,searchText:searchText,isActive:isActive,);
+      final response = await api.getUserDetails(userType: userType,state:state,district:district,city:city,area:area,latitude:latitude, longitude:longitude, distance:distance,searchText:searchText,isActive:isActive,degreeName: degreeName,availableLocations: availableLocations,availableTiming: availableTiming,);
       var data = jsonDecode(response.body);
       if ( data["status"] == "Success") {
         List<dynamic> users = data["data"];

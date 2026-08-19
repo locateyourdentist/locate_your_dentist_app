@@ -9,7 +9,6 @@ import 'package:locate_your_dentist/modules/contact_form/contact_controller.dart
 import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
-import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import '../../common_widgets/color_code.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -123,8 +122,6 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
                   children: [
                     Container(
                       height: size*0.23,
-                      //margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      //padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [AppColors.primary,AppColors.secondary],

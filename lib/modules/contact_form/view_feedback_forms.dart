@@ -414,9 +414,7 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
     final double width = MediaQuery.of(context).size.width;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     final bool isDesktop = width >= 1100;
-    final userType = Api.userInfo.read('userType')?.toString() ?? "";
     final bool isMobile = width < 700;
-    // Calculate ideal grid column sizing counts reactively
     int crossAxisCount = 4;
     if (width < 650) {
       crossAxisCount = 1;

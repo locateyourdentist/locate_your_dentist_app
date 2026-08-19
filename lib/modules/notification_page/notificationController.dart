@@ -103,42 +103,6 @@ class NotificationController extends GetxController {
       return null;
     }
   }
-  // Future<void> showForegroundNotification(RemoteMessage message) async {
-  //   final notification = message.notification;
-  //   final android = message.notification?.android;
-  //   if (notification == null || android == null) return;
-  //   BigPictureStyleInformation? bigPictureStyle;
-  //   if (android.imageUrl != null && android.imageUrl!.isNotEmpty) {
-  //     final String? imagePath = await downloadAndSaveImage(
-  //       android.imageUrl!,
-  //       'notification_image',
-  //     );
-  //     if (imagePath != null) {
-  //       bigPictureStyle = BigPictureStyleInformation(
-  //         FilePathAndroidBitmap(imagePath),
-  //         contentTitle: notification.title,
-  //         summaryText: notification.body,
-  //       );
-  //     }
-  //   }
-  //   flutterLocalNotificationsPlugin.show(
-  //     notification.hashCode,
-  //     notification.title,
-  //     notification.body,
-  //     NotificationDetails(
-  //       android: AndroidNotificationDetails(
-  //         channel.id,
-  //         channel.name,
-  //         channelDescription: channel.description,
-  //         importance: Importance.high,
-  //         priority: Priority.high,
-  //         styleInformation: bigPictureStyle,
-  //         icon: '@mipmap/ic_launcher',
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Future<void> getNotificationListAdmin(dynamic context) async {
     isLoading = true;
     update();

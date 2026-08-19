@@ -74,29 +74,31 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
       isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
       isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
     }
+    final bool isSuperAdmin = Api.userInfo.read('userType') == 'superAdmin';
+if (!isSuperAdmin) {
+  if (!isBasePlanActive) {
+    showSuccessDialog(
+      context,
+      title: "Alert",
+      message: "Oops! Base plan not Activated.please activate base plan..",
+      onOkPressed: () {},
+    );
+    return;
+  }
 
-    if (!isBasePlanActive) {
-      showSuccessDialog(
-        context,
-        title: "Alert",
-        message: "Oops! Base plan not Activated.please activate base plan..",
-        onOkPressed: () {},
-      );
-      return;
-    }
-
-    if (!isPosterPlanActive) {
-      showSuccessDialog(
-        context,
-        title: "Poster Plan Required",
-        message:
-            "You need an active poster plan to post scrolling ads. Please choose a plan to continue.",
-        onOkPressed: () {
-          Get.toNamed('/viewPlanPageWeb');
-        },
-      );
-      return;
-    }
+  if (!isPosterPlanActive) {
+    showSuccessDialog(
+      context,
+      title: "Poster Plan Required",
+      message:
+      "You need an active poster plan to post scrolling ads. Please choose a plan to continue.",
+      onOkPressed: () {
+        Get.toNamed('/viewPlanPageWeb');
+      },
+    );
+    return;
+  }
+}
 
     final List<XFile> pickedImages = await picker.pickMultiImage();
     if (pickedImages == null || pickedImages.isEmpty) return;
