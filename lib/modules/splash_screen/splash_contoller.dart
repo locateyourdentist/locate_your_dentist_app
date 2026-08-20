@@ -109,6 +109,13 @@ class SplashController extends GetxController
       Get.offAllNamed(requestedPath);
       return;
     }
+    // Play Store's privacy-policy checker (and any other anonymous visitor)
+    // needs to land directly on the policy text without being bounced
+    // through the login-gated flow below.
+    if (platform == "Web" && requestedPath == '/viewLegalPage') {
+      Get.offAllNamed(requestedPath);
+      return;
+    }
 
     if (token == null || token.isEmpty) {
       platform == "Web"
