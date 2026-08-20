@@ -59,10 +59,11 @@ class _ViewNotificationState extends State<ViewNotification> {
   @override
   void initState() {
     super.initState();
-    notificationController.updateNotificationListAdmin(context);
+    _refresh();
   }
   Future<void> _refresh() async {
-    notificationController.updateNotificationListAdmin(context);
+    await notificationController.updateNotificationListAdmin(context);
+    await notificationController.getNotificationListAdmin(context);
   }
   @override
   Widget build(BuildContext context) {

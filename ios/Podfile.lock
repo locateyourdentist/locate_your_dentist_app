@@ -37,7 +37,7 @@ PODS:
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
-  - file_saver (0.3.1):
+  - file_saver (0.0.1):
     - Flutter
   - Firebase/Auth (11.11.0):
     - Firebase/CoreOnly
@@ -156,6 +156,9 @@ PODS:
     - Flutter
   - package_info_plus (0.4.5):
     - Flutter
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - permission_handler_apple (9.4.8):
     - Flutter
   - printing (1.0.0):
@@ -209,6 +212,7 @@ DEPENDENCIES:
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - open_filex (from `.symlinks/plugins/open_filex/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - printing (from `.symlinks/plugins/printing/ios`)
   - quill_native_bridge_ios (from `.symlinks/plugins/quill_native_bridge_ios/ios`)
@@ -281,6 +285,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/open_filex/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   printing:
@@ -310,7 +316,7 @@ SPEC CHECKSUMS:
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   file_picker: b159e0c068aef54932bb15dc9fd1571818edaf49
-  file_saver: a0de0e99aae7339b41591a785b79a4831e614c75
+  file_saver: 503e386464dbe118f630e17b4c2e1190fa0cf808
   Firebase: 6a8f201c61eda24e98f1ce2b44b1b9c2caf525cc
   firebase_auth: a2a7a34078ceca211bc43c2a8361e788161acf62
   firebase_core: cd348199e28023d8d3d357ea031e1ac91f286e1f
@@ -325,7 +331,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: c7be9357fd8ba33bc45b9a6c3cdff0b466e1e2a4
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_keyboard_visibility_temp_fork: 8a8809c4129e31d25fca77446e0f3fd548122ced
-  flutter_local_notifications: eda81afddbf18f8589f6ec069ce593c4c6378769
+  flutter_local_notifications: ff50f8405aaa0ccdc7dcfb9022ca192e8ad9688f
   flutter_pdfview: 2e4d13ffb774858562ffbdfdb61b40744b191adc
   fluttertoast: 21eecd6935e7064cc1fcb733a4c5a428f3f24f0f
   geocoding_ios: eafacae6ad11a1eb56681f7d11df602a5fd49416
@@ -338,6 +344,7 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   open_filex: 6e26e659846ec990262224a12ef1c528bb4edbe4
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
+  path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba
   permission_handler_apple: ee2fe0fd04551b304eb002714ff067c371c822ed
   printing: 233e1b73bd1f4a05615548e9b5a324c98588640b
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
@@ -351,7 +358,7 @@ SPEC CHECKSUMS:
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   url_launcher_ios: bb13df5870e8c4234ca12609d04010a21be43dfa
   video_compress: fce97e4fb1dfd88175aa07d2ffc8a2f297f87fbe
-  video_player_avfoundation: e54d03b3b19f64f2c557354f72ce538387541ba6
+  video_player_avfoundation: 7993f492ae0bd77edaea24d9dc051d8bb2cd7c86
   video_thumbnail: c4e2a3c539e247d4de13cd545344fd2d26ffafd1
   webview_flutter_wkwebview: 29eb20d43355b48fe7d07113835b9128f84e3af4
 

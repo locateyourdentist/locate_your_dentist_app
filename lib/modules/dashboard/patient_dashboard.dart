@@ -206,23 +206,6 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Locate Your Dentist',
-                            style: AppTextStyles.body(context,
-                              color: AppColors.white,fontWeight: FontWeight.bold,),
-                          ),
-                          GetBuilder<PlanController>(
-                              builder: (controller) {
-                                return Row(
-                                  children: [
-                                    Icon(Icons.place,color: AppColors.white,size: size*0.06,),
-                                    SizedBox(width: size*0.01,),
-                                    Expanded(child: Text(planController.currentLocation??"",overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.white),)),
-                                  ],
-                                );
-                              }
-                          ),
-SizedBox(height: 5,),
-                          Text(
                             "Find Your Perfect Dentist",
                             style: AppTextStyles.subtitle(
                               context,
