@@ -639,7 +639,7 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                                                   }
                                                   else{
                                                     await  loginController.getProfileDetails(
-                                                      userType,
+                                                      loginController.filterUserType ?? userType,
                                                       loginController.selectedState,
                                                       loginController.selectedDistricts,
                                                       loginController.selectedTalukas,loginController.selectedVillages,'true',safeLat,

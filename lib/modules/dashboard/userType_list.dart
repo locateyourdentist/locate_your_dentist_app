@@ -393,7 +393,7 @@ class _userTypeListState extends State<userTypeList> {
                                             }
                                             else{
                                               await  loginController.getProfileDetails(
-                                                userType,
+                                                loginController.filterUserType ?? userType,
                                                 loginController.selectedState,
                                                 loginController.selectedDistricts,
                                                 loginController.selectedTalukas,loginController.selectedVillages,'true',safeLat,

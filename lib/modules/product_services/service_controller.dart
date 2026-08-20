@@ -17,6 +17,7 @@ class ServiceController extends GetxController {
   List<ServiceModel> get serviceList => _serviceList;
   List<SalePostModel> _salesList = [];
   List<SalePostModel> get salesList => _salesList;
+  String? salesListError;
   List<ServiceModel> _serviceDetails = [];
   List<ServiceModel> get serviceDetails => _serviceDetails;
   final List<dynamic> _privacyDetails = [];
@@ -75,6 +76,7 @@ class ServiceController extends GetxController {
     try {
       print('hii');
       _salesList = [];
+      salesListError = null;
       final response = await api.getSalesListAdmin(userType,search);
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
@@ -87,6 +89,7 @@ class ServiceController extends GetxController {
       }
     } catch (error) {
       print('job list admin error $error');
+      salesListError = error.toString();
     } finally {
       isLoading = false;
       update();

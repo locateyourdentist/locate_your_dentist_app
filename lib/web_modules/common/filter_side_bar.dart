@@ -598,7 +598,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                 }
                 else{
                   await  loginController.getProfileDetails(
-                    userType,
+                    loginController.filterUserType ?? userType,
                     loginController.selectedState,
                     loginController.selectedDistricts,
                     loginController.selectedTalukas,loginController.selectedVillages,'true',safeLat,safeLng, distance, searchController.text.toString(),

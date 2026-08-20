@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,8 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
   final serviceController = Get.put(ServiceController());
   int _currentImageIndex = 0;
   bool _loading = true;
+  bool _showSlowLoadHint = false;
+  Timer? _slowLoadTimer;
 
   String? get _postId => Get.parameters['id'];
 
@@ -43,8 +46,26 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
     _refresh();
   }
 
+  @override
+  void dispose() {
+    _slowLoadTimer?.cancel();
+    super.dispose();
+  }
+
   Future<void> _refresh() async {
+    setState(() {
+      _loading = true;
+      _showSlowLoadHint = false;
+    });
+    // The backend sleeps after ~15 min idle (Render free tier) and can take
+    // up to a minute to wake on the first request, which otherwise looks
+    // like a frozen page. Surface a hint once it's taking a while.
+    _slowLoadTimer?.cancel();
+    _slowLoadTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted && _loading) setState(() => _showSlowLoadHint = true);
+    });
     await serviceController.getSalesListAdmin('', '', context);
+    _slowLoadTimer?.cancel();
     if (mounted) setState(() => _loading = false);
   }
 
@@ -84,8 +105,10 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
               if (isDesktop && isLoggedIn) const AdminSideBar(),
               Expanded(
                 child: _loading
-                    ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
-                    : post == null
+                    ? _buildLoading(context)
+                    : (post == null && serviceController.salesListError != null)
+                        ? _buildLoadError(context)
+                        : post == null
                         ? _buildNotFound(context)
                         : SingleChildScrollView(
                             padding: EdgeInsets.all(isMobile ? 16 : 32),
@@ -101,6 +124,44 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildLoading(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(color: AppColors.primary),
+          if (_showSlowLoadHint) ...[
+            const SizedBox(height: 16),
+            Text(
+              "Waking up the server, this can take up to a minute…",
+              style: AppTextStyles.caption(context, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadError(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.wifi_off_rounded, size: 70, color: Colors.grey.shade300),
+          const SizedBox(height: 12),
+          Text("Couldn't load this listing", style: AppTextStyles.caption(context, color: Colors.grey)),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: _refresh,
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            child: Text("Retry", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
     );
   }
 

@@ -1868,6 +1868,9 @@ class Api {
           "Authorization": "Bearer $token",
         },
         body: jsonEncode({"userType": userType,"search":search}),
+      ).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () => throw "Request timed out. Please check your connection and try again.",
       );
       print('api job response ${response.body}');
       return response;
