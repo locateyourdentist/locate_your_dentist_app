@@ -9,7 +9,6 @@ import '../../common_widgets/color_code.dart';
 import '../../common_widgets/common_textstyles.dart';
 import '../common/common_side_bar.dart';
 
-/// Fades + slides a child in once on build, for a gentle section reveal.
 class _RevealIn extends StatelessWidget {
   final Widget child;
   const _RevealIn({required this.child});
@@ -84,7 +83,11 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
     try {
       List<Map<String, dynamic>> delta = [];
 
-      if (data == null || data.toString().trim().isEmpty) {
+      final bool isEmpty = data == null ||
+          (data is String && data.trim().isEmpty) ||
+          (data is List && data.isEmpty);
+
+      if (isEmpty) {
         delta = [
           {"insert": "\n"},
         ];
@@ -95,7 +98,7 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
           decoded = jsonDecode(data);
         }
 
-        if (decoded is List) {
+        if (decoded is List && decoded.isNotEmpty) {
           delta = List<Map<String, dynamic>>.from(decoded);
         } else {
           delta = [
@@ -119,7 +122,6 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
       print("Quill load error: $e");
 
       controller = QuillController.basic();
-      if (mounted) setState(() {});
     }
   }
 
