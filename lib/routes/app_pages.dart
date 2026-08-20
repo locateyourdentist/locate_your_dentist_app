@@ -107,6 +107,8 @@ class AppRoutes {
   //dashboard
   static const patientDashboard = '/patientDashboard';
   static const superAdminDashboard='/superAdminDashboard';
+  static const superAdminDashboardMobile='/superAdminDashboardMobile';
+
   static const dentalClinicDashboard='/dentalClinicDashboard';
   static const jobSeekerDashboard='/jobSeekerDashboard';
   static const mechanicDashboard='/mechanicDashboard';

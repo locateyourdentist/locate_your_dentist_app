@@ -134,7 +134,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.primary,AppColors.primary],
+              colors: [AppColors.primary,AppColors.secondary],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -185,143 +185,191 @@ class _PatientDashboardState extends State<PatientDashboard> {
                 child: Column(
                   children: [
                     Container(
+                      width: double.infinity,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [AppColors.primary,AppColors.primary],
+                          colors: [AppColors.primary, AppColors.secondary],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
-                        borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(50),bottomRight: Radius.circular(50)),
+                        borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.15),
-                            spreadRadius: 2,
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
+                            color: AppColors.primary.withOpacity(0.25),
+                            blurRadius: 16,
+                            offset: const Offset(0, 8),
                           ),
                         ],
                       ),
-                      height: size*0.23,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(color: AppColors.primary, width: 1.5),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primary.withOpacity(0.25),
-                                spreadRadius: 1,
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 26),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Locate Your Dentist',
+                            style: AppTextStyles.body(context,
+                              color: AppColors.white,fontWeight: FontWeight.bold,),
                           ),
-                          height: size*0.012,
-                          child: Row(
+                          GetBuilder<PlanController>(
+                              builder: (controller) {
+                                return Row(
+                                  children: [
+                                    Icon(Icons.place,color: AppColors.white,size: size*0.06,),
+                                    SizedBox(width: size*0.01,),
+                                    Expanded(child: Text(planController.currentLocation??"",overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.white),)),
+                                  ],
+                                );
+                              }
+                          ),
+SizedBox(height: 5,),
+                          Text(
+                            "Find Your Perfect Dentist",
+                            style: AppTextStyles.subtitle(
+                              context,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            "Search trusted clinics near you in seconds",
+                            style: AppTextStyles.caption(
+                              context,
+                              color: Colors.white.withOpacity(0.85),
+                            ),
+                          ),
+                          const SizedBox(height: 18),
+                          Row(
                             children: [
-                              Icon(Icons.search, color: Colors.grey, size: size*0.025),
-                              const SizedBox(width: 8),
                               Expanded(
-                                  child: CommonSearchTextField(
-                                    controller: searchController,
-                                    hintText: "Search dental clinics Near you by name,area...",
-                                    onSubmitted: (value)async {
-                                      print("Search text: $value");
-                                      await  loginController.getProfileDetails(
-                                        "Dental Clinic",
-                                        '',
-                                        [],
-                                        [],[],"true",'','','',
-                                        searchController.text.toString(),
-                                        context,
-                                      );
-                                      Get.toNamed('/filterResultPage');
-                                    },
-                                  )
-                              ),
-
-                              Container(
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: AppColors.white,),
-                                child: Center(
-                                  child: IconButton(
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          builder: (context) {
-                                            return FractionallySizedBox(
-                                                heightFactor: 0.75,
-                                                child: FilterDrawer(
-                                                  onApply: () async{
-                                                    print("Selected State: ${loginController.selectedState}");
-                                                    print("Selected District: ${loginController.selectedDistrict}");
-                                                    print("Selected Area: ${loginController.selectedArea}");
-                                                    print("Selected distance: ${loginController.selectedDistance}");
-                                                    print('latit${Api.userInfo.read('latitude')??""} long ${Api.userInfo.read('longitude')??""}');
-                                                    //String userType=  Api.userInfo.read('sUserType');
-                                                    //print("ssuser$userType");
-                                                    String distance =
-                                                    (loginController.selectedDistance1 ?? 0).toString();
-
-                                                    bool useLocation =
-                                                        distance.isNotEmpty &&
-                                                            distance != "0" &&
-                                                            distance != "0.0";
-                                                    if (useLocation) {
-                                                      await getLocation();
-                                                    } else {
-                                                      loginController.latitude = null;
-                                                      loginController.longitude = null;
-                                                    }
-
-                                                    String safeLat =
-                                                    useLocation ? (loginController.latitude?.toString() ?? "") : "";
-
-                                                    String safeLng =
-                                                    useLocation ? (loginController.longitude?.toString() ?? "") : "";
-                                                    filteredProfiles.map((e) => searchController.text.toString());
-                                                    await loginController.getProfileDetails(
-                                                      "Dental Clinic",
-                                                      loginController.selectedState,
-                                                      loginController.selectedDistricts,
-                                                      loginController.selectedTalukas, loginController.selectedVillages,"true",safeLat,safeLng, distance,'',
-                                                      context,
-                                                    );
-                                                    Get.toNamed('/filterResultPage');
-                                                  },
-                                                  onReset: () {
-                                                    setState(() {
-                                                      // loginController.selectedPlace = null;
-                                                      // loginController.selectedDistrict = null;
-                                                      loginController.selectedArea = null;
-                                                      loginController.selectedUserType=null;
-                                                      loginController.selectedState=null;
-                                                      loginController.selectedDistrict=null;
-                                                      loginController.selectedDistance=null;
-                                                      loginController.selectedSalary=null;
-                                                      loginController.selectedJobType=null;
-                                                      loginController.selectedCategories.clear();
-                                                      loginController.resetUserTypeFilters();
-                                                      loginController.update();
-                                                    });
-                                                  },
-                                                )      );
-                                          });
-                                    },
-                                    icon:  Icon(Icons.search, color: AppColors.primary, size: size*0.06),
-                                    splashRadius: 22,
+                                child: Container(
+                                  height: 52,
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(26),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.12),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.search_rounded, color: AppColors.primary, size: 22),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                          child: CommonSearchTextField(
+                                            controller: searchController,
+                                            borderColor: Colors.transparent,
+                                            hintText: "Search by clinic name or area...",
+                                            onSubmitted: (value)async {
+                                              print("Search text: $value");
+                                              await  loginController.getProfileDetails(
+                                                "Dental Clinic",
+                                                '',
+                                                [],
+                                                [],[],"true",'','','',
+                                                searchController.text.toString(),
+                                                context,
+                                              );
+                                              Get.toNamed('/filterResultPage');
+                                            },
+                                          )
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
+                              const SizedBox(width: 12),
+                              Container(
+                                height: 52,
+                                width: 52,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.12),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: IconButton(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        builder: (context) {
+                                          return FractionallySizedBox(
+                                              heightFactor: 0.75,
+                                              child: FilterDrawer(
+                                                onApply: () async{
+                                                  print("Selected State: ${loginController.selectedState}");
+                                                  print("Selected District: ${loginController.selectedDistrict}");
+                                                  print("Selected Area: ${loginController.selectedArea}");
+                                                  print("Selected distance: ${loginController.selectedDistance}");
+                                                  print('latit${Api.userInfo.read('latitude')??""} long ${Api.userInfo.read('longitude')??""}');
+                                                  //String userType=  Api.userInfo.read('sUserType');
+                                                  //print("ssuser$userType");
+                                                  String distance =
+                                                  (loginController.selectedDistance1 ?? 0).toString();
 
+                                                  bool useLocation =
+                                                      distance.isNotEmpty &&
+                                                          distance != "0" &&
+                                                          distance != "0.0";
+                                                  if (useLocation) {
+                                                    await getLocation();
+                                                  } else {
+                                                    loginController.latitude = null;
+                                                    loginController.longitude = null;
+                                                  }
+
+                                                  String safeLat =
+                                                  useLocation ? (loginController.latitude?.toString() ?? "") : "";
+
+                                                  String safeLng =
+                                                  useLocation ? (loginController.longitude?.toString() ?? "") : "";
+                                                  filteredProfiles.map((e) => searchController.text.toString());
+                                                  await loginController.getProfileDetails(
+                                                    "Dental Clinic",
+                                                    loginController.selectedState,
+                                                    loginController.selectedDistricts,
+                                                    loginController.selectedTalukas, loginController.selectedVillages,"true",safeLat,safeLng, distance,'',
+                                                    context,
+                                                  );
+                                                  Get.toNamed('/filterResultPage');
+                                                },
+                                                onReset: () {
+                                                  setState(() {
+                                                    // loginController.selectedPlace = null;
+                                                    // loginController.selectedDistrict = null;
+                                                    loginController.selectedArea = null;
+                                                    loginController.selectedUserType=null;
+                                                    loginController.selectedState=null;
+                                                    loginController.selectedDistrict=null;
+                                                    loginController.selectedDistance=null;
+                                                    loginController.selectedSalary=null;
+                                                    loginController.selectedJobType=null;
+                                                    loginController.selectedCategories.clear();
+                                                    loginController.resetUserTypeFilters();
+                                                    loginController.update();
+                                                  });
+                                                },
+                                              )      );
+                                        });
+                                  },
+                                  icon: const Icon(Icons.tune_rounded, color: AppColors.primary, size: 24),
+                                  splashRadius: 22,
+                                ),
+                              ),
                             ],
                           ),
-                        ),
+                        ],
                       ),
                     ),
 

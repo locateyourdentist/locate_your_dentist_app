@@ -88,464 +88,466 @@ class _AdminDashboardState extends State<AdminDashboard> {
         builder: (controller) {
           return RefreshIndicator(
             onRefresh: _refresh,
-            child: Row(
-              children: [
-                if (isLoggedIn && isDesktop) const AdminSideBar(),
-                Expanded(
-                  child: Container(
-                    color: Colors.grey[100],
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 1300),
-                        child: Stack(
-                          children: [
-                            if (!isDesktop)
-                              Positioned(
-                                top: 10,
-                                left: 10,
-                                child: IconButton(
-                                  icon: const Icon(Icons.menu),
-                                  onPressed: () => _scaffoldKeyAdmin
-                                      .currentState
-                                      ?.openDrawer(),
+            child: SafeArea(
+              child: Row(
+                children: [
+                  if (isLoggedIn && isDesktop) const AdminSideBar(),
+                  Expanded(
+                    child: Container(
+                      color: Colors.grey[100],
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1300),
+                          child: Stack(
+                            children: [
+                              if (!isDesktop)
+                                Positioned(
+                                  top: 10,
+                                  left: 10,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.menu),
+                                    onPressed: () => _scaffoldKeyAdmin
+                                        .currentState
+                                        ?.openDrawer(),
+                                  ),
                                 ),
-                              ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(
-                                isMobile ? 10 : 20,
-                                isLoggedIn && !isDesktop ? 60 : 20,
-                                isMobile ? 10 : 20,
-                                20,
-                              ),
-                              child: SingleChildScrollView(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      constraints: BoxConstraints(
-                                        minHeight: isMobile ? 350 : 200,
-                                      ),
-                                      child: Stack(
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          Container(
-                                            height: isMobile ? 180 : 150,
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              gradient: const LinearGradient(
-                                                colors: [
-                                                  AppColors.primary,
-                                                  AppColors.secondary,
-                                                ],
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                  isMobile ? 10 : 20,
+                                  isLoggedIn && !isDesktop ? 60 : 20,
+                                  isMobile ? 10 : 20,
+                                  20,
+                                ),
+                                child: SingleChildScrollView(
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        constraints: BoxConstraints(
+                                          minHeight: isMobile ? 350 : 200,
+                                        ),
+                                        child: Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            Container(
+                                              height: isMobile ? 180 : 150,
+                                              padding: const EdgeInsets.symmetric(
+                                                horizontal: 20,
                                               ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey.withValues(
-                                                    alpha: 0.15,
-                                                  ),
-                                                  blurRadius: 6,
-                                                  offset: const Offset(0, 2),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                gradient: const LinearGradient(
+                                                  colors: [
+                                                    AppColors.primary,
+                                                    AppColors.secondary,
+                                                  ],
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
                                                 ),
-                                              ],
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(
-                                                12.0,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey.withValues(
+                                                      alpha: 0.15,
+                                                    ),
+                                                    blurRadius: 6,
+                                                    offset: const Offset(0, 2),
+                                                  ),
+                                                ],
                                               ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      "Admin Dashboard",
-                                                      style:
-                                                          AppTextStyles.subtitle(
-                                                            context,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  12.0,
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        "Admin Dashboard",
+                                                        style:
+                                                            AppTextStyles.subtitle(
+                                                              context,
+                                                              color:
+                                                                  AppColors.white,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        IconButton(
+                                                          icon: const Icon(
+                                                            Icons
+                                                                .notifications_none,
                                                             color:
                                                                 AppColors.white,
+                                                            size: 24,
                                                           ),
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      IconButton(
-                                                        icon: const Icon(
-                                                          Icons
-                                                              .notifications_none,
-                                                          color:
-                                                              AppColors.white,
-                                                          size: 24,
+                                                          onPressed: () async {
+                                                            await notificationController
+                                                                .getNotificationListAdmin(
+                                                                  context,
+                                                                );
+                                                            Get.toNamed(
+                                                              '/viewNotificationWebPage',
+                                                            );
+                                                          },
                                                         ),
-                                                        onPressed: () async {
-                                                          await notificationController
-                                                              .getNotificationListAdmin(
+                                                        const SizedBox(width: 10),
+                                                        GestureDetector(
+                                                          onTap: () =>
+                                                              showLogoutDialog(
                                                                 context,
-                                                              );
-                                                          Get.toNamed(
-                                                            '/viewNotificationWebPage',
-                                                          );
-                                                        },
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      GestureDetector(
-                                                        onTap: () =>
-                                                            showLogoutDialog(
-                                                              context,
-                                                            ),
-                                                        child:
-                                                            const CircleAvatar(
-                                                              radius: 18,
-                                                              backgroundColor:
-                                                                  Colors.white,
-                                                              child: Icon(
-                                                                Icons.logout,
-                                                                color: AppColors
-                                                                    .primary,
-                                                                size: 20,
                                                               ),
-                                                            ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            bottom: isMobile ? 0 : -30,
-                                            left: 10,
-                                            right: 10,
-                                            child: isMobile
-                                                ? Column(
-                                                    children: [
-                                                      GetBuilder<LoginController>(
-                                                          builder: (controller) {
-                                                            return Row(
-                                                            children:<Widget> [
-                                                              Expanded(
-                                                                child:GetBuilder<LoginController>(
-                                                                    builder: (controller) {
-                                                                      return StatCard(
-                                                                      title:
-                                                                          "Total Users",
-                                                                      value: total
-                                                                          .toString(),
-                                                                      icon:
-                                                                          Icons.people,
-                                                                      color:
-                                                                          Colors.blue,
-                                                                    );
-                                                                  }
+                                                          child:
+                                                              const CircleAvatar(
+                                                                radius: 18,
+                                                                backgroundColor:
+                                                                    Colors.white,
+                                                                child: Icon(
+                                                                  Icons.logout,
+                                                                  color: AppColors
+                                                                      .primary,
+                                                                  size: 20,
                                                                 ),
                                                               ),
-                                                              const SizedBox(
-                                                                width: 10,
-                                                              ),
-                                                              Expanded(
-                                                                child: GetBuilder<LoginController>(
-                                                                    builder: (controller) {
-                                                                      return StatCard(
-                                                                      title:
-                                                                          "Active Users",
-                                                                      value: active
-                                                                          .toString(),
-                                                                      icon: Icons
-                                                                          .verified_user,
-                                                                      color:
-                                                                          Colors.green,
-                                                                    );
-                                                                  }
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          );
-                                                        }
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child: StatCard(
-                                                              title: "Revenue",
-                                                              value:
-                                                                  "₹ ${planController.income?.total.toStringAsFixed(2)}",
-                                                              icon: Icons
-                                                                  .currency_rupee,
-                                                              color:
-                                                                  Colors.orange,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Expanded(
-                                                            child: StatCard(
-                                                              title: "Expenses",
-                                                              value:
-                                                                  "₹ ${planController.total.toStringAsFixed(2)}",
-                                                              icon: Icons
-                                                                  .money_off,
-                                                              color: Colors.red,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  )
-                                                : GetBuilder<LoginController>(
-                                                    builder: (controller) {
-                                                      return Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Expanded(
-                                                            child: StatCard(
-                                                              title:
-                                                                  "Total Users",
-                                                              value: total
-                                                                  .toString(),
-                                                              icon:
-                                                                  Icons.people,
-                                                              color:
-                                                                  Colors.blue,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 15,
-                                                          ),
-                                                          Expanded(
-                                                            child: StatCard(
-                                                              title:
-                                                                  "Active Users",
-                                                              value: active
-                                                                  .toString(),
-                                                              icon: Icons
-                                                                  .verified_user,
-                                                              color:
-                                                                  Colors.green,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 15,
-                                                          ),
-                                                          Expanded(
-                                                            child: StatCard(
-                                                              title:
-                                                                  "Total Revenue",
-                                                              value:
-                                                                  "₹ ${planController.income?.total.toStringAsFixed(2)}",
-                                                              icon: Icons
-                                                                  .currency_rupee,
-                                                              color:
-                                                                  Colors.orange,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 15,
-                                                          ),
-                                                          Expanded(
-                                                            child: StatCard(
-                                                              title:
-                                                                  "Total Expenses",
-                                                              value:
-                                                                  "₹ ${planController.total.toStringAsFixed(2)}",
-                                                              icon: Icons
-                                                                  .money_off,
-                                                              color: Colors.red,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 40),
-                                    const PostAdsBannerWeb(),
-                                    const SizedBox(height: 24),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 15,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withValues(
-                                              alpha: 0.15,
-                                            ),
-                                            blurRadius: 6,
-                                          ),
-                                        ],
-                                      ),
-                                      child: TextField(
-                                        onChanged: (value) async {
-                                          if (Api.userInfo.read('userType') ==
-                                              "superAdmin") {
-                                            await loginController
-                                                .getProfileDetails(
-                                                  '',
-                                                  '',
-                                                  [],
-                                                  [],
-                                                  [],
-                                                  '',
-                                                  '',
-                                                  '',
-                                                  '',
-                                                  searchController.text
-                                                      .toString(),
-                                                  context,
-                                                );
-                                          }
-                                          if (Api.userInfo.read('userType') ==
-                                              "admin") {
-
-                                            await loginController
-                                                .getProfileDetails(
-                                                  '',
-                                                  Api.userInfo.read('state') ?? "",
-                                                  [],
-                                                  [],
-                                                  [],
-                                                  '',
-                                                  '',
-                                                  '',
-                                                  '',
-                                                  searchController.text.toString(),
-                                                  context,
-                                                );
-                                          }
-                                        },
-                                        controller: searchController,
-                                        decoration: const InputDecoration(
-                                          icon: Icon(
-                                            Icons.search,
-                                            color: AppColors.grey,
-                                            size: 24,
-                                          ),
-                                          hintText:
-                                              "Search by name, userId, clinic...",
-                                          hintStyle: TextStyle(
-                                            color: AppColors.grey,
-                                          ),
-                                          border: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                    UserTypeDashboardModern(
-                                      userTypeCounts: buildUserTypeCounts(
-                                        loginController.profileList,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 30),
-                                    Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "User Lists",
-                                              style: AppTextStyles.body(
-                                                context,
-                                                color: AppColors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Get.toNamed('/userTypeListWeb');
-                                              },
-                                              child: Text(
-                                                "View All",
-                                                style:
-                                                    AppTextStyles.caption(
-                                                      context,
-                                                      color: AppColors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ).copyWith(
-                                                      decoration: TextDecoration
-                                                          .underline,
+                                                        ),
+                                                      ],
                                                     ),
+                                                  ],
+                                                ),
                                               ),
+                                            ),
+                                            Positioned(
+                                              bottom: isMobile ? 0 : -30,
+                                              left: 10,
+                                              right: 10,
+                                              child: isMobile
+                                                  ? Column(
+                                                      children: [
+                                                        GetBuilder<LoginController>(
+                                                            builder: (controller) {
+                                                              return Row(
+                                                              children:<Widget> [
+                                                                Expanded(
+                                                                  child:GetBuilder<LoginController>(
+                                                                      builder: (controller) {
+                                                                        return StatCard(
+                                                                        title:
+                                                                            "Total Users",
+                                                                        value: total
+                                                                            .toString(),
+                                                                        icon:
+                                                                            Icons.people,
+                                                                        color:
+                                                                            Colors.blue,
+                                                                      );
+                                                                    }
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 10,
+                                                                ),
+                                                                Expanded(
+                                                                  child: GetBuilder<LoginController>(
+                                                                      builder: (controller) {
+                                                                        return StatCard(
+                                                                        title:
+                                                                            "Active Users",
+                                                                        value: active
+                                                                            .toString(),
+                                                                        icon: Icons
+                                                                            .verified_user,
+                                                                        color:
+                                                                            Colors.green,
+                                                                      );
+                                                                    }
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          }
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: StatCard(
+                                                                title: "Revenue",
+                                                                value:
+                                                                    "₹ ${planController.income?.total.toStringAsFixed(2)}",
+                                                                icon: Icons
+                                                                    .currency_rupee,
+                                                                color:
+                                                                    Colors.orange,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Expanded(
+                                                              child: StatCard(
+                                                                title: "Expenses",
+                                                                value:
+                                                                    "₹ ${planController.total.toStringAsFixed(2)}",
+                                                                icon: Icons
+                                                                    .money_off,
+                                                                color: Colors.red,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : GetBuilder<LoginController>(
+                                                      builder: (controller) {
+                                                        return Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Expanded(
+                                                              child: StatCard(
+                                                                title:
+                                                                    "Total Users",
+                                                                value: total
+                                                                    .toString(),
+                                                                icon:
+                                                                    Icons.people,
+                                                                color:
+                                                                    Colors.blue,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 15,
+                                                            ),
+                                                            Expanded(
+                                                              child: StatCard(
+                                                                title:
+                                                                    "Active Users",
+                                                                value: active
+                                                                    .toString(),
+                                                                icon: Icons
+                                                                    .verified_user,
+                                                                color:
+                                                                    Colors.green,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 15,
+                                                            ),
+                                                            Expanded(
+                                                              child: StatCard(
+                                                                title:
+                                                                    "Total Revenue",
+                                                                value:
+                                                                    "₹ ${planController.income?.total.toStringAsFixed(2)}",
+                                                                icon: Icons
+                                                                    .currency_rupee,
+                                                                color:
+                                                                    Colors.orange,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 15,
+                                                            ),
+                                                            Expanded(
+                                                              child: StatCard(
+                                                                title:
+                                                                    "Total Expenses",
+                                                                value:
+                                                                    "₹ ${planController.total.toStringAsFixed(2)}",
+                                                                icon: Icons
+                                                                    .money_off,
+                                                                color: Colors.red,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 10),
-                                        AnimationLimiter(
-                                          child: GridView.builder(
-                                            shrinkWrap: true,
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            itemCount:
-                                                loginController.profileList.length > 10
-                                                ? 10 : loginController.profileList.length,
-                                            gridDelegate:
-                                                const SliverGridDelegateWithMaxCrossAxisExtent(
-                                                  maxCrossAxisExtent: 280,
-                                                  mainAxisSpacing: 20,
-                                                  crossAxisSpacing: 20,
-                                                  childAspectRatio: 0.7,
+                                      ),
+                                      const SizedBox(height: 40),
+                                      const PostAdsBannerWeb(),
+                                      const SizedBox(height: 24),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 15,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withValues(
+                                                alpha: 0.15,
+                                              ),
+                                              blurRadius: 6,
+                                            ),
+                                          ],
+                                        ),
+                                        child: TextField(
+                                          onChanged: (value) async {
+                                            if (Api.userInfo.read('userType') ==
+                                                "superAdmin") {
+                                              await loginController
+                                                  .getProfileDetails(
+                                                    '',
+                                                    '',
+                                                    [],
+                                                    [],
+                                                    [],
+                                                    '',
+                                                    '',
+                                                    '',
+                                                    '',
+                                                    searchController.text
+                                                        .toString(),
+                                                    context,
+                                                  );
+                                            }
+                                            if (Api.userInfo.read('userType') ==
+                                                "admin") {
+              
+                                              await loginController
+                                                  .getProfileDetails(
+                                                    '',
+                                                    Api.userInfo.read('state') ?? "",
+                                                    [],
+                                                    [],
+                                                    [],
+                                                    '',
+                                                    '',
+                                                    '',
+                                                    '',
+                                                    searchController.text.toString(),
+                                                    context,
+                                                  );
+                                            }
+                                          },
+                                          controller: searchController,
+                                          decoration: const InputDecoration(
+                                            icon: Icon(
+                                              Icons.search,
+                                              color: AppColors.grey,
+                                              size: 24,
+                                            ),
+                                            hintText:
+                                                "Search by name, userId, clinic...",
+                                            hintStyle: TextStyle(
+                                              color: AppColors.grey,
+                                            ),
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+                                      UserTypeDashboardModern(
+                                        userTypeCounts: buildUserTypeCounts(
+                                          loginController.profileList,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 30),
+                                      Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                "User Lists",
+                                                style: AppTextStyles.body(
+                                                  context,
+                                                  color: AppColors.black,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                            itemBuilder: (context, index) {
-                                              return AnimationConfiguration.staggeredList(
-                                                position: index,
-                                                duration: const Duration(
-                                                  milliseconds: 700,
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Get.toNamed('/userTypeListWeb');
+                                                },
+                                                child: Text(
+                                                  "View All",
+                                                  style:
+                                                      AppTextStyles.caption(
+                                                        context,
+                                                        color: AppColors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ).copyWith(
+                                                        decoration: TextDecoration
+                                                            .underline,
+                                                      ),
                                                 ),
-                                                child: SlideAnimation(
-                                                  horizontalOffset: 80.0,
-                                                  curve: Curves.easeOutCubic,
-                                                  child: FadeInAnimation(
-                                                    child: EnlargeOnTapCard(
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets.all(
-                                                              8.0,
-                                                            ),
-                                                        child: clinicCard(
-                                                          loginController.profileList[index], context,
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          AnimationLimiter(
+                                            child: GridView.builder(
+                                              shrinkWrap: true,
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              itemCount:
+                                                  loginController.profileList.length > 10
+                                                  ? 10 : loginController.profileList.length,
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                    maxCrossAxisExtent: 280,
+                                                    mainAxisSpacing: 20,
+                                                    crossAxisSpacing: 20,
+                                                    childAspectRatio: 0.7,
+                                                  ),
+                                              itemBuilder: (context, index) {
+                                                return AnimationConfiguration.staggeredList(
+                                                  position: index,
+                                                  duration: const Duration(
+                                                    milliseconds: 700,
+                                                  ),
+                                                  child: SlideAnimation(
+                                                    horizontalOffset: 80.0,
+                                                    curve: Curves.easeOutCubic,
+                                                    child: FadeInAnimation(
+                                                      child: EnlargeOnTapCard(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets.all(
+                                                                8.0,
+                                                              ),
+                                                          child: clinicCard(
+                                                            loginController.profileList[index], context,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                              );
-                                            },
+                                                );
+                                              },
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 60),
-                                  ],
+                                        ],
+                                      ),
+                                      const SizedBox(height: 60),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

@@ -67,11 +67,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
           .toList();
     }
   }
-
   final int maxFiles = 3;
   bool isPicking = false;
-
-  @override
+   @override
   void initState() {
     super.initState();
     _controller = QuillController.basic();

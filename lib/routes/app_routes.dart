@@ -102,6 +102,7 @@ import '../modules/auth/login_screen/login_screen.dart';
 import '../modules/auth/password_page/forgot_change_password.dart';
 import '../modules/auth/password_page/forgot_password_page.dart';
 import '../modules/contact_form/view_feedback_forms.dart';
+import '../modules/dashboard/superAdmin.dart';
 import '../modules/plans/create_plan.dart';
 import '../modules/profiles/clinic_web_view.dart';
 import '../web_modules/auth_web/forgot_password_web.dart';
@@ -441,8 +442,8 @@ class AppPages {
     ),
     GetPage(name: AppRoutes.webLoginPage, page: () => WebLoginPage()),
     GetPage(
-      name: AppRoutes.superAdminWebDashboard,
-      page: () => const AdminDashboard(),
+      name: AppRoutes.superAdminDashboardMobile,
+      page: () => const SuperAdminDashboardPage(),
     ),
     GetPage(name: AppRoutes.userTypeListWeb, page: () => ModernUserTable()),
     GetPage(

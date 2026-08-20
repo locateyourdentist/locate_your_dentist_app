@@ -70,7 +70,7 @@ class _FilterResultPageState extends State<FilterResultPage> {
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.primary,AppColors.primary],
+                colors: [AppColors.primary,AppColors.secondary],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -87,11 +87,7 @@ class _FilterResultPageState extends State<FilterResultPage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // Text('Find Best Dental',style: AppTextStyles.headline(context,color: AppColors.primary),),
-                      // Text('Services Near You',style: AppTextStyles.headline(context,color: AppColors.secondary1),),
                       Container(
-                        //margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        //padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           gradient: const LinearGradient(
@@ -100,14 +96,6 @@ class _FilterResultPageState extends State<FilterResultPage> {
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10)),
-                          // boxShadow: [
-                          //   BoxShadow(
-                          //     color: Colors.grey.withOpacity(0.15),
-                          //     spreadRadius: 2,
-                          //     blurRadius: 6,
-                          //     offset: const Offset(0, 3),
-                          //   ),
-                          // ],
                         ),
                         height: size*0.23,
                         child: Padding(

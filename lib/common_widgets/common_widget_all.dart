@@ -348,6 +348,7 @@ class CommonSearchTextField extends StatelessWidget {
   final Function(String)? onSubmitted;
   final bool isDense;
   final EdgeInsetsGeometry? contentPadding;
+  final Color? borderColor;
 
   const CommonSearchTextField({
     super.key,
@@ -356,6 +357,7 @@ class CommonSearchTextField extends StatelessWidget {
     this.onSubmitted,
     this.isDense = true,
     this.contentPadding,
+    this.borderColor,
   });
 
   @override
@@ -369,10 +371,26 @@ class CommonSearchTextField extends StatelessWidget {
           fontWeight: FontWeight.normal,
           color: AppColors.grey,
         ),
-        border: InputBorder.none,
+
+        // Outer border
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: borderColor ?? AppColors.grey,
+          ),
+        ),
+
+        // Border when focused
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: borderColor ?? AppColors.primary,
+          ),
+        ),
+
         isDense: isDense,
         contentPadding:
-            contentPadding ?? const EdgeInsets.symmetric(vertical: 8),
+        contentPadding ?? const EdgeInsets.symmetric(vertical: 8),
       ),
       style: AppTextStyles.caption(
         context,
@@ -384,7 +402,6 @@ class CommonSearchTextField extends StatelessWidget {
     );
   }
 }
-
 String timeAgo(DateTime date) {
   final Duration diff = DateTime.now().difference(date);
 
@@ -517,10 +534,10 @@ String pageUserType(String userType) {
       page = "jobSeekerDashboard";
       break;
     case "admin":
-      page = "superAdminDashboard";
+      page = "superAdminDashboardMobile";
       break;
     case "superAdmin":
-      page = "superAdminDashboard";
+      page = "superAdminDashboardMobile";
       break;
     default:
       page = "";

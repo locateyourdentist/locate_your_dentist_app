@@ -39,7 +39,6 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
     }
     return null;
   }
-
   @override
   void initState() {
     super.initState();

@@ -76,6 +76,7 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                 ),
                 const SizedBox(height: 25),
                 _sectionTitle("User Type"),
+                if(Api.userInfo.read('token')!=null)
                 CustomDropdownField(
                   hint: "Select User Type",
                   fillColor: AppColors.white,

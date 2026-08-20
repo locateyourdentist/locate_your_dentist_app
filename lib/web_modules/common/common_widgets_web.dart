@@ -287,11 +287,11 @@ class _CommonFooterState extends State<CommonFooter> {
           children: [
             _socialIcon(
               "assets/images/facebook.png",
-                  () => launchWebsite("https://facebook.com"),
+                  () => launchWebsite("https://www.facebook.com/profile.php?id=61592405806582"),
             ),
             _socialIcon(
               "assets/images/instagram.png",
-                  () => launchWebsite("https://instagram.com"),
+                  () => launchWebsite("https://www.instagram.com/locateyourdentist/"),
             ),
             _socialIcon(
               "assets/images/youtube.png",
@@ -666,17 +666,17 @@ class _CommonHeaderState extends State<CommonHeader> {
       
                     socialIcon(
                       Icons.facebook,
-                          () => launchWebsite("https://facebook.com"),
+                          () => launchWebsite("https://www.facebook.com/profile.php?id=61592405806582"),
                     ),
       
                     socialIcon(
                       Icons.camera_alt_outlined,
-                          () => launchWebsite("https://instagram.com"),
+                          () => launchWebsite("https://www.instagram.com/locateyourdentist/"),
                     ),
       
                     socialIcon(
                       Icons.alternate_email,
-                          () => launchWebsite("https://youtube.com"),
+                          () => launchWebsite("support@locateyourdentist.com"),
                     ),
                   ],
                 ),
