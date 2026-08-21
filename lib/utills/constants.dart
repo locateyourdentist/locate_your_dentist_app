@@ -84,6 +84,7 @@ class AppConstants{
   static const String addCompanyDetailsUrl='update_Company_details';
   static const String addContactDetailsStateWiseUrl='contact_details_state_wise';
   static const String addPrivacyPolicyUrl='addTextEditorContentForAll';
+  static const String getLegalPolicyUrl='gettextEditorContentForAll';
   static const String getPrivacyPolicyUrl='gettextEditorContentForAll';
 
   static const String addGstDetailsUrl='update_gst_details';

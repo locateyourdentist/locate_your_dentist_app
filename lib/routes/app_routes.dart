@@ -110,6 +110,7 @@ import '../web_modules/common/aboutus_web.dart';
 import '../web_modules/dashboard/view_clinic_patients.dart';
 import '../web_modules/dental_mechanic_lab_shop/create_contact_web_page.dart';
 import '../web_modules/dental_mechanic_lab_shop/dental_mechanic_dashboard.dart';
+import '../web_modules/superAdmin/privacy_policy.dart';
 import '../whatsapp_templates/pages/whatsapp_template_management_page.dart';
 import '../web_modules/dental_clinic/sale_post_detail_web.dart';
 
@@ -233,6 +234,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.viewLegalPage,
       page: () => const LegalPagesWebView(),
+    ),
+    GetPage(
+      name: AppRoutes.privacyPolicy,
+      page: () => const PrivacyPolicyPagesWebView(),
     ),
     GetPage(
       name: AppRoutes.viewLegalMobilePage,

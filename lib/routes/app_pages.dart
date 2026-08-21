@@ -72,7 +72,7 @@ class AppRoutes {
   static const viewServiceList='/viewServiceList';
   static const filterResultPage='/filterResultPage';
   static const onBoardScreen='/onBoardScreen';
-  static const privacyPolicyPage='/privacyPolicyPage';
+  static const privacyPolicy='/privacy-Policy';
   static const jobViewProfilePage='/jobViewProfilePage';
   static const jobSeekerEditProfilePage='/jobSeekerEditProfilePage';
   static const jobSeekerViewProfilePage='/jobSeekerViewProfilePage';

@@ -33,45 +33,31 @@ class _RevealIn extends StatelessWidget {
   }
 }
 
-class LegalPagesWebView extends StatefulWidget {
-  const LegalPagesWebView({super.key});
+class PrivacyPolicyPagesWebView extends StatefulWidget {
+  const PrivacyPolicyPagesWebView({super.key});
 
   @override
-  State<LegalPagesWebView> createState() => _LegalPagesWebViewState();
+  State<PrivacyPolicyPagesWebView> createState() => _PrivacyPolicyPagesWebViewState();
 }
 
-class _LegalPagesWebViewState extends State<LegalPagesWebView> {
+class _PrivacyPolicyPagesWebViewState extends State<PrivacyPolicyPagesWebView> {
   final ServiceController serviceController = Get.put(ServiceController());
   final GlobalKey<ScaffoldState> _scaffoldKeyLegal = GlobalKey<ScaffoldState>();
-
   final ScrollController _scrollController = ScrollController();
   final FocusNode focusNode = FocusNode();
-
-  final List<String> titles = const [
-    "Privacy Policy",
-    "Terms & Conditions",
-    "Cookie Policy",
-    "Refund Policy",
-    "Disclaimer",
-  ];
-
   late String selectedTitle;
   late QuillController controller;
   final FocusNode _focusNode = FocusNode();
-
   bool isLoading = false;
-
   @override
   void initState() {
     super.initState();
-    selectedTitle = Api.userInfo.read('legalPage') ?? "Privacy Policy";
     controller = QuillController.basic();
     loadInitialData();
   }
 
   Future<void> loadInitialData() async {
-    final data = await serviceController.getPrivacyPolicyDetails(
-      selectedTitle,
+    final data = await serviceController.getPrivacyPolicyUrl(
       context,
     );
 
@@ -268,48 +254,48 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
                         Center(
                           child: _RevealIn(
                             child: Container(
-                            constraints: const BoxConstraints(maxWidth: 1100),
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
-                            padding: EdgeInsets.symmetric(
-                              vertical: isDesktop ? 44 : 26,
-                              horizontal: isDesktop ? 50 : 22,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(24),
-                              border: Border.all(color: Colors.grey.shade100),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 24,
-                                  offset: const Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: SizedBox(
+                              constraints: const BoxConstraints(maxWidth: 1100),
                               width: double.infinity,
-                              child: KeyedSubtree(
-                                key: ValueKey(selectedTitle),
-                                child: IgnorePointer(
-                                  child: QuillEditor(
-                                    controller: controller,
-                                    scrollController: _scrollController,
-                                    focusNode: focusNode,
-                                    config: const QuillEditorConfig(
-                                      showCursor: false,
+                              margin: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: EdgeInsets.symmetric(
+                                vertical: isDesktop ? 44 : 26,
+                                horizontal: isDesktop ? 50 : 22,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(24),
+                                border: Border.all(color: Colors.grey.shade100),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 24,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                ],
+                              ),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: KeyedSubtree(
+                                  key: ValueKey(selectedTitle),
+                                  child: IgnorePointer(
+                                    child: QuillEditor(
+                                      controller: controller,
+                                      scrollController: _scrollController,
+                                      focusNode: focusNode,
+                                      config: const QuillEditorConfig(
+                                        showCursor: false,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
                             ),
                           ),
                         ),
 
                         const SizedBox(height: 60),
 
-                      //  if (!isLoggedIn) const CommonFooter(),
+                        //  if (!isLoggedIn) const CommonFooter(),
                       ],
                     ),
                   ),
@@ -319,7 +305,7 @@ class _LegalPagesWebViewState extends State<LegalPagesWebView> {
           ),
         ],
       ),
-    //  bottomNavigationBar: !isLoggedIn ?SizedBox(height:isDesktop?320:150,child: const CommonFooter()):SizedBox(),
+      //  bottomNavigationBar: !isLoggedIn ?SizedBox(height:isDesktop?320:150,child: const CommonFooter()):SizedBox(),
     );
   }
 }

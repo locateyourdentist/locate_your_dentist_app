@@ -1905,7 +1905,7 @@ class Api {
 
   Future<http.Response> getPrivacyPolicyDetails(category) async {
     String url =
-        "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.getPrivacyPolicyUrl}";
+        "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.getLegalPolicyUrl}";
     print('API getBasePlanUrl $url');
     try {
       final body = {"category": category};
@@ -1925,6 +1925,26 @@ class Api {
       return response;
     } catch (e) {
       throw "Failed to fetch base plan details: $e";
+    }
+  }
+  Future<http.Response> getPrivacyPolicyUrl() async {
+    String url =
+        "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.getPrivacyPolicyUrl}";
+    print('API getBasePlanUrl $url');
+    try {
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          //"Authorization": "Bearer $token",
+        },
+      );
+      print('api getPrivacyPolicyDetails ${response.body}');
+      return response;
+    } catch (e) {
+      throw "Failed to fetch getPrivacyPolicyDetails: $e";
     }
   }
 

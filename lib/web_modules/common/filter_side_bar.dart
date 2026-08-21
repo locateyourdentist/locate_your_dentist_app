@@ -52,9 +52,10 @@ class _FilterSidebarState extends State<FilterSidebar> {
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
                       children: [
+                                        if(Api.userInfo.read('token')!=null)
 
                         _sectionTitle("User Type"),
-
+                if(Api.userInfo.read('token')!=null)
                         _dropdown(
                           "User Type",
                           const [

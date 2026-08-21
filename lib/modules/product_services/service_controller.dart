@@ -125,6 +125,34 @@ class ServiceController extends GetxController {
       return [];
     }
   }
+  Future<List<Map<String, dynamic>>> getPrivacyPolicyUrl(
+      BuildContext context,
+      ) async {
+    var connection = await Connectivity().checkConnectivity();
+
+    if (connection == ConnectivityResult.none) {
+      Get.snackbar("No Internet", "Please check your connection");
+      return [];
+    }
+
+    try {
+      final response = await api.getPrivacyPolicyUrl();
+      var data = jsonDecode(response.body);
+
+      if (data["status"] == "success") {
+        List<dynamic> services = data["data"] ?? [];
+
+        if (services.isNotEmpty && services[0]["data"] != null) {
+          return List<Map<String, dynamic>>.from(services[0]["data"]);
+        }
+      }
+
+      return [];
+    } catch (e) {
+      print("privacy error: $e");
+      return [];
+    }
+  }
 
   Future<void> getServiceDetailAdmin(String serviceId, dynamic context) async {
     isLoading = true;
