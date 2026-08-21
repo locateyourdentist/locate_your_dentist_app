@@ -2,6 +2,7 @@
 class AppRoutes {
   static const splashScreen = '/splashScreen';
   static const loginPage = '/loginPage';
+  static const loginTypesPage = '/loginTypesPage';
   static const forgotPasswordWebScreen = '/forgotPasswordWebScreen';
   static const forgotPasswordEmailWeb = '/forgotPasswordEmailWeb';
   static const forgotMailWebScreen = '/forgotMailWebScreen';
@@ -72,7 +73,7 @@ class AppRoutes {
   static const viewServiceList='/viewServiceList';
   static const filterResultPage='/filterResultPage';
   static const onBoardScreen='/onBoardScreen';
-  static const privacyPolicy='/privacy-Policy';
+  static const privacyPolicy='/privacyPolicy';
   static const jobViewProfilePage='/jobViewProfilePage';
   static const jobSeekerEditProfilePage='/jobSeekerEditProfilePage';
   static const jobSeekerViewProfilePage='/jobSeekerViewProfilePage';

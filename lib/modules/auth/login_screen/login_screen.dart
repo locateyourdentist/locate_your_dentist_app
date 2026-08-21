@@ -298,6 +298,26 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
+                            const SizedBox(height: 8),
+
+                            Center(
+                              child: TextButton(
+                                onPressed: () {
+                                  Get.toNamed('/patientDashboard');
+                                },
+                                child: Text(
+                                  "Back To Home",
+                                  style: AppTextStyles.body(
+                                    context,
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 8),
+
                           ],
                         ),
                       ),

@@ -101,6 +101,7 @@ import 'package:locate_your_dentist/web_modules/superAdmin/view_report_web.dart'
 import '../modules/auth/login_screen/login_screen.dart';
 import '../modules/auth/password_page/forgot_change_password.dart';
 import '../modules/auth/password_page/forgot_password_page.dart';
+import '../modules/auth/register_page/login_usertypes_screen.dart';
 import '../modules/contact_form/view_feedback_forms.dart';
 import '../modules/dashboard/superAdmin.dart';
 import '../modules/plans/create_plan.dart';
@@ -122,6 +123,8 @@ class AppPages {
       name: AppRoutes.forgotPasswordWebScreen,
       page: () => const ForgotChangePasswordPage(),
     ),
+    GetPage(name: AppRoutes.loginTypesPage, page: () => const DentalProfessionalRegisterPage()),
+
     GetPage(
       name: AppRoutes.forgotMailWebScreen,
       page: () => const ForgotPasswordPageWeb(),

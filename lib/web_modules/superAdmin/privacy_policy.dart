@@ -159,7 +159,7 @@ class _PrivacyPolicyPagesWebViewState
                   child: SingleChildScrollView(
                     padding: EdgeInsets.symmetric(
                       horizontal: isMobile ? 18 : 32,
-                      vertical: isMobile ? 28 : 48,
+                      vertical: isMobile ? 18 : 48,
                     ),
                     child: Center(
                       child: ConstrainedBox(
@@ -188,12 +188,12 @@ class _PrivacyPolicyPagesWebViewState
   ) {
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      color: AppColors.primary,
       padding: EdgeInsets.fromLTRB(
-        isMobile ? 18 : 40,
-        isMobile ? 20 : 32,
-        isMobile ? 18 : 40,
-        isMobile ? 20 : 32,
+        isMobile ? 18 : 10,
+        isMobile ? 20 : 22,
+        isMobile ? 18 : 20,
+        isMobile ? 20 : 10,
       ),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 780),
@@ -232,7 +232,7 @@ class _PrivacyPolicyPagesWebViewState
                 ),
               ],
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 10),
             Text(
               "LEGAL",
               style: AppTextStyles.caption(
@@ -244,12 +244,12 @@ class _PrivacyPolicyPagesWebViewState
             const SizedBox(height: 6),
             Text(
               "Privacy Policy",
-              style: AppTextStyles.headline1(context, color: AppColors.textPrimary),
+              style: AppTextStyles.headline1(context, color: AppColors.white),
             ),
             const SizedBox(height: 10),
             Text(
               "How Locate Your Dentist collects, uses, and protects your information.",
-              style: AppTextStyles.body(context, color: AppColors.textSecondary),
+              style: AppTextStyles.body(context, color: Colors.white54),
             ),
           ],
         ),

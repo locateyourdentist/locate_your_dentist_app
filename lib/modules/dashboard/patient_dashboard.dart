@@ -361,26 +361,13 @@ class _PatientDashboardState extends State<PatientDashboard> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
+
                               Text(
                                   "Top Dentist in your State",
                                   textAlign: TextAlign.center,
                                   style: AppTextStyles.body(
                                       context,color: AppColors.black)
-                              ),
-                              TextButton(onPressed: (){
-                                Get.toNamed('/loginPage');
-                              }, child:  Text(
-                                  "Login to view more",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 16,fontWeight:FontWeight.bold,
-                                    decoration: TextDecoration.underline,
-                                  )))
-                            ],
+
                           ),
                           SizedBox(height: size * 0.02),
                           GetBuilder<PlanController>(
@@ -394,6 +381,8 @@ class _PatientDashboardState extends State<PatientDashboard> {
                           ),
 
                           SizedBox(height: size * 0.03),
+                          _buildProfessionalCard(),
+                          
                           Text(
                               "Popular Dental Clinics",
                               textAlign: TextAlign.center,
@@ -554,8 +543,145 @@ class _PatientDashboardState extends State<PatientDashboard> {
     );
 
   }
+ Widget _buildProfessionalCard() {
+  
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Professional icon
+              Container(
+                width: 90,
+                height: 105,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color(0xFFD7E5FA),
+                    width: 1.5,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.medical_services_outlined,
+                  color: AppColors.primary,
+                  size: 50,
+                ),
+              ),
 
+              const SizedBox(width: 18),
+
+              // Text
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'DENTAL',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 21,
+                        fontWeight: FontWeight.w800,
+                        height: 1.0,
+                      ),
+                    ),
+                    Text(
+                      'PROFESSIONAL',
+                      style: TextStyle(
+                        color: AppColors.primaryBlue,
+                        fontSize: 21,
+                        fontWeight: FontWeight.w800,
+                        height: 1.0,
+                      ),
+                    ),
+
+                    SizedBox(height: 10),
+
+                    Text(
+                      'Login or Register to continue\nas Dental Professional',
+                      style: TextStyle(
+                        color: AppColors.darkText,
+                        fontSize: 13,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // Login button
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              onPressed: () {
+                Get.toNamed('/loginTypesPage');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor:  AppColors.primary,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Login',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Register button
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: OutlinedButton(
+              onPressed: () {
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.blue,
+                backgroundColor: Colors.white,
+                side: const BorderSide(
+                  color: AppColors.primary,
+                  width: 1.5,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Register',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
+
+
 
 class DentalMenu extends StatelessWidget {
   DentalMenu({super.key});

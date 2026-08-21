@@ -381,7 +381,7 @@ class _CommonFooterState extends State<CommonFooter> {
         ...titles.map((title) {
           return _footerLink(context, title, () {
             Api.userInfo.write('legalPage', title);
-         title=='Privacy Policy'?   Get.toNamed('/privacy-Policy'):
+         title=='Privacy Policy'?   Get.toNamed('/privacyPolicy'):
             Get.toNamed('/viewLegalPage', arguments: {'title': title});
           });
         }),
