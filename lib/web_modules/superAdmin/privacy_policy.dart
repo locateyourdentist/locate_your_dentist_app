@@ -23,7 +23,7 @@ class _RevealIn extends StatelessWidget {
         return Opacity(
           opacity: value,
           child: Transform.translate(
-            offset: Offset(0, (1 - value) * 20),
+            offset: Offset(0, (1 - value) * 16),
             child: child,
           ),
         );
@@ -37,18 +37,20 @@ class PrivacyPolicyPagesWebView extends StatefulWidget {
   const PrivacyPolicyPagesWebView({super.key});
 
   @override
-  State<PrivacyPolicyPagesWebView> createState() => _PrivacyPolicyPagesWebViewState();
+  State<PrivacyPolicyPagesWebView> createState() =>
+      _PrivacyPolicyPagesWebViewState();
 }
 
-class _PrivacyPolicyPagesWebViewState extends State<PrivacyPolicyPagesWebView> {
+class _PrivacyPolicyPagesWebViewState
+    extends State<PrivacyPolicyPagesWebView> {
   final ServiceController serviceController = Get.put(ServiceController());
   final GlobalKey<ScaffoldState> _scaffoldKeyLegal = GlobalKey<ScaffoldState>();
   final ScrollController _scrollController = ScrollController();
   final FocusNode focusNode = FocusNode();
-  late String selectedTitle;
   late QuillController controller;
   final FocusNode _focusNode = FocusNode();
-  bool isLoading = false;
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -57,12 +59,11 @@ class _PrivacyPolicyPagesWebViewState extends State<PrivacyPolicyPagesWebView> {
   }
 
   Future<void> loadInitialData() async {
-    final data = await serviceController.getPrivacyPolicyUrl(
-      context,
-    );
+    final data = await serviceController.getPrivacyPolicyUrl(context);
 
     controller.clear();
     loadDescription(data);
+    if (mounted) setState(() => isLoading = false);
   }
 
   void loadDescription(dynamic data) {
@@ -119,30 +120,16 @@ class _PrivacyPolicyPagesWebViewState extends State<PrivacyPolicyPagesWebView> {
     super.dispose();
   }
 
-  IconData _iconForTitle(String title) {
-    switch (title) {
-      case "Privacy Policy":
-        return Icons.privacy_tip_outlined;
-      case "Terms & Conditions":
-        return Icons.gavel_rounded;
-      case "Cookie Policy":
-        return Icons.cookie_outlined;
-      case "Refund Policy":
-        return Icons.currency_rupee_rounded;
-      case "Disclaimer":
-        return Icons.info_outline_rounded;
-      default:
-        return Icons.description_outlined;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
     final bool isDesktop = width >= 1100;
+    final bool isMobile = width < 700;
+    final bool canGoBack = Navigator.of(context).canPop();
+
     PreferredSizeWidget buildAppBar() {
-      if (Api.userInfo.read('token') != null) {
+      if (isLoggedIn) {
         return CommonWebAppBar(
           height: width * 0.03,
           title: "LYD",
@@ -157,7 +144,7 @@ class _PrivacyPolicyPagesWebViewState extends State<PrivacyPolicyPagesWebView> {
     return Scaffold(
       key: _scaffoldKeyLegal,
       appBar: buildAppBar(),
-      backgroundColor: const Color(0xFFF6F8FC),
+      backgroundColor: const Color(0xFFF7F8FA),
       drawer: (isLoggedIn && !isDesktop)
           ? const Drawer(width: 250, child: AdminSideBar())
           : null,
@@ -167,136 +154,20 @@ class _PrivacyPolicyPagesWebViewState extends State<PrivacyPolicyPagesWebView> {
           Expanded(
             child: Column(
               children: [
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(
-                    vertical: isDesktop ? 30 : 36,
-                    horizontal: isDesktop ? 60 : 24,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primary, AppColors.secondary],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(32),
-                      bottomRight: Radius.circular(32),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.25),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if ((isLoggedIn && !isDesktop))
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.menu,
-                              color: AppColors.white,
-                            ),
-                            onPressed: () =>
-                                _scaffoldKeyLegal.currentState?.openDrawer(),
-                          ),
-                        ),
-                      Center(
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.16),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                _iconForTitle(selectedTitle),
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
-                            const SizedBox(height: 18),
-                            Text(
-                              "Legal & Policies",
-                              style: AppTextStyles.caption(
-                                context,
-                                color: Colors.white.withOpacity(0.8),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              selectedTitle,
-                              textAlign: TextAlign.center,
-                              style: AppTextStyles.subtitle(
-                                context,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                _buildHeader(context, isDesktop, isMobile, isLoggedIn, canGoBack),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 28),
-                        Center(
-                          child: _RevealIn(
-                            child: Container(
-                              constraints: const BoxConstraints(maxWidth: 1100),
-                              width: double.infinity,
-                              margin: const EdgeInsets.symmetric(horizontal: 20),
-                              padding: EdgeInsets.symmetric(
-                                vertical: isDesktop ? 44 : 26,
-                                horizontal: isDesktop ? 50 : 22,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(24),
-                                border: Border.all(color: Colors.grey.shade100),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 24,
-                                    offset: const Offset(0, 10),
-                                  ),
-                                ],
-                              ),
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: KeyedSubtree(
-                                  key: ValueKey(selectedTitle),
-                                  child: IgnorePointer(
-                                    child: QuillEditor(
-                                      controller: controller,
-                                      scrollController: _scrollController,
-                                      focusNode: focusNode,
-                                      config: const QuillEditorConfig(
-                                        showCursor: false,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 60),
-
-                        //  if (!isLoggedIn) const CommonFooter(),
-                      ],
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 18 : 32,
+                      vertical: isMobile ? 28 : 48,
+                    ),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 780),
+                        child: isLoading
+                            ? _buildLoadingState(context)
+                            : _RevealIn(child: _buildContentCard(context, isMobile)),
+                      ),
                     ),
                   ),
                 ),
@@ -305,7 +176,172 @@ class _PrivacyPolicyPagesWebViewState extends State<PrivacyPolicyPagesWebView> {
           ),
         ],
       ),
-      //  bottomNavigationBar: !isLoggedIn ?SizedBox(height:isDesktop?320:150,child: const CommonFooter()):SizedBox(),
+    );
+  }
+
+  Widget _buildHeader(
+    BuildContext context,
+    bool isDesktop,
+    bool isMobile,
+    bool isLoggedIn,
+    bool canGoBack,
+  ) {
+    return Container(
+      width: double.infinity,
+      color: Colors.white,
+      padding: EdgeInsets.fromLTRB(
+        isMobile ? 18 : 40,
+        isMobile ? 20 : 32,
+        isMobile ? 18 : 40,
+        isMobile ? 20 : 32,
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 780),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                if (isLoggedIn && !isDesktop)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: _RoundIconButton(
+                      icon: Icons.menu_rounded,
+                      onTap: () => _scaffoldKeyLegal.currentState?.openDrawer(),
+                    ),
+                  )
+                else if (canGoBack)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: _RoundIconButton(
+                      icon: Icons.arrow_back_rounded,
+                      onTap: () => Get.back(),
+                    ),
+                  ),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(
+                    Icons.privacy_tip_rounded,
+                    color: AppColors.primary,
+                    size: 22,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            Text(
+              "LEGAL",
+              style: AppTextStyles.caption(
+                context,
+                color: AppColors.primary,
+                fontWeight: FontWeight.w700,
+              ).copyWith(letterSpacing: 2),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              "Privacy Policy",
+              style: AppTextStyles.headline1(context, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              "How Locate Your Dentist collects, uses, and protects your information.",
+              style: AppTextStyles.body(context, color: AppColors.textSecondary),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingState(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 120),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(
+              width: 26,
+              height: 26,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Loading policy...",
+              style: AppTextStyles.caption(context, color: AppColors.textSecondary),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContentCard(BuildContext context, bool isMobile) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        vertical: isMobile ? 28 : 40,
+        horizontal: isMobile ? 18 : 44,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFECEEF2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        child: KeyedSubtree(
+          key: const ValueKey("Privacy Policy"),
+          child: IgnorePointer(
+            child: QuillEditor(
+              controller: controller,
+              scrollController: _scrollController,
+              focusNode: focusNode,
+              config: const QuillEditorConfig(
+                showCursor: false,
+                padding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RoundIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _RoundIconButton({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: const Color(0xFFF3F4F6),
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Icon(icon, size: 20, color: AppColors.textPrimary),
+        ),
+      ),
     );
   }
 }
