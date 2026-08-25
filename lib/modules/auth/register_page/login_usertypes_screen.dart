@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
+import 'register_page.dart';
 
 class DentalProfessionalRegisterPage extends StatefulWidget {
-  const DentalProfessionalRegisterPage({
-    super.key,
-  });
+  const DentalProfessionalRegisterPage({super.key});
 
   @override
   State<DentalProfessionalRegisterPage> createState() =>
@@ -14,74 +13,34 @@ class DentalProfessionalRegisterPage extends StatefulWidget {
 
 class _DentalProfessionalRegisterPageState
     extends State<DentalProfessionalRegisterPage> {
-  // ============================================================
-  // COLORS
-  // ============================================================
-
   static const Color primaryBlue = Color(0xFF0759C9);
   static const Color darkText = Color(0xFF101828);
   static const Color secondaryText = Color(0xFF667085);
   static const Color lightBlue = Color(0xFFF4F8FF);
   static const Color borderColor = Color(0xFFE5E7EB);
+  static const String professionalKeyStorage = 'professional_key';
 
-  // ============================================================
-  // STORAGE KEYS
-  // ============================================================
-
-  static const String professionalKeyStorage =
-      'professional_key';
-
-  static const String professionalTypeStorage =
-      'professional_type';
+  static const String professionalTypeStorage = 'professional_type';
 
   // ============================================================
   // YOUR CATEGORY DATA
   // ============================================================
 
   final List<Map<String, String>> allItems = [
-    {
-      "key": "admin",
-      "value": "Admin",
-    },
-    {
-      "key": "superAdmin",
-      "value": "Super Admin",
-    },
-    {
-      "key": "dentist",
-      "value": "Dental Clinic",
-    },
-    {
-      "key": "dentalLab",
-      "value": "Dental Lab",
-    },
-    {
-      "key": "dentalShop",
-      "value": "Dental Shop",
-    },
-    {
-      "key": "dentalMechanic",
-      "value": "Dental Mechanic",
-    },
-    {
-      "key": "Dental jobSeekers",
-      "value": "Job Seekers",
-    },
-    {
-      "key": "Dental Professionals",
-      "value": "Dental Consultant",
-    },
+    {"key": "admin", "value": "Admin"},
+    {"key": "superAdmin", "value": "Super Admin"},
+    {"key": "dentist", "value": "Dental Clinic"},
+    {"key": "dentalLab", "value": "Dental Lab"},
+    {"key": "dentalShop", "value": "Dental Shop"},
+    {"key": "dentalMechanic", "value": "Dental Mechanic"},
+    {"key": "Dental jobSeekers", "value": "Job Seekers"},
+    {"key": "Dental Professionals", "value": "Dental Consultant"},
   ];
 
   bool isLoading = false;
 
   String? selectedKey;
   String? selectedValue;
-
-  // ============================================================
-  // ONLY THESE ITEMS SHOULD APPEAR ON REGISTRATION SCREEN
-  // ============================================================
-
   List<Map<String, String>> get registrationItems {
     return allItems.where((item) {
       final key = item["key"];
@@ -90,8 +49,8 @@ class _DentalProfessionalRegisterPageState
           key == "dentalLab" ||
           key == "dentalShop" ||
           key == "dentalMechanic" ||
-          key == "Dental jobSeekers" ||
-          key == "Dental Professionals";
+          key == "Job Seekers" ||
+          key == "Dental Consultant";
     }).toList();
   }
 
@@ -106,18 +65,12 @@ class _DentalProfessionalRegisterPageState
     _loadSelectedCategory();
   }
 
-  // ============================================================
-  // LOAD SAVED CATEGORY
-  // ============================================================
-
   Future<void> _loadSelectedCategory() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final savedKey =
-        prefs.getString(professionalKeyStorage);
+    final savedKey = prefs.getString(professionalKeyStorage);
 
-    final savedValue =
-        prefs.getString(professionalTypeStorage);
+    final savedValue = prefs.getString(professionalTypeStorage);
 
     if (!mounted) return;
 
@@ -131,9 +84,7 @@ class _DentalProfessionalRegisterPageState
   // SAVE CATEGORY
   // ============================================================
 
-  Future<void> _selectCategory(
-    Map<String, String> item,
-  ) async {
+  Future<void> _selectCategory(Map<String, String> item) async {
     if (isLoading) return;
 
     final String key = item["key"] ?? "";
@@ -154,32 +105,18 @@ class _DentalProfessionalRegisterPageState
       final prefs = await SharedPreferences.getInstance();
 
       // Store KEY
-      await prefs.setString(
-        professionalKeyStorage,
-        key,
-      );
+      await prefs.setString(professionalKeyStorage, key);
 
       // Store VALUE
-      await prefs.setString(
-        professionalTypeStorage,
-        value,
-      );
+      await prefs.setString(professionalTypeStorage, value);
 
-      debugPrint(
-        "====================================",
-      );
+      debugPrint("====================================");
 
-      debugPrint(
-        "Professional Key   : $key",
-      );
+      debugPrint("Professional Key   : $key");
 
-      debugPrint(
-        "Professional Type  : $value",
-      );
+      debugPrint("Professional Type  : $value");
 
-      debugPrint(
-        "====================================",
-      );
+      debugPrint("====================================");
 
       if (!mounted) return;
 
@@ -189,22 +126,13 @@ class _DentalProfessionalRegisterPageState
 
       await Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => RegistrationDetailsPage(
-            professionalKey: key,
-            professionalType: value,
-          ),
-        ),
+        MaterialPageRoute(builder: (context) => const RegisterPage()),
       );
     } catch (e) {
-      debugPrint(
-        "Error saving professional category: $e",
-      );
+      debugPrint("Error saving professional category: $e");
 
       if (mounted) {
-        _showError(
-          "Unable to save category. Please try again.",
-        );
+        _showError("Unable to save category. Please try again.");
       }
     } finally {
       if (mounted) {
@@ -221,10 +149,7 @@ class _DentalProfessionalRegisterPageState
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
@@ -305,12 +230,7 @@ class _DentalProfessionalRegisterPageState
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(
-                  20,
-                  10,
-                  20,
-                  24,
-                ),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
                 child: Column(
                   children: [
                     const SizedBox(height: 12),
@@ -411,23 +331,15 @@ class _DentalProfessionalRegisterPageState
   Widget _buildProgressLine(bool active) {
     return Expanded(
       child: AnimatedContainer(
-        duration: const Duration(
-          milliseconds: 250,
-        ),
+        duration: const Duration(milliseconds: 250),
         height: 5,
         decoration: BoxDecoration(
-          color: active
-              ? primaryBlue
-              : const Color(0xFFD9DEE5),
+          color: active ? primaryBlue : const Color(0xFFD9DEE5),
           borderRadius: BorderRadius.circular(10),
         ),
       ),
     );
   }
-
-  // ============================================================
-  // TITLE
-  // ============================================================
 
   Widget _buildTitleSection() {
     return const Column(
@@ -465,9 +377,7 @@ class _DentalProfessionalRegisterPageState
     return Column(
       children: registrationItems.map((item) {
         return Padding(
-          padding: const EdgeInsets.only(
-            bottom: 12,
-          ),
+          padding: const EdgeInsets.only(bottom: 12),
           child: _buildCategoryCard(item),
         );
       }).toList(),
@@ -478,14 +388,11 @@ class _DentalProfessionalRegisterPageState
   // CATEGORY CARD
   // ============================================================
 
-  Widget _buildCategoryCard(
-    Map<String, String> item,
-  ) {
+  Widget _buildCategoryCard(Map<String, String> item) {
     final String key = item["key"] ?? "";
     final String value = item["value"] ?? "";
 
-    final bool isSelected =
-        selectedKey == key;
+    final bool isSelected = selectedKey == key;
 
     return Material(
       color: Colors.transparent,
@@ -500,33 +407,23 @@ class _DentalProfessionalRegisterPageState
         borderRadius: BorderRadius.circular(16),
 
         child: AnimatedContainer(
-          duration: const Duration(
-            milliseconds: 200,
-          ),
+          duration: const Duration(milliseconds: 200),
 
           height: 96,
 
           decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xFFF4F8FF)
-                : Colors.white,
+            color: isSelected ? const Color(0xFFF4F8FF) : Colors.white,
 
-            borderRadius:
-                BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16),
 
             border: Border.all(
-              color: isSelected
-                  ? primaryBlue
-                  : borderColor,
+              color: isSelected ? primaryBlue : borderColor,
               width: isSelected ? 1.4 : 1,
             ),
 
             boxShadow: [
               BoxShadow(
-                color:
-                    Colors.black.withOpacity(
-                  0.035,
-                ),
+                color: Colors.black.withOpacity(0.035),
                 blurRadius: 8,
                 offset: const Offset(0, 3),
               ),
@@ -542,8 +439,7 @@ class _DentalProfessionalRegisterPageState
                 width: 58,
                 height: 58,
 
-                decoration:
-                    const BoxDecoration(
+                decoration: const BoxDecoration(
                   color: lightBlue,
                   shape: BoxShape.circle,
                 ),
@@ -560,11 +456,9 @@ class _DentalProfessionalRegisterPageState
               // TEXT
               Expanded(
                 child: Column(
-                  mainAxisAlignment:
-                      MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
 
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
                     Text(
@@ -572,13 +466,11 @@ class _DentalProfessionalRegisterPageState
 
                       maxLines: 1,
 
-                      overflow:
-                          TextOverflow.ellipsis,
+                      overflow: TextOverflow.ellipsis,
 
                       style: const TextStyle(
                         fontSize: 17,
-                        fontWeight:
-                            FontWeight.w700,
+                        fontWeight: FontWeight.w700,
                         color: darkText,
                       ),
                     ),
@@ -590,14 +482,12 @@ class _DentalProfessionalRegisterPageState
 
                       maxLines: 2,
 
-                      overflow:
-                          TextOverflow.ellipsis,
+                      overflow: TextOverflow.ellipsis,
 
                       style: const TextStyle(
                         fontSize: 13,
                         height: 1.2,
-                        color:
-                            secondaryText,
+                        color: secondaryText,
                       ),
                     ),
                   ],
@@ -607,23 +497,17 @@ class _DentalProfessionalRegisterPageState
               const SizedBox(width: 6),
 
               // ARROW / LOADING
-              if (isLoading &&
-                  isSelected)
+              if (isLoading && isSelected)
                 const SizedBox(
                   width: 22,
                   height: 22,
-                  child:
-                      CircularProgressIndicator(
+                  child: CircularProgressIndicator(
                     strokeWidth: 2,
                     color: primaryBlue,
                   ),
                 )
               else
-                const Icon(
-                  Icons.chevron_right,
-                  size: 28,
-                  color: darkText,
-                ),
+                const Icon(Icons.chevron_right, size: 28, color: darkText),
 
               const SizedBox(width: 12),
             ],
@@ -632,100 +516,32 @@ class _DentalProfessionalRegisterPageState
       ),
     );
   }
+
   Widget _buildLoginLink() {
     return Row(
-      mainAxisAlignment:
-          MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
 
       children: [
         const Text(
           "Already have an account? ",
-          style: TextStyle(
-            fontSize: 14,
-            color: secondaryText,
-          ),
+          style: TextStyle(fontSize: 14, color: secondaryText),
         ),
 
         GestureDetector(
-          onTap: isLoading
-              ? null
-              : () {
-            Get.toNamed('/registerPage');
+          onTap: () {
+            Get.toNamed('/loginPage');
           },
 
           child: const Text(
             "Login",
             style: TextStyle(
               fontSize: 14,
-              fontWeight:
-                  FontWeight.w600,
+              fontWeight: FontWeight.w600,
               color: primaryBlue,
             ),
           ),
         ),
       ],
-    );
-  }
-}
-
-class RegistrationDetailsPage
-    extends StatelessWidget {
-  final String professionalKey;
-  final String professionalType;
-
-  const RegistrationDetailsPage({
-    super.key,
-    required this.professionalKey,
-    required this.professionalType,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Registration Details",
-        ),
-      ),
-
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-
-        child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-
-          children: [
-            const Text(
-              "Selected Category",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
-
-            const SizedBox(height: 6),
-
-            Text(
-              professionalType,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight:
-                    FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            Text(
-              "Key: $professionalKey",
-              style: const TextStyle(
-                fontSize: 15,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

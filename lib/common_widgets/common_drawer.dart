@@ -173,14 +173,12 @@ class _FilterDrawerContentState extends State<FilterDrawer> {
                 _selectableHorizontal(
                   options: ["around 5 Km", "around 10 Km", "around 15 Km", "around 20 Km"],
                   selectedValue: loginController.selectedDistance != null
-                      ? "${loginController.selectedDistance} Km"
+                      ? "around ${loginController.selectedDistance} Km"
                       : null,
-                   // onSelect: (val) {
-                  //   final numericValue = val.replaceAll(" Km", "");
                   onSelect: (val) {
-    final numericValue = val
-        .replaceAll("around ", "")
-        .replaceAll(" Km", "");
+                    final numericValue = val
+                        .replaceAll("around ", "")
+                        .replaceAll(" Km", "");
                     setState(() {
                       loginController.selectedDistance = numericValue;
                     });
