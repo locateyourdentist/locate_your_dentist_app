@@ -144,6 +144,7 @@ class Api {
       throw "save token failed: $e";
     }
   }
+
   Future<http.Response> registerUser(
     String userId,
     String userType,
@@ -291,7 +292,8 @@ class Api {
     try {
       var streamedResponse = await request.send().timeout(
         const Duration(seconds: 45),
-        onTimeout: () => throw "Request timed out. Please check your connection and try again.",
+        onTimeout: () =>
+            throw "Request timed out. Please check your connection and try again.",
       );
       var response = await http.Response.fromStream(streamedResponse);
 
@@ -307,26 +309,33 @@ class Api {
     }
   }
 
-  Future<http.Response> getUserDetails({String? userType,
+  Future<http.Response> getUserDetails({
+    String? userType,
     String? state,
     List<String>? district,
-    List<String>? city,List<String>? area, String? latitude, String? longitude, String? distance, String? isActive, String? searchText,
-    String? degreeName, List<String>? availableLocations, List<String>? availableTiming}) async {
+    List<String>? city,
+    List<String>? area,
+    String? latitude,
+    String? longitude,
+    String? distance,
+    String? isActive,
+    String? searchText,
+    String? degreeName,
+    List<String>? availableLocations,
+    List<String>? availableTiming,
+  }) async {
     String url =
-        "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants
-        .getProfileListUrl}";
+        "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants.getProfileListUrl}";
     print('API getProfileListUrl $url');
     String? token = Api.userInfo.read('token');
     try {
-      final headers = <String, String>{
-        'Content-Type': 'application/json',
-      };
+      final headers = <String, String>{'Content-Type': 'application/json'};
       Map<String, dynamic?> filters = {
         'userType': userType,
         'state': state,
         'district': district,
         'city': city,
-        'area':area,
+        'area': area,
         'latitude': latitude,
         'longitude': longitude,
         'distance': distance,
@@ -348,13 +357,16 @@ class Api {
           cleanedFilters[key] = value;
         }
       });
-      final body = jsonEncode(
-          {'search': searchText, 'filters': cleanedFilters});
+      final body = jsonEncode({
+        'search': searchText,
+        'filters': cleanedFilters,
+      });
       print('req body$body');
       final response = await http.post(
         Uri.parse(url),
         headers: headers,
-        body: body,);
+        body: body,
+      );
       print('API response: ${response.body}');
       return response;
     } catch (e) {
@@ -1438,7 +1450,7 @@ class Api {
         'price': price,
         'duration': duration,
         'details': {
-          markPrice: markPrice,
+          'markPrice': markPrice,
           'postImageCount': postImageCount,
           // 'state': isStateWise1,
           // 'district': isDistrictWise1,
@@ -1544,7 +1556,7 @@ class Api {
             "district": isDistrictWise,
             "city": isCityWise,
             "area": isAreaWise,
-            markPrice: markPrice,
+            'markPrice': markPrice,
           },
           'features': features,
         }),
@@ -1852,7 +1864,10 @@ class Api {
     }
   }
 
-  Future<http.Response> getSalesListAdmin(String userType,String search) async {
+  Future<http.Response> getSalesListAdmin(
+    String userType,
+    String search,
+  ) async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.serviceURL}${AppConstants.getSaleURL}";
     print('API getSaleURL $url');
@@ -1860,18 +1875,21 @@ class Api {
     try {
       final String token = Api.userInfo.read('token') ?? "";
 
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer $token",
-        },
-        body: jsonEncode({"userType": userType,"search":search}),
-      ).timeout(
-        const Duration(seconds: 60),
-        onTimeout: () => throw "Request timed out. Please check your connection and try again.",
-      );
+      final response = await http
+          .post(
+            Uri.parse(url),
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": "Bearer $token",
+            },
+            body: jsonEncode({"userType": userType, "search": search}),
+          )
+          .timeout(
+            const Duration(seconds: 60),
+            onTimeout: () =>
+                throw "Request timed out. Please check your connection and try again.",
+          );
       print('api job response ${response.body}');
       return response;
     } catch (e) {
@@ -1927,12 +1945,12 @@ class Api {
       throw "Failed to fetch base plan details: $e";
     }
   }
+
   Future<http.Response> getPrivacyPolicyUrl() async {
     String url =
         "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.getPrivacyPolicyUrl}";
     print('API getBasePlanUrl $url');
     try {
-
       final response = await http.get(
         Uri.parse(url),
         headers: {
@@ -3174,6 +3192,7 @@ class Api {
       throw "Failed to fetch job details: $e";
     }
   }
+
   Future<http.Response> getWebinarById(
     String webinarId,
     String isActive,

@@ -339,8 +339,8 @@ class _RegisterPageState extends State<RegisterPage> {
     final size = MediaQuery.of(context).size.width;
     final userType = Api.userInfo.read('userType') ?? "";
     print('dgsw$userType');
-    loginController.selectedUserType=
-    //final adminItems = allItems;
+    loginController.selectedUserType;
+    //=final adminItems = allItems;
     // final otherItems = allItems.where((e) => e != "admin" && e != "superAdmin").toList();
     // List<String> dropdownItems;
     // if (userType == "superAdmin") {
@@ -536,10 +536,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                   SizedBox(height: size * 0.03),
                                   // if(userType!='superAdmin')
-                                 // CustomDropdownField(
+                                  // CustomDropdownField(
                                   //  hint: "User Type",
-                                   // items: dropdownItems
-                                        // .map((e) => e["value"]!)
+                                  // items: dropdownItems
+                                  // .map((e) => e["value"]!)
                                   //       .toList(),
                                   //   selectedValue:
                                   //       loginController.selectedUserType,
@@ -1710,11 +1710,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                                         );
                                                       }
                                                       if ((loginController
-                                                                  .selectedUserType ==
-                                                              'Dental Consultant' ||
-                                                          loginController
-                                                                  .selectedUserType ==
-                                                              'Dental Lab') &&
+                                                                      .selectedUserType ==
+                                                                  'Dental Consultant' ||
+                                                              loginController
+                                                                      .selectedUserType ==
+                                                                  'Dental Lab') &&
                                                           loginController
                                                                   .selectedAvailableLocations
                                                                   .length <

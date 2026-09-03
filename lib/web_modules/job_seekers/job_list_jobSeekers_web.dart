@@ -25,7 +25,6 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
   final GlobalKey<ScaffoldState> _scaffoldKeyJobList =
       GlobalKey<ScaffoldState>();
   final loginController = Get.put(LoginController());
-
   @override
   void initState() {
     super.initState();
@@ -338,7 +337,9 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
         Api.userInfo.write('selectJobId', job.jobId.toString());
         Api.userInfo.write('activeStatus', job.isActive.toString());
         //  Get.toNamed('/viewJobDetailWebPage');
-        Api.userInfo.read('token') == null?  Get.toNamed('/webLoginPage'):Get.toNamed('/viewJobDetailWebPage');
+        Api.userInfo.read('token') == null
+            ? Get.toNamed('/webLoginPage')
+            : Get.toNamed('/viewJobDetailWebPage');
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
@@ -555,36 +556,6 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
       ),
     );
   }
-  // Widget _buildOrgLogo(dynamic job, String? logoUrl) {
-  //   return Container(
-  //     width:logoUrl.toString().isNotEmpty?120: 40,
-  //     height: logoUrl.toString().isNotEmpty?120: 40,
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(10),
-  //       border: Border.all(color: Colors.grey.shade200),
-  //       color: Colors.grey.shade50,
-  //     ),
-  //     child: ClipRRect(
-  //       borderRadius: BorderRadius.circular(10),
-  //       child: Image.network(
-  //         logoUrl ?? "",
-  //         fit: BoxFit.cover,
-  //         errorBuilder: (context, error, stackTrace) {
-  //           return Center(
-  //             child: Text(
-  //               getFirstLetter(job.orgName.toString()),
-  //               style: TextStyle(
-  //                 fontSize: 20,
-  //                 fontWeight: FontWeight.bold,
-  //                 color: getRandomColor(job.orgName.toString()),
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buildJobShimmerList(bool isMobile) {
     return Shimmer.fromColors(

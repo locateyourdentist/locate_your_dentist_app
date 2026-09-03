@@ -247,6 +247,141 @@ Future<void> showSuccessDialog(
   );
 }
 
+/// Modern animated popup for payment result screens (mobile + web checkout).
+/// [onContinuePressed] runs after the dialog closes on success; defaults to
+/// popping back if not provided.
+void showPaymentPopupMessage(
+  BuildContext ctx,
+  bool isPaymentSuccess,
+  String message, {
+  VoidCallback? onContinuePressed,
+}) {
+  showGeneralDialog(
+    context: ctx,
+    barrierDismissible: false,
+    barrierLabel: "PaymentDialog",
+    barrierColor: Colors.black.withValues(alpha: 0.4),
+    transitionDuration: const Duration(milliseconds: 400),
+    pageBuilder: (_, __, ___) {
+      return Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: MediaQuery.of(ctx).size.width * 0.85,
+            constraints: const BoxConstraints(maxWidth: 380),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 20,
+                  offset: Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.8, end: 1),
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.elasticOut,
+                  builder: (context, value, child) {
+                    return Transform.scale(scale: value, child: child);
+                  },
+                  child: CircleAvatar(
+                    radius: 35,
+                    backgroundColor: isPaymentSuccess
+                        ? Colors.green.shade100
+                        : Colors.red.shade100,
+                    child: Icon(
+                      isPaymentSuccess ? Icons.check_circle : Icons.cancel,
+                      color: isPaymentSuccess ? Colors.green : Colors.red,
+                      size: 45,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  isPaymentSuccess ? 'Payment Successful' : 'Payment Failed',
+                  style: AppTextStyles.body(
+                    ctx,
+                    color: AppColors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.body(
+                    ctx,
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                const SizedBox(height: 25),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      if (isPaymentSuccess) {
+                        if (onContinuePressed != null) {
+                          onContinuePressed();
+                        } else if (Navigator.of(ctx).canPop()) {
+                          Navigator.of(ctx).pop();
+                        }
+                      } else if (Navigator.of(ctx).canPop()) {
+                        Navigator.of(ctx).pop();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      backgroundColor: isPaymentSuccess
+                          ? Colors.green
+                          : Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      isPaymentSuccess ? 'CONTINUE' : 'TRY AGAIN',
+                      style: AppTextStyles.body(
+                        ctx,
+                        color: AppColors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+    transitionBuilder: (_, animation, __, child) {
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutBack,
+      );
+      return FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.2),
+            end: Offset.zero,
+          ).animate(curved),
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
 DateTime parseDate(String date) {
   final parts = date.split('-');
   return DateTime(
@@ -496,7 +631,9 @@ void showMissingFieldsDialog(BuildContext context, List<String> missingFields) {
                   children: [
                     const Icon(Icons.close, color: AppColors.error, size: 16),
                     const SizedBox(width: 8),
-                    Expanded(child: Text(field, style: AppTextStyles.caption(context))),
+                    Expanded(
+                      child: Text(field, style: AppTextStyles.caption(context)),
+                    ),
                   ],
                 ),
               ),
@@ -507,10 +644,15 @@ void showMissingFieldsDialog(BuildContext context, List<String> missingFields) {
         ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
           onPressed: () => Navigator.of(context).pop(),
-          child: Text("OK", style: AppTextStyles.caption(context, color: AppColors.white)),
+          child: Text(
+            "OK",
+            style: AppTextStyles.caption(context, color: AppColors.white),
+          ),
         ),
       ],
     ),
@@ -545,15 +687,23 @@ Future<bool> showEnableLocationDialog(BuildContext context) async {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text("Skip", style: AppTextStyles.caption(context, color: AppColors.grey)),
+          child: Text(
+            "Skip",
+            style: AppTextStyles.caption(context, color: AppColors.grey),
+          ),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text("Try Again", style: AppTextStyles.caption(context, color: AppColors.white)),
+          child: Text(
+            "Try Again",
+            style: AppTextStyles.caption(context, color: AppColors.white),
+          ),
         ),
       ],
     ),

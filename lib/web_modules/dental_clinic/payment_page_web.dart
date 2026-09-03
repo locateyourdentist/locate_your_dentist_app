@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
+import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
 import 'package:locate_your_dentist/service_paymentt/payment_service.dart';
@@ -74,14 +75,109 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
   }
 
   void startPayment() {
-    paymentService.startPayment(
-      amount,
-      name: name,
-      planName: planName,
-      planType: planType,
-      email: email,
-      mobileNumber: mobileNumber,
-    );
+    if (kIsWeb) {
+      (paymentService as dynamic).startPayment(
+        amount,
+        name: name,
+        planName: planName,
+        planType: planType,
+        email: email,
+        mobileNumber: mobileNumber,
+        onSuccess: (String paymentId) => _handleWebPaymentSuccess(paymentId),
+        onDismiss: (String reason) => _handleWebPaymentError(reason),
+      );
+    } else {
+      paymentService.startPayment(
+        amount,
+        name: name,
+        planName: planName,
+        planType: planType,
+        email: email,
+        mobileNumber: mobileNumber,
+      );
+    }
+  }
+
+  Future<void> _handleWebPaymentSuccess(String paymentId) async {
+    if (!mounted) return;
+    try {
+      switch (name) {
+        case 'basePlan':
+          await planController.createUserPlans(
+            userId,
+            planId,
+            planName,
+            amount.toString(),
+            startDate,
+            endDate,
+            null,
+            null,
+            null,
+            null,
+            context,
+          );
+          break;
+        case 'addonsPlan':
+          await planController.createUserAddonsPlans(
+            userId,
+            planId,
+            planName,
+            amount.toString(),
+            startDate,
+            endDate,
+            context,
+          );
+          break;
+        case 'jobPlan':
+          await planController.createUserJobPlans(
+            userId,
+            planId,
+            planName,
+            amount.toString(),
+            startDate,
+            endDate,
+            context,
+          );
+          break;
+        case 'webinarPlan':
+          await planController.createUserWebinarPlans(
+            userId,
+            planId,
+            planName,
+            amount.toString(),
+            startDate,
+            endDate,
+            context,
+          );
+          break;
+        case 'postPlan':
+          await planController.createUserPostImagePlans(
+            userId,
+            planId,
+            planName,
+            amount.toString(),
+            startDate,
+            endDate,
+            context,
+          );
+          break;
+      }
+      if (!mounted) return;
+      showPaymentPopupMessage(
+        context,
+        true,
+        'Payment Successful!',
+        onContinuePressed: () => Get.offAllNamed('/viewPlanPageWeb'),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      showPaymentPopupMessage(context, false, 'Something went wrong');
+    }
+  }
+
+  void _handleWebPaymentError(String reason) {
+    if (!mounted) return;
+    showPaymentPopupMessage(context, false, 'Payment Failed!');
   }
 
   void _handlePaymentSuccess(response) {
@@ -267,10 +363,12 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
                                           child: ElevatedButton(
                                             onPressed: startPayment,
                                             style: ElevatedButton.styleFrom(
-                                              padding: const EdgeInsets.symmetric(
-                                                vertical: 16,
-                                              ),
-                                              backgroundColor: AppColors.primary,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 16,
+                                                  ),
+                                              backgroundColor:
+                                                  AppColors.primary,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(12),

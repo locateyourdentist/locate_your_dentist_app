@@ -70,9 +70,12 @@ class TemplateBuilderController extends GetxController {
   void _syncControllersToModel() {
     current.templateName = nameController.text;
     current.body = bodyController.text;
-    current.footer = footerController.text.isEmpty ? null : footerController.text;
-    current.headerText =
-        headerTextController.text.isEmpty ? null : headerTextController.text;
+    current.footer = footerController.text.isEmpty
+        ? null
+        : footerController.text;
+    current.headerText = headerTextController.text.isEmpty
+        ? null
+        : headerTextController.text;
     if (current.headerType == 'DOCUMENT') {
       current.headerMediaUrl = headerDocumentUrlController.text.isEmpty
           ? null
@@ -85,8 +88,9 @@ class TemplateBuilderController extends GetxController {
     bodyController.text = current.body;
     footerController.text = current.footer ?? '';
     headerTextController.text = current.headerText ?? '';
-    headerDocumentUrlController.text =
-        current.headerType == 'DOCUMENT' ? (current.headerMediaUrl ?? '') : '';
+    headerDocumentUrlController.text = current.headerType == 'DOCUMENT'
+        ? (current.headerMediaUrl ?? '')
+        : '';
   }
 
   void pushUndoSnapshot() {
@@ -157,9 +161,15 @@ class TemplateBuilderController extends GetxController {
     final selection = bodyController.selection;
     final text = bodyController.text;
     final insertAt = selection.start >= 0 ? selection.start : text.length;
-    final newText = text.replaceRange(insertAt, selection.end >= 0 ? selection.end : insertAt, token);
+    final newText = text.replaceRange(
+      insertAt,
+      selection.end >= 0 ? selection.end : insertAt,
+      token,
+    );
     bodyController.text = newText;
-    bodyController.selection = TextSelection.collapsed(offset: insertAt + token.length);
+    bodyController.selection = TextSelection.collapsed(
+      offset: insertAt + token.length,
+    );
     pushUndoSnapshot();
   }
 
@@ -213,7 +223,9 @@ class TemplateBuilderController extends GetxController {
       return false;
     }
     isSaving = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     try {
       final response = current.id == null
           ? await _service.createTemplate(
@@ -336,7 +348,10 @@ class TemplateBuilderController extends GetxController {
       if (isDirty && current.id != null && !isSaving) {
         _syncControllersToModel();
         try {
-          final response = await _service.autoSaveTemplate(current.id!, current);
+          final response = await _service.autoSaveTemplate(
+            current.id!,
+            current,
+          );
           final data = jsonDecode(response.body);
           if (data['status'].toString().toLowerCase() == 'success') {
             isDirty = false;

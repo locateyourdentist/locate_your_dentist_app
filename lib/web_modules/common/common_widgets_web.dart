@@ -103,8 +103,8 @@ class _CommonFooterState extends State<CommonFooter> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-
-              isMobile ? Column(
+              isMobile
+                  ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildLogoSection(context),
@@ -124,7 +124,7 @@ class _CommonFooterState extends State<CommonFooter> {
                         ),
 
                         _buildContactSection(context),
-                      //  const SizedBox(height: 20),
+                        //  const SizedBox(height: 20),
                         VerticalDivider(
                           color: Colors.white,
                           thickness: 1,
@@ -287,19 +287,22 @@ class _CommonFooterState extends State<CommonFooter> {
           children: [
             _socialIcon(
               "assets/images/facebook.png",
-                  () => launchWebsite("https://www.facebook.com/profile.php?id=61592405806582"),
+              () => launchWebsite(
+                "https://www.facebook.com/profile.php?id=61592405806582",
+              ),
             ),
             _socialIcon(
               "assets/images/instagram.png",
-                  () => launchWebsite("https://www.instagram.com/locateyourdentist/"),
+              () =>
+                  launchWebsite("https://www.instagram.com/locateyourdentist/"),
             ),
             _socialIcon(
               "assets/images/youtube.png",
-                  () => launchWebsite("https://youtube.com"),
+              () => launchWebsite("https://youtube.com"),
             ),
             _socialIcon(
               "assets/images/linkein.png",
-                  () => launchWebsite("https://linkedin.com"),
+              () => launchWebsite("https://linkedin.com"),
             ),
           ],
         ),
@@ -335,7 +338,7 @@ class _CommonFooterState extends State<CommonFooter> {
 
   Widget _buildContactSection(BuildContext context) {
     return GetBuilder<LoginController>(
-        builder: (controller) {
+      builder: (controller) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -368,7 +371,7 @@ class _CommonFooterState extends State<CommonFooter> {
             ),
           ],
         );
-      }
+      },
     );
   }
 
@@ -381,8 +384,9 @@ class _CommonFooterState extends State<CommonFooter> {
         ...titles.map((title) {
           return _footerLink(context, title, () {
             Api.userInfo.write('legalPage', title);
-         title=='Privacy Policy'?   Get.toNamed('/privacyPolicy'):
-            Get.toNamed('/viewLegalPage', arguments: {'title': title});
+            title == 'Privacy Policy'
+                ? Get.toNamed('/privacyPolicy')
+                : Get.toNamed('/viewLegalPage', arguments: {'title': title});
           });
         }),
       ],
@@ -545,6 +549,7 @@ class _CommonHeaderState extends State<CommonHeader> {
       );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -557,7 +562,6 @@ class _CommonHeaderState extends State<CommonHeader> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
             children: [
-      
               Row(
                 children: [
                   Container(
@@ -572,14 +576,13 @@ class _CommonHeaderState extends State<CommonHeader> {
                       child: Image.network(
                         loginController.appLogoUrl ?? "",
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.image),
+                        errorBuilder: (_, __, ___) => const Icon(Icons.image),
                       ),
                     ),
                   ),
-      
+
                   const SizedBox(width: 12),
-      
+
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -593,18 +596,15 @@ class _CommonHeaderState extends State<CommonHeader> {
                       ),
                       Text(
                         "Dental Services Platform",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                     ],
                   ),
                 ],
               ),
-      
+
               const Spacer(),
-      
+
               if (width > 900)
                 Row(
                   children: [
@@ -614,24 +614,28 @@ class _CommonHeaderState extends State<CommonHeader> {
                     navItem("Contact", "/contactWebPage"),
                   ],
                 ),
-      
+
               if (width > 900) const Spacer(),
-      
+
               if (width > 1200)
                 Row(
                   children: [
-      
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.email_outlined,
-                              color: AppColors.primary, size: 16),
+                          Icon(
+                            Icons.email_outlined,
+                            color: AppColors.primary,
+                            size: 16,
+                          ),
                           const SizedBox(width: 6),
                           Text(
                             planController.emailController.text,
@@ -640,20 +644,25 @@ class _CommonHeaderState extends State<CommonHeader> {
                         ],
                       ),
                     ),
-      
+
                     const SizedBox(width: 10),
-      
+
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.call_outlined,
-                              color: AppColors.primary, size: 16),
+                          Icon(
+                            Icons.call_outlined,
+                            color: AppColors.primary,
+                            size: 16,
+                          ),
                           const SizedBox(width: 6),
                           Text(
                             planController.phoneController.text,
@@ -662,28 +671,32 @@ class _CommonHeaderState extends State<CommonHeader> {
                         ],
                       ),
                     ),
-      
+
                     const SizedBox(width: 12),
-      
+
                     socialIcon(
                       Icons.facebook,
-                          () => launchWebsite("https://www.facebook.com/profile.php?id=61592405806582"),
+                      () => launchWebsite(
+                        "https://www.facebook.com/profile.php?id=61592405806582",
+                      ),
                     ),
-      
+
                     socialIcon(
                       Icons.camera_alt_outlined,
-                          () => launchWebsite("https://www.instagram.com/locateyourdentist/"),
+                      () => launchWebsite(
+                        "https://www.instagram.com/locateyourdentist/",
+                      ),
                     ),
-      
+
                     socialIcon(
                       Icons.alternate_email,
-                          () => launchWebsite("support@locateyourdentist.com"),
+                      () => launchWebsite("support@locateyourdentist.com"),
                     ),
                   ],
                 ),
-      
+
               const SizedBox(width: 10),
-      
+
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
@@ -696,10 +709,7 @@ class _CommonHeaderState extends State<CommonHeader> {
                 },
                 child: Text(
                   "Login/Register",
-                  style: AppTextStyles.caption(
-                    context,
-                    color: Colors.white,
-                  ),
+                  style: AppTextStyles.caption(context, color: Colors.white),
                 ),
               ),
             ],
@@ -739,14 +749,14 @@ class CommonWebAppBar extends StatefulWidget implements PreferredSizeWidget {
 
   const CommonWebAppBar({
     super.key,
-    this.height = 80,
+    this.height = 100,
     this.title = "Admin Dashboard",
     this.onLogout,
     this.onNotification,
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(height < 60 ? 60 : height);
+  Size get preferredSize => Size.fromHeight(height < 90 ? 90 : height);
 
   @override
   State<CommonWebAppBar> createState() => _CommonWebAppBarState();
@@ -759,7 +769,9 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
   @override
   void initState() {
     super.initState();
-    _refresh();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _refresh();
+    });
   }
 
   Future<void> _refresh() async {
@@ -774,19 +786,68 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
     bool isMobile = width < 768;
     bool isTablet = width >= 768 && width < 1024;
 
-    double safeHeight = widget.height < 60 ? 60 : widget.height;
+    double safeHeight = widget.height < 90 ? 90 : widget.height;
 
     return GetBuilder<LoginController>(
       builder: (_) {
         return SafeArea(
+          bottom: false,
           child: Container(
             height: safeHeight,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(22),
+              ),
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
                 colors: [AppColors.primary, AppColors.secondary],
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.18),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                ),
+              ],
             ),
-            child: isMobile ? _mobileLayout() : _desktopLayout(isTablet),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(22),
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white.withValues(alpha: 0.16),
+                            Colors.white.withValues(alpha: 0.0),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      height: 1,
+                      color: Colors.white.withValues(alpha: 0.2),
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: isMobile
+                        ? _mobileLayout()
+                        : _desktopLayout(isTablet),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -795,32 +856,12 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
 
   Widget _mobileLayout() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _logo(),
-              const SizedBox(width: 8),
-              const Text(
-                "Admin",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              _notificationModern(),
-              const SizedBox(width: 8),
-              _profileSection(),
-            ],
-          ),
+          _brand(fontSize: 15),
+          Positioned(right: 0, child: _actionsBar(showSwitch: false)),
         ],
       ),
     );
@@ -828,76 +869,115 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
 
   Widget _desktopLayout(bool isTablet) {
     bool multipleBranches = loginController.userBranchesList.length > 1;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
-        border: Border(
-          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 28),
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          Row(
-            children: [
-              _logo(),
-              const SizedBox(width: 14),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              if (multipleBranches && !isTablet) _switchAccountModern(),
-
-              const SizedBox(width: 16),
-              _notificationModern(),
-
-              const SizedBox(width: 16),
-              _profileSection(),
-
-              // const SizedBox(width: 16),
-              // if (!isTablet) _profileSection(),
-            ],
+          _brand(fontSize: 21),
+          Positioned(
+            right: 0,
+            child: _actionsBar(showSwitch: multipleBranches && !isTablet),
           ),
         ],
       ),
     );
   }
 
+  Widget _actionsBar({required bool showSwitch}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.26)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (showSwitch) ...[_switchAccountModern(), _actionDivider()],
+          _notificationModern(),
+          _actionDivider(),
+          _profileSection(),
+        ],
+      ),
+    );
+  }
+
+  Widget _actionDivider() {
+    return Container(
+      width: 1,
+      height: 24,
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      color: Colors.white.withValues(alpha: 0.2),
+    );
+  }
+
+  Widget _brand({required double fontSize}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _logo(),
+        const SizedBox(width: 12),
+        Text(
+          widget.title,
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 0.4,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _logo() {
-    return loginController.appLogoUrl != null
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              loginController.appLogoUrl!,
-              width: 42,
-              height: 42,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
-                  borderRadius: BorderRadius.circular(14),
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withValues(alpha: 0.12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+      ),
+      child: loginController.appLogoUrl != null
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(9),
+              child: Image.network(
+                loginController.appLogoUrl!,
+                width: 36,
+                height: 36,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [AppColors.primary, AppColors.secondary],
+                    ),
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Icon(
+                    Icons.image_outlined,
+                    color: Colors.white.withValues(alpha: 0.6),
+                    size: 20,
+                  ),
                 ),
-                child: Icon(Icons.image_outlined, color: Colors.white.withValues(alpha: 0.6), size: 28),
               ),
+            )
+          : const SizedBox(
+              width: 36,
+              height: 36,
+              child: Icon(Icons.local_hospital, color: Colors.white, size: 22),
             ),
-          )
-        : const Icon(Icons.local_hospital, color: Colors.white, size: 32);
+    );
   }
 
   Widget _switchAccountModern() {
@@ -910,17 +990,20 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
           pageRoute: "dashboard",
         );
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white.withValues(alpha: 0.1),
-        ),
-        child: const Row(
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.swap_horiz, size: 16, color: Colors.white),
+            Icon(Icons.swap_horiz_rounded, size: 18, color: Colors.white),
             SizedBox(width: 6),
-            Text("Switch", style: TextStyle(color: Colors.white)),
+            Text(
+              "Switch",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),
@@ -947,39 +1030,45 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
             int.tryParse(notificationController.unreadCount ?? "0") ?? 0;
 
         return Stack(
+          clipBehavior: Clip.none,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.1),
+            IconButton(
+              splashRadius: 22,
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                color: Colors.white,
               ),
-              child: IconButton(
-                icon: const Icon(Icons.notifications, color: Colors.white),
-                onPressed: () async {
-                  await notificationController.getNotificationListAdmin(
-                    context,
-                  );
-                  await notificationController.updateNotificationListAdmin(
-                    context,
-                  );
-                  Get.toNamed('/viewNotificationWebPage');
-                },
-              ),
+              onPressed: () async {
+                await notificationController.getNotificationListAdmin(context);
+                await notificationController.updateNotificationListAdmin(
+                  context,
+                );
+                Get.toNamed('/viewNotificationWebPage');
+              },
             ),
-
             if (unread > 0)
               Positioned(
-                right: 4,
-                top: 4,
+                right: 6,
+                top: 6,
                 child: Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
+                  padding: const EdgeInsets.all(3),
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
                     shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 1.5),
                   ),
                   child: Text(
                     unread.toString(),
-                    style: const TextStyle(fontSize: 10, color: Colors.white),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 9,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -1039,6 +1128,7 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
         PopupMenuItem(
           value: "profile",
           child: ListTile(
+            tileColor: Colors.transparent,
             leading: Icon(
               Icons.person_outline,
               color: AppColors.black,
@@ -1054,6 +1144,7 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
         PopupMenuItem(
           value: "logout",
           child: ListTile(
+            tileColor: Colors.transparent,
             leading: Icon(Icons.logout, color: Colors.red),
             title: Text(
               "Logout",
@@ -1063,22 +1154,18 @@ class _CommonWebAppBarState extends State<CommonWebAppBar> {
           ),
         ),
       ],
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircleAvatar(
-            radius: 18,
-            backgroundImage: NetworkImage(
-              Api.userInfo.read("profileImage") ?? "",
-            ),
+      child: Container(
+        padding: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
+        ),
+        child: CircleAvatar(
+          radius: 18,
+          backgroundImage: NetworkImage(
+            Api.userInfo.read("profileImage") ?? "",
           ),
-          // const SizedBox(height: 4),
-          // Icon(
-          //   Icons.keyboard_arrow_down,
-          //   size: 18,
-          //   color: Colors.white,
-          // ),
-        ],
+        ),
       ),
     );
   }
@@ -1146,14 +1233,28 @@ Widget gradientButton({
 }
 
 class PostAdsBannerWeb extends StatelessWidget {
-  const PostAdsBannerWeb({super.key});
+  final String title;
+  final String description;
+  final String buttonText;
+  final String route;
+  final IconData icon;
+
+  const PostAdsBannerWeb({
+    super.key,
+    this.title = "Post your Ads",
+    this.description =
+        "List items for sale and reach clinics, shops & labs on our scrolling ads.",
+    this.buttonText = "Post Now",
+    this.route = '/scrollingAdsWebPage',
+    this.icon = Icons.campaign_outlined,
+  });
 
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final bool isMobile = width < 700;
     return InkWell(
-      onTap: () => Get.toNamed('/salePostWebPage'),
+      onTap: () => Get.toNamed(route),
       borderRadius: BorderRadius.circular(18),
       child: Container(
         width: double.infinity,
@@ -1184,7 +1285,7 @@ class PostAdsBannerWeb extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.campaign_outlined, color: Colors.white, size: 26),
+              child: Icon(icon, color: Colors.white, size: 26),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -1192,13 +1293,16 @@ class PostAdsBannerWeb extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Post your Ads",
+                    title,
                     style: AppTextStyles.subtitle(context, color: Colors.white),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "List items for sale and reach clinics, shops & labs on our scrolling ads.",
-                    style: AppTextStyles.caption(context, color: Colors.white.withValues(alpha: 0.9)),
+                    description,
+                    style: AppTextStyles.caption(
+                      context,
+                      color: Colors.white.withValues(alpha: 0.9),
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -1208,16 +1312,27 @@ class PostAdsBannerWeb extends StatelessWidget {
             const SizedBox(width: 10),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30)),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "Post Now",
-                    style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.bold),
+                    buttonText,
+                    style: AppTextStyles.caption(
+                      context,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(width: 4),
-                  const Icon(Icons.arrow_forward, size: 14, color: AppColors.primary),
+                  const Icon(
+                    Icons.arrow_forward,
+                    size: 14,
+                    color: AppColors.primary,
+                  ),
                 ],
               ),
             ),

@@ -52,7 +52,9 @@ class _ChangeAppLogoWebState extends State<ChangeAppLogoWeb> {
   @override
   void initState() {
     super.initState();
-    loginController.getAppLogoImage(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) loginController.getAppLogoImage(context);
+    });
   }
 
   Widget uploadPlaceholder() {

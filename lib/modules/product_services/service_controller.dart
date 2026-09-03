@@ -35,7 +35,9 @@ class ServiceController extends GetxController {
   String? tempSelectedTitle;
   Future<void> getServiceListAdmin(String userId, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -63,9 +65,16 @@ class ServiceController extends GetxController {
       update();
     }
   }
-  Future<void> getSalesListAdmin(String userType,String search, dynamic context) async {
+
+  Future<void> getSalesListAdmin(
+    String userType,
+    String search,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -77,7 +86,7 @@ class ServiceController extends GetxController {
       print('hii');
       _salesList = [];
       salesListError = null;
-      final response = await api.getSalesListAdmin(userType,search);
+      final response = await api.getSalesListAdmin(userType, search);
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> services = data["data"];
@@ -125,9 +134,10 @@ class ServiceController extends GetxController {
       return [];
     }
   }
+
   Future<List<Map<String, dynamic>>> getPrivacyPolicyUrl(
-      BuildContext context,
-      ) async {
+    BuildContext context,
+  ) async {
     var connection = await Connectivity().checkConnectivity();
 
     if (connection == ConnectivityResult.none) {
@@ -156,7 +166,9 @@ class ServiceController extends GetxController {
 
   Future<void> getServiceDetailAdmin(String serviceId, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -228,7 +240,9 @@ class ServiceController extends GetxController {
 
   Future<void> deactivateService(String serviceId, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -269,7 +283,9 @@ class ServiceController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;

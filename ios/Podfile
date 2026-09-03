@@ -37,9 +37,11 @@ target 'Runner' do
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 
-  # Pin Razorpay native SDK to the last single-module release (1.4.x). razorpay_flutter
-  # is pinned to 1.3.7 (import Razorpay only); the 1.5.x pods split RazorpayCheckout into
-  # a separate RazorpayStandard module that the 1.3.x plugin doesn't import.
+  # Pin Razorpay native SDK to the last single-module release. razorpay_flutter is pinned
+  # to 1.4.1 (import Razorpay only, no RazorpayCore/subscribeToAnalyticsEvents); the 1.5.x
+  # pods split RazorpayCheckout into a separate RazorpayStandard module the plugin doesn't
+  # import, and razorpay-core-pod's newer Razorpay.xcframework gates analytics APIs behind
+  # a Swift 6-only feature flag that Xcode 15.4 can't compile.
   pod 'razorpay-pod', '1.4.7'
 
   target 'RunnerTests' do

@@ -15,12 +15,15 @@ import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import 'package:locate_your_dentist/web_modules/job_seekers/view_jobWebinar_web.dart';
 import 'package:shimmer/shimmer.dart';
 
-
 class _HoverLift extends StatefulWidget {
   final Widget child;
   final double liftScale;
   final BorderRadius? borderRadius;
-  const _HoverLift({required this.child, this.liftScale = 1.02, this.borderRadius});
+  const _HoverLift({
+    required this.child,
+    this.liftScale = 1.02,
+    this.borderRadius,
+  });
 
   @override
   State<_HoverLift> createState() => _HoverLiftState();
@@ -46,7 +49,9 @@ class _HoverLiftState extends State<_HoverLift> {
           borderRadius: widget.borderRadius,
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: _hovering ? 0.18 : 0.0),
+              color: AppColors.primary.withValues(
+                alpha: _hovering ? 0.18 : 0.0,
+              ),
               blurRadius: _hovering ? 22 : 0,
               offset: const Offset(0, 12),
             ),
@@ -169,7 +174,9 @@ class _DentalClinicDashboardWebPageState
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.primary.withValues(alpha: 0.08),
+                                    color: AppColors.primary.withValues(
+                                      alpha: 0.08,
+                                    ),
                                     blurRadius: 24,
                                     offset: const Offset(0, 10),
                                   ),
@@ -178,257 +185,307 @@ class _DentalClinicDashboardWebPageState
                               child: Padding(
                                 padding: EdgeInsets.all(isMobile ? 15.0 : 30.0),
                                 child: _RevealIn(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (!isDesktop)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom: 15.0,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.menu,
-                                                color: AppColors.black,
-                                              ),
-                                              onPressed: () => _scaffoldKey
-                                                  .currentState
-                                                  ?.openDrawer(),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    Align(
-                                      alignment: Alignment.topRight,
-                                      child: Container(
-                                        width: isMobile
-                                            ? double.infinity
-                                            : width * 0.35,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 15,
-                                          vertical: 15,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade50,
-                                          borderRadius: BorderRadius.circular(
-                                            16,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (!isDesktop)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 15.0,
                                           ),
-                                          border: Border.all(color: Colors.grey.shade200),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.withValues(
-                                                alpha: 0.12,
+                                          child: Row(
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.menu,
+                                                  color: AppColors.black,
+                                                ),
+                                                onPressed: () => _scaffoldKey
+                                                    .currentState
+                                                    ?.openDrawer(),
                                               ),
-                                              blurRadius: 10,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                        child: CommonSearchTextField(
-                                          controller: searchController,
-                                          hintText:
-                                              "Search by userType, name, userId, Mobile number",
-                                          onSubmitted: (value) async {
-                                            await loginController
-                                                .getProfileDetails(
-                                                  '',
-                                                  '',
-                                                  [],
-                                                  [],
-                                                  [],
-                                                  'true',
-                                                  '',
-                                                  '',
-                                                  '',
-                                                  value,
-                                                  context,
-                                                );
-                                            WidgetsBinding.instance
-                                                .addPostFrameCallback((_) {
-                                                  Get.toNamed(
-                                                    '/userTypeListWeb',
-                                                  );
-                                                });
-                                          },
-                                        ),
-                                      ),
-                                    ),
-
-                                    const SizedBox(height: 24),
-                                    const PostAdsBannerWeb(),
-                                    const SizedBox(height: 24),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(7),
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: Container(
+                                          width: isMobile
+                                              ? double.infinity
+                                              : width * 0.35,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 15,
+                                            vertical: 15,
+                                          ),
                                           decoration: BoxDecoration(
-                                            gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          child: const Icon(Icons.grid_view_rounded, size: 16, color: Colors.white),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          'What are you looking for?',
-                                          style: AppTextStyles.subtitle(context),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 20),
-
-                                    LayoutBuilder(
-                                      builder: (context, constraints) {
-                                        double w = constraints.maxWidth;
-                                        int crossAxisCount = w < 500
-                                            ? 2
-                                            : (w < 800
-                                                  ? 3
-                                                  : (w < 1200 ? 4 : 5));
-                                        double childAspectRatio = w < 500
-                                            ? 1
-                                            : (w < 800
-                                                  ? 0.85
-                                                  : (w < 1200 ? 0.95 : 1.0));
-                                        return GridView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount: title.length,
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: crossAxisCount,
-                                                crossAxisSpacing: 16,
-                                                mainAxisSpacing: 16,
-                                                childAspectRatio:
-                                                    childAspectRatio,
-                                              ),
-                                          itemBuilder: (context, index) {
-                                            return _dashboardTile(
-                                              title: title[index],
-                                              image: imgUserType(title[index]),
-                                              context: context,
-                                              onTap: () async {
-                                                if (title[index] == "Job Posts/Webinars") {
-                                                  Get.toNamed('/viewJobWebinarWebPage');
-                                                } else {
-                                                  Api.userInfo.write('sUserType1', title[index],);
-                                                  await loginController.getProfileDetails(
-                                                        title[index],
-                                                        '',
-                                                        [],
-                                                        [],
-                                                        [],
-                                                        'true',
-                                                        '',
-                                                        '',
-                                                        '',
-                                                        '',
-                                                        context,
-                                                      );
-                                                  WidgetsBinding.instance
-                                                      .addPostFrameCallback((
-                                                        _,
-                                                      ) {
-                                                        Get.toNamed(
-                                                          '/userTypeListWeb',
-                                                        );
-                                                      });
-                                                }
-                                              },
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                                    const SizedBox(height: 30),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(7),
-                                          decoration: BoxDecoration(
-                                            gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          child: const Icon(Icons.work_outline, size: 16, color: Colors.white),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          'Jobs & Webinars',
-                                          style: AppTextStyles.subtitle(
-                                            context,
-                                            color: AppColors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 20),
-                                    Center(
-                                      child: Container(
-                                        width: isMobile ? double.infinity : 400,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            50,
-                                          ),
-                                          color: Colors.grey.shade100,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withValues(alpha: 0.05),
-                                              blurRadius: 8,
-                                              offset: const Offset(0, 3),
-                                            ),
-                                          ],
-                                        ),
-                                        child: TabBar(
-                                          indicatorSize:
-                                              TabBarIndicatorSize.tab,
-                                          dividerColor: Colors.transparent,
-                                          indicator: BoxDecoration(
+                                            color: Colors.grey.shade50,
                                             borderRadius: BorderRadius.circular(
-                                              50,
+                                              16,
                                             ),
-                                            gradient: const LinearGradient(
-                                              colors: [
-                                                AppColors.primary,
-                                                AppColors.secondary,
-                                              ],
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
+                                            border: Border.all(
+                                              color: Colors.grey.shade200,
                                             ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.withValues(
+                                                  alpha: 0.12,
+                                                ),
+                                                blurRadius: 10,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ],
                                           ),
-                                          labelColor: AppColors.white,
-                                          unselectedLabelColor: AppColors.black,
-                                          tabs: const [
-                                            Tab(text: 'Jobs'),
-                                            Tab(text: 'Webinars'),
-                                          ],
+                                          child: CommonSearchTextField(
+                                            controller: searchController,
+                                            hintText:
+                                                "Search by userType, name, userId, Mobile number",
+                                            onSubmitted: (value) async {
+                                              await loginController
+                                                  .getProfileDetails(
+                                                    '',
+                                                    '',
+                                                    [],
+                                                    [],
+                                                    [],
+                                                    'true',
+                                                    '',
+                                                    '',
+                                                    '',
+                                                    value,
+                                                    context,
+                                                  );
+                                              WidgetsBinding.instance
+                                                  .addPostFrameCallback((_) {
+                                                    Get.toNamed(
+                                                      '/userTypeListWeb',
+                                                    );
+                                                  });
+                                            },
+                                          ),
                                         ),
                                       ),
-                                    ),
 
-                                    const SizedBox(height: 20),
-                                    SizedBox(
-                                      height: MediaQuery.of(context).size.height *0.9,
-                                      child: TabBarView(
+                                      const SizedBox(height: 24),
+                                      const PostAdsBannerWeb(),
+                                      const SizedBox(height: 16),
+                                      const PostAdsBannerWeb(
+                                        title: "Sell your Ads",
+                                        description:
+                                            "List your used dental equipment & products for sale to clinics, labs & shops.",
+                                        buttonText: "Sell Now",
+                                        route: '/salePostWebPage',
+                                        icon: Icons.sell_outlined,
+                                      ),
+                                      const SizedBox(height: 24),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          _buildJobGrid(
-                                            context,
-                                            controller,
-                                            getPlainText,
+                                          Container(
+                                            padding: const EdgeInsets.all(7),
+                                            decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  AppColors.primary,
+                                                  AppColors.secondary,
+                                                ],
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: const Icon(
+                                              Icons.grid_view_rounded,
+                                              size: 16,
+                                              color: Colors.white,
+                                            ),
                                           ),
-                                          _buildWebinarGrid(
-                                            context,
-                                            controller,
-                                            getPlainText,
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            'What are you looking for?',
+                                            style: AppTextStyles.subtitle(
+                                              context,
+                                            ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                      const SizedBox(height: 20),
+
+                                      LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          double w = constraints.maxWidth;
+                                          int crossAxisCount = w < 500
+                                              ? 2
+                                              : (w < 800
+                                                    ? 3
+                                                    : (w < 1200 ? 4 : 5));
+                                          double childAspectRatio = w < 500
+                                              ? 1
+                                              : (w < 800
+                                                    ? 0.85
+                                                    : (w < 1200 ? 0.95 : 1.0));
+                                          return GridView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            itemCount: title.length,
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount:
+                                                      crossAxisCount,
+                                                  crossAxisSpacing: 16,
+                                                  mainAxisSpacing: 16,
+                                                  childAspectRatio:
+                                                      childAspectRatio,
+                                                ),
+                                            itemBuilder: (context, index) {
+                                              return _dashboardTile(
+                                                title: title[index],
+                                                image: imgUserType(
+                                                  title[index],
+                                                ),
+                                                context: context,
+                                                onTap: () async {
+                                                  if (title[index] ==
+                                                      "Job Posts/Webinars") {
+                                                    Get.toNamed(
+                                                      '/viewJobWebinarWebPage',
+                                                    );
+                                                  } else {
+                                                    Api.userInfo.write(
+                                                      'sUserType1',
+                                                      title[index],
+                                                    );
+                                                    await loginController
+                                                        .getProfileDetails(
+                                                          title[index],
+                                                          '',
+                                                          [],
+                                                          [],
+                                                          [],
+                                                          'true',
+                                                          '',
+                                                          '',
+                                                          '',
+                                                          '',
+                                                          context,
+                                                        );
+                                                    WidgetsBinding.instance
+                                                        .addPostFrameCallback((
+                                                          _,
+                                                        ) {
+                                                          Get.toNamed(
+                                                            '/userTypeListWeb',
+                                                          );
+                                                        });
+                                                  }
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                      const SizedBox(height: 30),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(7),
+                                            decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  AppColors.primary,
+                                                  AppColors.secondary,
+                                                ],
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: const Icon(
+                                              Icons.work_outline,
+                                              size: 16,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            'Jobs & Webinars',
+                                            style: AppTextStyles.subtitle(
+                                              context,
+                                              color: AppColors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Center(
+                                        child: Container(
+                                          width: isMobile
+                                              ? double.infinity
+                                              : 400,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              50,
+                                            ),
+                                            color: Colors.grey.shade100,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withValues(
+                                                  alpha: 0.05,
+                                                ),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 3),
+                                              ),
+                                            ],
+                                          ),
+                                          child: TabBar(
+                                            indicatorSize:
+                                                TabBarIndicatorSize.tab,
+                                            dividerColor: Colors.transparent,
+                                            indicator: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  AppColors.primary,
+                                                  AppColors.secondary,
+                                                ],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                              ),
+                                            ),
+                                            labelColor: AppColors.white,
+                                            unselectedLabelColor:
+                                                AppColors.black,
+                                            tabs: const [
+                                              Tab(text: 'Jobs'),
+                                              Tab(text: 'Webinars'),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 20),
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                            0.9,
+                                        child: TabBarView(
+                                          children: [
+                                            _buildJobGrid(
+                                              context,
+                                              controller,
+                                              getPlainText,
+                                            ),
+                                            _buildWebinarGrid(
+                                              context,
+                                              controller,
+                                              getPlainText,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -615,124 +672,133 @@ Widget _modernCard({
     liftScale: 1.02,
     borderRadius: BorderRadius.circular(18),
     child: Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(color: Colors.grey.shade100),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.05),
-          blurRadius: 12,
-          offset: const Offset(0, 5),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption(
-                  context,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.black,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: statusColor.withValues(alpha: 0.4)),
-              ),
-              child: Text(
-                status,
-                style: AppTextStyles.caption(
-                  context,
-                  color: statusColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.grey.shade100),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
                 child: Text(
-                  subtitle,
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.caption(
                     context,
-                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.black,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.4)),
+                ),
+                child: Text(
+                  status,
+                  style: AppTextStyles.caption(
+                    context,
+                    color: statusColor,
                     fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    subtitle,
+                    style: AppTextStyles.caption(
+                      context,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              _HoverLift(
+                liftScale: 1.1,
+                borderRadius: BorderRadius.circular(20),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.edit_note,
+                    color: AppColors.primary,
+                    size: 24,
+                  ),
+                  onPressed: onTap,
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: Text(
+              desc,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.caption(
+                context,
+                color: Colors.grey.shade700,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  trailing,
+                  style: AppTextStyles.caption(
+                    context,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.secondary,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
-            _HoverLift(
-              liftScale: 1.1,
-              borderRadius: BorderRadius.circular(20),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.edit_note,
-                  color: AppColors.primary,
-                  size: 24,
-                ),
-                onPressed: onTap,
-                padding: EdgeInsets.zero,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Expanded(
-          child: Text(
-            desc,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.caption(context, color: Colors.grey.shade700),
+              const Icon(Icons.arrow_forward, size: 16, color: AppColors.grey),
+            ],
           ),
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                trailing,
-                style: AppTextStyles.caption(
-                  context,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.secondary,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const Icon(Icons.arrow_forward, size: 16, color: AppColors.grey),
-          ],
-        ),
-      ],
-    ),
+        ],
+      ),
     ),
   );
 }
@@ -837,59 +903,59 @@ Widget _dashboardTile({
     liftScale: 1.03,
     borderRadius: BorderRadius.circular(20),
     child: InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(20),
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade100),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.06),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.asset(
-                    image,
-                    height: size < 700 ? (size * 0.65) : 300.0,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade100),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.06),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Image.asset(
+                      image,
+                      height: size < 700 ? (size * 0.65) : 300.0,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.caption(
-                context,
-                fontWeight: FontWeight.w600,
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.caption(
+                  context,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 10),
-        ],
+            SizedBox(height: 10),
+          ],
+        ),
       ),
-    ),
     ),
   );
 }

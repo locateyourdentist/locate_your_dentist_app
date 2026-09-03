@@ -31,41 +31,50 @@ class AppImage2 {
   final bool isVideo;
   String? startDate;
   String? endDate;
-  AppImage2({this.bytes, this.url,this.name,this.id,this.planId,this.file, this.isActive = true,this.isVideo=false,this.startDate,
+  AppImage2({
+    this.bytes,
+    this.url,
+    this.name,
+    this.id,
+    this.planId,
+    this.file,
+    this.isActive = true,
+    this.isVideo = false,
+    this.startDate,
     this.endDate,
   });
 }
 
-
-  class PlanController extends GetxController{
-  bool isLoading=false;
-  Api api =Api();
+class PlanController extends GetxController {
+  bool isLoading = false;
+  Api api = Api();
   int selectedIndex = -1;
 
   void updateSelectedIndex(int index) {
     selectedIndex = index;
     update();
   }
-  List<PlanModel>_basePlanList=[];
-  List<PlanModel> get basePlanList=>_basePlanList;
+
+  List<PlanModel> _basePlanList = [];
+  List<PlanModel> get basePlanList => _basePlanList;
   IncomeDashboardModel? _income;
   IncomeDashboardModel? get income => _income;
-  List<AddOnsPlanModel>_addOnsPlanList=[];
-  List<AddOnsPlanModel> get addOnsPlanList=>_addOnsPlanList;
-  List<JobPlanModel>_jobPlanList=[];
-  List<JobPlanModel> get jobPlanList=>_jobPlanList;
-  List<WebinarPlan>_webinarPlanList=[];
-  List<WebinarPlan> get webinarPlanList=>_webinarPlanList;
-  List<PostImagePlan>_postImagePlanList=[];
-  List<PostImagePlan> get postImagePlanList=>_postImagePlanList;
+  List<AddOnsPlanModel> _addOnsPlanList = [];
+  List<AddOnsPlanModel> get addOnsPlanList => _addOnsPlanList;
+  List<JobPlanModel> _jobPlanList = [];
+  List<JobPlanModel> get jobPlanList => _jobPlanList;
+  List<WebinarPlan> _webinarPlanList = [];
+  List<WebinarPlan> get webinarPlanList => _webinarPlanList;
+  List<PostImagePlan> _postImagePlanList = [];
+  List<PostImagePlan> get postImagePlanList => _postImagePlanList;
   List<AppImage> editUploadImage = [];
   List<AppImage2> editUploadImage1 = [];
   List<Map<String, dynamic>> _getGstList = [];
   List<Map<String, dynamic>> get getGstList => _getGstList;
-  List<InvoiceModel>  _invoiceList=[];
-  List<InvoiceModel> get invoiceList=>_invoiceList;
-  List<InvoiceModel>  _invoiceDetails=[];
-  List<InvoiceModel> get invoiceDetails=>_invoiceDetails;
+  List<InvoiceModel> _invoiceList = [];
+  List<InvoiceModel> get invoiceList => _invoiceList;
+  List<InvoiceModel> _invoiceDetails = [];
+  List<InvoiceModel> get invoiceDetails => _invoiceDetails;
   List<Map<String, dynamic>> stateWiseExpense = [];
 
   List<Map<String, dynamic>> _checkPlanList = [];
@@ -79,23 +88,24 @@ class AppImage2 {
 
     update();
   }
-  TextEditingController userTypeController=TextEditingController();
-  TextEditingController planNameController=TextEditingController();
-  TextEditingController priceController=TextEditingController();
-  TextEditingController markPriceController=TextEditingController();
-  TextEditingController featuresController=TextEditingController();
-  TextEditingController durationDaysController=TextEditingController();
-  TextEditingController durationMonthsController=TextEditingController();
-  TextEditingController imageCountController=TextEditingController();
-  TextEditingController videoCountController=TextEditingController();
-  TextEditingController imageSizeController=TextEditingController();
-  TextEditingController videoSizeController=TextEditingController();
-  TextEditingController postImageCountController=TextEditingController();
 
-  TextEditingController countDaysController=TextEditingController();
-  TextEditingController titleController=TextEditingController();
-  TextEditingController amountController=TextEditingController();
-  TextEditingController categoryController=TextEditingController();
+  TextEditingController userTypeController = TextEditingController();
+  TextEditingController planNameController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController markPriceController = TextEditingController();
+  TextEditingController featuresController = TextEditingController();
+  TextEditingController durationDaysController = TextEditingController();
+  TextEditingController durationMonthsController = TextEditingController();
+  TextEditingController imageCountController = TextEditingController();
+  TextEditingController videoCountController = TextEditingController();
+  TextEditingController imageSizeController = TextEditingController();
+  TextEditingController videoSizeController = TextEditingController();
+  TextEditingController postImageCountController = TextEditingController();
+
+  TextEditingController countDaysController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
   final TextEditingController companyNameController = TextEditingController();
   final TextEditingController gstinController = TextEditingController();
   final TextEditingController cgstController = TextEditingController();
@@ -109,15 +119,13 @@ class AppImage2 {
   TextEditingController stateController = TextEditingController();
   TextEditingController zipController = TextEditingController();
 
-
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController1 = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController whatsappController = TextEditingController();
 
-
-  final loginController=LoginController();
-  final notificationController=NotificationController();
+  final loginController = LoginController();
+  final notificationController = NotificationController();
   String? selectedUserType;
   String? selectedCategory;
   String? selectedState;
@@ -125,22 +133,22 @@ class AppImage2 {
   String? selectedPlanId;
 
   String? selectedPlanType;
-  List<String> userList=[];
+  List<String> userList = [];
   String? selectedItem;
-  bool isVideoAndroid=false;
-  bool isImageAndroid=false;
-  bool isLocationAndroid=false;
-  bool isShowGst=false;
-  bool isMobileNumber=false;
-  bool isServices=false;
- // List<String> selectedFeatures = [];
+  bool isVideoAndroid = false;
+  bool isImageAndroid = false;
+  bool isLocationAndroid = false;
+  bool isShowGst = false;
+  bool isMobileNumber = false;
+  bool isServices = false;
+  // List<String> selectedFeatures = [];
   List<String> selectedFeatures = [];
   bool isDropdownOpen = false;
-  String selectedString="Base Plan";
-  bool isStateWise=false;
-  bool isDistrictWise=false;
-  bool isCityWise=false;
-  bool isAreaWise=false;
+  String selectedString = "Base Plan";
+  bool isStateWise = false;
+  bool isDistrictWise = false;
+  bool isCityWise = false;
+  bool isAreaWise = false;
   String? selectPlanId;
   String? selectAddOnsId;
   String? selectJobId;
@@ -159,7 +167,7 @@ class AppImage2 {
   late Razorpay _razorpay;
   PostImagePlan? selectedPlan;
   String? invoiceId;
-  void _handleExternalWallet(ExternalWalletResponse response,dynamic context) {
+  void _handleExternalWallet(ExternalWalletResponse response, dynamic context) {
     debugPrint('External Wallet selected: ${response.walletName}');
     // ScaffoldMessenger.of(context).showSnackBar(
     //   SnackBar(content: Text('External Wallet: ${response.walletName}')),
@@ -173,7 +181,8 @@ class AppImage2 {
     required String contact,
     required String email,
     Function(PaymentSuccessResponse)? onPaymentSuccess,
-    Function(PaymentFailureResponse)? onPaymentError,dynamic context
+    Function(PaymentFailureResponse)? onPaymentError,
+    dynamic context,
   }) {
     var options = {
       'key': 'YOUR_RAZORPAY_KEY',
@@ -181,7 +190,9 @@ class AppImage2 {
       'name': name,
       'description': description,
       'prefill': {'contact': contact, 'email': email},
-      'external': {'wallets': ['paytm']},
+      'external': {
+        'wallets': ['paytm'],
+      },
     };
 
     try {
@@ -189,7 +200,7 @@ class AppImage2 {
 
       if (onPaymentSuccess != null) {
         _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, onPaymentSuccess);
-        showCustomToast(context,  "plan activated successfully",);
+        showCustomToast(context, "plan activated successfully");
       }
       if (onPaymentError != null) {
         _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, onPaymentError);
@@ -199,19 +210,19 @@ class AppImage2 {
       debugPrint('Error: $e');
     }
   }
+
   Future<Company?> getCompanyDetails() async {
     try {
-     // await Future.delayed(Duration.zero);
+      // await Future.delayed(Duration.zero);
 
       isLoading = true;
-     // update();
+      // update();
 
       final response = await api.getCompanyDetails();
       final data = jsonDecode(response.body);
 
       if (data["status"]?.toString().toLowerCase() == "success" &&
           data["data"] != null) {
-
         final companyData = data["data"];
 
         // Map API values to controllers
@@ -232,7 +243,7 @@ class AppImage2 {
           companyName: companyData['companyName'],
           gstin: companyData['gstin'],
           address:
-          "${companyData['address']?['city']}, ${companyData['address']?['state']}",
+              "${companyData['address']?['city']}, ${companyData['address']?['state']}",
           email: companyData['email'],
           phone: companyData['phone'],
         );
@@ -248,10 +259,20 @@ class AppImage2 {
       return null;
     }
   }
-  Future<void> addCompanyDetails(String userId,String companyName,String gst,
-   Map<String, dynamic> address,String email,String phone,dynamic context) async {
+
+  Future<void> addCompanyDetails(
+    String userId,
+    String companyName,
+    String gst,
+    Map<String, dynamic> address,
+    String email,
+    String phone,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -260,14 +281,22 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.addCompanyDetails(  userId, companyName, gst,
-            address, email, phone,);
+      final response = await api.addCompanyDetails(
+        userId,
+        companyName,
+        gst,
+        address,
+        email,
+        phone,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showCustomToast(context,  "Company Details Saved Successfully",);
-
+      if (data["status"].toString().toLowerCase() == "success") {
+        showCustomToast(context, "Company Details Saved Successfully");
       } else {
-        showCustomToast(context,  "company details can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "company details can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('company details can not get error $error');
@@ -276,10 +305,15 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> addContactDetailsStateWise({ required Map<String, dynamic>? details,
-    required BuildContext context,}) async {
+
+  Future<void> addContactDetailsStateWise({
+    required Map<String, dynamic>? details,
+    required BuildContext context,
+  }) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -288,15 +322,22 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.addContactDetailsStateWise( details);
+      final response = await api.addContactDetailsStateWise(details);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        await showSuccessDialog(context, title:"Success",message :"Contact Details Saved Successfully",
-            onOkPressed: () {
-              Get.back();
-            });
+      if (data["status"].toString().toLowerCase() == "success") {
+        await showSuccessDialog(
+          context,
+          title: "Success",
+          message: "Contact Details Saved Successfully",
+          onOkPressed: () {
+            Get.back();
+          },
+        );
       } else {
-        showCustomToast(context,  "Contact details can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Contact details can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('Contact details can not get error $error');
@@ -305,9 +346,16 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> addPrivacyPolicyContent( String category,String details,dynamic context) async {
+
+  Future<void> addPrivacyPolicyContent(
+    String category,
+    String details,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -316,13 +364,22 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.addPrivacyPolicyContent( category, details,);
+      final response = await api.addPrivacyPolicyContent(category, details);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        await showSuccessDialog(context, title:"Success",message :"Content  Saved Successfully",
-            onOkPressed: () {Get.back();});
+      if (data["status"].toString().toLowerCase() == "success") {
+        await showSuccessDialog(
+          context,
+          title: "Success",
+          message: "Content  Saved Successfully",
+          onOkPressed: () {
+            Get.back();
+          },
+        );
       } else {
-        showCustomToast(context,  "Content details can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Content details can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('Content details can not get error $error');
@@ -331,10 +388,20 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> addGstDetails(String userId,String state,String cgst,
-     String sgst,String igst,bool showGst,dynamic context) async {
+
+  Future<void> addGstDetails(
+    String userId,
+    String state,
+    String cgst,
+    String sgst,
+    String igst,
+    bool showGst,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -343,13 +410,22 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.addGstDetails(userId, state, cgst, sgst,igst, showGst,);
+      final response = await api.addGstDetails(
+        userId,
+        state,
+        cgst,
+        sgst,
+        igst,
+        showGst,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showCustomToast(context,  "Gst Details Saved Successfully",);
-
+      if (data["status"].toString().toLowerCase() == "success") {
+        showCustomToast(context, "Gst Details Saved Successfully");
       } else {
-        showCustomToast(context,  "company details can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "company details can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('company details can not get error $error');
@@ -358,18 +434,23 @@ class AppImage2 {
       update();
     }
   }
+
   Future<void> saveInvoicePdf({
-  required String userId,
-  required String planId,
-  required String planName,
+    required String userId,
+    required String planId,
+    required String planName,
     required String planType,
     required String startDate,
     required String endDate,
-  required double amount,
-  required TaxSummary taxSummary,
-  required Company company,context})async{
+    required double amount,
+    required TaxSummary taxSummary,
+    required Company company,
+    context,
+  }) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -378,13 +459,26 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.saveInvoicePdf(userId:  userId,planId: planId,planName: planName,planType:planType,startDate:startDate,endDate:endDate,amount: amount,taxSummary: taxSummary, company: company);
+      final response = await api.saveInvoicePdf(
+        userId: userId,
+        planId: planId,
+        planName: planName,
+        planType: planType,
+        startDate: startDate,
+        endDate: endDate,
+        amount: amount,
+        taxSummary: taxSummary,
+        company: company,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         invoiceId = data['data']?['invoiceId']?.toString() ?? "";
-        showCustomToast(context,  "Invoice Details Saved Successfully",);
+        showCustomToast(context, "Invoice Details Saved Successfully");
       } else {
-        showCustomToast(context,  "save Invoice details  error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "save Invoice details  error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('save Invoice details error $error');
@@ -393,9 +487,12 @@ class AppImage2 {
       update();
     }
   }
+
   Future<void> getGstDetails(dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -404,10 +501,10 @@ class AppImage2 {
       return;
     }
     try {
-      _getGstList=[];
-      final response = await api.getGstDetailsList( );
+      _getGstList = [];
+      final response = await api.getGstDetailsList();
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         _getGstList = List<Map<String, dynamic>>.from(data["data"]);
         _getGstList = List<Map<String, dynamic>>.from(data["data"]);
 
@@ -418,7 +515,10 @@ class AppImage2 {
           igstController.text = gstData["igst"]?.toString() ?? "";
         }
       } else {
-        showCustomToast(context,  "can not get gst error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "can not get gst error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -427,9 +527,12 @@ class AppImage2 {
       update();
     }
   }
+
   Future<void> getInvoiceDetails(dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -438,12 +541,14 @@ class AppImage2 {
       return;
     }
     try {
-      _invoiceList=[];
-      final response = await api.getInvoiceList( );
+      _invoiceList = [];
+      final response = await api.getInvoiceList();
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         final List<dynamic> invoicesJson = data["data"] ?? [];
-        _invoiceList = invoicesJson.map((e) => InvoiceModel.fromJson(e)).toList();
+        _invoiceList = invoicesJson
+            .map((e) => InvoiceModel.fromJson(e))
+            .toList();
       } else {
         print('getInvoice ${data["message"]}');
       }
@@ -455,9 +560,11 @@ class AppImage2 {
     }
   }
 
-  Future<void> getInvoiceById(String invoiceId,dynamic context) async {
+  Future<void> getInvoiceById(String invoiceId, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -466,10 +573,10 @@ class AppImage2 {
       return;
     }
     try {
-      _invoiceDetails=[];
+      _invoiceDetails = [];
       final response = await api.getInvoiceById(invoiceId);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         final rawData = data["data"];
         if (rawData is List) {
           _invoiceDetails = rawData
@@ -477,7 +584,9 @@ class AppImage2 {
               .toList();
         } else if (rawData is Map) {
           // Single invoice
-          _invoiceDetails = [InvoiceModel.fromJson(rawData.cast<String, dynamic>())];
+          _invoiceDetails = [
+            InvoiceModel.fromJson(rawData.cast<String, dynamic>()),
+          ];
         } else {
           _invoiceDetails = [];
         }
@@ -492,9 +601,12 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> getBasePlanList(String userType,dynamic context) async {
+
+  Future<void> getBasePlanList(String userType, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -503,18 +615,18 @@ class AppImage2 {
       return;
     }
     try {
-      _basePlanList=[];
-      final response = await api.getBasePlanList( userType,);
+      _basePlanList = [];
+      final response = await api.getBasePlanList(userType);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> basePlans = data["data"];
-        Api.userInfo.read('userType')=='admin';
-        Api.userInfo.read('userType')=='superAdmin';
+        Api.userInfo.read('userType') == 'admin';
+        Api.userInfo.read('userType') == 'superAdmin';
         final userType = Api.userInfo.read('userType');
 
-        _basePlanList = basePlans
-            .map((e) => PlanModel.fromJson(e))
-            .where((plan) {
+        _basePlanList = basePlans.map((e) => PlanModel.fromJson(e)).where((
+          plan,
+        ) {
           if (userType == 'admin' || userType == 'superAdmin') {
             return true; // allow all plans
           } else {
@@ -524,7 +636,10 @@ class AppImage2 {
         //_basePlanList = basePlans.map((e) => PlanModel.fromJson(e)).toList();
         update();
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -533,9 +648,17 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> getIncomeDetailsByPlan({String? state,String? fromDate,String? toDate,dynamic context}) async {
+
+  Future<void> getIncomeDetailsByPlan({
+    String? state,
+    String? fromDate,
+    String? toDate,
+    dynamic context,
+  }) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -544,16 +667,22 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.getIncomeDetails(state:state,fromDate: fromDate,
-        toDate: toDate, );
+      final response = await api.getIncomeDetails(
+        state: state,
+        fromDate: fromDate,
+        toDate: toDate,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-       // _incomeList = income.map((e) => IncomeDashboardModel.fromJson(e)).toList();
+      if (data["status"].toString().toLowerCase() == "success") {
+        // _incomeList = income.map((e) => IncomeDashboardModel.fromJson(e)).toList();
         _income = IncomeDashboardModel.fromJson(data["data"]);
 
         update();
       } else {
-        showCustomToast(context,  "income details can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "income details can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -562,9 +691,17 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> getExpense({String? state,String? month,String? year,dynamic context}) async {
+
+  Future<void> getExpense({
+    String? state,
+    String? month,
+    String? year,
+    dynamic context,
+  }) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -573,11 +710,14 @@ class AppImage2 {
       return;
     }
     try {
-      _expenses=[];
-      final response = await api.getExpenseDetails(state:state,month: month,
-        year: year, );
+      _expenses = [];
+      final response = await api.getExpenseDetails(
+        state: state,
+        month: month,
+        year: year,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         // _incomeList = income.map((e) => IncomeDashboardModel.fromJson(e)).toList();
         // List<dynamic> expenseList = data["data"]["total"];
         // _expenses = expenseList.map((e) => ExpenseModel.fromJson(e)).toList();
@@ -589,7 +729,10 @@ class AppImage2 {
         );
         update();
       } else {
-        showCustomToast(context,  "expense details can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "expense details can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -598,9 +741,12 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> getAddOnPlansList( String userType,dynamic context) async {
+
+  Future<void> getAddOnPlansList(String userType, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -609,24 +755,28 @@ class AppImage2 {
       return;
     }
     try {
-      _addOnsPlanList=[];
-      final response = await api.getAddOnsPlanList( userType,);
+      _addOnsPlanList = [];
+      final response = await api.getAddOnsPlanList(userType);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> addOnsPlans = data["data"];
         update();
-       // _addOnsPlanList = addOnsPlans.map((e) => AddOnsPlanModel.fromJson(e)).toList();
+        // _addOnsPlanList = addOnsPlans.map((e) => AddOnsPlanModel.fromJson(e)).toList();
         _addOnsPlanList = addOnsPlans
             .map((e) => AddOnsPlanModel.fromJson(e))
             .where((plan) {
-          if (userType == 'admin' || userType == 'superAdmin') {
-            return true; // allow all plans
-          } else {
-            return plan.addOnsPlanName.toString().toLowerCase() != 'free';
-          }
-        }).toList();
+              if (userType == 'admin' || userType == 'superAdmin') {
+                return true; // allow all plans
+              } else {
+                return plan.addOnsPlanName.toString().toLowerCase() != 'free';
+              }
+            })
+            .toList();
       } else {
-        showCustomToast(context,  "Plan can not get error ${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error ${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -638,7 +788,9 @@ class AppImage2 {
 
   Future<void> getJobPlansList(String userType, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -647,15 +799,15 @@ class AppImage2 {
       return;
     }
     try {
-      _jobPlanList=[];
-      final response = await api.getJobPlanList( userType,);
+      _jobPlanList = [];
+      final response = await api.getJobPlanList(userType);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> jobPlans = data["data"];
-      //  _jobPlanList = jobPlans.map((e) => JobPlanModel.fromJson(e)).toList();
-        _jobPlanList = jobPlans
-            .map((e) => JobPlanModel.fromJson(e))
-            .where((plan) {
+        //  _jobPlanList = jobPlans.map((e) => JobPlanModel.fromJson(e)).toList();
+        _jobPlanList = jobPlans.map((e) => JobPlanModel.fromJson(e)).where((
+          plan,
+        ) {
           if (userType == 'admin' || userType == 'superAdmin') {
             return true;
           } else {
@@ -664,7 +816,10 @@ class AppImage2 {
         }).toList();
         update();
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -673,9 +828,12 @@ class AppImage2 {
       update();
     }
   }
+
   Future<void> getWebinarPlansList(String userType, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -684,24 +842,28 @@ class AppImage2 {
       return;
     }
     try {
-      _webinarPlanList=[];
-      final response = await api.getWebinarPlanList( userType,);
+      _webinarPlanList = [];
+      final response = await api.getWebinarPlanList(userType);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> webinarPlans = data["data"];
         update();
-       // _webinarPlanList = webinarPlans.map((e) => WebinarPlan.fromJson(e)).toList();
+        // _webinarPlanList = webinarPlans.map((e) => WebinarPlan.fromJson(e)).toList();
         _webinarPlanList = webinarPlans
             .map((e) => WebinarPlan.fromJson(e))
             .where((plan) {
-          if (userType == 'admin' || userType == 'superAdmin') {
-            return true;
-          } else {
-            return plan.webinarPlanName.toString().toLowerCase() != 'free';
-          }
-        }).toList();
+              if (userType == 'admin' || userType == 'superAdmin') {
+                return true;
+              } else {
+                return plan.webinarPlanName.toString().toLowerCase() != 'free';
+              }
+            })
+            .toList();
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -710,9 +872,12 @@ class AppImage2 {
       update();
     }
   }
+
   Future<void> getPostImagePlanList(String userType, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -721,24 +886,28 @@ class AppImage2 {
       return;
     }
     try {
-      _postImagePlanList=[];
-      final response = await api.getPostImagePlanList( userType,);
+      _postImagePlanList = [];
+      final response = await api.getPostImagePlanList(userType);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success"){
+      if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> postImagePlanList = data["data"];
         update();
-       // _postImagePlanList = postImagePlanList.map((e) => PostImagePlan.fromJson(e)).toList();
+        // _postImagePlanList = postImagePlanList.map((e) => PostImagePlan.fromJson(e)).toList();
         _postImagePlanList = postImagePlanList
             .map((e) => PostImagePlan.fromJson(e))
             .where((plan) {
-          if (userType == 'admin' || userType == 'superAdmin') {
-            return true;
-          } else {
-            return plan.postPlanName.toString().toLowerCase() != 'free';
-          }
-        }).toList();
+              if (userType == 'admin' || userType == 'superAdmin') {
+                return true;
+              } else {
+                return plan.postPlanName.toString().toLowerCase() != 'free';
+              }
+            })
+            .toList();
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getPostImageList list admin error $error');
@@ -747,9 +916,12 @@ class AppImage2 {
       update();
     }
   }
+
   Future<void> checkPlansStatus(String userId, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -758,17 +930,26 @@ class AppImage2 {
       return;
     }
     try {
-      _checkPlanList=[];
-      final response = await api.checkPlansStatus( userId,);
+      _checkPlanList = [];
+      final response = await api.checkPlansStatus(userId);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         _checkPlanList = List<Map<String, dynamic>>.from(data["data"]);
         update();
         if (_checkPlanList.isNotEmpty) {
-          showPlanAlerts(userId, (_checkPlanList as List).map((e) => e as Map<String, dynamic>).toList(), context,);
+          showPlanAlerts(
+            userId,
+            (_checkPlanList as List)
+                .map((e) => e as Map<String, dynamic>)
+                .toList(),
+            context,
+          );
         }
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('check plan status list error $error');
@@ -778,10 +959,29 @@ class AppImage2 {
     }
   }
 
-  Future<void> createPlans( String userType,String planId,String planName,String price,String markPrice,String duration,bool isImageAndroid1,bool isVideoAndroid1,
-      bool isLocationAndroid1,bool isMobileNumber1,bool isServices1,String imageCount,String imageSize,String videoCount,String videoSize,List<String> features,dynamic context) async {
+  Future<void> createPlans(
+    String userType,
+    String planId,
+    String planName,
+    String price,
+    String markPrice,
+    String duration,
+    bool isImageAndroid1,
+    bool isVideoAndroid1,
+    bool isLocationAndroid1,
+    bool isMobileNumber1,
+    bool isServices1,
+    String imageCount,
+    String imageSize,
+    String videoCount,
+    String videoSize,
+    List<String> features,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -790,12 +990,33 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.createBasePlan(userType,planId,planName,price, markPrice,duration, isImageAndroid1,isVideoAndroid1, isLocationAndroid1, isMobileNumber1, isServices1, imageCount, imageSize, videoCount, videoSize,features);
+      final response = await api.createBasePlan(
+        userType,
+        planId,
+        planName,
+        price,
+        markPrice,
+        duration,
+        isImageAndroid1,
+        isVideoAndroid1,
+        isLocationAndroid1,
+        isMobileNumber1,
+        isServices1,
+        imageCount,
+        imageSize,
+        videoCount,
+        videoSize,
+        features,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
-        selectedUserType="";
-        selectPlanId="";
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Plan added successfully",
+        );
+        selectedUserType = "";
+        selectPlanId = "";
         planNameController.clear();
         durationMonthsController.clear();
         markPriceController.clear();
@@ -805,15 +1026,18 @@ class AppImage2 {
         imageCountController.clear();
         videoSizeController.clear();
         videoCountController.clear();
-        isImageAndroid=false;
-        isLocationAndroid=false;
-        isMobileNumber=false;
-        isVideoAndroid=false;
-        isServices=false;
+        isImageAndroid = false;
+        isLocationAndroid = false;
+        isMobileNumber = false;
+        isVideoAndroid = false;
+        isServices = false;
         selectedFeatures.clear();
         //showCustomToast(context,  "Plan added successfully",);
       } else {
-        showCustomToast(context,  "Plan not added error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan not added error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -822,9 +1046,24 @@ class AppImage2 {
       update();
     }
   }
-  Future<bool> createUserPlans( String userId,String planId,String planName,String price,String startDate,String endDate,imageCount,imageSize,videoCount,videoSize,dynamic context) async {
+
+  Future<bool> createUserPlans(
+    String userId,
+    String planId,
+    String planName,
+    String price,
+    String startDate,
+    String endDate,
+    imageCount,
+    imageSize,
+    videoCount,
+    videoSize,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -833,30 +1072,54 @@ class AppImage2 {
       return false;
     }
     try {
-      final response = await api.createUserBasePlan( userId, planId, planName,price, startDate, endDate,imageCount,imageSize,videoCount,videoSize,);
+      final response = await api.createUserBasePlan(
+        userId,
+        planId,
+        planName,
+        price,
+        startDate,
+        endDate,
+        imageCount,
+        imageSize,
+        videoCount,
+        videoSize,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-       await loginController.sentMailPlan(userId, "Plan", "Base Plan Purchased ", "basePlan", context);
-       showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
+      if (data["status"].toString().toLowerCase() == "success") {
+        await loginController.sentMailPlan(
+          userId,
+          "Plan",
+          "Base Plan Purchased ",
+          "basePlan",
+          context,
+        );
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Plan added successfully",
+        );
 
-       selectedUserType="";
-        selectPlanId="";
+        selectedUserType = "";
+        selectPlanId = "";
         planNameController.clear();
         priceController.clear();
         durationDaysController.clear();
-        isImageAndroid=false;
-        isLocationAndroid=false;
-        isMobileNumber=false;
-        isServices=false;
+        isImageAndroid = false;
+        isLocationAndroid = false;
+        isMobileNumber = false;
+        isServices = false;
         selectedFeatures.clear();
-       imageCount="";
-       imageSize="";
-       videoCount="";
-       videoSize="";
-    return true;
+        imageCount = "";
+        imageSize = "";
+        videoCount = "";
+        videoSize = "";
+        return true;
         //showCustomToast(context,  "Plan added successfully",);
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
         return false;
       }
     } catch (error) {
@@ -867,9 +1130,20 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> addExpenseDetail( String state,String title,String amount,String category,String month,String year,dynamic context) async {
+
+  Future<void> addExpenseDetail(
+    String state,
+    String title,
+    String amount,
+    String category,
+    String month,
+    String year,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -878,17 +1152,31 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.addExpenseDetail( state,title, amount, category, month, year);
+      final response = await api.addExpenseDetail(
+        state,
+        title,
+        amount,
+        category,
+        month,
+        year,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context,title: 'Success',message: "Expense details added successfully");
-      titleController.clear();
-      amountController.clear();
-      categoryController.clear();
-      selectedMonthName='';
-       selectedYear='';
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Expense details added successfully",
+        );
+        titleController.clear();
+        amountController.clear();
+        categoryController.clear();
+        selectedMonthName = '';
+        selectedYear = '';
       } else {
-        showCustomToast(context,  "Expense can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Expense can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('Expense list admin error $error');
@@ -897,10 +1185,25 @@ class AppImage2 {
       update();
     }
   }
-    Future<void> createAddonsPlans( String userType,String addOnsPlanId,String addOnsPlanName,String price,String markPrice,String duration,bool isStateWise1,
-      bool isDistrictWise1,bool isCityWise1,bool isAreaWise1,List<String> features,dynamic context) async {
+
+  Future<void> createAddonsPlans(
+    String userType,
+    String addOnsPlanId,
+    String addOnsPlanName,
+    String price,
+    String markPrice,
+    String duration,
+    bool isStateWise1,
+    bool isDistrictWise1,
+    bool isCityWise1,
+    bool isAreaWise1,
+    List<String> features,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -909,25 +1212,44 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.createAddonsPlans( userType, addOnsPlanId, addOnsPlanName, price, markPrice, duration, isStateWise1, isDistrictWise1, isCityWise1, isAreaWise1, features);
+      final response = await api.createAddonsPlans(
+        userType,
+        addOnsPlanId,
+        addOnsPlanName,
+        price,
+        markPrice,
+        duration,
+        isStateWise1,
+        isDistrictWise1,
+        isCityWise1,
+        isAreaWise1,
+        features,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
-        selectedUserType="";
-        selectAddOnsId="";
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Plan added successfully",
+        );
+        selectedUserType = "";
+        selectAddOnsId = "";
         planNameController.clear();
         priceController.clear();
         durationDaysController.clear();
         durationMonthsController.clear();
         markPriceController.clear();
-        isStateWise=false;
-        isDistrictWise=false;
-        isCityWise=false;
-        isAreaWise=false;
+        isStateWise = false;
+        isDistrictWise = false;
+        isCityWise = false;
+        isAreaWise = false;
         selectedFeatures.clear();
         //showCustomToast(context,  "Plan added successfully",);
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -937,9 +1259,19 @@ class AppImage2 {
     }
   }
 
-  Future<void> createUserAddonsPlans( String userId,String addOnsPlanId,String addOnsPlanName,String price,String startDate,String endDate, dynamic context) async {
+  Future<void> createUserAddonsPlans(
+    String userId,
+    String addOnsPlanId,
+    String addOnsPlanName,
+    String price,
+    String startDate,
+    String endDate,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -948,15 +1280,46 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.createAddonsUserPlans(userId, addOnsPlanId, addOnsPlanName,price, startDate, endDate,);
+      final response = await api.createAddonsUserPlans(
+        userId,
+        addOnsPlanId,
+        addOnsPlanName,
+        price,
+        startDate,
+        endDate,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
-        loginController.sentMailPlan(userId, "Plan", "AddOns Plan Purchased ", "addonsPlan", context);
-        notificationController.createNotification( userId,"",true,'Plan',"AddOns Plan Purchased ",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Plan added successfully",
+        );
+        loginController.sentMailPlan(
+          userId,
+          "Plan",
+          "AddOns Plan Purchased ",
+          "addonsPlan",
+          context,
+        );
+        notificationController.createNotification(
+          userId,
+          "",
+          true,
+          'Plan',
+          "AddOns Plan Purchased ",
+          Api.userInfo.read('state'),
+          Api.userInfo.read('district'),
+          Api.userInfo.read('city'),
+          Api.userInfo.read('area'),
+          context,
+        );
         //showCustomToast(context,  "Plan added successfully",);
       } else {
-        showCustomToast(context,  "plan not added,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "plan not added,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -965,10 +1328,26 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> createJobPlans( String userType,String jobPlansId,String jobPlanName,String price,String markPrice,String duration,bool isStateWise1,
-  bool isDistrictWise1,bool isCityWise1,bool isAreaWise1,String count,List<String> features,dynamic context) async {
+
+  Future<void> createJobPlans(
+    String userType,
+    String jobPlansId,
+    String jobPlanName,
+    String price,
+    String markPrice,
+    String duration,
+    bool isStateWise1,
+    bool isDistrictWise1,
+    bool isCityWise1,
+    bool isAreaWise1,
+    String count,
+    List<String> features,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -977,26 +1356,45 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.createJobPlans(userType, jobPlansId, jobPlanName, price, markPrice,duration, isStateWise,
-       isDistrictWise, isCityWise, isAreaWise, count, features);
+      final response = await api.createJobPlans(
+        userType,
+        jobPlansId,
+        jobPlanName,
+        price,
+        markPrice,
+        duration,
+        isStateWise,
+        isDistrictWise,
+        isCityWise,
+        isAreaWise,
+        count,
+        features,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
-        selectedUserType='';
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Plan added successfully",
+        );
+        selectedUserType = '';
         planNameController.clear();
-        selectJobId='';
+        selectJobId = '';
         priceController.clear();
         durationDaysController.clear();
         durationMonthsController.clear();
         markPriceController.clear();
-        isStateWise=false;
-        isDistrictWise=false;
-        isCityWise=false;
-        isAreaWise=false;
+        isStateWise = false;
+        isDistrictWise = false;
+        isCityWise = false;
+        isAreaWise = false;
         selectedFeatures.clear();
         //showCustomToast(context,  "Plan added successfully",);
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -1005,10 +1403,24 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> createWebinarPlans(String userType,String webinarPlanId,String webinarPlanName,String price,String markPrice,String duration,bool isStateWise1,
-  bool isDistrictWise1,bool isCityWise1,bool isAreaWise1,dynamic context) async {
+
+  Future<void> createWebinarPlans(
+    String userType,
+    String webinarPlanId,
+    String webinarPlanName,
+    String price,
+    String markPrice,
+    String duration,
+    bool isStateWise1,
+    bool isDistrictWise1,
+    bool isCityWise1,
+    bool isAreaWise1,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1017,25 +1429,43 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.createWebinarPlan(userType, webinarPlanId, webinarPlanName, price, duration, markPrice, isStateWise1, isDistrictWise1, isCityWise1, isAreaWise1);
+      final response = await api.createWebinarPlan(
+        userType,
+        webinarPlanId,
+        webinarPlanName,
+        price,
+        duration,
+        markPrice,
+        isStateWise1,
+        isDistrictWise1,
+        isCityWise1,
+        isAreaWise1,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
-        selectedUserType='';
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Plan added successfully",
+        );
+        selectedUserType = '';
         planNameController.clear();
-        selectJobId='';
+        selectJobId = '';
         priceController.clear();
         durationDaysController.clear();
         durationMonthsController.clear();
         markPriceController.clear();
-        isStateWise=false;
-        isDistrictWise=false;
-        isCityWise=false;
-        isAreaWise=false;
+        isStateWise = false;
+        isDistrictWise = false;
+        isCityWise = false;
+        isAreaWise = false;
         selectedFeatures.clear();
         //showCustomToast(context,  "Plan added successfully",);
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -1047,9 +1477,20 @@ class AppImage2 {
 
   // Future<void> createPostImagesPlans(String userType,String postImagesPlanId,String postPlanName,String price,String duration,bool isStateWise1,
   // bool isDistrictWise1,bool isCityWise1,bool isAreaWise1,dynamic context) async {
-  Future<void> createPostImagesPlans(String userType,String postImagesPlanId,String postPlanName,String price,String markPrice,String duration,String postImageCount,dynamic context) async {
-    isLoading=true;
-    update();
+  Future<void> createPostImagesPlans(
+    String userType,
+    String postImagesPlanId,
+    String postPlanName,
+    String price,
+    String markPrice,
+    String duration,
+    String postImageCount,
+    dynamic context,
+  ) async {
+    isLoading = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1058,53 +1499,41 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.createPostImagePlans(  userType, postImagesPlanId, postPlanName, price,markPrice, duration, postImageCount);
+      final response = await api.createPostImagePlans(
+        userType,
+        postImagesPlanId,
+        postPlanName,
+        price,
+        markPrice,
+        duration,
+        postImageCount,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
-        selectedUserType='';
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Plan added successfully",
+        );
+        selectedUserType = '';
         planNameController.clear();
-        selectJobId='';
+        selectJobId = '';
         priceController.clear();
         durationDaysController.clear();
         durationMonthsController.clear();
         markPriceController.clear();
         postImageCountController.clear();
-        isStateWise=false;
-        isDistrictWise=false;
-        isCityWise=false;
-        isAreaWise=false;
+        isStateWise = false;
+        isDistrictWise = false;
+        isCityWise = false;
+        isAreaWise = false;
         selectedFeatures.clear();
         //showCustomToast(context,  "Plan added successfully",);
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
-      }
-    } catch (error) {
-      print('getBasePlanList list admin error $error');
-    } finally {
-      isLoading = false;
-      update();
-    }
-  }
-  Future<void> createUserJobPlans( String userId,String jobPlansId,String jobPlanName,String price,String startDate,String endDate,dynamic context) async {
-    isLoading = true;
-    update();
-    var connection = await Connectivity().checkConnectivity();
-    if (connection == ConnectivityResult.none) {
-      isLoading = false;
-      update();
-      Get.snackbar("No Internet", "Please check your connection");
-      return;
-    }
-    try {
-      final response = await api.createJobUserPlans(userId, jobPlansId, jobPlanName,price,startDate, endDate);
-      var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
-        loginController.sentMailPlan(userId, "Plan", "Job Plan Purchased", "jobPlan", context);
-        notificationController.createNotification( userId,"",true,'Plan',"Job Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
-      } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -1114,9 +1543,19 @@ class AppImage2 {
     }
   }
 
-  Future<void> createUserWebinarPlans( String userId,String webinarPlanId,String webinarUserPlansName,String price,String startDate,String endDate,dynamic context) async {
+  Future<void> createUserJobPlans(
+    String userId,
+    String jobPlansId,
+    String jobPlanName,
+    String price,
+    String startDate,
+    String endDate,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1125,14 +1564,45 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.createWebinarUserPlan( userId, webinarPlanId, webinarUserPlansName, price,startDate, endDate);
+      final response = await api.createJobUserPlans(
+        userId,
+        jobPlansId,
+        jobPlanName,
+        price,
+        startDate,
+        endDate,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
-        loginController.sentMailPlan(userId, "Plan", "Webinar Plan Purchased", "jobPlan", context);
-        notificationController.createNotification( userId,"",true,'Plan',"Webinar Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Plan added successfully",
+        );
+        loginController.sentMailPlan(
+          userId,
+          "Plan",
+          "Job Plan Purchased",
+          "jobPlan",
+          context,
+        );
+        notificationController.createNotification(
+          userId,
+          "",
+          true,
+          'Plan',
+          "Job Plan Purchased",
+          Api.userInfo.read('state'),
+          Api.userInfo.read('district'),
+          Api.userInfo.read('city'),
+          Api.userInfo.read('area'),
+          context,
+        );
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -1141,9 +1611,20 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> createUserPostImagePlans( String userId,String postImagesPlanId,String postPlanName,String price,String startDate,String endDate,dynamic context) async {
+
+  Future<void> createUserWebinarPlans(
+    String userId,
+    String webinarPlanId,
+    String webinarUserPlansName,
+    String price,
+    String startDate,
+    String endDate,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1152,14 +1633,45 @@ class AppImage2 {
       return;
     }
     try {
-      final response = await api.createPostImageUserPlans( userId, postImagesPlanId, postPlanName,price,startDate, endDate);
+      final response = await api.createWebinarUserPlan(
+        userId,
+        webinarPlanId,
+        webinarUserPlansName,
+        price,
+        startDate,
+        endDate,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context,title: 'Success',message: "Plan added successfully");
-        loginController.sentMailPlan(userId, "Plan", "Scrolling Ads Purchased", "jobPlan", context);
-        notificationController.createNotification( userId,"",true,'Plan',"Scrolling Ads Plan Purchased",Api.userInfo.read('state'),Api.userInfo.read('district'),Api.userInfo.read('city'),Api.userInfo.read('area'),context);
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Plan added successfully",
+        );
+        loginController.sentMailPlan(
+          userId,
+          "Plan",
+          "Webinar Plan Purchased",
+          "jobPlan",
+          context,
+        );
+        notificationController.createNotification(
+          userId,
+          "",
+          true,
+          'Plan',
+          "Webinar Plan Purchased",
+          Api.userInfo.read('state'),
+          Api.userInfo.read('district'),
+          Api.userInfo.read('city'),
+          Api.userInfo.read('area'),
+          context,
+        );
       } else {
-        showCustomToast(context,  "Plan can not get error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('getBasePlanList list admin error $error');
@@ -1168,10 +1680,20 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> getUploadImages(
-  {String? userId,required  String userType,dynamic context}) async {
+
+  Future<void> createUserPostImagePlans(
+    String userId,
+    String postImagesPlanId,
+    String postPlanName,
+    String price,
+    String startDate,
+    String endDate,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1179,12 +1701,80 @@ class AppImage2 {
       Get.snackbar("No Internet", "Please check your connection");
       return;
     }
-    _posterImage=[];
-    editUploadImage1=[];
     try {
-      final response = await api.getUploadImages( userId:userId, userType:userType);
+      final response = await api.createPostImageUserPlans(
+        userId,
+        postImagesPlanId,
+        postPlanName,
+        price,
+        startDate,
+        endDate,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: 'Success',
+          message: "Plan added successfully",
+        );
+        loginController.sentMailPlan(
+          userId,
+          "Plan",
+          "Scrolling Ads Purchased",
+          "jobPlan",
+          context,
+        );
+        notificationController.createNotification(
+          userId,
+          "",
+          true,
+          'Plan',
+          "Scrolling Ads Plan Purchased",
+          Api.userInfo.read('state'),
+          Api.userInfo.read('district'),
+          Api.userInfo.read('city'),
+          Api.userInfo.read('area'),
+          context,
+        );
+      } else {
+        showCustomToast(
+          context,
+          "Plan can not get error,${data["message"] ?? "error"}",
+        );
+      }
+    } catch (error) {
+      print('getBasePlanList list admin error $error');
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> getUploadImages({
+    String? userId,
+    required String userType,
+    dynamic context,
+  }) async {
+    isLoading = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
+    var connection = await Connectivity().checkConnectivity();
+    if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
+      Get.snackbar("No Internet", "Please check your connection");
+      return;
+    }
+    _posterImage = [];
+    editUploadImage1 = [];
+    try {
+      final response = await api.getUploadImages(
+        userId: userId,
+        userType: userType,
+      );
+      var data = jsonDecode(response.body);
+      if (data["status"].toString().toLowerCase() == "success") {
         // String cleanUrl( String path) {
         //   return replaceAll(RegExp(r'\/$'), '') + '/' + path.replaceAll("\\", "/");
         // }
@@ -1195,34 +1785,33 @@ class AppImage2 {
         //   url:  u["path"],
         // )).toList();
 
-        _posterImage = (data["data"] as List).map((e) => PosterImageModel.fromJson(e)).toList();
+        _posterImage = (data["data"] as List)
+            .map((e) => PosterImageModel.fromJson(e))
+            .toList();
         editUploadImage1 = (data["data"] as List).map((u) {
-
           bool activeValue = false;
 
           if (u["isActive"] is bool) {
-
             activeValue = u["isActive"];
           } else if (u["isActive"] is String) {
-            activeValue =
-                u["isActive"].toString().toLowerCase() == "true";
+            activeValue = u["isActive"].toString().toLowerCase() == "true";
           }
           return AppImage2(
             id: u["_id"]?.toString(),
             planId: u["imageId"]?.toString(),
             url: u["path"]?.toString(),
             isActive: activeValue,
-            startDate:
-            u["startDate"]?.toString() ?? "",
-            endDate:
-            u["endDate"]?.toString() ?? "",
+            startDate: u["startDate"]?.toString() ?? "",
+            endDate: u["endDate"]?.toString() ?? "",
           );
-
         }).toList();
         //  _posterImage = (data["data"] as List).map((e) => PosterImageModel.fromJson(e)).toList();
         update();
       } else {
-        showCustomToast(context,  "can not get image error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "can not get image error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('get image upload list admin error $error');
@@ -1231,11 +1820,21 @@ class AppImage2 {
       update();
     }
   }
-  Future<void> uploadImagesUserType(String userId, String userType,String imageId,String startDate,String endDate,String isActive,
-      List<Uint8List>posterImage,
-      dynamic context) async {
+
+  Future<void> uploadImagesUserType(
+    String userId,
+    String userType,
+    String imageId,
+    String startDate,
+    String endDate,
+    String isActive,
+    List<Uint8List> posterImage,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1244,13 +1843,24 @@ class AppImage2 {
       return;
     }
     try {
-      _checkPlanList=[];
-      final response = await api.uploadImagesUserType( userId,userType, imageId, startDate, endDate,isActive,posterImage);
+      _checkPlanList = [];
+      final response = await api.uploadImagesUserType(
+        userId,
+        userType,
+        imageId,
+        startDate,
+        endDate,
+        isActive,
+        posterImage,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         showCustomToast(context, "Image updated successfully");
       } else {
-        showCustomToast(context, "image not upload error,${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "image not upload error,${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('check plan status list error $error');

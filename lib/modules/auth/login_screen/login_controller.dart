@@ -35,19 +35,16 @@ class AppImage1 {
     this.isActive = true,
   });
 }
+
 class AppImage {
   Uint8List? bytes;
   File? file;
   String? url;
   bool isVideo;
 
-  AppImage({
-    this.bytes,
-    this.file,
-    this.url,
-    this.isVideo = false,
-  });
+  AppImage({this.bytes, this.file, this.url, this.isVideo = false});
 }
+
 class ExperienceFieldModel {
   TextEditingController companyName;
   TextEditingController experience;
@@ -56,9 +53,9 @@ class ExperienceFieldModel {
     TextEditingController? companyName,
     TextEditingController? experience,
     TextEditingController? jobDescription,
-  })  : companyName = companyName ?? TextEditingController(),
-        experience = experience ?? TextEditingController(),
-        jobDescription = jobDescription ?? TextEditingController();
+  }) : companyName = companyName ?? TextEditingController(),
+       experience = experience ?? TextEditingController(),
+       jobDescription = jobDescription ?? TextEditingController();
   factory ExperienceFieldModel.fromJson(Map<String, dynamic> json) {
     return ExperienceFieldModel(
       companyName: TextEditingController(text: json['companyName'] ?? ""),
@@ -74,6 +71,7 @@ class ExperienceFieldModel {
     };
   }
 }
+
 class BranchModel {
   String? userId;
   TextEditingController branchName;
@@ -93,13 +91,13 @@ class BranchModel {
     TextEditingController? area,
     TextEditingController? pincode,
     TextEditingController? location,
-  })  : branchName = branchName ?? TextEditingController(),
-        state = state ?? TextEditingController(),
-        district = district ?? TextEditingController(),
-        city = city ?? TextEditingController(),
-        area = area ?? TextEditingController(),
-        pincode = pincode ?? TextEditingController(),
-        location = location ?? TextEditingController();
+  }) : branchName = branchName ?? TextEditingController(),
+       state = state ?? TextEditingController(),
+       district = district ?? TextEditingController(),
+       city = city ?? TextEditingController(),
+       area = area ?? TextEditingController(),
+       pincode = pincode ?? TextEditingController(),
+       location = location ?? TextEditingController();
 
   factory BranchModel.fromJson(Map<String, dynamic> json) {
     return BranchModel(
@@ -135,9 +133,9 @@ class PGDetailsModel {
     TextEditingController? collegeName,
     TextEditingController? degree,
     TextEditingController? percentage,
-  })  : collegeName = collegeName ?? TextEditingController(),
-        degree = degree ?? TextEditingController(),
-        percentage = percentage ?? TextEditingController();
+  }) : collegeName = collegeName ?? TextEditingController(),
+       degree = degree ?? TextEditingController(),
+       percentage = percentage ?? TextEditingController();
 
   factory PGDetailsModel.fromJson(Map<String, dynamic> json) {
     return PGDetailsModel(
@@ -154,6 +152,7 @@ class PGDetailsModel {
     };
   }
 }
+
 class LoginController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController oldPasswordController = TextEditingController();
@@ -162,27 +161,33 @@ class LoginController extends GetxController {
   final TextEditingController dobController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final TextEditingController stateController = TextEditingController();
   final TextEditingController districtController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
   final TextEditingController pinCodeController = TextEditingController();
-  final TextEditingController clinicNameController= TextEditingController();
-  final TextEditingController descriptionController= TextEditingController();
-  final TextEditingController specialisationController= TextEditingController();
-  final TextEditingController servicesOfferedController= TextEditingController();
-  final TextEditingController locationController= TextEditingController();
-  final TextEditingController websiteController= TextEditingController();
-  final TextEditingController addressLine1Controller= TextEditingController();
-  final TextEditingController addressLine2Controller= TextEditingController();
-  final TextEditingController jobTitleController= TextEditingController();
-  final TextEditingController jobDescController= TextEditingController();
-  final TextEditingController qualificationJobController= TextEditingController();
-  final TextEditingController webinarLinkController= TextEditingController();
-  final TextEditingController webinarTitleJobController= TextEditingController();
-  final TextEditingController webinarDescriptionJobController= TextEditingController();
-  final TextEditingController webinarDateController= TextEditingController();
+  final TextEditingController clinicNameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController specialisationController =
+      TextEditingController();
+  final TextEditingController servicesOfferedController =
+      TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final TextEditingController websiteController = TextEditingController();
+  final TextEditingController addressLine1Controller = TextEditingController();
+  final TextEditingController addressLine2Controller = TextEditingController();
+  final TextEditingController jobTitleController = TextEditingController();
+  final TextEditingController jobDescController = TextEditingController();
+  final TextEditingController qualificationJobController =
+      TextEditingController();
+  final TextEditingController webinarLinkController = TextEditingController();
+  final TextEditingController webinarTitleJobController =
+      TextEditingController();
+  final TextEditingController webinarDescriptionJobController =
+      TextEditingController();
+  final TextEditingController webinarDateController = TextEditingController();
   final notificationController = Get.put(NotificationController());
   int selectedIndex = -1;
   //List<ContactModel> contactList = <ContactModel>[];
@@ -196,7 +201,8 @@ class LoginController extends GetxController {
   TextEditingController pgPercentage = TextEditingController();
   bool showPGDetails = false;
   PGDetailsModel pgDetails = PGDetailsModel();
-  final TextEditingController availableLocationController = TextEditingController();
+  final TextEditingController availableLocationController =
+      TextEditingController();
   List<String> selectedAvailableLocations = [];
   String? selectedDegree;
   List<String> selectedAvailableTiming = [];
@@ -212,7 +218,8 @@ class LoginController extends GetxController {
   String? filterUserType;
   String? filterSelectedDegree;
   List<String> filterSelectedAvailableLocations = [];
-  final TextEditingController filterAvailableLocationController = TextEditingController();
+  final TextEditingController filterAvailableLocationController =
+      TextEditingController();
   List<String> filterSelectedTimingSlots = [];
 
   void addFilterAvailableLocation() {
@@ -248,7 +255,10 @@ class LoginController extends GetxController {
 
   TimeOfDay? parseTimeOfDay(String? value) {
     if (value == null || value.isEmpty) return null;
-    final match = RegExp(r'^(\d{1,2}):(\d{2})\s*(AM|PM)$', caseSensitive: false).firstMatch(value.trim());
+    final match = RegExp(
+      r'^(\d{1,2}):(\d{2})\s*(AM|PM)$',
+      caseSensitive: false,
+    ).firstMatch(value.trim());
     if (match == null) return null;
     int hour = int.parse(match.group(1)!);
     final minute = int.parse(match.group(2)!);
@@ -258,10 +268,20 @@ class LoginController extends GetxController {
     return TimeOfDay(hour: hour, minute: minute);
   }
 
-  Future<void> pickTiming(BuildContext context, String slot, bool isFrom) async {
-    final defaultFrom = slot == 'Morning' ? const TimeOfDay(hour: 9, minute: 0) : const TimeOfDay(hour: 18, minute: 0);
-    final defaultTo = slot == 'Morning' ? const TimeOfDay(hour: 11, minute: 0) : const TimeOfDay(hour: 20, minute: 0);
-    final initial = isFrom ? (timingFrom[slot] ?? defaultFrom) : (timingTo[slot] ?? defaultTo);
+  Future<void> pickTiming(
+    BuildContext context,
+    String slot,
+    bool isFrom,
+  ) async {
+    final defaultFrom = slot == 'Morning'
+        ? const TimeOfDay(hour: 9, minute: 0)
+        : const TimeOfDay(hour: 18, minute: 0);
+    final defaultTo = slot == 'Morning'
+        ? const TimeOfDay(hour: 11, minute: 0)
+        : const TimeOfDay(hour: 20, minute: 0);
+    final initial = isFrom
+        ? (timingFrom[slot] ?? defaultFrom)
+        : (timingTo[slot] ?? defaultTo);
     final picked = await showTimePicker(context: context, initialTime: initial);
     if (picked != null) {
       if (isFrom) {
@@ -297,6 +317,7 @@ class LoginController extends GetxController {
     selectedAvailableLocations.remove(location);
     update();
   }
+
   final List<String> degreeList = [
     'Consultant',
     'Endodontist',
@@ -313,7 +334,7 @@ class LoginController extends GetxController {
   List<Map<String, dynamic>> descriptionData = [];
 
   void clearProfileData() {
-    selectedUserType=null;
+    selectedUserType = null;
     descriptionController.clear();
     fullNameController.clear();
     emailController.clear();
@@ -353,42 +374,50 @@ class LoginController extends GetxController {
     editCertificates.clear();
     _userData.clear();
   }
-  int maxFilesImage=3;
-  int maxFilesVideo=1;
-  int filesImageSize=0;
-  int filesVideoSize=0;
+
+  int maxFilesImage = 3;
+  int maxFilesVideo = 1;
+  int filesImageSize = 0;
+  int filesVideoSize = 0;
   void togglePGDetails() {
     showPGDetails = !showPGDetails;
     update();
     print('show pg $showPGDetails');
   }
+
   List<ExperienceFieldModel> experienceList = <ExperienceFieldModel>[];
   List<ContactModel> contactList = [];
   void addExperienceField() {
-    experienceList.add(ExperienceFieldModel(
-      companyName: TextEditingController(),
-      experience: TextEditingController(),
-      jobDescription: TextEditingController(),
-    ));
+    experienceList.add(
+      ExperienceFieldModel(
+        companyName: TextEditingController(),
+        experience: TextEditingController(),
+        jobDescription: TextEditingController(),
+      ),
+    );
   }
+
   List<BranchModel> branchList = <BranchModel>[];
   void addBranchList() {
-    branchList.add(BranchModel(
-      userId: branchUserId??"",
-      branchName: TextEditingController(),
-      state : TextEditingController(),
-      district :TextEditingController(),
-      city : TextEditingController(),
-      area :TextEditingController(),
-      pincode : TextEditingController(),
-      location : TextEditingController(),
-    ));
+    branchList.add(
+      BranchModel(
+        userId: branchUserId ?? "",
+        branchName: TextEditingController(),
+        state: TextEditingController(),
+        district: TextEditingController(),
+        city: TextEditingController(),
+        area: TextEditingController(),
+        pincode: TextEditingController(),
+        location: TextEditingController(),
+      ),
+    );
   }
 
   void removeExperienceField(int index) {
     experienceList.removeAt(index);
     update();
   }
+
   void removeBranchField(int index) {
     branchList.removeAt(index);
     update();
@@ -420,16 +449,19 @@ class LoginController extends GetxController {
   // }).toList();
 
   void addContactField() {
-    contactList.add(ContactModel(
-      userId: Api.userInfo.read('userId'),
-      name: TextEditingController(),
-      state: TextEditingController(),
-      mobile: TextEditingController(),
-      whatsapp: TextEditingController(),
-      email: TextEditingController(),
-    ));
+    contactList.add(
+      ContactModel(
+        userId: Api.userInfo.read('userId'),
+        name: TextEditingController(),
+        state: TextEditingController(),
+        mobile: TextEditingController(),
+        whatsapp: TextEditingController(),
+        email: TextEditingController(),
+      ),
+    );
   }
-  String?searchText;
+
+  String? searchText;
   var isLoading = false;
   var isLoadingRegister = false;
   List<File> images = [];
@@ -440,7 +472,7 @@ class LoginController extends GetxController {
   List<File> logoImages = [];
   File? appLogoFile;
   String? appLogoUrl;
-  List<File> postImages=[];
+  List<File> postImages = [];
   List<String> imagesPaths = [];
   List<String> certificatePaths = [];
   List<File> certificates = [];
@@ -452,16 +484,16 @@ class LoginController extends GetxController {
   List<AppImage2> logoImages1 = [];
   List<AppImage2> certificates1 = [];
   List<AppImage2> images1 = [];
-  List<ProfileModel>_profileList=[];
-  List<ProfileModel> get profileList=>_profileList;
-  List<ProfileModel> _userData=[];
-  List<ProfileModel>get userData=>_userData;
-  List<ProfileModel> _userBranchesList=[];
-  List<ProfileModel>get userBranchesList=>_userBranchesList;
+  List<ProfileModel> _profileList = [];
+  List<ProfileModel> get profileList => _profileList;
+  List<ProfileModel> _userData = [];
+  List<ProfileModel> get userData => _userData;
+  List<ProfileModel> _userBranchesList = [];
+  List<ProfileModel> get userBranchesList => _userBranchesList;
   ProfileModel? selectedBranch;
-  String?selectedUserType;
-  String?selectedDistance;
-  double selectedDistance1=0;
+  String? selectedUserType;
+  String? selectedDistance;
+  double selectedDistance1 = 0;
   String? selectedArea;
   String? selectedJobType;
   String? selectedSalary;
@@ -474,7 +506,7 @@ class LoginController extends GetxController {
   String? endMinutes;
   String? selectedMartialStatus;
   final Api api = Api();
-  String ? selectUserId;
+  String? selectUserId;
   List<AppImage> editImages = [];
   List<AppImage2> webinarFileImages = [];
   List<AppImage2> jobFileImages = [];
@@ -483,13 +515,13 @@ class LoginController extends GetxController {
 
   List<AppImage> editCertificates = [];
   List<AppImage2> serviceFileImages = [];
-  List<File> serviceImage=[];
+  List<File> serviceImage = [];
   List<AppImage2> contactImages = [];
   Map<String, dynamic> data = {};
 
   //static const String baseUrl = "https://india-location-hub.in/api";
-  double ?latitude;
-  double ?longitude;
+  double? latitude;
+  double? longitude;
 
   List states = [];
   List districts = [];
@@ -536,9 +568,7 @@ class LoginController extends GetxController {
 
         final response = await http.get(
           Uri.parse(url),
-          headers: {
-            "User-Agent": "LYD-App",
-          },
+          headers: {"User-Agent": "LYD-App"},
         );
 
         if (response.statusCode == 200) {
@@ -550,10 +580,7 @@ class LoginController extends GetxController {
             print("Found Location:");
             print("Latitude: $lat");
             print("Longitude: $lon");
-            return {
-              "latitude": lat,
-              "longitude": lon,
-            };
+            return {"latitude": lat, "longitude": lon};
           }
         }
       }
@@ -564,15 +591,21 @@ class LoginController extends GetxController {
       return null;
     }
   }
+
   Future<void> fetchStates() async {
     try {
-      const url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}${AppConstants.stateUrl}';
+      const url =
+          '${AppConstants.baseUrl}${AppConstants.notificationUrl}${AppConstants.stateUrl}';
       print('state url$url');
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
-        states = List<String>.from(decoded is List ? decoded : decoded["states"] ?? decoded["data"] ?? [],);
+        states = List<String>.from(
+          decoded is List
+              ? decoded
+              : decoded["states"] ?? decoded["data"] ?? [],
+        );
         print("Loaded States: $states");
         update();
       } else {
@@ -582,16 +615,15 @@ class LoginController extends GetxController {
       print("Error fetching states: $e");
     }
   }
+
   Future<void> fetchDistricts(String state) async {
     try {
       final res = await http.post(
-        Uri.parse('${AppConstants.baseUrl}${AppConstants.notificationUrl}districts'),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode({
-          "state": state,
-        }),
+        Uri.parse(
+          '${AppConstants.baseUrl}${AppConstants.notificationUrl}districts',
+        ),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"state": state}),
       );
 
       if (res.statusCode == 200) {
@@ -612,17 +644,15 @@ class LoginController extends GetxController {
       print(e);
     }
   }
+
   Future<void> fetchTalukas(List<String> districts) async {
     try {
       final res = await http.post(
         Uri.parse(
-            '${AppConstants.baseUrl}${AppConstants.notificationUrl}subdistricts'),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode({
-          "district": districts,
-        }),
+          '${AppConstants.baseUrl}${AppConstants.notificationUrl}subdistricts',
+        ),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"district": districts}),
       );
 
       if (res.statusCode == 200) {
@@ -640,21 +670,23 @@ class LoginController extends GetxController {
       print(e);
     }
   }
+
   Future<void> fetchVillages(List<String> subDistrict) async {
     try {
-      final url = '${AppConstants.baseUrl}${AppConstants.notificationUrl}villages';
+      final url =
+          '${AppConstants.baseUrl}${AppConstants.notificationUrl}villages';
       final res = await http.post(
         Uri.parse(url),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode({
-          "subDistrict": subDistrict,
-        }),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"subDistrict": subDistrict}),
       );
       if (res.statusCode == 200) {
         final decoded = jsonDecode(res.body);
-        villages = List<String>.from(decoded is List ? decoded : decoded["villages"] ?? decoded["data"] ?? [],);
+        villages = List<String>.from(
+          decoded is List
+              ? decoded
+              : decoded["villages"] ?? decoded["data"] ?? [],
+        );
         selectedVillage = null;
         update();
       }
@@ -662,9 +694,17 @@ class LoginController extends GetxController {
       print("Error fetching villages: $e");
     }
   }
-  Future<void> login(String email,String password,String platform,context) async {
+
+  Future<void> login(
+    String email,
+    String password,
+    String platform,
+    context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -680,9 +720,9 @@ class LoginController extends GetxController {
         print("Login Success");
         final user = (data["data"] ?? {}) as Map<String, dynamic>;
         Api.userInfo.write("token", data["authToken"] ?? "");
-        String userType1=user["userType"]?.toString() ?? "";
-        String userId1=user["userId"]?.toString() ?? "";
-        String personName=user["name"]?.toString() ?? "";
+        String userType1 = user["userType"]?.toString() ?? "";
+        String userId1 = user["userId"]?.toString() ?? "";
+        String personName = user["name"]?.toString() ?? "";
         Api.userInfo.write("userType", user["userType"]?.toString() ?? "");
         Api.userInfo.write("password", user["password"]?.toString() ?? "");
         Api.userInfo.write("personName", personName);
@@ -696,7 +736,10 @@ class LoginController extends GetxController {
         } else {
           Api.userInfo.write("profileImage", "");
         }
-        Api.userInfo.write("mobileNumber", user["mobileNumber"]?.toString() ?? "");
+        Api.userInfo.write(
+          "mobileNumber",
+          user["mobileNumber"]?.toString() ?? "",
+        );
 
         final address = (user["address"] ?? {}) as Map<String, dynamic>;
         String state = address["state"]?.toString() ?? "";
@@ -715,34 +758,49 @@ class LoginController extends GetxController {
         print("STATE: $state");
         print("NAME: $name");
         print(Api.userInfo.read("profileImage"));
-        String fcmToken=Api.userInfo.read('fcmToken')??"";
+        String fcmToken = Api.userInfo.read('fcmToken') ?? "";
         // print("read fcm token${Api.userInfo.read('fcmToken')}");
         // final token = await FirebaseMessaging.instance.getToken();
         // print('userid$userId1 usertype$userType1 token$fcmToken');
-        saveFcmToken(userId1,userType1,fcmToken,context);
-        showCustomToast(context, "Login successful", backgroundColor: AppColors.secondary);
+        saveFcmToken(userId1, userType1, fcmToken, context);
+        showCustomToast(
+          context,
+          "Login successful",
+          backgroundColor: AppColors.secondary,
+        );
 
         platform != "Web"
             ? Get.offAllNamed("/${pageUserType(userType)}")
             : Get.offAllNamed("/${pageUserTypeWeb(userType)}");
-      }
-      else {
-        showCustomToast(context,  "Login Failed, ${data["message"] ?? "error"}",);
+      } else {
+        showCustomToast(context, "Login Failed, ${data["message"] ?? "error"}");
       }
     } catch (error) {
-      showCustomToast(context,  "error $error",backgroundColor: AppColors.secondary);
+      showCustomToast(
+        context,
+        "error $error",
+        backgroundColor: AppColors.secondary,
+      );
       print('login error$error');
     } finally {
       isLoading = false;
       update();
     }
   }
+
   Future<void> _refresh() async {
     Api.userInfo.erase();
   }
-  Future<void> switchAccountLogin(String userId,String platform,context) async {
+
+  Future<void> switchAccountLogin(
+    String userId,
+    String platform,
+    context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -752,16 +810,16 @@ class LoginController extends GetxController {
     }
     try {
       _refresh();
-//Api.userInfo.erase();
-      final response = await api.switchAccountLogin(userId,);
+      //Api.userInfo.erase();
+      final response = await api.switchAccountLogin(userId);
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
         print("Login Success");
         final user = (data["data"] ?? {}) as Map<String, dynamic>;
         Api.userInfo.write("token", data["authToken"] ?? "");
-        String userType1=user["userType"]?.toString() ?? "";
-        String userId1=user["userId"]?.toString() ?? "";
-        String personName=user["name"]?.toString() ?? "";
+        String userType1 = user["userType"]?.toString() ?? "";
+        String userId1 = user["userId"]?.toString() ?? "";
+        String personName = user["name"]?.toString() ?? "";
         Api.userInfo.write("userType", user["userType"]?.toString() ?? "");
         Api.userInfo.write("password", user["password"]?.toString() ?? "");
         Api.userInfo.write("personName", personName);
@@ -775,7 +833,10 @@ class LoginController extends GetxController {
         } else {
           Api.userInfo.write("profileImage", "");
         }
-        Api.userInfo.write("mobileNumber", user["mobileNumber"]?.toString() ?? "");
+        Api.userInfo.write(
+          "mobileNumber",
+          user["mobileNumber"]?.toString() ?? "",
+        );
 
         final address = (user["address"] ?? {}) as Map<String, dynamic>;
         String state = address["state"]?.toString() ?? "";
@@ -794,31 +855,48 @@ class LoginController extends GetxController {
         print("STATE: $state");
         print("NAME: $name");
         print(Api.userInfo.read("profileImage"));
-        String fcmToken=Api.userInfo.read('fcmToken')??"";
+        String fcmToken = Api.userInfo.read('fcmToken') ?? "";
         print("read fcm token${Api.userInfo.read('fcmToken')}");
         //final token = await FirebaseMessaging.instance.getToken();
         print('userid$userId1 usertype$userType1 token$fcmToken');
-        saveFcmToken(userId1,userType1,fcmToken,context);
-        showCustomToast(context, "Account Switched successfully", backgroundColor: AppColors.secondary);
+        saveFcmToken(userId1, userType1, fcmToken, context);
+        showCustomToast(
+          context,
+          "Account Switched successfully",
+          backgroundColor: AppColors.secondary,
+        );
         Navigator.pop(context);
         platform != "Web"
             ? Get.offAllNamed("/${pageUserType(userType)}")
             : Get.offAllNamed("/${pageUserTypeWeb(userType)}");
-      }
-      else {
-        showCustomToast(context,  "Account not switched error, ${data["message"] ?? "error"}",);
+      } else {
+        showCustomToast(
+          context,
+          "Account not switched error, ${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
-      showCustomToast(context,  "error $error",backgroundColor: AppColors.secondary);
+      showCustomToast(
+        context,
+        "error $error",
+        backgroundColor: AppColors.secondary,
+      );
       print('login error$error');
     } finally {
       isLoading = false;
       update();
     }
   }
-  Future<void> deactivateUserAdmin(String userId,bool isActive, dynamic context) async {
+
+  Future<void> deactivateUserAdmin(
+    String userId,
+    bool isActive,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -828,10 +906,12 @@ class LoginController extends GetxController {
     }
     try {
       print('hii');
-      final response = await api.deactivateUserAdmin( userId,isActive);
+      final response = await api.deactivateUserAdmin(userId, isActive);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        isActive==false?  showCustomToast(context,  "user deactivated successfully"):showCustomToast(context,  "user activated successfully");
+      if (data["status"].toString().toLowerCase() == "success") {
+        isActive == false
+            ? showCustomToast(context, "user deactivated successfully")
+            : showCustomToast(context, "user activated successfully");
       } else {
         showCustomToast(context, "user not deactivated: ${data["message"]}");
       }
@@ -842,9 +922,16 @@ class LoginController extends GetxController {
       update();
     }
   }
-  Future<void> deleteAwsFile(String fileUrl, String name,dynamic context) async {
+
+  Future<void> deleteAwsFile(
+    String fileUrl,
+    String name,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -854,10 +941,10 @@ class LoginController extends GetxController {
     }
     try {
       print('hii');
-      final response = await api.deleteAwsFile( fileUrl,name);
+      final response = await api.deleteAwsFile(fileUrl, name);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showCustomToast(context,  "File deleted successfully");
+      if (data["status"].toString().toLowerCase() == "success") {
+        showCustomToast(context, "File deleted successfully");
       } else {
         showCustomToast(context, "File not deleted: ${data["message"]}");
       }
@@ -868,9 +955,17 @@ class LoginController extends GetxController {
       update();
     }
   }
-  Future<void> saveFcmToken(String userId, String userType,String fcmToken,context) async {
+
+  Future<void> saveFcmToken(
+    String userId,
+    String userType,
+    String fcmToken,
+    context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -879,12 +974,11 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.saveFcmToken( userId,  userType, fcmToken);
+      final response = await api.saveFcmToken(userId, userType, fcmToken);
       var data = jsonDecode(response.body);
       if (data["status"] == "success") {
-        print( "token saved successful",);
-      }
-      else {
+        print("token saved successful");
+      } else {
         print("token save error, ${data["message"] ?? "error"}");
       }
     } catch (error) {
@@ -894,13 +988,27 @@ class LoginController extends GetxController {
       update();
     }
   }
-  Future<void> getProfileDetails(String? userType,
-      String? state,
-      List<String>? district,
-      List<String>? city,List<String>? area,String? isActive,String?latitude,String? longitude,String distance,String? searchText, dynamic context,
-      {String? degreeName, List<String>? availableLocations, List<String>? availableTiming}) async {
+
+  Future<void> getProfileDetails(
+    String? userType,
+    String? state,
+    List<String>? district,
+    List<String>? city,
+    List<String>? area,
+    String? isActive,
+    String? latitude,
+    String? longitude,
+    String distance,
+    String? searchText,
+    dynamic context, {
+    String? degreeName,
+    List<String>? availableLocations,
+    List<String>? availableTiming,
+  }) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -909,29 +1017,49 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      _profileList=[];
-      final response = await api.getUserDetails(userType: userType,state:state,district:district,city:city,area:area,latitude:latitude, longitude:longitude, distance:distance,searchText:searchText,isActive:isActive,degreeName: degreeName,availableLocations: availableLocations,availableTiming: availableTiming,);
+      _profileList = [];
+      final response = await api.getUserDetails(
+        userType: userType,
+        state: state,
+        district: district,
+        city: city,
+        area: area,
+        latitude: latitude,
+        longitude: longitude,
+        distance: distance,
+        searchText: searchText,
+        isActive: isActive,
+        degreeName: degreeName,
+        availableLocations: availableLocations,
+        availableTiming: availableTiming,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"] == "Success") {
+      if (data["status"] == "Success") {
         List<dynamic> users = data["data"];
-        String excludedUserId = Api.userInfo.read('userId')??"";
+        String excludedUserId = Api.userInfo.read('userId') ?? "";
         //_profileList = users.where((e) => e["userId"] != excludedUserId).map((e) => ProfileModel.fromJson(e)).toList();
         // String userType = Api.userInfo.read('userType') ?? '';
         final currentUserType = Api.userInfo.read("userType") ?? "";
-        _profileList = users.where((e) {
-          final userId = e["userId"];
-          final userType = e["userType"];
-          if (userId == excludedUserId) return false;
-          if (currentUserType != "superAdmin") {
-            if (userType == "admin" || userType == "superAdmin") {
-              return false;
-            }
-          }
-          return true;
-        }).map((e) => ProfileModel.fromJson(e)).toList();
+        _profileList = users
+            .where((e) {
+              final userId = e["userId"];
+              final userType = e["userType"];
+              if (userId == excludedUserId) return false;
+              if (currentUserType != "superAdmin") {
+                if (userType == "admin" || userType == "superAdmin") {
+                  return false;
+                }
+              }
+              return true;
+            })
+            .map((e) => ProfileModel.fromJson(e))
+            .toList();
         print('Total profiles: ${_profileList.length}');
       } else {
-        showCustomToast(context,  "Profile data error, ${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "Profile data error, ${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('get profile error $error');
@@ -940,9 +1068,12 @@ class LoginController extends GetxController {
       update();
     }
   }
-  Future<void> getBranchDetails( dynamic context) async {
+
+  Future<void> getBranchDetails(dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -951,7 +1082,7 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      _userBranchesList=[];
+      _userBranchesList = [];
       final response = await api.getBranchDetails();
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
@@ -964,18 +1095,24 @@ class LoginController extends GetxController {
           branchList.add(
             BranchModel(
               userId: e['userId']?.toString() ?? '',
-              branchName: TextEditingController(text: e['details']?['name'] ?? ''),
+              branchName: TextEditingController(
+                text: e['details']?['name'] ?? '',
+              ),
               state: TextEditingController(text: e['address']?['state'] ?? ''),
-              district: TextEditingController(text: e['address']?['district'] ?? ''),
+              district: TextEditingController(
+                text: e['address']?['district'] ?? '',
+              ),
               city: TextEditingController(text: e['address']?['city'] ?? ''),
               area: TextEditingController(text: e['address']?['area'] ?? ''),
-              pincode: TextEditingController(text: e['address']?['pincode'] ?? ''),
-              location: TextEditingController(text: e['location']?.toString() ?? '',
+              pincode: TextEditingController(
+                text: e['address']?['pincode'] ?? '',
+              ),
+              location: TextEditingController(
+                text: e['location']?.toString() ?? '',
               ),
             ),
           );
         }
-
       } else {
         print("getBranchDetails, ${data["message"] ?? "error"}");
       }
@@ -986,9 +1123,12 @@ class LoginController extends GetxController {
       update();
     }
   }
+
   Future<void> getProfileByUserId(String userId, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1006,11 +1146,11 @@ class LoginController extends GetxController {
         emailController.text = user.email;
         print(user.name);
         mobileController.text = user.mobileNumber;
-        dobController.text=user.dob??"";
-        selectedMartialStatus=user.martialStatus??"";
-        selectUserId=user.userId??"";
-        selectedUserType=user.userType??"";
-        passwordController.text=user.details["password"]??"";
+        dobController.text = user.dob ?? "";
+        selectedMartialStatus = user.martialStatus ?? "";
+        selectUserId = user.userId ?? "";
+        selectedUserType = user.userType ?? "";
+        passwordController.text = user.details["password"] ?? "";
         // descriptionController.text = user.details["description"] ?? "";
         descriptionData = user.details["description"] ?? "";
 
@@ -1031,8 +1171,8 @@ class LoginController extends GetxController {
         print('area $selectedVillage');
         pinCodeController.text = user.address["pincode"] ?? "";
         addressController.text = user.address["address"] ?? "";
-        selectedMartialStatus=user.martialStatus??"";
-        locationController.text=user.location??"";
+        selectedMartialStatus = user.martialStatus ?? "";
+        locationController.text = user.location ?? "";
 
         // Fetch cascading lists for dropdowns
         // Note: fetchDistricts resets selectedDistrict/Taluka/Village to null internally,
@@ -1054,7 +1194,9 @@ class LoginController extends GetxController {
         if (user.details["jobCategory"] != null) {
           final jc = user.details["jobCategory"];
           if (jc is List) {
-            selectedCategories = jc.map((e) => normalize(e.toString())).toList();
+            selectedCategories = jc
+                .map((e) => normalize(e.toString()))
+                .toList();
           } else if (jc is String && jc.isNotEmpty) {
             selectedCategories = [normalize(jc)];
           } else {
@@ -1069,17 +1211,21 @@ class LoginController extends GetxController {
           if (jc == null) {
             selectedCategories = [];
           } else {
-            selectedCategories = jc.map((e) => normalize(e.toString())).toList();
+            selectedCategories = jc
+                .map((e) => normalize(e.toString()))
+                .toList();
           }
 
           update();
         }
+
         List<String> parseStringList(dynamic value) {
           if (value == null) return [];
           if (value is List) return value.map((e) => e.toString()).toList();
           if (value is String && value.isNotEmpty) return [value];
           return [];
         }
+
         setSelectedCategoriesFromUser(user.details["jobCategory"]);
         final college = user.details["collegeDetails"] ?? {};
         final ug = college["ugDegree"] ?? {};
@@ -1095,8 +1241,11 @@ class LoginController extends GetxController {
 
         final availableLocation = user.details["availableLocations"];
         if (availableLocation is List) {
-          selectedAvailableLocations = availableLocation.map((e) => e.toString()).toList();
-        } else if (availableLocation is String && availableLocation.isNotEmpty) {
+          selectedAvailableLocations = availableLocation
+              .map((e) => e.toString())
+              .toList();
+        } else if (availableLocation is String &&
+            availableLocation.isNotEmpty) {
           selectedAvailableLocations = [availableLocation];
         } else {
           selectedAvailableLocations = [];
@@ -1127,9 +1276,13 @@ class LoginController extends GetxController {
         for (var e in user.experienceDetails) {
           experienceList.add(
             ExperienceFieldModel(
-              companyName: TextEditingController(text: e.companyName.text ?? ""),
+              companyName: TextEditingController(
+                text: e.companyName.text ?? "",
+              ),
               experience: TextEditingController(text: e.experience.text ?? ""),
-              jobDescription: TextEditingController(text: e.jobDescription.text ?? ""),
+              jobDescription: TextEditingController(
+                text: e.jobDescription.text ?? "",
+              ),
             ),
           );
         }
@@ -1138,11 +1291,16 @@ class LoginController extends GetxController {
         for (var image in user.images) {
           final url = image.replaceAll("\\", "/");
           final lower = url.toLowerCase();
-          images1.add(AppImage2(
-            url: url,
-            name: url.split('/').last,
-            isVideo: lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.avi'),
-          ));
+          images1.add(
+            AppImage2(
+              url: url,
+              name: url.split('/').last,
+              isVideo:
+                  lower.endsWith('.mp4') ||
+                  lower.endsWith('.mov') ||
+                  lower.endsWith('.avi'),
+            ),
+          );
         }
         certificates1.clear();
 
@@ -1167,25 +1325,20 @@ class LoginController extends GetxController {
         editImages = user.images.map((e) {
           final url = e.replaceAll("\\", "/");
           final isVideo = url.toLowerCase().endsWith(".mp4");
-          return AppImage(
-            url: url,
-            isVideo: isVideo,
-          );
+          return AppImage(url: url, isVideo: isVideo);
         }).toList();
         // logoImage = parseStringList(user.logoImages)
         //     .map((e) => AppImage(url: e.replaceAll("\\", "/")))
         //     .toList();
-        logoImage = parseStringList(user.logoImages)
-            .map((e) => e.replaceAll("\\", "/"))
-            .toList();
+        logoImage = parseStringList(
+          user.logoImages,
+        ).map((e) => e.replaceAll("\\", "/")).toList();
         print('lodo$logoImage');
-        editCertificates = parseStringList(user.certificates)
-            .map((e) => AppImage(url: e.replaceAll("\\", "/")))
-            .toList();
+        editCertificates = parseStringList(
+          user.certificates,
+        ).map((e) => AppImage(url: e.replaceAll("\\", "/"))).toList();
         print("Profile Loaded: ${user.name}");
-
-      } else {
-      }
+      } else {}
     } catch (error) {
       print("get profile error: $error");
     } finally {
@@ -1211,7 +1364,8 @@ class LoginController extends GetxController {
     required String city,
     required String area,
     required String pinCode,
-    String? typeName,List<String>? jobCategory,
+    String? typeName,
+    List<String>? jobCategory,
     // List<Uint8List>? logoImage,
     // List<Uint8List>? image,
     // List<Uint8List>? certificate,
@@ -1219,21 +1373,30 @@ class LoginController extends GetxController {
     image,
     certificate,
     List<String>? oldImageUrl,
-    List<String>? oldCertificatesUrl, List<String>? logoUrl,Map<String, dynamic>? details,
+    List<String>? oldCertificatesUrl,
+    List<String>? logoUrl,
+    Map<String, dynamic>? details,
     required BuildContext context,
     String? description,
     // String? services,
-    String? location,String? website,String? latitude,String? longitude,String? adminId,String? isAdmin
+    String? location,
+    String? website,
+    String? latitude,
+    String? longitude,
+    String? adminId,
+    String? isAdmin,
   }) async {
-    isLoading=true;
-    isLoadingRegister=true;
-    update();
+    isLoading = true;
+    isLoadingRegister = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
-      isLoading=false;
-      isLoadingRegister=false;
+      isLoading = false;
+      isLoadingRegister = false;
       update();
-      showCustomToast(context,  "No Internet.Please check your connection",);
+      showCustomToast(context, "No Internet.Please check your connection");
       return;
     }
     try {
@@ -1301,14 +1464,27 @@ class LoginController extends GetxController {
         isAdmin,
       );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         print('update status ${data["status"]}$userId uid');
-        (userId=="0")?
-        await showSuccessDialog(context, title:"Success",message :"User Registered successfully.Please check your mail", onOkPressed: () {
-          kIsWeb? Get.offAllNamed('/webLoginPage'):Get.offAllNamed('/loginPage') ;
-        }):
-        await showSuccessDialog(context, title:"Success",message :"User updated successfully!", onOkPressed: () {
-          Get.back();});
+        (userId == "0")
+            ? await showSuccessDialog(
+                context,
+                title: "Success",
+                message: "User Registered successfully.Please check your mail",
+                onOkPressed: () {
+                  kIsWeb
+                      ? Get.offAllNamed('/webLoginPage')
+                      : Get.offAllNamed('/loginPage');
+                },
+              )
+            : await showSuccessDialog(
+                context,
+                title: "Success",
+                message: "User updated successfully!",
+                onOkPressed: () {
+                  Get.back();
+                },
+              );
         clearProfileData();
         update();
         if (userId != "0") {
@@ -1318,18 +1494,26 @@ class LoginController extends GetxController {
             if (value is String && value.isNotEmpty) return [value];
             return [];
           }
+
           final updatedUser = ProfileModel.fromJson(data["data"]);
           _userData = [updatedUser];
           editImages = updatedUser.images.map((e) {
             final url = e.replaceAll("\\", "/");
-            return AppImage(url: url, isVideo: url.toLowerCase().endsWith(".mp4"));
+            return AppImage(
+              url: url,
+              isVideo: url.toLowerCase().endsWith(".mp4"),
+            );
           }).toList();
-          logoImage = _parseList(updatedUser.logoImages).map((e) => e.replaceAll("\\", "/")).toList();
-          editCertificates = _parseList(updatedUser.certificates).map((e) => AppImage(url: e.replaceAll("\\", "/"))).toList();
+          logoImage = _parseList(
+            updatedUser.logoImages,
+          ).map((e) => e.replaceAll("\\", "/")).toList();
+          editCertificates = _parseList(
+            updatedUser.certificates,
+          ).map((e) => AppImage(url: e.replaceAll("\\", "/"))).toList();
           logoImages.clear();
         }
-        String userId1=data["data"]["userId"];
-        String userType=data["data"]["userType"];
+        String userId1 = data["data"]["userId"];
+        String userType = data["data"]["userType"];
         selectedCategories.clear();
         fullNameController.clear();
         mobileController.clear();
@@ -1337,11 +1521,11 @@ class LoginController extends GetxController {
         dobController.clear();
         confirmPasswordController.clear();
         passwordController.clear();
-        selectedVillage=null;
-        selectedTaluka=null;
-        selectedDistrict=null;
-        selectedState=null;
-        selectedMartialStatus=null;
+        selectedVillage = null;
+        selectedTaluka = null;
+        selectedDistrict = null;
+        selectedState = null;
+        selectedMartialStatus = null;
         logoImages.clear();
         pinCodeController.clear();
         typeNameController.clear();
@@ -1351,25 +1535,42 @@ class LoginController extends GetxController {
         websiteController.clear();
         descriptionController.clear();
         availableLocationController.clear();
-        selectedAvailableLocations=[];
+        selectedAvailableLocations = [];
         otherDegreeController.clear();
-        selectedDegree=null;
-        selectedAvailableTiming=[];
-        timingFrom={};
-        timingTo={};
+        selectedDegree = null;
+        selectedAvailableTiming = [];
+        timingFrom = {};
+        timingTo = {};
         images = [];
         certificates = [];
-        selectedUserType=null;
-        image==null;
+        selectedUserType = null;
+        image == null;
         // (userId=="0")?   await sentMailUser(userId1, "register", "New User Register From LYD", "your Registered successfully", context):"";
         //(userId=="0")?   await notificationController.createNotification(userId1,"",true, 'new', '$userId1 Registered successfully ',Api.userInfo.read('state')??"",Api.userInfo.read('district')??"",Api.userInfo.read('city')??"",Api.userInfo.read('area')??"", context):"";
-        (userId=="0")?   await notificationController.createNotification(userId1,"",true, 'new', '$userId1 Registered successfully ',"","","","", context):"";
+        (userId == "0")
+            ? await notificationController.createNotification(
+                userId1,
+                "",
+                true,
+                'new',
+                '$userId1 Registered successfully ',
+                "",
+                "",
+                "",
+                "",
+                context,
+              )
+            : "";
         //kIsWeb? Get.offAllNamed('/webLoginPage'):Get.offAllNamed('/loginPage') ;
       } else {
-        await showSuccessDialog(context, title:"Error",message :"${data["message"] ?? "error"}",
-            onOkPressed: () {
-              Get.back();
-            });
+        await showSuccessDialog(
+          context,
+          title: "Error",
+          message: "${data["message"] ?? "error"}",
+          onOkPressed: () {
+            Get.back();
+          },
+        );
       }
     } catch (e, st) {
       print("Register Exception: $e");
@@ -1382,14 +1583,21 @@ class LoginController extends GetxController {
       );
     } finally {
       isLoading = false;
-      isLoadingRegister=false;
+      isLoadingRegister = false;
       update();
     }
   }
 
-  Future<void> changePassword(String userId,String oldPassword, String newPassword, dynamic context) async {
+  Future<void> changePassword(
+    String userId,
+    String oldPassword,
+    String newPassword,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1398,18 +1606,29 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.changePassword(  userId, oldPassword,  newPassword);
+      final response = await api.changePassword(
+        userId,
+        oldPassword,
+        newPassword,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        await showSuccessDialog(context, title:"Success",message :"Password changed successfully",
-            onOkPressed: () {
-              Get.back();
-            });
+      if (data["status"].toString().toLowerCase() == "success") {
+        await showSuccessDialog(
+          context,
+          title: "Success",
+          message: "Password changed successfully",
+          onOkPressed: () {
+            Get.back();
+          },
+        );
         oldPasswordController.clear();
         confirmPasswordController.clear();
         passwordController.clear();
       } else {
-        showCustomToast(context,"password not changed, ${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "password not changed, ${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('get mail error $error');
@@ -1418,9 +1637,16 @@ class LoginController extends GetxController {
       update();
     }
   }
-  Future<void> forgotChangePassword(String mail, String newPassword, dynamic context) async {
+
+  Future<void> forgotChangePassword(
+    String mail,
+    String newPassword,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1429,16 +1655,26 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.forgotChangePassword( mail, newPassword);
+      final response = await api.forgotChangePassword(mail, newPassword);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context, title:"Success",message :"Password Changed Successfully ",onOkPressed: (){
-          kIsWeb? Get.offAllNamed('/webLoginPage'):Get.offAllNamed('/loginPage') ;
-        });
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: "Success",
+          message: "Password Changed Successfully ",
+          onOkPressed: () {
+            kIsWeb
+                ? Get.offAllNamed('/webLoginPage')
+                : Get.offAllNamed('/loginPage');
+          },
+        );
         confirmPasswordController.clear();
         passwordController.clear();
       } else {
-        showCustomToast(context,"password not changed, ${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "password not changed, ${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('get mail error $error');
@@ -1447,9 +1683,12 @@ class LoginController extends GetxController {
       update();
     }
   }
-  Future<void> forgotPassword(String mail,  dynamic context) async {
+
+  Future<void> forgotPassword(String mail, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1458,17 +1697,31 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.forgotPassword( mail  );
+      final response = await api.forgotPassword(mail);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         if (!context.mounted) return;
-        showSuccessDialog(context, title:"Success",message :"Otp Sent to mail successfully to ${Api.userInfo.read('otpMail')??""} ${data["message"] ??""} ",
-            onOkPressed: (){kIsWeb? Get.offAllNamed('/verifyPasswordWeb'):Get.offAllNamed('/verifyPasswordPage') ;
-            });
+        showSuccessDialog(
+          context,
+          title: "Success",
+          message:
+              "Otp Sent to mail successfully to ${Api.userInfo.read('otpMail') ?? ""} ${data["message"] ?? ""} ",
+          onOkPressed: () {
+            kIsWeb
+                ? Get.offAllNamed('/verifyPasswordWeb')
+                : Get.offAllNamed('/verifyPasswordPage');
+          },
+        );
         emailController.clear();
       } else {
-        showSuccessDialog(context, title:"Error",message :"${data["message"] ?? "error"} ",
-            onOkPressed: (){  Get.back();});
+        showSuccessDialog(
+          context,
+          title: "Error",
+          message: "${data["message"] ?? "error"} ",
+          onOkPressed: () {
+            Get.back();
+          },
+        );
       }
     } catch (error) {
       print('get mail error $error');
@@ -1477,10 +1730,13 @@ class LoginController extends GetxController {
       update();
     }
   }
+
   //Future<void> addAppLogoImage(XFile ?logoImage1,dynamic context) async {
-  Future<void> addAppLogoImage(Uint8List bytes,  context) async {
+  Future<void> addAppLogoImage(Uint8List bytes, context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1489,20 +1745,28 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.addAppLogo(bytes  );
+      final response = await api.addAppLogo(bytes);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         if (!context.mounted) return;
-        showSuccessDialog(context, title:"Success",message :"${data["message"] ??""} ",
-            onOkPressed: (){
-              // Get.toNamed('/verifyPasswordPage');
-            });
+        showSuccessDialog(
+          context,
+          title: "Success",
+          message: "${data["message"] ?? ""} ",
+          onOkPressed: () {
+            // Get.toNamed('/verifyPasswordPage');
+          },
+        );
         emailController.clear();
       } else {
-        showSuccessDialog(context, title:"Error",message :"${data["message"] ?? "error"} ",
-            onOkPressed: (){
-              //    Get.toNamed('/forgotPasswordPage');
-            });
+        showSuccessDialog(
+          context,
+          title: "Error",
+          message: "${data["message"] ?? "error"} ",
+          onOkPressed: () {
+            //    Get.toNamed('/forgotPasswordPage');
+          },
+        );
       }
     } catch (error) {
       print('get mail error $error');
@@ -1511,9 +1775,12 @@ class LoginController extends GetxController {
       update();
     }
   }
+
   Future<void> getAppLogoImage(dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1522,9 +1789,9 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.getAppLogo( );
+      final response = await api.getAppLogo();
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> urls = data['data'];
         appLogoUrl = urls.isNotEmpty ? urls[0] : null;
         print('get image$appLogoUrl');
@@ -1538,9 +1805,12 @@ class LoginController extends GetxController {
       update();
     }
   }
+
   Future<void> getAllContacts(dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1549,9 +1819,9 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.getAllContacts( );
+      final response = await api.getAllContacts();
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         //List<dynamic> contacts = data['data'][0]['details'];
         var rawDetails = data['data'][0]['details'];
 
@@ -1570,18 +1840,19 @@ class LoginController extends GetxController {
         contactList.clear();
 
         for (var item in contacts) {
-          contactList.add(ContactModel(
-            userId: data['data'][0]['userId'],
-            name: TextEditingController(text: item['name'] ?? ""),
-            state: TextEditingController(text: item['state'] ?? ""),
-            mobile: TextEditingController(text: item['mobileNumber'] ?? ""),
-            whatsapp: TextEditingController(text: item['whatsapp'] ?? ""),
-            email: TextEditingController(text: item['email'] ?? ""),
-          ));
+          contactList.add(
+            ContactModel(
+              userId: data['data'][0]['userId'],
+              name: TextEditingController(text: item['name'] ?? ""),
+              state: TextEditingController(text: item['state'] ?? ""),
+              mobile: TextEditingController(text: item['mobileNumber'] ?? ""),
+              whatsapp: TextEditingController(text: item['whatsapp'] ?? ""),
+              email: TextEditingController(text: item['email'] ?? ""),
+            ),
+          );
         }
 
         update();
-
       } else {
         print("${data["message"] ?? "error"} ");
       }
@@ -1592,9 +1863,16 @@ class LoginController extends GetxController {
       update();
     }
   }
-  Future<void> verifyOtpPassword(String mail,String otp,  dynamic context) async {
+
+  Future<void> verifyOtpPassword(
+    String mail,
+    String otp,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1603,17 +1881,26 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.verifyOtpPassword( mail,otp  );
+      final response = await api.verifyOtpPassword(mail, otp);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
-        showSuccessDialog(context, title:"Success",message :"mail verified successfully ${data["message"] ??""} ",
+      if (data["status"].toString().toLowerCase() == "success") {
+        showSuccessDialog(
+          context,
+          title: "Success",
+          message: "mail verified successfully ${data["message"] ?? ""} ",
           onOkPressed: () {
-            kIsWeb? Get.offAllNamed('/forgotPasswordWebScreen'):Get.offAllNamed('/forgotChangePasswordPage') ;
-          },);
+            kIsWeb
+                ? Get.offAllNamed('/forgotPasswordWebScreen')
+                : Get.offAllNamed('/forgotChangePasswordPage');
+          },
+        );
         emailController.clear();
         //  Get.toNamed('/verifyPasswordPage');
       } else {
-        showCustomToast(context,"password not changed, ${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "password not changed, ${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('get mail error $error');
@@ -1622,9 +1909,18 @@ class LoginController extends GetxController {
       update();
     }
   }
-  Future<void> sentMailUser(String userId,String? title, String? Subject, String? message, dynamic context) async {
+
+  Future<void> sentMailUser(
+    String userId,
+    String? title,
+    String? Subject,
+    String? message,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1633,13 +1929,16 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.createMail( userId,title!,Subject,message);
+      final response = await api.createMail(userId, title!, Subject, message);
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         // showCustomToast(context,"mail sent successfully",);
       } else {
         print("error${data["message"] ?? "error"}");
-        showCustomToast(context,"mail not get error, ${data["message"] ?? "error"}",);
+        showCustomToast(
+          context,
+          "mail not get error, ${data["message"] ?? "error"}",
+        );
       }
     } catch (error) {
       print('get mail error $error');
@@ -1648,9 +1947,18 @@ class LoginController extends GetxController {
       update();
     }
   }
-  Future<void> sentMailPlan(String userId,String? title, String? Subject, String? planType, dynamic context) async {
+
+  Future<void> sentMailPlan(
+    String userId,
+    String? title,
+    String? Subject,
+    String? planType,
+    dynamic context,
+  ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1659,9 +1967,14 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.createPlanMail(userId,title!,Subject,planType);
+      final response = await api.createPlanMail(
+        userId,
+        title!,
+        Subject,
+        planType,
+      );
       var data = jsonDecode(response.body);
-      if ( data["status"].toString().toLowerCase() == "success") {
+      if (data["status"].toString().toLowerCase() == "success") {
         //showCustomToast(context,"mail sent successfully",);
       } else {
         print("mail not sent error, ${data["message"] ?? "error"}");

@@ -17,17 +17,23 @@ class WhatsappTemplateController extends GetxController {
 
   List<WhatsappTemplateModel> get filteredTemplates {
     return _templates.where((t) {
-      final matchesStatus = statusFilter == 'All' ||
+      final matchesStatus =
+          statusFilter == 'All' ||
           t.status.toLowerCase() == statusFilter.toLowerCase();
-      final matchesSearch = searchQuery.trim().isEmpty ||
-          t.templateName.toLowerCase().contains(searchQuery.trim().toLowerCase());
+      final matchesSearch =
+          searchQuery.trim().isEmpty ||
+          t.templateName.toLowerCase().contains(
+            searchQuery.trim().toLowerCase(),
+          );
       return matchesStatus && matchesSearch;
     }).toList();
   }
 
   Future<void> fetchTemplates() async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     try {
       final response = await _service.getTemplates();
       final data = jsonDecode(response.body);
@@ -53,7 +59,10 @@ class WhatsappTemplateController extends GetxController {
         showCustomToast(context, 'Template deleted');
         update();
       } else {
-        showCustomToast(context, data['message'] ?? 'Failed to delete template');
+        showCustomToast(
+          context,
+          data['message'] ?? 'Failed to delete template',
+        );
       }
     } catch (error) {
       showCustomToast(context, 'Failed to delete template');
@@ -69,7 +78,10 @@ class WhatsappTemplateController extends GetxController {
         showCustomToast(context, 'Template duplicated');
         update();
       } else {
-        showCustomToast(context, data['message'] ?? 'Failed to duplicate template');
+        showCustomToast(
+          context,
+          data['message'] ?? 'Failed to duplicate template',
+        );
       }
     } catch (error) {
       showCustomToast(context, 'Failed to duplicate template');

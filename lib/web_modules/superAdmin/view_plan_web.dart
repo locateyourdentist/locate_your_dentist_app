@@ -18,6 +18,33 @@ import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 
+/// Reads markPrice out of a raw plan `details` map.
+///
+/// Some older create-plan API calls saved markPrice as `{markPrice: markPrice}`
+/// instead of `{'markPrice': markPrice}` (a map-literal bug), so the value ended
+/// up as a self-referential key (e.g. `{"150": "150"}`) instead of under the
+/// `markPrice` key. Falls back to detecting that shape for plans saved before
+/// the bug was fixed.
+String? _readMarkPrice(Map<String, dynamic>? details) {
+  if (details == null) return null;
+  if (details['markPrice'] != null) return details['markPrice'].toString();
+  const knownKeys = {
+    'state',
+    'district',
+    'city',
+    'area',
+    'postImageCount',
+    'markPrice',
+  };
+  for (final entry in details.entries) {
+    if (!knownKeys.contains(entry.key) &&
+        entry.key == entry.value?.toString()) {
+      return entry.key;
+    }
+  }
+  return null;
+}
+
 class ViewPlanWeb extends StatefulWidget {
   const ViewPlanWeb({super.key});
   @override
@@ -524,7 +551,6 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
     if (plans.isEmpty) return const Center(child: Text("No plans available"));
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
     final userId = Api.userInfo.read('userId')?.toString() ?? "";
-
     return Center(
       child: SizedBox(
         height: 500,
@@ -537,6 +563,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
               final plan = plans[index];
               String name = "";
               String price = "";
+              String? markPrice;
               String duration = "";
               List<String> features = [];
               String planIdStr = "";
@@ -544,30 +571,35 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
               if (plan is PlanModel) {
                 name = plan.planName ?? "";
                 price = plan.price ?? "0";
+                markPrice = plan.details?.markPrice;
                 duration = plan.duration ?? "0";
                 features = plan.features ?? [];
                 planIdStr = plan.planId?.toString() ?? "";
               } else if (plan is AddOnsPlanModel) {
                 name = plan.addOnsPlanName ?? "";
                 price = plan.price ?? "0";
+                markPrice = plan.details?.markPrice;
                 duration = plan.duration ?? "0";
                 features = plan.features ?? [];
                 planIdStr = plan.addOnsPlanId?.toString() ?? "";
               } else if (plan is JobPlanModel) {
                 name = plan.jobPlanName ?? "";
                 price = plan.price ?? "0";
+                markPrice = plan.details?.markPrice;
                 duration = plan.duration ?? "0";
                 features = plan.features ?? [];
                 planIdStr = plan.jobPlansId?.toString() ?? "";
               } else if (plan is WebinarPlan) {
                 name = plan.webinarPlanName;
                 price = plan.price;
+                markPrice = _readMarkPrice(plan.details);
                 duration = plan.duration;
                 features = [];
                 planIdStr = plan.webinarPlanId.toString();
               } else if (plan is PostImagePlan) {
                 name = plan.postPlanName ?? "";
                 price = plan.price;
+                markPrice = _readMarkPrice(plan.details);
                 duration = plan.duration;
                 features = plan.features ?? [];
                 planIdStr = plan.postImagesPlanId?.toString() ?? "";
@@ -610,9 +642,30 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          Text(
-                            "₹$price",
-                            style: AppTextStyles.subtitle(context),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              if (markPrice != null && markPrice.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: Text(
+                                    "₹$markPrice",
+                                    style:
+                                        AppTextStyles.caption(
+                                          context,
+                                          color: Colors.grey,
+                                        ).copyWith(
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                        ),
+                                  ),
+                                ),
+                              Text(
+                                "₹$price",
+                                style: AppTextStyles.subtitle(context),
+                              ),
+                            ],
                           ),
                           Text(
                             "Duration: $duration days",

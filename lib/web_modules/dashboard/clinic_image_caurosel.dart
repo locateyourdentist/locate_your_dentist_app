@@ -15,8 +15,8 @@ class ClinicImageCarousel extends StatefulWidget {
 
 class _ClinicImageCarouselState extends State<ClinicImageCarousel> {
   int _currentIndex = 0;
-  final loginController = Get.put(LoginController());
-  final planController = Get.put(PlanController());
+  final loginController = Get.find<LoginController>();
+  final planController = Get.find<PlanController>();
 
   @override
   Widget build(BuildContext context) {

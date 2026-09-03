@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -97,12 +98,12 @@ class JobController extends GetxController {
         case "viewed":
           viewedCount++;
           break;
-
       }
     }
 
     update();
   }
+
   // Assign to your controller
   //   _controller = QuillController(
   //   document: document,
@@ -110,7 +111,9 @@ class JobController extends GetxController {
   //   );
   Future<void> getJobListAdmin(dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -150,7 +153,9 @@ class JobController extends GetxController {
     dynamic context,
   }) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -192,7 +197,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -226,7 +233,9 @@ class JobController extends GetxController {
 
   Future<void> checkJobPlanStatus(String userId, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -256,7 +265,9 @@ class JobController extends GetxController {
 
   Future<void> getAppliedJobsAdmin(String jobId, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -292,7 +303,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -332,7 +345,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -389,7 +404,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -421,7 +438,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -457,7 +476,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -488,7 +509,9 @@ class JobController extends GetxController {
 
   Future<void> getJobCategoryLists(String? userType, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -519,7 +542,9 @@ class JobController extends GetxController {
 
   Future<void> deleteJobCategoryLists(String? id, dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -554,7 +579,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -584,7 +611,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -616,7 +645,9 @@ class JobController extends GetxController {
 
   Future<void> getWebinarListAdmin(dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -655,7 +686,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -730,7 +763,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -796,7 +831,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -906,7 +943,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -981,7 +1020,9 @@ class JobController extends GetxController {
 
   Future<void> getJobsById(String jobId, context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1146,7 +1187,9 @@ class JobController extends GetxController {
     context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -1247,7 +1290,9 @@ class JobController extends GetxController {
     dynamic context,
   ) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;

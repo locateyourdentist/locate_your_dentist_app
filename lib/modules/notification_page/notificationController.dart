@@ -41,7 +41,9 @@ class NotificationController extends GetxController {
     // List<File>? notificationImage1,
   }) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -103,9 +105,12 @@ class NotificationController extends GetxController {
       return null;
     }
   }
+
   Future<void> getNotificationListAdmin(dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;
@@ -152,7 +157,9 @@ class NotificationController extends GetxController {
 
   Future<void> updateNotificationListAdmin(dynamic context) async {
     isLoading = true;
-    update();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       isLoading = false;

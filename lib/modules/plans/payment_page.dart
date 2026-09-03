@@ -350,8 +350,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Navigator.of(ctx).pop();
                         if (isPaymentSuccess) {
                           Get.offAllNamed('/viewPlanPage');
-                        } else {
-                          Get.back();
+                        } else if (Navigator.of(ctx).canPop()) {
+                          Navigator.of(ctx).pop();
                         }
                       },
                       style: ElevatedButton.styleFrom(

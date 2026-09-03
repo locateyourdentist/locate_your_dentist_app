@@ -35,7 +35,9 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
   @override
   void initState() {
     super.initState();
-    loginController.getAllContacts(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) loginController.getAllContacts(context);
+    });
   }
 
   @override
@@ -84,7 +86,7 @@ class _ContactsWebPageState extends State<ContactsWebPage> {
                         width: double.infinity,
                         decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('assets/images/cc.jpg'),
+                            image: AssetImage('assets/images/contactss.jpg'),
                             fit: BoxFit.cover,
                           ),
                         ),

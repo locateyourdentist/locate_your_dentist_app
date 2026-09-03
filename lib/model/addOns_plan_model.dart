@@ -59,7 +59,7 @@ class AddOnsPlanModel {
         ? []
         : List<dynamic>.from(features!.map((x) => x)),
     "details": details?.toJson(),
-    "userType":userType,
+    "userType": userType,
     "duration": duration,
     "isActive": isActive,
     "_id": id,
@@ -74,14 +74,14 @@ class AddOnsDetails {
   bool? district;
   bool? city;
   bool? area;
-  bool? markPrice;
+  String? markPrice;
 
   AddOnsDetails({
     this.state,
     this.district,
     this.city,
     this.area,
-    this.markPrice
+    this.markPrice,
   });
 
   factory AddOnsDetails.fromJson(Map<String, dynamic> json) => AddOnsDetails(
@@ -89,14 +89,30 @@ class AddOnsDetails {
     district: json["district"],
     city: json["city"],
     area: json["area"],
-    markPrice: json['markPrice']
+    markPrice: _readMarkPrice(json),
   );
+
+  // Some older create-plan API calls saved markPrice as a self-referential
+  // key (e.g. {"150": "150"}) instead of under the "markPrice" key, due to a
+  // map-literal bug. Falls back to detecting that shape for plans saved
+  // before the bug was fixed.
+  static String? _readMarkPrice(Map<String, dynamic> json) {
+    if (json['markPrice'] != null) return json['markPrice'].toString();
+    const knownKeys = {'state', 'district', 'city', 'area', 'markPrice'};
+    for (final entry in json.entries) {
+      if (!knownKeys.contains(entry.key) &&
+          entry.key == entry.value?.toString()) {
+        return entry.key;
+      }
+    }
+    return null;
+  }
 
   Map<String, dynamic> toJson() => {
     "state": state,
     "district": district,
     "city": city,
     "area": area,
-    "markPrice":markPrice
+    "markPrice": markPrice,
   };
 }

@@ -123,7 +123,10 @@ class AppPages {
       name: AppRoutes.forgotPasswordWebScreen,
       page: () => const ForgotChangePasswordPage(),
     ),
-    GetPage(name: AppRoutes.loginTypesPage, page: () => const DentalProfessionalRegisterPage()),
+    GetPage(
+      name: AppRoutes.loginTypesPage,
+      page: () => const DentalProfessionalRegisterPage(),
+    ),
 
     GetPage(
       name: AppRoutes.forgotMailWebScreen,
@@ -321,7 +324,7 @@ class AppPages {
     ),
     GetPage(name: AppRoutes.onBoardScreen, page: () => const OnBoardPage()),
     GetPage(
-      name: AppRoutes.superAdminDashboard,
+      name: AppRoutes.superAdminWebDashboard,
       page: () => const AdminDashboard(),
       middlewares: [SuperAdminMiddleware()],
     ),
@@ -382,9 +385,18 @@ class AppPages {
     ),
     GetPage(name: AppRoutes.createServicesPage, page: () => const AddProduct()),
     GetPage(name: AppRoutes.salePostPage, page: () => const SalePostPage()),
-    GetPage(name: AppRoutes.salePostWebPage, page: () => const SalePostWebPage()),
-    GetPage(name: AppRoutes.salePostListPage, page: () => const SalePostListPage()),
-    GetPage(name: AppRoutes.salePostListWebPage, page: () => const SalePostListWebPage()),
+    GetPage(
+      name: AppRoutes.salePostWebPage,
+      page: () => const SalePostWebPage(),
+    ),
+    GetPage(
+      name: AppRoutes.salePostListPage,
+      page: () => const SalePostListPage(),
+    ),
+    GetPage(
+      name: AppRoutes.salePostListWebPage,
+      page: () => const SalePostListWebPage(),
+    ),
     GetPage(
       name: AppRoutes.viewServicePage,
       page: () => const ServiceDetailPage(),
@@ -471,7 +483,7 @@ class AppPages {
     ),
     GetPage(
       name: '${AppRoutes.viewJobDetailWebPage}/:id',
-   //   viewJobDetailWebPage: (context) => const ViewJobPageWeb(),
+      //   viewJobDetailWebPage: (context) => const ViewJobPageWeb(),
       page: () => const ViewJobPageWeb(),
     ),
     GetPage(

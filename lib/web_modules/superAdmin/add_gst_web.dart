@@ -26,6 +26,7 @@ class _AddGstDetailsWebState extends State<AddGstDetailsWeb> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBg,
       body: Form(
         key: _formKeyGstWeb,
         child: Center(

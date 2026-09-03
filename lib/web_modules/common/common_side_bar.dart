@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -16,15 +15,12 @@ class AdminSideBar extends StatefulWidget {
 
 class _AdminSideBarState extends State<AdminSideBar> {
   final loginController = Get.find<LoginController>();
-
   late List<Map<String, String>> settingList;
-
   @override
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
     loginController.getBranchDetails(context);
-
     String userType = Api.userInfo.read('userType') ?? "";
     settingList = _getSettingsForUser(userType);
   }
@@ -35,16 +31,24 @@ class _AdminSideBarState extends State<AdminSideBar> {
       title: "Delete Account",
       message: "Do you want to Delete this Account?",
       onConfirm: () async {
-        await loginController.deactivateUserAdmin(Api.userInfo.read('userId') ?? "", false, context);
+        await loginController.deactivateUserAdmin(
+          Api.userInfo.read('userId') ?? "",
+          false,
+          context,
+        );
         Get.toNamed('/loginPage');
         loginController.update();
       },
     );
   }
 
-  bool isMobile(BuildContext context) => MediaQuery.of(context).size.width < 600;
-  bool isTablet(BuildContext context) => MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width < 1024;
-  bool isDesktop(BuildContext context) => MediaQuery.of(context).size.width >= 1024;
+  bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 600;
+  bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 600 &&
+      MediaQuery.of(context).size.width < 1024;
+  bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 1024;
   double getSidebarWidth(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     if (isMobile(context)) return w * 0.3;
@@ -57,6 +61,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
     if (isTablet(context)) return 60;
     return 70;
   }
+
   double getIconSize(BuildContext context) {
     if (isMobile(context)) return 18;
     if (isTablet(context)) return 20;
@@ -91,12 +96,15 @@ class _AdminSideBarState extends State<AdminSideBar> {
           {"title": "Reports", "page": "/reportPageWeb"},
           {
             "title": "Create Scrolling Ads Post",
-            "page": "/scrollingAdsWebPage"
+            "page": "/scrollingAdsWebPage",
           },
           {"title": "Create Notification", "page": "/notificationWebPage"},
           {"title": "Create Plan", "page": "/createPlanPageWeb"},
           {"title": "Add JobCategory", "page": "/jobCategoryWeb"},
-          {"title": "WhatsApp Templates", "page": "/whatsappTemplateManagementPage"},
+          {
+            "title": "WhatsApp Templates",
+            "page": "/whatsappTemplateManagementPage",
+          },
           {"title": "Settings", "page": "/settingsWebPage"},
           {"title": "Feedback Forms", "page": "/ViewFeedbackFormsPage"},
           {"title": "Add Legal Pages", "page": "/addPrivacyPolicyPage"},
@@ -206,6 +214,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
         return [];
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double sidebarWidth = getSidebarWidth(context);
@@ -226,20 +235,18 @@ class _AdminSideBarState extends State<AdminSideBar> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-
               ClipOval(
                 child: Image.network(
                   Api.userInfo.read("profileImage") ?? "",
                   width: avatarSize,
                   height: avatarSize,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) =>
-                      Container(
-                        width: avatarSize,
-                        height: avatarSize,
-                        color: Colors.grey,
-                        child: const Icon(Icons.person, color: Colors.white),
-                      ),
+                  errorBuilder: (_, __, ___) => Container(
+                    width: avatarSize,
+                    height: avatarSize,
+                    color: Colors.grey,
+                    child: const Icon(Icons.person, color: Colors.white),
+                  ),
                 ),
               ),
 
@@ -247,6 +254,15 @@ class _AdminSideBarState extends State<AdminSideBar> {
 
               Text(
                 Api.userInfo.read("orgName") ?? "",
+                style: AppTextStyles.body(
+                  context,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                Api.userInfo.read("userId") ?? "",
                 style: AppTextStyles.body(
                   context,
                   color: Colors.white,
@@ -268,21 +284,16 @@ class _AdminSideBarState extends State<AdminSideBar> {
                       leading: Icon(
                         _getIcon(setting['title'] ?? ""),
                         size: iconSize,
-                        color:
-                        isSelected ? Colors.redAccent : Colors.white,
+                        color: isSelected ? Colors.redAccent : Colors.white,
                       ),
                       title: Text(
                         setting['title'] ?? "",
                         style: TextStyle(
-                          color:
-                          isSelected ? Colors.redAccent : Colors.white,
-                          fontSize:
-                          isMobile(context) ? 14 : 16,
+                          color: isSelected ? Colors.redAccent : Colors.white,
+                          fontSize: isMobile(context) ? 14 : 16,
                         ),
                       ),
-                      tileColor: isSelected
-                          ? Colors.white
-                          : Colors.transparent,
+                      tileColor: isSelected ? Colors.white : Colors.transparent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -300,7 +311,7 @@ class _AdminSideBarState extends State<AdminSideBar> {
                           return;
                         }
                         if (setting['title'] == "User List") {
-                          Api.userInfo.write('sUserType1','');
+                          Api.userInfo.write('sUserType1', '');
                           Get.offAllNamed("/userTypeListWeb");
                           // _showDeleteDialog();
                           return;
@@ -308,14 +319,17 @@ class _AdminSideBarState extends State<AdminSideBar> {
                         if (setting['title'] == "Edit Profile") {
                           String userId = Api.userInfo.read('userId') ?? "";
                           Api.userInfo.write('selectUId', userId);
-                          loginController.getProfileByUserId(userId , context);
+                          loginController.getProfileByUserId(userId, context);
                           Get.offAllNamed("/viewProfilePageWeb");
                           return;
                         }
                         if (setting['title'] == "Add User") {
                           String userId = Api.userInfo.read('userId') ?? "";
                           Api.userInfo.write('selectUId', userId);
-                          Get.offAllNamed("/registerPageWeb", arguments: {"userId": 0});
+                          Get.offAllNamed(
+                            "/registerPageWeb",
+                            arguments: {"userId": 0},
+                          );
                           return;
                         }
                         Get.toNamed(setting['page'] ?? "");

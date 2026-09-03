@@ -14,14 +14,17 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-
 import '../../common_widgets/common_sidebar_mobile.dart';
 
 class _HoverLift extends StatefulWidget {
   final Widget child;
   final double liftScale;
   final BorderRadius? borderRadius;
-  const _HoverLift({required this.child, this.liftScale = 1.02, this.borderRadius});
+  const _HoverLift({
+    required this.child,
+    this.liftScale = 1.02,
+    this.borderRadius,
+  });
 
   @override
   State<_HoverLift> createState() => _HoverLiftState();
@@ -84,13 +87,19 @@ class _RevealIn extends StatelessWidget {
   }
 }
 
-Widget _sectionHeading(BuildContext context, {required IconData icon, required String text}) {
+Widget _sectionHeading(
+  BuildContext context, {
+  required IconData icon,
+  required String text,
+}) {
   return Row(
     children: [
       Container(
         padding: const EdgeInsets.all(7),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
+          gradient: const LinearGradient(
+            colors: [AppColors.primary, AppColors.secondary],
+          ),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(icon, size: 15, color: Colors.white),
@@ -100,7 +109,11 @@ Widget _sectionHeading(BuildContext context, {required IconData icon, required S
         child: Text(
           text,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold),
+          style: AppTextStyles.caption(
+            context,
+            color: AppColors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     ],
@@ -112,7 +125,6 @@ class JobSeekerDashboard extends StatefulWidget {
   @override
   State<JobSeekerDashboard> createState() => _JobSeekerDashboardState();
 }
-
 class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
   final List<Color> mildColors = [
     const Color(0xFFE8F0FE),
@@ -231,7 +243,10 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white.withOpacity(0.6), width: 1.5),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.6),
+                    width: 1.5,
+                  ),
                 ),
                 child: ProfileImageWidget(size: size),
               ),
@@ -254,12 +269,16 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                         size: size * 0.08,
                       ),
                       onPressed: () {
-                        notificationController.getNotificationListAdmin(context);
+                        notificationController.getNotificationListAdmin(
+                          context,
+                        );
                         Get.toNamed('/notificationPage');
                         notificationController.update();
                       },
                     ),
-                    if (int.tryParse(notificationController.unreadCount ?? "0")! >
+                    if (int.tryParse(
+                          notificationController.unreadCount ?? "0",
+                        )! >
                         0)
                       Positioned(
                         top: 4,
@@ -391,9 +410,10 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                       ),
                                       border: InputBorder.none,
                                       isDense: true,
-                                      contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 8,
-                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 8,
+                                          ),
                                     ),
                                     style: AppTextStyles.caption(
                                       context,
@@ -404,7 +424,8 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                     onSubmitted: (value) {
                                       print("Search text: $value");
                                       jobController.getJobListJobSeekers(
-                                        search: searchController.text.toString(),
+                                        search: searchController.text
+                                            .toString(),
                                         context: context,
                                       );
                                       Get.toNamed('/filterPageJobSeekersPage');
@@ -418,7 +439,10 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(14),
                                       gradient: const LinearGradient(
-                                        colors: [AppColors.primary, AppColors.secondary],
+                                        colors: [
+                                          AppColors.primary,
+                                          AppColors.secondary,
+                                        ],
                                       ),
                                     ),
                                     child: IconButton(
@@ -463,45 +487,64 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                             return _RevealIn(
                               delay: const Duration(milliseconds: 80),
                               child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                // Automatically switches between 2 or 4 columns based on available width
-                                int crossAxisCount = constraints.maxWidth > 600 ? 4 : 2;
+                                builder: (context, constraints) {
+                                  // Automatically switches between 2 or 4 columns based on available width
+                                  int crossAxisCount =
+                                      constraints.maxWidth > 600 ? 4 : 2;
 
-                                return GridView.count(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  crossAxisCount: crossAxisCount,
-                                  crossAxisSpacing: 14,
-                                  mainAxisSpacing: 14,
-                                  childAspectRatio: 1.6, // Adjust this ratio to control card height
-                                  children: [
-                                    _buildRowCard(
-                                      title: "Applied",
-                                      count: controller.appliedCount.toString(),
-                                      icon: Icons.work_outline,
-                                      colors: const [AppColors.primary, AppColors.secondary],
-                                    ),
-                                    _buildRowCard(
-                                      title: "Shortlisted",
-                                      count: controller.shortlistedCount.toString(),
-                                      icon: Icons.star_border_rounded,
-                                      colors: const [Color(0xFFF59E0B), Color(0xFFFFC15E)],
-                                    ),
-                                    _buildRowCard(
-                                      title: "Rejected",
-                                      count: controller.rejectedCount.toString(),
-                                      icon: Icons.cancel_outlined,
-                                      colors: const [Color(0xFFFF6B6B), Color(0xFFFF9E9E)],
-                                    ),
-                                    _buildRowCard(
+                                  return GridView.count(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    crossAxisCount: crossAxisCount,
+                                    crossAxisSpacing: 14,
+                                    mainAxisSpacing: 14,
+                                    childAspectRatio:
+                                        1.6, // Adjust this ratio to control card height
+                                    children: [
+                                      _buildRowCard(
+                                        title: "Applied",
+                                        count: controller.appliedCount
+                                            .toString(),
+                                        icon: Icons.work_outline,
+                                        colors: const [
+                                          AppColors.primary,
+                                          AppColors.secondary,
+                                        ],
+                                      ),
+                                      _buildRowCard(
+                                        title: "Shortlisted",
+                                        count: controller.shortlistedCount
+                                            .toString(),
+                                        icon: Icons.star_border_rounded,
+                                        colors: const [
+                                          Color(0xFFF59E0B),
+                                          Color(0xFFFFC15E),
+                                        ],
+                                      ),
+                                      _buildRowCard(
+                                        title: "Rejected",
+                                        count: controller.rejectedCount
+                                            .toString(),
+                                        icon: Icons.cancel_outlined,
+                                        colors: const [
+                                          Color(0xFFFF6B6B),
+                                          Color(0xFFFF9E9E),
+                                        ],
+                                      ),
+                                      _buildRowCard(
                                         title: "Viewed",
-                                      count: controller.viewedCount.toString(),
-                                      icon: Icons.hourglass_empty_rounded,
-                                      colors: const [Color(0xFF06B6D4), Color(0xFF67E8F9)],
-                                    ),
-                                  ],
-                                );
-                              },
+                                        count: controller.viewedCount
+                                            .toString(),
+                                        icon: Icons.hourglass_empty_rounded,
+                                        colors: const [
+                                          Color(0xFF06B6D4),
+                                          Color(0xFF67E8F9),
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
                             );
                           },
@@ -511,7 +554,11 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              child: _sectionHeading(context, icon: Icons.local_fire_department_rounded, text: 'Popular Jobs/Webinars Posts'),
+                              child: _sectionHeading(
+                                context,
+                                icon: Icons.local_fire_department_rounded,
+                                text: 'Popular Jobs/Webinars Posts',
+                              ),
                             ),
                             _HoverLift(
                               liftScale: 1.04,
@@ -543,7 +590,11 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              child: _sectionHeading(context, icon: Icons.trending_up_rounded, text: 'Find your Top Jobs'),
+                              child: _sectionHeading(
+                                context,
+                                icon: Icons.trending_up_rounded,
+                                text: 'Find your Top Jobs',
+                              ),
                             ),
                             _HoverLift(
                               liftScale: 1.04,
@@ -624,213 +675,166 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                             },
                                             child: _HoverLift(
                                               liftScale: 1.02,
-                                              borderRadius: BorderRadius.circular(20),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
                                               child: Container(
-                                              width: size * 0.8,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: AppColors.white,
-                                                border: Border.all(
-                                                  color: Colors.grey.shade100,
-                                                ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black.withOpacity(0.05),
-                                                    blurRadius: 12,
-                                                    offset: const Offset(0, 5),
+                                                width: size * 0.8,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: AppColors.white,
+                                                  border: Border.all(
+                                                    color: Colors.grey.shade100,
                                                   ),
-                                                ],
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                  14.0,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withOpacity(0.05),
+                                                      blurRadius: 12,
+                                                      offset: const Offset(
+                                                        0,
+                                                        5,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        CircleAvatar(
-                                                          radius: size * 0.063,
-                                                          backgroundColor:
-                                                              AppColors.primary,
-                                                          child: ClipOval(
-                                                            child: Image.network(
-                                                              logoUrl ?? "",
-                                                              fit: BoxFit.cover,
-                                                              width:
-                                                                  size * 0.14,
-                                                              height:
-                                                                  size * 0.12,
-                                                              errorBuilder:
-                                                                  (
-                                                                    context,
-                                                                    error,
-                                                                    stackTrace,
-                                                                  ) {
-                                                                    return CircleAvatar(
-                                                                      radius:
-                                                                          size *
-                                                                          0.063,
-                                                                      backgroundColor: getRandomColor(
-                                                                        Jobs.orgName
-                                                                            .toString(),
-                                                                      ),
-                                                                      child: Text(
-                                                                        getFirstLetter(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                    14.0,
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          CircleAvatar(
+                                                            radius:
+                                                                size * 0.063,
+                                                            backgroundColor:
+                                                                AppColors
+                                                                    .primary,
+                                                            child: ClipOval(
+                                                              child: Image.network(
+                                                                logoUrl ?? "",
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                width:
+                                                                    size * 0.14,
+                                                                height:
+                                                                    size * 0.12,
+                                                                errorBuilder:
+                                                                    (
+                                                                      context,
+                                                                      error,
+                                                                      stackTrace,
+                                                                    ) {
+                                                                      return CircleAvatar(
+                                                                        radius:
+                                                                            size *
+                                                                            0.063,
+                                                                        backgroundColor: getRandomColor(
                                                                           Jobs.orgName
                                                                               .toString(),
                                                                         ),
-                                                                        style: TextStyle(
-                                                                          fontSize:
-                                                                              size *
-                                                                              0.04,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                          color:
-                                                                              Colors.white,
+                                                                        child: Text(
+                                                                          getFirstLetter(
+                                                                            Jobs.orgName.toString(),
+                                                                          ),
+                                                                          style: TextStyle(
+                                                                            fontSize:
+                                                                                size *
+                                                                                0.04,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.white,
+                                                                          ),
                                                                         ),
-                                                                      ),
-                                                                    );
-                                                                  },
+                                                                      );
+                                                                    },
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                Jobs.orgName
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                  fontSize:
-                                                                      size *
-                                                                      0.035,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                              Container(
-                                                                margin: const EdgeInsets.only(top: 3),
-                                                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                                decoration: BoxDecoration(
-                                                                  color: AppColors.primary.withOpacity(0.08),
-                                                                  borderRadius: BorderRadius.circular(8),
-                                                                ),
-                                                                child: Text(
-                                                                  Jobs.jobType
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  Jobs.orgName
                                                                       .toString(),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
                                                                   style: TextStyle(
                                                                     fontSize:
                                                                         size *
-                                                                        0.028,
+                                                                        0.035,
                                                                     fontWeight:
-                                                                        FontWeight.w600,
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                                Container(
+                                                                  margin:
+                                                                      const EdgeInsets.only(
+                                                                        top: 3,
+                                                                      ),
+                                                                  padding:
+                                                                      const EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            8,
+                                                                        vertical:
+                                                                            2,
+                                                                      ),
+                                                                  decoration: BoxDecoration(
                                                                     color: AppColors
-                                                                        .primary,
+                                                                        .primary
+                                                                        .withOpacity(
+                                                                          0.08,
+                                                                        ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          8,
+                                                                        ),
+                                                                  ),
+                                                                  child: Text(
+                                                                    Jobs.jobType
+                                                                        .toString(),
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                          size *
+                                                                          0.028,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      color: AppColors
+                                                                          .primary,
+                                                                    ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          postedAgo,
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                          style: TextStyle(
-                                                            fontSize:
-                                                                size * 0.026,
-                                                            fontWeight:
-                                                                FontWeight.normal,
-                                                            color: Colors
-                                                                .grey,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 10),
-                                                    Text(
-                                                      Jobs.jobTitle.toString(),
-                                                      softWrap: true,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        fontSize: size * 0.032,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 6),
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Icon(
-                                                          Icons
-                                                              .location_on_rounded,
-                                                          color: Colors.grey,
-                                                          size: size * 0.04,
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 5,
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            "${Jobs.city.toString()}, ${Jobs.district.toString()} ,${Jobs.state.toString()}",
-                                                            softWrap: true,
-                                                            style: TextStyle(
-                                                              fontSize:
-                                                                  size * 0.03,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                              color:
-                                                                  Colors.grey,
+                                                              ],
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons
-                                                              .currency_rupee_rounded,
-                                                          color: Colors.grey,
-                                                          size: size * 0.04,
-                                                        ),
-                                                        Flexible(
-                                                          child: Text(
-                                                            Jobs.salary
-                                                                .toString(),
+                                                          Text(
+                                                            postedAgo,
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,
                                                             style: TextStyle(
                                                               fontSize:
-                                                                  size * 0.03,
+                                                                  size * 0.026,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .normal,
@@ -838,15 +842,92 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                                   Colors.grey,
                                                             ),
                                                           ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                        Jobs.jobTitle
+                                                            .toString(),
+                                                        softWrap: true,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize:
+                                                              size * 0.032,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.black,
                                                         ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 6),
-                                                    Jobs.totalApplicants != 0
-                                                        ? Align(
-                                                            alignment: Alignment
-                                                                .bottomRight,
-                                                            child: Container(
+                                                      ),
+                                                      const SizedBox(height: 6),
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .location_on_rounded,
+                                                            color: Colors.grey,
+                                                            size: size * 0.04,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          Expanded(
+                                                            child: Text(
+                                                              "${Jobs.city.toString()}, ${Jobs.district.toString()} ,${Jobs.state.toString()}",
+                                                              softWrap: true,
+                                                              style: TextStyle(
+                                                                fontSize:
+                                                                    size * 0.03,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .currency_rupee_rounded,
+                                                            color: Colors.grey,
+                                                            size: size * 0.04,
+                                                          ),
+                                                          Flexible(
+                                                            child: Text(
+                                                              Jobs.salary
+                                                                  .toString(),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: TextStyle(
+                                                                fontSize:
+                                                                    size * 0.03,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 6),
+                                                      Jobs.totalApplicants != 0
+                                                          ? Align(
+                                                              alignment: Alignment
+                                                                  .bottomRight,
+                                                              child: Container(
                                                                 decoration: BoxDecoration(
                                                                   borderRadius:
                                                                       BorderRadius.circular(
@@ -865,45 +946,53 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                                                         .bottomRight,
                                                                   ),
                                                                 ),
-                                                                padding: EdgeInsets.symmetric(horizontal: size*0.03, vertical: size*0.015),
-                                                                child: Text(
-                                                                    '${Jobs.totalApplicants} Applied',
-                                                                    softWrap:
-                                                                        true,
-                                                                    style: TextStyle(
-                                                                      fontSize:
+                                                                padding:
+                                                                    EdgeInsets.symmetric(
+                                                                      horizontal:
                                                                           size *
                                                                           0.03,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      color: Colors
-                                                                          .white,
+                                                                      vertical:
+                                                                          size *
+                                                                          0.015,
                                                                     ),
+                                                                child: Text(
+                                                                  '${Jobs.totalApplicants} Applied',
+                                                                  softWrap:
+                                                                      true,
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        size *
+                                                                        0.03,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
                                                                 ),
-                                                            ),
-                                                          )
-                                                        : Align(
-                                                            alignment: Alignment
-                                                                .bottomRight,
-                                                            child: Text(
-                                                              'Be a early Applicant',
-                                                              softWrap: true,
-                                                              style: TextStyle(
-                                                                fontSize:
-                                                                    size *
-                                                                    0.03,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: AppColors
-                                                                    .primary,
+                                                              ),
+                                                            )
+                                                          : Align(
+                                                              alignment: Alignment
+                                                                  .bottomRight,
+                                                              child: Text(
+                                                                'Be a early Applicant',
+                                                                softWrap: true,
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      size *
+                                                                      0.03,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: AppColors
+                                                                      .primary,
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
                                               ),
                                             ),
                                           ),
@@ -916,7 +1005,11 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                             ),
                           ),
                         const SizedBox(height: 22),
-                        _sectionHeading(context, icon: Icons.assignment_turned_in_outlined, text: 'Applied Jobs Lists'),
+                        _sectionHeading(
+                          context,
+                          icon: Icons.assignment_turned_in_outlined,
+                          text: 'Applied Jobs Lists',
+                        ),
                         const SizedBox(height: 12),
                         if (jobController.isLoading)
                           _buildShimmerAppliedJobs(size)
@@ -946,7 +1039,9 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                     curve: Curves.easeOutBack,
                                     child: FadeInAnimation(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(bottom: 12.0),
+                                        padding: const EdgeInsets.only(
+                                          bottom: 12.0,
+                                        ),
                                         child: GestureDetector(
                                           onTap: () {
                                             jobController.getJobsById(
@@ -957,215 +1052,257 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                           },
                                           child: _HoverLift(
                                             liftScale: 1.015,
-                                            borderRadius: BorderRadius.circular(18),
-                                            child: Container(
-                                            width: size,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(18),
-                                              color: Colors.white,
-                                              border: Border.all(color: Colors.grey.shade100),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black.withOpacity(0.05),
-                                                  blurRadius: 12,
-                                                  offset: const Offset(0, 5),
-                                                ),
-                                              ],
+                                            borderRadius: BorderRadius.circular(
+                                              18,
                                             ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(
-                                                14.0,
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        width: 54,
-                                                        height: 54,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                              gradient: LinearGradient(colors: [AppColors.primary.withOpacity(0.1), AppColors.secondary.withOpacity(0.1)]),
-                                                            ),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets.all(
-                                                                11,
-                                                              ),
-                                                          child: Image.asset(
-                                                            'assets/images/tooth.png',
-                                                            fit: BoxFit.contain,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              children: [
-                                                                Expanded(
-                                                                  child: Text(
-                                                                    appliedJobs
-                                                                            .orgName
-                                                                            .toString() ??
-                                                                        "N/A",
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          size *
-                                                                          0.035,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      color: Colors
-                                                                          .black,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Text(
-                                                                  'Posted On ${DateFormat('MMM dd, yyyy').format(DateTime.parse(appliedJobs.createdDate.toString()))}',
-                                                                  style: TextStyle(
-                                                                    fontSize:
-                                                                        size *
-                                                                        0.024,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .normal,
-                                                                    color: Colors
-                                                                        .black45,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Container(
-                                                              margin: const EdgeInsets.symmetric(vertical: 3),
-                                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                              decoration: BoxDecoration(
-                                                                color: AppColors.primary.withOpacity(0.08),
-                                                                borderRadius: BorderRadius.circular(8),
-                                                              ),
-                                                              child: Text(
-                                                                appliedJobs
-                                                                        .jobType
-                                                                        .toString() ??
-                                                                    "N/A",
-                                                                style: TextStyle(
-                                                                  fontSize:
-                                                                      size * 0.028,
-                                                                  fontWeight:
-                                                                      FontWeight.w600,
-                                                                  color:
-                                                                      AppColors.primary,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              appliedJobs
-                                                                      .jobTitle
-                                                                      .toString() ??
-                                                                  "N/A",
-                                                              softWrap: true,
-                                                              style: TextStyle(
-                                                                fontSize:
-                                                                    size *
-                                                                    0.032,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 5,
-                                                            ),
-                                                            Row(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .location_on_rounded,
-                                                                  color: Colors
-                                                                      .grey,
-                                                                  size:
-                                                                      size *
-                                                                      0.04,
-                                                                ),
-                                                                const SizedBox(
-                                                                  width: 5,
-                                                                ),
-                                                                Expanded(
-                                                                  child: Text(
-                                                                    "${appliedJobs.city.toString() ?? "N/A"},${appliedJobs.district.toString() ?? "N/A"}",
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          size *
-                                                                          0.03,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .normal,
-                                                                      color: Colors
-                                                                          .grey,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .currency_rupee_rounded,
-                                                                  color: Colors
-                                                                      .grey,
-                                                                  size:
-                                                                      size *
-                                                                      0.04,
-                                                                ),
-                                                                Flexible(
-                                                                  child: Text(
-                                                                    appliedJobs
-                                                                            .salary
-                                                                            .toString() ??
-                                                                        "N/A",
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          size *
-                                                                          0.03,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .normal,
-                                                                      color: Colors
-                                                                          .grey,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
+                                            child: Container(
+                                              width: size,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(18),
+                                                color: Colors.white,
+                                                border: Border.all(
+                                                  color: Colors.grey.shade100,
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.05),
+                                                    blurRadius: 12,
+                                                    offset: const Offset(0, 5),
                                                   ),
                                                 ],
                                               ),
-                                            ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  14.0,
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Container(
+                                                          width: 54,
+                                                          height: 54,
+                                                          decoration: BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            gradient: LinearGradient(
+                                                              colors: [
+                                                                AppColors
+                                                                    .primary
+                                                                    .withOpacity(
+                                                                      0.1,
+                                                                    ),
+                                                                AppColors
+                                                                    .secondary
+                                                                    .withOpacity(
+                                                                      0.1,
+                                                                    ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                  11,
+                                                                ),
+                                                            child: Image.asset(
+                                                              'assets/images/tooth.png',
+                                                              fit: BoxFit
+                                                                  .contain,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      appliedJobs
+                                                                              .orgName
+                                                                              .toString() ??
+                                                                          "N/A",
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: TextStyle(
+                                                                        fontSize:
+                                                                            size *
+                                                                            0.035,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        color: Colors
+                                                                            .black,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Text(
+                                                                    'Posted On ${DateFormat('MMM dd, yyyy').format(DateTime.parse(appliedJobs.createdDate.toString()))}',
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                          size *
+                                                                          0.024,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .normal,
+                                                                      color: Colors
+                                                                          .black45,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Container(
+                                                                margin:
+                                                                    const EdgeInsets.symmetric(
+                                                                      vertical:
+                                                                          3,
+                                                                    ),
+                                                                padding:
+                                                                    const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          8,
+                                                                      vertical:
+                                                                          2,
+                                                                    ),
+                                                                decoration: BoxDecoration(
+                                                                  color: AppColors
+                                                                      .primary
+                                                                      .withOpacity(
+                                                                        0.08,
+                                                                      ),
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        8,
+                                                                      ),
+                                                                ),
+                                                                child: Text(
+                                                                  appliedJobs
+                                                                          .jobType
+                                                                          .toString() ??
+                                                                      "N/A",
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        size *
+                                                                        0.028,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    color: AppColors
+                                                                        .primary,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                appliedJobs
+                                                                        .jobTitle
+                                                                        .toString() ??
+                                                                    "N/A",
+                                                                softWrap: true,
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                      size *
+                                                                      0.032,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 5,
+                                                              ),
+                                                              Row(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .location_on_rounded,
+                                                                    color: Colors
+                                                                        .grey,
+                                                                    size:
+                                                                        size *
+                                                                        0.04,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 5,
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      "${appliedJobs.city.toString() ?? "N/A"},${appliedJobs.district.toString() ?? "N/A"}",
+                                                                      style: TextStyle(
+                                                                        fontSize:
+                                                                            size *
+                                                                            0.03,
+                                                                        fontWeight:
+                                                                            FontWeight.normal,
+                                                                        color: Colors
+                                                                            .grey,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .currency_rupee_rounded,
+                                                                    color: Colors
+                                                                        .grey,
+                                                                    size:
+                                                                        size *
+                                                                        0.04,
+                                                                  ),
+                                                                  Flexible(
+                                                                    child: Text(
+                                                                      appliedJobs
+                                                                              .salary
+                                                                              .toString() ??
+                                                                          "N/A",
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: TextStyle(
+                                                                        fontSize:
+                                                                            size *
+                                                                            0.03,
+                                                                        fontWeight:
+                                                                            FontWeight.normal,
+                                                                        color: Colors
+                                                                            .grey,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -1256,7 +1393,7 @@ Widget _buildRowCard({
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
-          )
+          ),
         ],
       ),
       child: Row(
@@ -1278,12 +1415,20 @@ Widget _buildRowCard({
                 Text(
                   title,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   count,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
               ],
             ),

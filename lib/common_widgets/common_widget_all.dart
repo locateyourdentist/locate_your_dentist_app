@@ -54,23 +54,23 @@ class DoctorCardWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   child: doctor.logoImages.isNotEmpty
                       ? Image.network(
-                    doctor.logoImages.first,
-                    width: size * 0.22,
-                    height: size * 0.22,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: size * 0.22,
-                        height: size * 0.22,
-                        color: Colors.grey.shade200,
-                        child: const Icon(
-                          Icons.image,
-                          color: Colors.grey,
-                          size: 40,
-                        ),
-                      );
-                    },
-                  )
+                          doctor.logoImages.first,
+                          width: size * 0.22,
+                          height: size * 0.22,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: size * 0.22,
+                              height: size * 0.22,
+                              color: Colors.grey.shade200,
+                              child: const Icon(
+                                Icons.image,
+                                color: Colors.grey,
+                                size: 40,
+                              ),
+                            );
+                          },
+                        )
                       : Container(
                           width: size * 0.2,
                           height: size * 0.2,
@@ -371,26 +371,20 @@ class CommonSearchTextField extends StatelessWidget {
           fontWeight: FontWeight.normal,
           color: AppColors.grey,
         ),
-
         // Outer border
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: borderColor ?? AppColors.grey,
-          ),
+          borderSide: BorderSide(color: borderColor ?? AppColors.grey),
         ),
 
         // Border when focused
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: borderColor ?? AppColors.primary,
-          ),
+          borderSide: BorderSide(color: borderColor ?? AppColors.primary),
         ),
-
         isDense: isDense,
         contentPadding:
-        contentPadding ?? const EdgeInsets.symmetric(vertical: 8),
+            contentPadding ?? const EdgeInsets.symmetric(vertical: 8),
       ),
       style: AppTextStyles.caption(
         context,
@@ -402,6 +396,7 @@ class CommonSearchTextField extends StatelessWidget {
     );
   }
 }
+
 String timeAgo(DateTime date) {
   final Duration diff = DateTime.now().difference(date);
 
@@ -449,44 +444,72 @@ class CommonListTile extends StatelessWidget {
     );
   }
 }
-Widget buildActiveFilters(bool isMobile,dynamic context) {
+
+Widget buildActiveFilters(bool isMobile, dynamic context) {
   final loginController = Get.put(LoginController());
-  bool hasFilters = loginController.selectedDistance != null || loginController.selectedState != null || loginController.selectedDistrict != null || loginController.selectedTaluka != null || loginController.selectedJobType != null || loginController.selectedSalary != null || loginController.selectedCategories.isNotEmpty;
+  bool hasFilters =
+      loginController.selectedDistance != null ||
+      loginController.selectedState != null ||
+      loginController.selectedDistrict != null ||
+      loginController.selectedTaluka != null ||
+      loginController.selectedJobType != null ||
+      loginController.selectedSalary != null ||
+      loginController.selectedCategories.isNotEmpty;
   if (!hasFilters) return const SizedBox.shrink();
   return Padding(
     padding: const EdgeInsets.only(bottom: 20),
     child: Wrap(
-      spacing: 8, runSpacing: 8,
+      spacing: 8,
+      runSpacing: 8,
       children: [
-        if (loginController.selectedState != null) InputChip(label: Text(loginController.selectedState!, style: AppTextStyles.caption(context,)), onDeleted: () { loginController.selectedState = null; loginController.update(); }),
+        if (loginController.selectedState != null)
+          InputChip(
+            label: Text(
+              loginController.selectedState!,
+              style: AppTextStyles.caption(context),
+            ),
+            onDeleted: () {
+              loginController.selectedState = null;
+              loginController.update();
+            },
+          ),
         if (loginController.selectedDistricts != null)
           ...loginController.selectedDistricts.map(
-                (district) => InputChip(
-              label: Text(district,  style: AppTextStyles.caption(context,),),
+            (district) => InputChip(
+              label: Text(district, style: AppTextStyles.caption(context)),
               onDeleted: () {
                 loginController.selectedDistricts.remove(district);
                 loginController.update();
               },
-            ),),
+            ),
+          ),
         if (loginController.selectedTalukas != null)
           ...loginController.selectedTalukas.map(
-                (taluka) => InputChip(
-              label: Text(taluka,  style: AppTextStyles.caption(context,)),
+            (taluka) => InputChip(
+              label: Text(taluka, style: AppTextStyles.caption(context)),
               onDeleted: () {
                 loginController.selectedTalukas.remove(taluka);
                 loginController.update();
               },
-            ),),
-        if (loginController.selectedVillages != null)
-        ...loginController.selectedVillages.map(
-              (village) => InputChip(
-            label: Text(village,  style: AppTextStyles.caption(context,)),
-            onDeleted: () {
-              loginController.selectedVillages.remove(village);
-              loginController.update();
-            },
+            ),
           ),
-        ),          TextButton(onPressed: () => _clearAllFilters(context), child: const Text("Clear All", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
+        if (loginController.selectedVillages != null)
+          ...loginController.selectedVillages.map(
+            (village) => InputChip(
+              label: Text(village, style: AppTextStyles.caption(context)),
+              onDeleted: () {
+                loginController.selectedVillages.remove(village);
+                loginController.update();
+              },
+            ),
+          ),
+        TextButton(
+          onPressed: () => _clearAllFilters(context),
+          child: const Text(
+            "Clear All",
+            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+          ),
+        ),
       ],
     ),
   );
@@ -495,13 +518,30 @@ Widget buildActiveFilters(bool isMobile,dynamic context) {
 void _clearAllFilters(dynamic context) async {
   final loginController = Get.put(LoginController());
   loginController.selectedCategories.clear();
-  loginController.selectedState = loginController.selectedDistrict = loginController.selectedTaluka = loginController.selectedVillage = loginController.selectedUserType = loginController.selectedDistance = loginController.selectedJobType = loginController.selectedSalary = null;
+  loginController.selectedState = loginController.selectedDistrict =
+      loginController.selectedTaluka = loginController.selectedVillage =
+          loginController.selectedUserType = loginController.selectedDistance =
+              loginController.selectedJobType = loginController.selectedSalary =
+                  null;
   loginController.selectedVillages.clear();
   loginController.selectedDistricts.clear();
   loginController.selectedTalukas.clear();
   loginController.update();
-  await loginController.getProfileDetails("", "", [], [],[] ,"", "", "", "", "", context);
+  await loginController.getProfileDetails(
+    "",
+    "",
+    [],
+    [],
+    [],
+    "",
+    "",
+    "",
+    "",
+    "",
+    context,
+  );
 }
+
 Future<void> sendEmail(String email) async {
   final Uri emailUri = Uri(scheme: 'mailto', path: email);
 
@@ -1017,7 +1057,7 @@ Widget buildShimmerEmptyWidget(double size) {
         baseColor: Colors.grey[300]!,
         highlightColor: Colors.grey[100]!,
         child: Container(
-          height:size<600? size * 0.3:size * 0.13,
+          height: size < 600 ? size * 0.3 : size * 0.13,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
@@ -1107,7 +1147,11 @@ Widget postAdsBannerMobile(BuildContext context) {
               color: Colors.white.withOpacity(0.18),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(Icons.campaign_outlined, color: Colors.white, size: size * 0.06),
+            child: Icon(
+              Icons.campaign_outlined,
+              color: Colors.white,
+              size: size * 0.06,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -1116,12 +1160,19 @@ Widget postAdsBannerMobile(BuildContext context) {
               children: [
                 Text(
                   "Post your Ads",
-                  style: AppTextStyles.body(context, color: Colors.white, fontWeight: FontWeight.bold),
+                  style: AppTextStyles.body(
+                    context,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   "List items for sale and reach clinics, shops & labs.",
-                  style: AppTextStyles.caption(context, color: Colors.white.withOpacity(0.9)),
+                  style: AppTextStyles.caption(
+                    context,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -1131,8 +1182,15 @@ Widget postAdsBannerMobile(BuildContext context) {
           const SizedBox(width: 10),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30)),
-            child: const Icon(Icons.arrow_forward, size: 16, color: AppColors.primary),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Icon(
+              Icons.arrow_forward,
+              size: 16,
+              color: AppColors.primary,
+            ),
           ),
         ],
       ),
@@ -1171,7 +1229,11 @@ Widget scrollingAdsBannerMobile(BuildContext context) {
               color: Colors.white.withOpacity(0.18),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(Icons.view_carousel_outlined, color: Colors.white, size: size * 0.06),
+            child: Icon(
+              Icons.view_carousel_outlined,
+              color: Colors.white,
+              size: size * 0.06,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -1180,12 +1242,19 @@ Widget scrollingAdsBannerMobile(BuildContext context) {
               children: [
                 Text(
                   "Scrolling Ads",
-                  style: AppTextStyles.body(context, color: Colors.white, fontWeight: FontWeight.bold),
+                  style: AppTextStyles.body(
+                    context,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   "Create a scrolling ads post for the homepage.",
-                  style: AppTextStyles.caption(context, color: Colors.white.withOpacity(0.9)),
+                  style: AppTextStyles.caption(
+                    context,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -1195,8 +1264,15 @@ Widget scrollingAdsBannerMobile(BuildContext context) {
           const SizedBox(width: 10),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30)),
-            child: const Icon(Icons.arrow_forward, size: 16, color: Color(0xFFF59E0B)),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Icon(
+              Icons.arrow_forward,
+              size: 16,
+              color: Color(0xFFF59E0B),
+            ),
           ),
         ],
       ),
@@ -1215,10 +1291,12 @@ Widget buildProfessionalDetailsCard(BuildContext context, dynamic user) {
   final Map details = user.details ?? {};
   final String degree = (details["degreeName"] ?? "").toString();
   final String otherDegree = (details["otherDegree"] ?? "").toString();
-  final List locations =
-      details["availableLocations"] is List ? details["availableLocations"] as List : [];
-  final List timings =
-      details["availableTiming"] is List ? details["availableTiming"] as List : [];
+  final List locations = details["availableLocations"] is List
+      ? details["availableLocations"] as List
+      : [];
+  final List timings = details["availableTiming"] is List
+      ? details["availableTiming"] as List
+      : [];
 
   if (degree.isEmpty && locations.isEmpty && timings.isEmpty) {
     return const SizedBox.shrink();
@@ -1236,7 +1314,11 @@ Widget buildProfessionalDetailsCard(BuildContext context, dynamic user) {
       children: [
         Text(
           "Professional Details",
-          style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold),
+          style: AppTextStyles.caption(
+            context,
+            color: AppColors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 10),
         if (degree.isNotEmpty)
@@ -1252,7 +1334,11 @@ Widget buildProfessionalDetailsCard(BuildContext context, dynamic user) {
         if (locations.isNotEmpty) ...[
           Text(
             "Available Locations",
-            style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold),
+            style: AppTextStyles.caption(
+              context,
+              color: AppColors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 6),
           Wrap(
@@ -1267,7 +1353,11 @@ Widget buildProfessionalDetailsCard(BuildContext context, dynamic user) {
         if (timings.isNotEmpty) ...[
           Text(
             "Available Timing",
-            style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold),
+            style: AppTextStyles.caption(
+              context,
+              color: AppColors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 6),
           ...timings.map((slot) {
@@ -1285,4 +1375,3 @@ Widget buildProfessionalDetailsCard(BuildContext context, dynamic user) {
     ),
   );
 }
-

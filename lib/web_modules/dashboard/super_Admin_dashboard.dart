@@ -72,12 +72,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Widget build(BuildContext context) {
     int total = loginController.profileList.length;
     int active = loginController.profileList.where((p) => p.isActive).length;
-
     double width = MediaQuery.of(context).size.width;
     final bool isDesktop = width >= 1100;
     final bool isMobile = width < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-
     return Scaffold(
       key: _scaffoldKeyAdmin,
       backgroundColor: Colors.white,
@@ -119,9 +117,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                   20,
                                 ),
                                 child: SingleChildScrollView(
-                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         constraints: BoxConstraints(
@@ -132,9 +132,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                           children: [
                                             Container(
                                               height: isMobile ? 180 : 150,
-                                              padding: const EdgeInsets.symmetric(
-                                                horizontal: 20,
-                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 20,
+                                                  ),
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -148,9 +149,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                 ),
                                                 boxShadow: [
                                                   BoxShadow(
-                                                    color: Colors.grey.withValues(
-                                                      alpha: 0.15,
-                                                    ),
+                                                    color: Colors.grey
+                                                        .withValues(
+                                                          alpha: 0.15,
+                                                        ),
                                                     blurRadius: 6,
                                                     offset: const Offset(0, 2),
                                                   ),
@@ -173,8 +175,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                         style:
                                                             AppTextStyles.subtitle(
                                                               context,
-                                                              color:
-                                                                  AppColors.white,
+                                                              color: AppColors
+                                                                  .white,
                                                             ),
                                                       ),
                                                     ),
@@ -198,7 +200,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                             );
                                                           },
                                                         ),
-                                                        const SizedBox(width: 10),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
                                                         GestureDetector(
                                                           onTap: () =>
                                                               showLogoutDialog(
@@ -208,7 +212,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                               const CircleAvatar(
                                                                 radius: 18,
                                                                 backgroundColor:
-                                                                    Colors.white,
+                                                                    Colors
+                                                                        .white,
                                                                 child: Icon(
                                                                   Icons.logout,
                                                                   color: AppColors
@@ -230,48 +235,54 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                               child: isMobile
                                                   ? Column(
                                                       children: [
-                                                        GetBuilder<LoginController>(
-                                                            builder: (controller) {
-                                                              return Row(
-                                                              children:<Widget> [
+                                                        GetBuilder<
+                                                          LoginController
+                                                        >(
+                                                          builder: (controller) {
+                                                            return Row(
+                                                              children: <Widget>[
                                                                 Expanded(
-                                                                  child:GetBuilder<LoginController>(
-                                                                      builder: (controller) {
-                                                                        return StatCard(
-                                                                        title:
-                                                                            "Total Users",
-                                                                        value: total
-                                                                            .toString(),
-                                                                        icon:
-                                                                            Icons.people,
-                                                                        color:
-                                                                            Colors.blue,
-                                                                      );
-                                                                    }
-                                                                  ),
+                                                                  child:
+                                                                      GetBuilder<
+                                                                        LoginController
+                                                                      >(
+                                                                        builder:
+                                                                            (
+                                                                              controller,
+                                                                            ) {
+                                                                              return StatCard(
+                                                                                title: "Total Users",
+                                                                                value: total.toString(),
+                                                                                icon: Icons.people,
+                                                                                color: Colors.blue,
+                                                                              );
+                                                                            },
+                                                                      ),
                                                                 ),
                                                                 const SizedBox(
                                                                   width: 10,
                                                                 ),
                                                                 Expanded(
-                                                                  child: GetBuilder<LoginController>(
-                                                                      builder: (controller) {
-                                                                        return StatCard(
-                                                                        title:
-                                                                            "Active Users",
-                                                                        value: active
-                                                                            .toString(),
-                                                                        icon: Icons
-                                                                            .verified_user,
-                                                                        color:
-                                                                            Colors.green,
-                                                                      );
-                                                                    }
-                                                                  ),
+                                                                  child:
+                                                                      GetBuilder<
+                                                                        LoginController
+                                                                      >(
+                                                                        builder:
+                                                                            (
+                                                                              controller,
+                                                                            ) {
+                                                                              return StatCard(
+                                                                                title: "Active Users",
+                                                                                value: active.toString(),
+                                                                                icon: Icons.verified_user,
+                                                                                color: Colors.green,
+                                                                              );
+                                                                            },
+                                                                      ),
                                                                 ),
                                                               ],
                                                             );
-                                                          }
+                                                          },
                                                         ),
                                                         const SizedBox(
                                                           height: 10,
@@ -280,13 +291,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                           children: [
                                                             Expanded(
                                                               child: StatCard(
-                                                                title: "Revenue",
+                                                                title:
+                                                                    "Revenue",
                                                                 value:
                                                                     "₹ ${planController.income?.total.toStringAsFixed(2)}",
                                                                 icon: Icons
                                                                     .currency_rupee,
-                                                                color:
-                                                                    Colors.orange,
+                                                                color: Colors
+                                                                    .orange,
                                                               ),
                                                             ),
                                                             const SizedBox(
@@ -294,12 +306,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                             ),
                                                             Expanded(
                                                               child: StatCard(
-                                                                title: "Expenses",
+                                                                title:
+                                                                    "Expenses",
                                                                 value:
                                                                     "₹ ${planController.total.toStringAsFixed(2)}",
                                                                 icon: Icons
                                                                     .money_off,
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                               ),
                                                             ),
                                                           ],
@@ -319,8 +333,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                                     "Total Users",
                                                                 value: total
                                                                     .toString(),
-                                                                icon:
-                                                                    Icons.people,
+                                                                icon: Icons
+                                                                    .people,
                                                                 color:
                                                                     Colors.blue,
                                                               ),
@@ -336,8 +350,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                                     .toString(),
                                                                 icon: Icons
                                                                     .verified_user,
-                                                                color:
-                                                                    Colors.green,
+                                                                color: Colors
+                                                                    .green,
                                                               ),
                                                             ),
                                                             const SizedBox(
@@ -351,8 +365,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                                     "₹ ${planController.income?.total.toStringAsFixed(2)}",
                                                                 icon: Icons
                                                                     .currency_rupee,
-                                                                color:
-                                                                    Colors.orange,
+                                                                color: Colors
+                                                                    .orange,
                                                               ),
                                                             ),
                                                             const SizedBox(
@@ -366,7 +380,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                                     "₹ ${planController.total.toStringAsFixed(2)}",
                                                                 icon: Icons
                                                                     .money_off,
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                               ),
                                                             ),
                                                           ],
@@ -386,7 +401,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                           boxShadow: [
                                             BoxShadow(
                                               color: Colors.grey.withValues(
@@ -418,11 +435,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                             }
                                             if (Api.userInfo.read('userType') ==
                                                 "admin") {
-              
                                               await loginController
                                                   .getProfileDetails(
                                                     '',
-                                                    Api.userInfo.read('state') ?? "",
+                                                    Api.userInfo.read(
+                                                          'state',
+                                                        ) ??
+                                                        "",
                                                     [],
                                                     [],
                                                     [],
@@ -430,7 +449,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                     '',
                                                     '',
                                                     '',
-                                                    searchController.text.toString(),
+                                                    searchController.text
+                                                        .toString(),
                                                     context,
                                                   );
                                             }
@@ -473,7 +493,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                               ),
                                               TextButton(
                                                 onPressed: () {
-                                                  Get.toNamed('/userTypeListWeb');
+                                                  Get.toNamed(
+                                                    '/userTypeListWeb',
+                                                  );
                                                 },
                                                 child: Text(
                                                   "View All",
@@ -484,8 +506,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ).copyWith(
-                                                        decoration: TextDecoration
-                                                            .underline,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
                                                       ),
                                                 ),
                                               ),
@@ -495,10 +518,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                           AnimationLimiter(
                                             child: GridView.builder(
                                               shrinkWrap: true,
-                                              physics: const NeverScrollableScrollPhysics(),
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
                                               itemCount:
-                                                  loginController.profileList.length > 10
-                                                  ? 10 : loginController.profileList.length,
+                                                  loginController
+                                                          .profileList
+                                                          .length >
+                                                      10
+                                                  ? 10
+                                                  : loginController
+                                                        .profileList
+                                                        .length,
                                               gridDelegate:
                                                   const SliverGridDelegateWithMaxCrossAxisExtent(
                                                     maxCrossAxisExtent: 280,
@@ -523,7 +553,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                                                 8.0,
                                                               ),
                                                           child: clinicCard(
-                                                            loginController.profileList[index], context,
+                                                            loginController
+                                                                .profileList[index],
+                                                            context,
                                                           ),
                                                         ),
                                                       ),
@@ -563,17 +595,19 @@ class _AdminDashboardState extends State<AdminDashboard> {
     //   orElse: () => "",
     // );
     String firstImage = clinic.logoImages.firstWhere(
-          (img) => img.toLowerCase().endsWith('.jpg') ||
+      (img) =>
+          img.toLowerCase().endsWith('.jpg') ||
           img.toLowerCase().endsWith('.png') ||
-          img.toLowerCase().endsWith('.jpeg')||
-              img.toLowerCase().endsWith('.webg'),
+          img.toLowerCase().endsWith('.jpeg') ||
+          img.toLowerCase().endsWith('.webg'),
       orElse: () => "",
     );
     if (firstImage.isEmpty) {
       firstImage = clinic.images.firstWhere(
-            (img) => img.toLowerCase().endsWith('.jpg') ||
+        (img) =>
+            img.toLowerCase().endsWith('.jpg') ||
             img.toLowerCase().endsWith('.png') ||
-            img.toLowerCase().endsWith('.jpeg')||
+            img.toLowerCase().endsWith('.jpeg') ||
             img.toLowerCase().endsWith('.webg'),
         orElse: () => "",
       );
@@ -611,18 +645,19 @@ class _AdminDashboardState extends State<AdminDashboard> {
                               firstImage,
                               width: double.infinity,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF1F3F6),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: const Icon(
-                                  Icons.image_outlined,
-                                  color: Colors.grey,
-                                  size: 50,
-                                ),
-                              ),
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF1F3F6),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: const Icon(
+                                      Icons.image_outlined,
+                                      color: Colors.grey,
+                                      size: 50,
+                                    ),
+                                  ),
                             )
                           : Container(
                               width: double.infinity,
@@ -844,7 +879,7 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
                 return GestureDetector(
                   onTap: () async {
                     Api.userInfo.write('selectedUserType1', typeKey);
-                  await  Api.userInfo.write('sUserType1', typeKey,);
+                    await Api.userInfo.write('sUserType1', typeKey);
                     await loginController.getProfileDetails(
                       typeKey,
                       '',
