@@ -80,7 +80,7 @@ class _CommonBottomNavigationState extends State<CommonBottomNavigation> {
         Api.userInfo.write('selectUId', userId);
         Get.offAllNamed('/${profilePage(userType)}');
       } else {
-        Get.offAllNamed('/registerPage');
+        Get.offAllNamed('/loginTypesPage');
       }
       return;
     }

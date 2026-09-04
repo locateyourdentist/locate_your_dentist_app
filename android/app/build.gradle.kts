@@ -74,7 +74,7 @@ android {
     namespace = "com.lyd.locate_your_dentist"
 
     compileSdk = 36
-    ndkVersion = "30.0.15729638"
+    ndkVersion = "28.2.13676358" // highest version required by installed plugins (see plugin NDK warnings); already installed locally
 
     defaultConfig {
         applicationId = "com.lyd.locate_your_dentist"

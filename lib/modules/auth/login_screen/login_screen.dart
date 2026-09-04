@@ -10,7 +10,6 @@ import 'package:locate_your_dentist/main.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import '../../../common_widgets/custom_toast.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
   @override
@@ -291,7 +290,7 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
-                                          Get.toNamed('/registerPage');
+                                          Get.offAllNamed('/loginTypesPage');
                                         },
                                     ),
                                   ],
@@ -317,7 +316,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
 
                             const SizedBox(height: 8),
-
                           ],
                         ),
                       ),

@@ -433,7 +433,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     controller:
                                         loginController.fullNameController,
                                   ),
-                                  SizedBox(height: size * 0.01),
+                                  SizedBox(height: size * 0.03),
                                   CustomTextField(
                                     hint: "Date of Birth",
                                     controller: loginController.dobController,

@@ -589,8 +589,6 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                           ),
                         ),
                         const SizedBox(height: 26),
-
-                        /// QUICK STATS
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: _RevealIn(

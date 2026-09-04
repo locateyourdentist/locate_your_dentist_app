@@ -1,6 +1,6 @@
 class AppConstants {
   static const baseUrl = 'https://locateyourdentist.onrender.com/';
-  static const razorPayKey = 'rzp_test_TV4QmvzBwbHchq';
+  static const razorPayKey = 'rzp_live_TXtm0JoNVwGIdZ';
   //'rzp_test_RzNhGYRP9d54Ca';
   static const webFireBaseVAPID_KEY =
       'BPIa_iU8vOaJk3MquVBrNP0ONtl1Kcf7eMhhArQTXn33d_yPxnsVxcpDulrLu5ijuifyCXZH2MFAWHy7olnTM5o';
