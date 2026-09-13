@@ -128,13 +128,13 @@ class _CreatePlanState extends State<CreatePlan> {
           "";
       planController.priceController.text = args['price'] ?? "";
       planController.durationDaysController.text = args['duration'] ?? "";
+      planController.markPriceController.text = args['markPrice'] ?? "";
       planController.selectedFeatures = List<String>.from(
         args['features'] ?? [],
       );
       planController.selectedString = args['selectedString'] ?? "";
       planController.selectedUserType = args['userType'] ?? "";
       final details = Map<String, dynamic>.from(args['details'] ?? {});
-
       planController.isStateWise = details['state'] ?? false;
       planController.isDistrictWise = details['district'] ?? false;
       planController.isCityWise = details['city'] ?? false;
@@ -158,6 +158,7 @@ class _CreatePlanState extends State<CreatePlan> {
           args['webinarPlanId']?.toString() ??
           "";
       planController.priceController.text = args['price'] ?? "";
+      planController.markPriceController.text = args['markPrice'] ?? "";
       planController.durationDaysController.text = args['duration'] ?? "";
       planController.selectedFeatures = List<String>.from(
         args['features'] ?? [],
@@ -464,10 +465,12 @@ class _CreatePlanState extends State<CreatePlan> {
                                 maxLength: 3,
                                 keyboardType: TextInputType.number,
                               ),
-                            if (planController.selectedString == "PostImagePlan")
+                            if (planController.selectedString ==
+                                "PostImagePlan")
                               CustomTextField(
                                 hint: "Number of Posts Allowed",
-                                controller: planController.postImageCountController,
+                                controller:
+                                    planController.postImageCountController,
                                 maxLength: 3,
                                 keyboardType: TextInputType.number,
                               ),
@@ -586,15 +589,31 @@ class _CreatePlanState extends State<CreatePlan> {
                                       return;
                                     int days =
                                         int.tryParse(
-                                          planController.durationDaysController.text,) ?? 0;
-                                    int months = int.tryParse(planController.durationMonthsController.text) ?? 0;
+                                          planController
+                                              .durationDaysController
+                                              .text,
+                                        ) ??
+                                        0;
+                                    int months =
+                                        int.tryParse(
+                                          planController
+                                              .durationMonthsController
+                                              .text,
+                                        ) ??
+                                        0;
 
                                     int duration = days + (months * 30);
 
                                     String durationDays = duration.toString();
-                                    if (planController.selectedUserType == null ||
-                                        planController.selectedUserType!.isEmpty) {
-                                      showCustomToast(context, "Please select user type",);
+                                    if (planController.selectedUserType ==
+                                            null ||
+                                        planController
+                                            .selectedUserType!
+                                            .isEmpty) {
+                                      showCustomToast(
+                                        context,
+                                        "Please select user type",
+                                      );
                                       return;
                                     }
                                     List<String> features = [];
@@ -634,10 +653,16 @@ class _CreatePlanState extends State<CreatePlan> {
                                         planController.isLocationAndroid,
                                         planController.isMobileNumber,
                                         planController.isServices,
-                                        planController.imageCountController.text,
+                                        planController
+                                            .imageCountController
+                                            .text,
                                         planController.imageSizeController.text,
-                                        planController.videoCountController.text,
-                                        planController.videoCountController.text,
+                                        planController
+                                            .videoCountController
+                                            .text,
+                                        planController
+                                            .videoCountController
+                                            .text,
                                         features.toSet().toList(),
                                         context,
                                       );
@@ -733,6 +758,7 @@ class _CreatePlanState extends State<CreatePlan> {
                                       );
                                     } else if (planController.selectedString ==
                                         "WebinarPlan") {
+                                      print('web id${webinarPlanId}');
                                       await planController.createWebinarPlans(
                                         planController.selectedUserType!,
                                         webinarPlanId!,
@@ -747,7 +773,8 @@ class _CreatePlanState extends State<CreatePlan> {
                                         planController.isAreaWise,
                                         context,
                                       );
-                                    } else if (planController.selectedString == "PostImagePlan") {
+                                    } else if (planController.selectedString ==
+                                        "PostImagePlan") {
                                       await planController.createPostImagesPlans(
                                         planController.selectedUserType!,
                                         postImagePlanId!,
@@ -756,7 +783,9 @@ class _CreatePlanState extends State<CreatePlan> {
                                         planController.markPriceController.text,
                                         durationDays,
                                         //planController.durationDaysController.text,
-                                        planController.postImageCountController.text,
+                                        planController
+                                            .postImageCountController
+                                            .text,
                                         context,
                                       );
                                     }

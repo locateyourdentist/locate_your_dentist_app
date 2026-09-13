@@ -451,7 +451,7 @@ class ModernUserTypeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final jobController = Get.find<JobController>();
+    final jobController = Get.put(JobController());
     return GestureDetector(
       onTap: () => _showUserTypePopup(context, jobController),
       child: Container(

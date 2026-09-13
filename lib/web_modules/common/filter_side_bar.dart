@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
@@ -20,14 +21,64 @@ class FilterSidebar extends StatefulWidget {
 class _FilterSidebarState extends State<FilterSidebar> {
   final loginController = Get.put(LoginController());
   final jobController = Get.put(JobController());
-
   final TextEditingController searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     loginController.fetchStates();
     jobController.getJobCategoryLists("", context);
+    _initSelectedStateFromLocation();
+  }
+
+  Future<void> _initSelectedStateFromLocation() async {
+    if (loginController.selectedState != null &&
+        loginController.selectedState!.isNotEmpty) {
+      return;
+    }
+
+    if (!mounted) return;
+    final position = await LocationService.getCurrentLocationWithPrompt(
+      context,
+    );
+    if (position == null || !mounted) return;
+
+    if (loginController.selectedState != null &&
+        loginController.selectedState!.isNotEmpty) {
+      return;
+    }
+
+    try {
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      final area = placemarks.first.administrativeArea ?? '';
+      if (area.isEmpty) return;
+
+      if (loginController.states.isEmpty) {
+        await loginController.fetchStates();
+      }
+
+      final matchedState = loginController.states.cast<String>().firstWhere(
+        (s) =>
+            s.toLowerCase().contains(area.toLowerCase()) ||
+            area.toLowerCase().contains(s.toLowerCase()),
+        orElse: () => '',
+      );
+
+      if (matchedState.isEmpty ||
+          !mounted ||
+          (loginController.selectedState != null &&
+              loginController.selectedState!.isNotEmpty)) {
+        return;
+      }
+
+      loginController.selectedState = matchedState;
+      await loginController.fetchDistricts(matchedState);
+      loginController.update();
+    } catch (e) {
+      print('Error resolving state from location: $e');
+    }
   }
 
   @override
@@ -58,7 +109,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
                             _sectionTitle("User Type"),
                           if (Api.userInfo.read('token') != null)
                             _dropdown(
-                              "User Type",
+                              "${Api.userInfo.read('sUserType1')}",
                               const [
                                 "Dental Clinic",
                                 "Dental Lab",
@@ -69,7 +120,8 @@ class _FilterSidebarState extends State<FilterSidebar> {
                               ],
                               loginController.filterUserType,
                               (val) {
-                                loginController.filterUserType = val;
+                               loginController.filterUserType = val;
+                                 Api.userInfo.write('sUserType1', loginController.filterUserType);
                                 if (val != 'Dental Consultant') {
                                   loginController.filterSelectedDegree = null;
                                   loginController
@@ -656,7 +708,8 @@ class _FilterSidebarState extends State<FilterSidebar> {
 
                 if (Api.userInfo.read('userType') == "superAdmin") {
                   await loginController.getProfileDetails(
-                    loginController.filterUserType ?? '',
+                    await Api.userInfo.read('sUserType1'),
+                    //loginController.filterUserType ?? '',
                     loginController.selectedState,
                     loginController.selectedDistricts,
                     loginController.selectedTalukas,

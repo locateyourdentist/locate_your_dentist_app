@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
@@ -18,13 +19,6 @@ import 'package:shimmer/shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 
-/// Reads markPrice out of a raw plan `details` map.
-///
-/// Some older create-plan API calls saved markPrice as `{markPrice: markPrice}`
-/// instead of `{'markPrice': markPrice}` (a map-literal bug), so the value ended
-/// up as a self-referential key (e.g. `{"150": "150"}`) instead of under the
-/// `markPrice` key. Falls back to detecting that shape for plans saved before
-/// the bug was fixed.
 String? _readMarkPrice(Map<String, dynamic>? details) {
   if (details == null) return null;
   if (details['markPrice'] != null) return details['markPrice'].toString();
@@ -57,6 +51,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
   String? selectedString;
   final PlanController planController = Get.put(PlanController());
   final LoginController loginController = Get.put(LoginController());
+  final Map<String, ScrollController> _planScrollControllers = {};
 
   @override
   void initState() {
@@ -64,6 +59,14 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
     selectedIndex = 1;
     selectedString = "Buy Plans";
     _initData();
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _planScrollControllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   void _initData() async {
@@ -400,13 +403,13 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
       highlightColor: Colors.grey[100]!,
       child: Center(
         child: SizedBox(
-          height: 500,
+          height: 300,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: 3,
             itemBuilder: (context, index) => Container(
-              width: 320,
-              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              width: 280,
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
@@ -551,13 +554,26 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
     if (plans.isEmpty) return const Center(child: Text("No plans available"));
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
     final userId = Api.userInfo.read('userId')?.toString() ?? "";
-    return Center(
-      child: SizedBox(
-        height: 500,
+    final scrollController = _planScrollControllers.putIfAbsent(
+      planType,
+      () => ScrollController(),
+    );
+    return SizedBox(
+      height: 300,
+      width: double.infinity,
+      child: Listener(
+        onPointerSignal: (event) {
+          if (event is PointerScrollEvent && scrollController.hasClients) {
+            final target = (scrollController.offset + event.scrollDelta.dy)
+                .clamp(0.0, scrollController.position.maxScrollExtent);
+            scrollController.jumpTo(target);
+          }
+        },
         child: AnimationLimiter(
           child: ListView.builder(
+            controller: scrollController,
             scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
+            physics: ScrollPhysics(),
             itemCount: plans.length,
             itemBuilder: (context, index) {
               final plan = plans[index];
@@ -612,12 +628,12 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                   horizontalOffset: 50.0,
                   child: FadeInAnimation(
                     child: Container(
-                      width: 320,
+                      width: 280,
                       margin: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 20,
+                        horizontal: 10,
+                        vertical: 6,
                       ),
-                      padding: const EdgeInsets.all(25),
+                      padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
@@ -641,7 +657,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                               color: AppColors.primary,
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 6),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.baseline,
                             textBaseline: TextBaseline.alphabetic,
@@ -674,7 +690,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                               color: Colors.grey,
                             ),
                           ),
-                          const Divider(height: 30),
+                          const Divider(height: 10),
                           Expanded(
                             child: features.isNotEmpty
                                 ? ListView(
@@ -720,7 +736,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                                     ),
                                   ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 8),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
@@ -730,7 +746,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 15,
+                                  vertical: 10,
                                 ),
                               ),
                               onPressed: () {
@@ -780,6 +796,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
         'planName': plan.planName,
         'planId': plan.planId,
         'price': plan.price,
+        'markPrice': plan.details?.markPrice,
         'duration': plan.duration,
         'details': {
           'images': plan.details?.images,
@@ -800,6 +817,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
         'addOnsPlanName': plan.addOnsPlanName,
         'addOnsId': plan.addOnsPlanId,
         'price': plan.price,
+        'markPrice': plan.details?.markPrice,
         'duration': plan.duration,
         'details': {
           'state': plan.details?.state,
@@ -815,6 +833,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
         'jobPlanName': plan.jobPlanName,
         'jobPlansId': plan.jobPlansId,
         'price': plan.price,
+        'markPrice': plan.details?.markPrice,
         'duration': plan.duration,
         'details': {
           'state': plan.details?.state,
@@ -830,6 +849,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
         'webinarPlanName': plan.webinarPlanName,
         'webinarPlanId': plan.webinarPlanId,
         'price': plan.price,
+        'markPrice': plan.details['markPrice'],
         'duration': plan.duration,
         'userType': plan.userType,
       });
@@ -856,6 +876,9 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
     String duration,
     String planId,
   ) {
+    print(
+      'BUY NOW tapped: planType=$planType userId=$userId planId=$planId price=$price duration=$duration',
+    );
     var dates = calculatePlanDates(duration);
     String startDate = dates["startDate"].toString();
     String endDate = dates["endDate"].toString();
@@ -892,7 +915,14 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
           false;
     }
 
+    print(
+      'BUY NOW checkPlanList.isEmpty=${planController.checkPlanList.isEmpty} currentPlanKey=$currentPlanKey isActive=$isActive isBaseActive=$isBaseActive',
+    );
+
     if (currentPlanKey != "basePlan" && !isBaseActive) {
+      print(
+        'BUY NOW blocked: base plan not active, showing alert instead of navigating',
+      );
       showSuccessDialog(
         context,
         title: "Alert",
@@ -901,6 +931,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
       return;
     }
 
+    print('BUY NOW proceeding to payment page (isActive=$isActive)');
     if (isActive) {
       showSuccessDialog(
         context,

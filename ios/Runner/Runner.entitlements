@@ -7,5 +7,7 @@
 		<string>applinks:www.locateyourdentist.com</string>
 		<string>applinks:locateyourdentist.com</string>
 	</array>
+	<key>aps-environment</key>
+	<string>development</string>
 </dict>
 </plist>

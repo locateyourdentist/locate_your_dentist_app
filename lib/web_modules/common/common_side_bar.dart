@@ -14,7 +14,7 @@ class AdminSideBar extends StatefulWidget {
 }
 
 class _AdminSideBarState extends State<AdminSideBar> {
-  final loginController = Get.find<LoginController>();
+  final loginController = Get.put(LoginController());
   late List<Map<String, String>> settingList;
   @override
   void initState() {

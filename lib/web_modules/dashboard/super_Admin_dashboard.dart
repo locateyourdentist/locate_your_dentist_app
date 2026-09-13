@@ -880,19 +880,19 @@ class _UserTypeDashboardModernState extends State<UserTypeDashboardModern> {
                   onTap: () async {
                     Api.userInfo.write('selectedUserType1', typeKey);
                     await Api.userInfo.write('sUserType1', typeKey);
-                    await loginController.getProfileDetails(
-                      typeKey,
-                      '',
-                      [],
-                      [],
-                      [],
-                      '',
-                      '',
-                      '',
-                      '',
-                      '',
-                      context,
-                    );
+                    // await loginController.getProfileDetails(
+                    //   typeKey,
+                    //   '',
+                    //   [],
+                    //   [],
+                    //   [],
+                    //   '',
+                    //   '',
+                    //   '',
+                    //   '',
+                    //   '',
+                    //   context,
+                    // );
                     Get.toNamed('/userTypeListWeb');
                   },
                   child: Stack(

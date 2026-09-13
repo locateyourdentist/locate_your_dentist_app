@@ -2219,6 +2219,7 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                             'webinarPlanId': plan.webinarPlanId.toString(),
                                                                                                             // 'planName':plan.planName.toString()
                                                                                                             'price': plan.price.toString(),
+                                                                                                            'markPrice':plan.details['markPrice'].toString(),
                                                                                                             'duration': plan.duration.toString(),
                                                                                                             'details': {
                                                                                                               // 'state': plan.details?.state,
@@ -2236,10 +2237,8 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                           context,
                                                                                                         );
                                                                                                       }
-                                                                                                      if (userType !=
-                                                                                                              "admin" &&
-                                                                                                          userType !=
-                                                                                                              "superAdmin") {
+                                                                                                      if (userType != "admin" &&
+                                                                                                          userType != "superAdmin") {
                                                                                                         var dates = calculatePlanDates(
                                                                                                           plan.duration.toString(),
                                                                                                         );
@@ -2662,12 +2661,16 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                     child: Center(
                                                                                       child:
                                                                                           GetBuilder<
-                                                                                            PlanController>(
+                                                                                            PlanController
+                                                                                          >(
                                                                                             builder:
-                                                                                                (controller) {
+                                                                                                (
+                                                                                                  controller,
+                                                                                                ) {
                                                                                                   return GestureDetector(
                                                                                                     onTap: () async {
-                                                                                                      if (userType == "superAdmin") {
+                                                                                                      if (userType ==
+                                                                                                          "superAdmin") {
                                                                                                         print(
                                                                                                           'dfid${plan.postImagesPlanId.toString()}name${plan.postPlanName.toString()}price${plan.price.toString()}dura${plan.duration.toString()}',
                                                                                                         );
@@ -2682,7 +2685,9 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                             'postImagesPlanId': plan.postImagesPlanId.toString(),
                                                                                                             'price': plan.price.toString(),
                                                                                                             'duration': plan.duration.toString(),
-                                                                                                            'details': plan.details ?? {},
+                                                                                                            'details':
+                                                                                                                plan.details ??
+                                                                                                                {},
                                                                                                             // 'features': plan.features,
                                                                                                             'selectedString': "PostImagePlan",
                                                                                                             'userType': plan.userType,
@@ -2732,8 +2737,10 @@ class _ViewPlanState extends State<ViewPlan> {
                                                                                                             isBasePlanActive = false;
                                                                                                           }
                                                                                                         }
-                                                                                                        if (isBasePlanActive == true &&
-                                                                                                            isposterPlanActive == true) {
+                                                                                                        if (isBasePlanActive ==
+                                                                                                                true &&
+                                                                                                            isposterPlanActive ==
+                                                                                                                true) {
                                                                                                           showSuccessDialog(
                                                                                                             context,
                                                                                                             title: "Alert",

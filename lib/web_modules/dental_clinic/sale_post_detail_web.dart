@@ -14,7 +14,6 @@ import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
 import '../../modules/product_services/service_controller.dart';
 
-
 class SalePostDetailWebPage extends StatefulWidget {
   const SalePostDetailWebPage({super.key});
 
@@ -39,6 +38,7 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
     }
     return null;
   }
+
   @override
   void initState() {
     super.initState();
@@ -56,9 +56,6 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
       _loading = true;
       _showSlowLoadHint = false;
     });
-    // The backend sleeps after ~15 min idle (Render free tier) and can take
-    // up to a minute to wake on the first request, which otherwise looks
-    // like a frozen page. Surface a hint once it's taking a while.
     _slowLoadTimer?.cancel();
     _slowLoadTimer = Timer(const Duration(seconds: 5), () {
       if (mounted && _loading) setState(() => _showSlowLoadHint = true);
@@ -106,18 +103,18 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
                 child: _loading
                     ? _buildLoading(context)
                     : (post == null && serviceController.salesListError != null)
-                        ? _buildLoadError(context)
-                        : post == null
-                        ? _buildNotFound(context)
-                        : SingleChildScrollView(
-                            padding: EdgeInsets.all(isMobile ? 16 : 32),
-                            child: Center(
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(maxWidth: 800),
-                                child: _buildDetail(context, post),
-                              ),
-                            ),
+                    ? _buildLoadError(context)
+                    : post == null
+                    ? _buildNotFound(context)
+                    : SingleChildScrollView(
+                        padding: EdgeInsets.all(isMobile ? 16 : 32),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 800),
+                            child: _buildDetail(context, post),
                           ),
+                        ),
+                      ),
               ),
             ],
           ),
@@ -152,12 +149,22 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
         children: [
           Icon(Icons.wifi_off_rounded, size: 70, color: Colors.grey.shade300),
           const SizedBox(height: 12),
-          Text("Couldn't load this listing", style: AppTextStyles.caption(context, color: Colors.grey)),
+          Text(
+            "Couldn't load this listing",
+            style: AppTextStyles.caption(context, color: Colors.grey),
+          ),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: _refresh,
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: Text("Retry", style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold)),
+            child: Text(
+              "Retry",
+              style: AppTextStyles.caption(
+                context,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -171,11 +178,21 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
         children: [
           Icon(Icons.search_off_rounded, size: 70, color: Colors.grey.shade300),
           const SizedBox(height: 12),
-          Text("Listing not found", style: AppTextStyles.caption(context, color: Colors.grey)),
+          Text(
+            "Listing not found",
+            style: AppTextStyles.caption(context, color: Colors.grey),
+          ),
           const SizedBox(height: 16),
           TextButton(
             onPressed: () => Get.offNamed('/salePostListWebPage'),
-            child: Text("Browse all listings", style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.bold)),
+            child: Text(
+              "Browse all listings",
+              style: AppTextStyles.caption(
+                context,
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -185,7 +202,9 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
   Widget _buildDetail(BuildContext context, SalePostModel post) {
     final images = post.images ?? [];
     final plainMessage = quillMessageToPlainText(post.message);
-    final message = plainMessage.isEmpty ? "No description provided" : plainMessage;
+    final message = plainMessage.isEmpty
+        ? "No description provided"
+        : plainMessage;
     final price = (post.price ?? '').isEmpty ? "N/A" : post.price!;
     final userType = post.userType ?? '';
     final mobileNumber = post.mobileNumber ?? '';
@@ -194,7 +213,13 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 20, offset: const Offset(0, 8))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -209,25 +234,47 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(userType, style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.w600)),
+                      child: Text(
+                        userType,
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                     const Spacer(),
                     if (post.createdDate != null)
                       Text(
                         DateFormat('dd MMM yyyy').format(post.createdDate!),
-                        style: AppTextStyles.caption(context, color: Colors.grey.shade500),
+                        style: AppTextStyles.caption(
+                          context,
+                          color: Colors.grey.shade500,
+                        ),
                       ),
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text("₹$price", style: AppTextStyles.subtitle(context, color: AppColors.primary)),
+                Text(
+                  "₹$price",
+                  style: AppTextStyles.subtitle(
+                    context,
+                    color: AppColors.primary,
+                  ),
+                ),
                 const SizedBox(height: 12),
-                Text(message, style: AppTextStyles.body(context, color: AppColors.black)),
+                Text(
+                  message,
+                  style: AppTextStyles.body(context, color: AppColors.black),
+                ),
                 const SizedBox(height: 24),
                 Row(
                   children: [
@@ -235,16 +282,26 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
                       child: SizedBox(
                         width: 150,
                         child: ElevatedButton.icon(
-                          onPressed: mobileNumber.isEmpty ? null : () => launchCall(mobileNumber),
+                          onPressed: mobileNumber.isEmpty
+                              ? null
+                              : () => launchCall(mobileNumber),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                           icon: const Icon(Icons.call, color: Colors.white),
                           label: Text(
-                            mobileNumber.isEmpty ? "No contact number" : "Call  $mobileNumber",
-                            style: AppTextStyles.caption(context, color: Colors.white, fontWeight: FontWeight.bold),
+                            mobileNumber.isEmpty
+                                ? "No contact number"
+                                : "Call  $mobileNumber",
+                            style: AppTextStyles.caption(
+                              context,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -260,12 +317,27 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
                         postId: post.id,
                       ),
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                          horizontal: 18,
+                        ),
                         side: const BorderSide(color: AppColors.primary),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      icon: const Icon(Icons.share_outlined, color: AppColors.primary),
-                      label: Text("Share", style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.bold)),
+                      icon: const Icon(
+                        Icons.share_outlined,
+                        color: AppColors.primary,
+                      ),
+                      label: Text(
+                        "Share",
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -282,7 +354,11 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
       return Container(
         height: 320,
         width: double.infinity,
-        decoration: const BoxDecoration(gradient: LinearGradient(colors: [AppColors.primary, AppColors.secondary])),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [AppColors.primary, AppColors.secondary],
+          ),
+        ),
         child: Icon(_userTypeIcon(userType), color: Colors.white, size: 60),
       );
     }
@@ -293,7 +369,8 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
         width: double.infinity,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => Container(
-          height: 320, width: double.infinity,
+          height: 320,
+          width: double.infinity,
           color: const Color(0xFFF1F3F6),
           child: const Icon(Icons.image_outlined, color: Colors.grey, size: 40),
         ),
@@ -311,7 +388,11 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
               errorBuilder: (context, error, stackTrace) => Container(
                 height: 320,
                 color: const Color(0xFFF1F3F6),
-                child: const Icon(Icons.image_outlined, color: Colors.grey, size: 40),
+                child: const Icon(
+                  Icons.image_outlined,
+                  color: Colors.grey,
+                  size: 40,
+                ),
               ),
             );
           }).toList(),
@@ -320,7 +401,8 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
             viewportFraction: 1,
             autoPlay: true,
             autoPlayInterval: const Duration(seconds: 4),
-            onPageChanged: (index, reason) => setState(() => _currentImageIndex = index),
+            onPageChanged: (index, reason) =>
+                setState(() => _currentImageIndex = index),
           ),
         ),
         const SizedBox(height: 8),
@@ -333,7 +415,9 @@ class _SalePostDetailWebPageState extends State<SalePostDetailWebPage> {
               height: 7,
               margin: const EdgeInsets.symmetric(horizontal: 3),
               decoration: BoxDecoration(
-                color: _currentImageIndex == entry.key ? AppColors.primary : Colors.grey.shade300,
+                color: _currentImageIndex == entry.key
+                    ? AppColors.primary
+                    : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(10),
               ),
             );

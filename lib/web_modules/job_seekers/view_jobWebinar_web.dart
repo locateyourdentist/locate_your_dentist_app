@@ -240,73 +240,10 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
                                             Align(
                                               alignment: Alignment.centerRight,
                                               child: TextButton.icon(
-                                                onPressed: () {
-                                                  jobController.job.clear();
-                                                  jobController.webinar.clear();
-                                                  loginController
-                                                          .selectedJobType =
-                                                      "";
-                                                  jobController.selectedJobId =
-                                                      '';
-                                                  jobController
-                                                          .selectedWebinarId =
-                                                      '';
-                                                  loginController
-                                                      .typeNameController
-                                                      .clear();
-                                                  loginController
-                                                      .jobTitleController
-                                                      .clear();
-                                                  loginController
-                                                      .jobDescController
-                                                      .clear();
-                                                  loginController
-                                                          .selectedSalary =
-                                                      "";
-                                                  loginController
-                                                      .qualificationJobController
-                                                      .clear();
-                                                  loginController
-                                                          .selectedExperience =
-                                                      "";
-                                                  loginController
-                                                      .webinarTitleJobController
-                                                      .clear();
-                                                  loginController
-                                                      .webinarDescriptionJobController
-                                                      .clear();
-                                                  loginController
-                                                      .webinarLinkController
-                                                      .clear();
-                                                  loginController
-                                                      .webinarDateController
-                                                      .clear();
-                                                  loginController.startHour =
-                                                      '';
-                                                  loginController.startMinutes =
-                                                      "";
-                                                  loginController.startPeriod =
-                                                      "";
-                                                  loginController.endHour = "";
-                                                  loginController.endMinutes =
-                                                      "";
-                                                  loginController.endPeriod =
-                                                      "";
-                                                  jobController.webinarImage =
-                                                      "";
-                                                  jobController.jobImage = "";
-                                                  jobController
-                                                          .selectedWebinarId =
-                                                      "0";
-                                                  jobController.selectedJobId =
-                                                      "0";
-                                                  loginController.update();
-                                                  jobController.update();
-                                                  Get.toNamed(
-                                                    '/createJobWebPage',
-                                                    arguments: {'job': 'new'},
-                                                  );
-                                                },
+                                                onPressed: () =>
+                                                    _showCreateJobOrWebinarChoice(
+                                                      context,
+                                                    ),
                                                 icon: const Icon(
                                                   Icons.add_circle_outline,
                                                   size: 20,
@@ -533,10 +470,7 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
                         'activeStatus1',
                         webinars.isActive.toString(),
                       );
-                      Get.toNamed(
-                        '/createJobWebPage',
-                        arguments: {"selectedString": "Webinar"},
-                      );
+                      Get.toNamed('/createWebinarWebPage');
                     },
                     context: context,
                   ),
@@ -546,6 +480,77 @@ class _ViewJobWebinarWebPageState extends State<ViewJobWebinarWebPage> {
           );
         },
       ),
+    );
+  }
+
+  void _resetJobAndWebinarFields() {
+    jobController.job.clear();
+    jobController.webinar.clear();
+    loginController.selectedJobType = "";
+    loginController.typeNameController.clear();
+    loginController.jobTitleController.clear();
+    loginController.jobDescController.clear();
+    loginController.selectedSalary = "";
+    loginController.qualificationJobController.clear();
+    loginController.selectedExperience = "";
+    loginController.webinarTitleJobController.clear();
+    loginController.webinarDescriptionJobController.clear();
+    loginController.webinarLinkController.clear();
+    loginController.webinarDateController.clear();
+    loginController.startHour = '';
+    loginController.startMinutes = "";
+    loginController.startPeriod = "";
+    loginController.endHour = "";
+    loginController.endMinutes = "";
+    loginController.endPeriod = "";
+    jobController.webinarImage = "";
+    jobController.jobImage = "";
+    jobController.selectedWebinarId = "0";
+    jobController.selectedJobId = "0";
+    loginController.update();
+    jobController.update();
+  }
+
+  void _showCreateJobOrWebinarChoice(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(
+            "Create New",
+            style: AppTextStyles.subtitle(context, color: AppColors.black),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.work_outline),
+                title: Text("Create Job", style: AppTextStyles.body(context)),
+                onTap: () {
+                  Navigator.pop(dialogContext);
+                  _resetJobAndWebinarFields();
+                  Get.toNamed('/createJobWebPage', arguments: {'job': 'new'});
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.video_camera_front_outlined),
+                title: Text(
+                  "Create Webinar",
+                  style: AppTextStyles.body(context),
+                ),
+                onTap: () {
+                  Navigator.pop(dialogContext);
+                  _resetJobAndWebinarFields();
+                  Get.toNamed(
+                    '/createWebinarWebPage',
+                    arguments: {'job': 'new'},
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

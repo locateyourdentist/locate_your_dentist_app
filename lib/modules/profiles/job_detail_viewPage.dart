@@ -122,8 +122,9 @@ class _ViewJobPageState extends State<ViewJobPage> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-    final jobController = Get.find<JobController>();
-    final isAdminView = Api.userInfo.read('userType').toString() != 'Job Seekers';
+    final jobController = Get.put(JobController());
+    final isAdminView =
+        Api.userInfo.read('userType').toString() != 'Job Seekers';
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FC),
       body: RefreshIndicator(
@@ -161,9 +162,9 @@ class _ViewJobPageState extends State<ViewJobPage> {
                               onTap: url.isEmpty
                                   ? null
                                   : () => Get.toNamed(
-                                        '/viewImagePage',
-                                        arguments: {"url": url},
-                                      ),
+                                      '/viewImagePage',
+                                      arguments: {"url": url},
+                                    ),
                               child: url.isNotEmpty
                                   ? FadeInImage(
                                       image: NetworkImage(url),
@@ -179,22 +180,22 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                       ),
                                       imageErrorBuilder: (_, __, ___) =>
                                           Container(
-                                        decoration: const BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              AppColors.primary,
-                                              AppColors.secondary,
-                                            ],
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
+                                            decoration: const BoxDecoration(
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  AppColors.primary,
+                                                  AppColors.secondary,
+                                                ],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                              ),
+                                            ),
+                                            child: const Icon(
+                                              Icons.work_outline,
+                                              color: Colors.white,
+                                              size: 50,
+                                            ),
                                           ),
-                                        ),
-                                        child: const Icon(
-                                          Icons.work_outline,
-                                          color: Colors.white,
-                                          size: 50,
-                                        ),
-                                      ),
                                     )
                                   : Container(
                                       decoration: const BoxDecoration(
@@ -293,10 +294,10 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                       onSelected: (String isActive) async {
                                         await jobController
                                             .updateApplicationStatusAdmin(
-                                          job.jobId.toString(),
-                                          isActive.toString(),
-                                          context,
-                                        );
+                                              job.jobId.toString(),
+                                              isActive.toString(),
+                                              context,
+                                            );
                                         await jobController.getJobsById(
                                           job.jobId.toString(),
                                           context,
@@ -491,26 +492,28 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                               onConfirm: () async {
                                                 isOpen
                                                     ? await jobController
-                                                        .updateApplicationStatusAdmin(
-                                                        job.jobId.toString(),
-                                                        'false',
-                                                        context,
-                                                      )
+                                                          .updateApplicationStatusAdmin(
+                                                            job.jobId
+                                                                .toString(),
+                                                            'false',
+                                                            context,
+                                                          )
                                                     : await jobController
-                                                        .updateApplicationStatusAdmin(
-                                                        job.jobId.toString(),
-                                                        'true',
-                                                        context,
-                                                      );
+                                                          .updateApplicationStatusAdmin(
+                                                            job.jobId
+                                                                .toString(),
+                                                            'true',
+                                                            context,
+                                                          );
                                                 await jobController.getJobsById(
                                                   job.jobId.toString(),
                                                   context,
                                                 );
                                                 await jobController
                                                     .getAppliedJobsAdmin(
-                                                  job.jobId.toString(),
-                                                  context,
-                                                );
+                                                      job.jobId.toString(),
+                                                      context,
+                                                    );
                                                 jobController.update();
                                               },
                                             );
@@ -579,7 +582,9 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                   ),
                                   !isAdminView
                                       ? Padding(
-                                          padding: const EdgeInsets.only(top: 12),
+                                          padding: const EdgeInsets.only(
+                                            top: 12,
+                                          ),
                                           child: Text(
                                             job.companyDescription ??
                                                 'No clinic description available',
@@ -592,45 +597,44 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                           ),
                                         )
                                       : jobController.jobIdListAdmin.isNotEmpty
-                                          ? ListView.builder(
-                                              itemCount: jobController
-                                                  .jobIdListAdmin
-                                                  .length,
-                                              padding:
-                                                  const EdgeInsets.only(top: 12),
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                              itemBuilder: (context, index) {
-                                                final seekers = jobController
-                                                    .jobIdListAdmin[index];
-                                                totalApplies = jobController
-                                                    .jobIdListAdmin
-                                                    .length;
-                                                return AnimationLimiter(
-                                                  child: AnimationConfiguration
-                                                      .staggeredList(
-                                                    position: index,
-                                                    duration: const Duration(
-                                                      milliseconds: 1300,
-                                                    ),
-                                                    child: SlideAnimation(
-                                                      verticalOffset: 120.0,
-                                                      curve: Curves.easeOutBack,
-                                                      child: FadeInAnimation(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
+                                      ? ListView.builder(
+                                          itemCount: jobController
+                                              .jobIdListAdmin
+                                              .length,
+                                          padding: const EdgeInsets.only(
+                                            top: 12,
+                                          ),
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemBuilder: (context, index) {
+                                            final seekers = jobController
+                                                .jobIdListAdmin[index];
+                                            totalApplies = jobController
+                                                .jobIdListAdmin
+                                                .length;
+                                            return AnimationLimiter(
+                                              child: AnimationConfiguration.staggeredList(
+                                                position: index,
+                                                duration: const Duration(
+                                                  milliseconds: 1300,
+                                                ),
+                                                child: SlideAnimation(
+                                                  verticalOffset: 120.0,
+                                                  curve: Curves.easeOutBack,
+                                                  child: FadeInAnimation(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
                                                             bottom: 12,
                                                           ),
-                                                          child: GestureDetector(
-                                                            onTap: () async {
-                                                              if (seekers.status
-                                                                      .toString()
-                                                                      .toLowerCase() ==
-                                                                  'applied') {
-                                                                await jobController
-                                                                    .updateJobStatusAdmin(
+                                                      child: GestureDetector(
+                                                        onTap: () async {
+                                                          if (seekers.status
+                                                                  .toString()
+                                                                  .toLowerCase() ==
+                                                              'applied') {
+                                                            await jobController
+                                                                .updateJobStatusAdmin(
                                                                   seekers
                                                                       .jobSeekerId
                                                                       .toString(),
@@ -641,52 +645,50 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                                                       "",
                                                                   context,
                                                                 );
-                                                              }
-                                                              await loginController
-                                                                  .getProfileByUserId(
-                                                                seekers
-                                                                        .jobSeekerId ??
+                                                          }
+                                                          await loginController
+                                                              .getProfileByUserId(
+                                                                seekers.jobSeekerId ??
                                                                     "",
                                                                 context,
                                                               );
-                                                              Get.toNamed(
-                                                                '/jobSeekerViewProfilePage',
-                                                              );
-                                                            },
-                                                            child:
-                                                                JobSeekerAppliedCard(
-                                                              seeker: seekers,
-                                                              orgName:
-                                                                  job.orgName,
-                                                              onCall: () {
-                                                                launchCall(
-                                                                  seekers
-                                                                      .mobileNumber
-                                                                      .toString(),
-                                                                );
-                                                              },
-                                                            ),
-                                                          ),
+                                                          Get.toNamed(
+                                                            '/jobSeekerViewProfilePage',
+                                                          );
+                                                        },
+                                                        child: JobSeekerAppliedCard(
+                                                          seeker: seekers,
+                                                          orgName: job.orgName,
+                                                          onCall: () {
+                                                            launchCall(
+                                                              seekers
+                                                                  .mobileNumber
+                                                                  .toString(),
+                                                            );
+                                                          },
                                                         ),
                                                       ),
                                                     ),
                                                   ),
-                                                );
-                                              },
-                                            )
-                                          : Center(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.only(top: 40),
-                                                child: Text(
-                                                  'No applicants yet',
-                                                  style: AppTextStyles.caption(
-                                                    context,
-                                                    color: Colors.grey,
-                                                  ),
                                                 ),
                                               ),
+                                            );
+                                          },
+                                        )
+                                      : Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 40,
                                             ),
+                                            child: Text(
+                                              'No applicants yet',
+                                              style: AppTextStyles.caption(
+                                                context,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                 ],
                               ),
                             ),
@@ -721,13 +723,15 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                             : () async {
                                                 await jobController
                                                     .applyJobsJobSeekers(
-                                                  job.jobId ?? '',
-                                                  Api.userInfo.read('userId') ??
-                                                      '',
-                                                  job.userType ?? '',
-                                                  job.orgName ?? '',
-                                                  context,
-                                                );
+                                                      job.jobId ?? '',
+                                                      Api.userInfo.read(
+                                                            'userId',
+                                                          ) ??
+                                                          '',
+                                                      job.userType ?? '',
+                                                      job.orgName ?? '',
+                                                      context,
+                                                    );
                                               },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.transparent,
@@ -735,12 +739,15 @@ class _ViewJobPageState extends State<ViewJobPage> {
                                               Colors.transparent,
                                           shadowColor: Colors.transparent,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
                                           ),
                                         ),
                                         child: Text(
-                                          isJobApplied ? 'Applied' : "Apply Now",
+                                          isJobApplied
+                                              ? 'Applied'
+                                              : "Apply Now",
                                           style: AppTextStyles.body(
                                             context,
                                             fontWeight: FontWeight.bold,

@@ -2,12 +2,12 @@ importScripts("https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"
 importScripts("https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js");
 
 firebase.initializeApp({
-  apiKey: "AIzaSyD0lcg8qsEarpbjiWJkUODu53EF7lT9ajU",
-  authDomain: "locateyourdentist-5c2ca.firebaseapp.com",
-  projectId: "locateyourdentist-5c2ca",
-  storageBucket: "locateyourdentist-5c2ca.firebasestorage.app",
-  messagingSenderId: "831601657278",
-  appId: "1:831601657278:web:d39cd0bca707c6b917a5ef",
+  apiKey: "AIzaSyAXxg4D1aX6vQg1s19r5Pb_uO9OuIAvNNk",
+  authDomain: "locate-your-dentist.firebaseapp.com",
+  projectId: "locate-your-dentist",
+  storageBucket: "locate-your-dentist.firebasestorage.app",
+  messagingSenderId: "540179202432",
+  appId: "1:540179202432:web:aa86d1a145377eae3b8165",
 });
 
 const messaging = firebase.messaging();

@@ -70,7 +70,8 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
   }
 
   Future<void> _refresh() async {
-    final webinarId = Get.parameters['id'] ?? Api.userInfo.read('webinarId') ?? "";
+    final webinarId =
+        Get.parameters['id'] ?? Api.userInfo.read('webinarId') ?? "";
     await jobController.getWebinarById(
       webinarId,
       Api.userInfo.read('activeStatus1') ?? "",
@@ -484,7 +485,10 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
           GetBuilder<JobController>(
             builder: (controller) {
               final bool isWebinarApplied = controller.webinarListJobSeekers
-                  .any((j) => j.webinarId.toString() == webinar.webinarId.toString());
+                  .any(
+                    (j) =>
+                        j.webinarId.toString() == webinar.webinarId.toString(),
+                  );
               return Center(
                 child: ElevatedButton.icon(
                   onPressed: isWebinarApplied
@@ -499,19 +503,28 @@ class _WebinarViewWebPageState extends State<WebinarViewWebPage> {
                         },
                   icon: Icon(
                     Icons.link,
-                    color: isWebinarApplied ? AppColors.primary : AppColors.white,
+                    color: isWebinarApplied
+                        ? AppColors.primary
+                        : AppColors.white,
                   ),
                   label: Text(
                     isWebinarApplied ? "Applied" : "Join Webinar",
                     style: AppTextStyles.body(
                       context,
-                      color: isWebinarApplied ? AppColors.primary : AppColors.white,
+                      color: isWebinarApplied
+                          ? AppColors.primary
+                          : AppColors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isWebinarApplied ? AppColors.white : AppColors.primary,
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                    backgroundColor: isWebinarApplied
+                        ? AppColors.white
+                        : AppColors.primary,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 12,
+                    ),
                   ),
                 ),
               );
@@ -583,7 +596,7 @@ Widget _buildApplicationsTab(
 
 Widget _applicationCard(dynamic applier, double width, BuildContext context) {
   double cardWidth = width > 1200 ? 400 : width * 0.45;
-  final loginController = Get.find<LoginController>();
+  final loginController = Get.put(LoginController());
   final screenWidth = MediaQuery.of(context).size.width;
 
   return MouseRegion(

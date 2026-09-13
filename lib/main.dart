@@ -14,15 +14,16 @@ import 'package:locate_your_dentist/common_widgets/platform_helper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api/api.dart';
+import 'utills/constants.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'web_url_strategy_stub.dart'
-if (dart.library.html) 'web_url_strategy.dart';
+    if (dart.library.html) 'web_url_strategy.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel',
@@ -32,9 +33,7 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 );
 
 @pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(
-    RemoteMessage message) async {
-
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -45,36 +44,44 @@ Future<void> firebaseMessagingBackgroundHandler(
 
   print("Background message received: ${message.messageId}");
 }
-Future<String?> downloadAndSaveFile(
-    String url,
-    String fileName,
-    ) async {
+
+Future<String?> downloadAndSaveFile(String url, String fileName) async {
   if (kIsWeb) return null;
 
   try {
-    final directory =
-    await getApplicationDocumentsDirectory();
+    final directory = await getApplicationDocumentsDirectory();
 
-    final filePath =
-        '${directory.path}/$fileName';
+    final filePath = '${directory.path}/$fileName';
 
-    final response =
-    await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url));
 
     final file = File(filePath);
 
-    await file.writeAsBytes(
-      response.bodyBytes,
-    );
+    await file.writeAsBytes(response.bodyBytes);
 
     return file.path;
   } catch (e) {
-    debugPrint(
-      'downloadAndSaveFile error: $e',
-    );
+    debugPrint('downloadAndSaveFile error: $e');
     return null;
   }
 }
+
+Future<void> _resyncFcmTokenIfLoggedIn(String token) async {
+  final userId = Api.userInfo.read('userId')?.toString();
+  final userType = Api.userInfo.read('userType')?.toString();
+  if (Api.userInfo.read('token') != null &&
+      userId != null &&
+      userId.isNotEmpty &&
+      userType != null &&
+      userType.isNotEmpty) {
+    try {
+      await Api().saveFcmToken(userId, userType, token);
+    } catch (e) {
+      print("Failed to re-sync FCM token: $e");
+    }
+  }
+}
+
 Future<void> setupFCM() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
@@ -86,31 +93,38 @@ Future<void> setupFCM() async {
 
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     try {
-      if (Platform.isIOS) {
+      if (!kIsWeb && Platform.isIOS) {
         final apnsToken = await messaging.getAPNSToken();
         if (apnsToken == null) {
-          print("APNS token not available (e.g. iOS Simulator); "
-              "skipping FCM token fetch.");
+          print(
+            "APNS token not available (e.g. iOS Simulator); "
+            "skipping FCM token fetch.",
+          );
           return;
         }
       }
 
-      final token = await messaging.getToken();
+      final token = await messaging.getToken(
+        vapidKey: kIsWeb ? AppConstants.webFireBaseVAPID_KEY : null,
+      );
       print("FCM Token: $token");
 
       if (token != null) {
         Api.userInfo.write('fcmToken', token);
+        await _resyncFcmTokenIfLoggedIn(token);
       }
     } catch (e) {
       print("Failed to fetch FCM token: $e");
     }
   }
 
-  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
     Api.userInfo.write('fcmToken', newToken);
     print("FCM Token refreshed: $newToken");
+    await _resyncFcmTokenIfLoggedIn(newToken);
   });
 }
+
 Future<void> main() async {
   // WidgetsFlutterBinding.ensureInitialized();
   // await GetStorage.init();
@@ -134,115 +148,80 @@ Future<void> main() async {
     // device) must not block runApp() forever — surface it and continue.
     debugPrint("Firebase init failed or timed out: $e");
   }
-// if(!kIsWeb) {
-//   FirebaseMessaging.onBackgroundMessage(
-//     firebaseMessagingBackgroundHandler,
-//   );
-//
-//   await setupFCM();
-// }
   if (!kIsWeb) {
-    FirebaseMessaging.onBackgroundMessage(
-      firebaseMessagingBackgroundHandler,
-    );
-
-    // Fire-and-forget: requestPermission() waits on the user answering the
-    // OS notification-permission dialog, which has nothing to render behind
-    // it before runApp() — awaiting here would block the entire app from
-    // ever showing a first frame if that dialog goes unanswered.
-    setupFCM();
-    FirebaseMessaging.onMessage.listen(
-          (RemoteMessage message) async {
-
-        print("MESSAGE RECEIVED");
-        print(message.data);
-
-        String imageUrl = message.data['image'] ?? '';
-
-        BigPictureStyleInformation? bigPictureStyle;
-
-        AndroidBitmap<Object>? largeIcon;
-
-
-        if (!kIsWeb &&
-            imageUrl.isNotEmpty) {
-          try {
-            final imagePath =
-            await downloadAndSaveFile(
-              imageUrl,
-              'lyd-big_picture',
-            );
-
-            print("IMAGE SAVED = $imagePath");
-
-            final file = File(imagePath!);
-
-            print(
-              "FILE EXISTS = ${await file.exists()}",
-            );
-
-            print(
-              "FILE SIZE = ${await file.length()}",
-            );
-
-            largeIcon =
-                FilePathAndroidBitmap(imagePath);
-
-            bigPictureStyle =
-                BigPictureStyleInformation(
-                  FilePathAndroidBitmap(imagePath),
-                  largeIcon: largeIcon,
-                  contentTitle:
-                  message.data['title'] ?? '',
-                  summaryText:
-                  message.data['body'] ?? '',
-                  hideExpandedLargeIcon: false,
-                );
-          } catch (e) {
-            print(
-              "IMAGE DOWNLOAD ERROR = $e",
-            );
-          }
-        }
-
-        await flutterLocalNotificationsPlugin.show(
-          id: DateTime.now()
-              .millisecondsSinceEpoch ~/
-              1000,
-          title:
-          message.data['title'] ??
-              message.notification?.title ??
-              '',
-          body:
-          message.data['body'] ??
-              message.notification?.body ??
-              '',
-          notificationDetails:
-          NotificationDetails(
-            android:
-            AndroidNotificationDetails(
-              'high_importance_channel',
-              'High Importance Notifications',
-              importance: Importance.max,
-              priority: Priority.high,
-              largeIcon: largeIcon,
-              styleInformation:
-              bigPictureStyle,
-            ),
-          ),
-        );
-      },
-    );
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("NOTIFICATION CLICKED");
-    });
+    // Web background push is handled by web/firebase-messaging-sw.js instead
+    // of a Dart isolate callback.
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
-  const AndroidInitializationSettings androidInit =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  const DarwinInitializationSettings darwinInit =
-  DarwinInitializationSettings(
+  // Fire-and-forget: requestPermission() waits on the user answering the
+  // OS/browser notification-permission dialog, which has nothing to render
+  // behind it before runApp() — awaiting here would block the entire app
+  // from ever showing a first frame if that dialog goes unanswered.
+  setupFCM();
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    print("MESSAGE RECEIVED");
+    print(message.data);
+
+    String imageUrl = message.data['image'] ?? '';
+
+    BigPictureStyleInformation? bigPictureStyle;
+
+    AndroidBitmap<Object>? largeIcon;
+
+    if (!kIsWeb && imageUrl.isNotEmpty) {
+      try {
+        final imagePath = await downloadAndSaveFile(
+          imageUrl,
+          'lyd-big_picture',
+        );
+
+        print("IMAGE SAVED = $imagePath");
+
+        final file = File(imagePath!);
+
+        print("FILE EXISTS = ${await file.exists()}");
+
+        print("FILE SIZE = ${await file.length()}");
+
+        largeIcon = FilePathAndroidBitmap(imagePath);
+
+        bigPictureStyle = BigPictureStyleInformation(
+          FilePathAndroidBitmap(imagePath),
+          largeIcon: largeIcon,
+          contentTitle: message.data['title'] ?? '',
+          summaryText: message.data['body'] ?? '',
+          hideExpandedLargeIcon: false,
+        );
+      } catch (e) {
+        print("IMAGE DOWNLOAD ERROR = $e");
+      }
+    }
+
+    await flutterLocalNotificationsPlugin.show(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: message.data['title'] ?? message.notification?.title ?? '',
+      body: message.data['body'] ?? message.notification?.body ?? '',
+      notificationDetails: NotificationDetails(
+        android: AndroidNotificationDetails(
+          'high_importance_channel',
+          'High Importance Notifications',
+          importance: Importance.max,
+          priority: Priority.high,
+          largeIcon: largeIcon,
+          styleInformation: bigPictureStyle,
+        ),
+      ),
+    );
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print("NOTIFICATION CLICKED");
+  });
+  const AndroidInitializationSettings androidInit =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const DarwinInitializationSettings darwinInit = DarwinInitializationSettings(
     requestAlertPermission: true,
     requestBadgePermission: true,
     requestSoundPermission: true,
@@ -263,7 +242,8 @@ Future<void> main() async {
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+        AndroidFlutterLocalNotificationsPlugin
+      >()
       ?.createNotificationChannel(channel);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -274,7 +254,6 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
 
   runApp(MyApp(isShowOnboard: isShowOnboard));
 }
@@ -296,6 +275,7 @@ class _MyAppState extends State<MyApp> {
       handleInitialLink();
     });
   }
+
   void handleInitialLink() {
     final initialRoute = PlatformDispatcher.instance.defaultRouteName;
     if (initialRoute != "/") {
@@ -306,6 +286,7 @@ class _MyAppState extends State<MyApp> {
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -321,12 +302,13 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
         FlutterQuillLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('en'),
-      ],
+      supportedLocales: const [Locale('en')],
       getPages: AppPages.page,
-      initialRoute: PlatformHelper.platform == "Web" ? AppRoutes.splashScreen
-          : (widget.isShowOnboard ? AppRoutes.splashScreen : AppRoutes.onBoardScreen),
+      initialRoute: PlatformHelper.platform == "Web"
+          ? AppRoutes.splashScreen
+          : (widget.isShowOnboard
+                ? AppRoutes.splashScreen
+                : AppRoutes.onBoardScreen),
     );
   }
 }

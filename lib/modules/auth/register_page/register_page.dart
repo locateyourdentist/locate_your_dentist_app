@@ -32,6 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
   static const String professionalTypeStorage = 'professional_type';
   int? selectedStateId;
   String? selectedStateCode;
+  String? _selectedUserTypeKey;
   Map<String, dynamic> data = {};
   final jobController = Get.put(JobController());
   final List<Map<String, String>> allItems = [
@@ -64,7 +65,19 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     return imageText;
   }
+  List<Map<String, String>> get filteredItems {
+    final userType = Api.userInfo.read('userType');
 
+    if (userType == "superAdmin") {
+      return allItems;
+    } else if (userType == "admin") {
+      return allItems.where((e) => e["key"] != "Super Admin").toList();
+    } else {
+      return allItems
+          .where((e) => e["key"] != "Admin" && e["key"] != "Super Admin")
+          .toList();
+    }
+  }
   String userTypes(String userType) {
     String prefix;
     switch (userType) {
@@ -497,19 +510,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                       if (value.length < 4) {
                                         return "Password must be at least 4 characters";
                                       }
-
-                                      // if (!RegExp(r'[a-z]').hasMatch(value)) {
-                                      //   return "Password must contain at least one lowercase letter";
-                                      // }
-                                      //
-                                      // if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                                      //   return "Password must contain at least one uppercase letter";
-                                      // }
-                                      //
-                                      // if (!RegExp(r'[0-9]').hasMatch(value)) {
-                                      //   return "Password must contain at least one number";
-                                      // }
-
                                       if (!RegExp(
                                         r'[!@#$%^&*(),.?":{}|<>]',
                                       ).hasMatch(value)) {
@@ -535,6 +535,26 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
 
                                   SizedBox(height: size * 0.03),
+                                  CustomDropdownField(
+                                    hint: "User Type",
+                                    items: filteredItems.map((e) => e["key"]!).toList(),
+                                    selectedValue: _selectedUserTypeKey,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _selectedUserTypeKey = value;
+
+                                        final selected = filteredItems.firstWhere(
+                                              (e) => e["key"] == value,
+                                        );
+
+                                        loginController.selectedUserType = selected["value"]!;
+
+                                        print(loginController.selectedUserType); // dentist
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(height: 15),
+
                                   // if(userType!='superAdmin')
                                   // CustomDropdownField(
                                   //  hint: "User Type",
@@ -939,7 +959,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   SizedBox(height: size * 0.01),
                                   if (loginController.selectedUserType !=
-                                      "Job Seekers")
+                                      "Job Seekers"&&Api.userInfo.read('userType')!=null)
                                     CustomTextField(
                                       hint: "location Link",
                                       icon: Icons.pin,
@@ -947,6 +967,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                           loginController.locationController,
                                     ),
                                   SizedBox(height: size * 0.03),
+                                  if (loginController.selectedUserType !=
+                                      "Job Seekers"&&Api.userInfo.read('userType')!=null)
                                   CustomTextField(
                                     hint: "Website Link",
                                     icon: Icons.web,

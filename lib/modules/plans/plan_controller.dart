@@ -521,7 +521,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('getGstDetails error $error');
     } finally {
       isLoading = false;
       update();
@@ -602,7 +602,7 @@ class PlanController extends GetxController {
     }
   }
 
-  Future<void> getBasePlanList(String userType, dynamic context) async {
+  Future<void> getBasePlanList(String? userType, dynamic context) async {
     isLoading = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       update();
@@ -616,7 +616,7 @@ class PlanController extends GetxController {
     }
     try {
       _basePlanList = [];
-      final response = await api.getBasePlanList(userType);
+      final response = await api.getBasePlanList(userType ?? "");
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> basePlans = data["data"];
@@ -642,7 +642,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('getBasePlanList error $error');
     } finally {
       isLoading = false;
       update();
@@ -685,7 +685,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('getIncomeDetailsByPlan error $error');
     } finally {
       isLoading = false;
       update();
@@ -735,14 +735,14 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('getExpense error $error');
     } finally {
       isLoading = false;
       update();
     }
   }
 
-  Future<void> getAddOnPlansList(String userType, dynamic context) async {
+  Future<void> getAddOnPlansList(String? userType, dynamic context) async {
     isLoading = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       update();
@@ -756,7 +756,7 @@ class PlanController extends GetxController {
     }
     try {
       _addOnsPlanList = [];
-      final response = await api.getAddOnsPlanList(userType);
+      final response = await api.getAddOnsPlanList(userType ?? "");
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> addOnsPlans = data["data"];
@@ -779,14 +779,14 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('getAddOnPlansList error $error');
     } finally {
       isLoading = false;
       update();
     }
   }
 
-  Future<void> getJobPlansList(String userType, dynamic context) async {
+  Future<void> getJobPlansList(String? userType, dynamic context) async {
     isLoading = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       update();
@@ -800,7 +800,7 @@ class PlanController extends GetxController {
     }
     try {
       _jobPlanList = [];
-      final response = await api.getJobPlanList(userType);
+      final response = await api.getJobPlanList(userType ?? "");
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> jobPlans = data["data"];
@@ -822,14 +822,14 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('getJobPlansList error $error');
     } finally {
       isLoading = false;
       update();
     }
   }
 
-  Future<void> getWebinarPlansList(String userType, dynamic context) async {
+  Future<void> getWebinarPlansList(String? userType, dynamic context) async {
     isLoading = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       update();
@@ -843,7 +843,7 @@ class PlanController extends GetxController {
     }
     try {
       _webinarPlanList = [];
-      final response = await api.getWebinarPlanList(userType);
+      final response = await api.getWebinarPlanList(userType ?? "");
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> webinarPlans = data["data"];
@@ -866,14 +866,14 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('getWebinarPlansList error $error');
     } finally {
       isLoading = false;
       update();
     }
   }
 
-  Future<void> getPostImagePlanList(String userType, dynamic context) async {
+  Future<void> getPostImagePlanList(String? userType, dynamic context) async {
     isLoading = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       update();
@@ -887,7 +887,7 @@ class PlanController extends GetxController {
     }
     try {
       _postImagePlanList = [];
-      final response = await api.getPostImagePlanList(userType);
+      final response = await api.getPostImagePlanList(userType ?? "");
       var data = jsonDecode(response.body);
       if (data["status"].toString().toLowerCase() == "success") {
         List<dynamic> postImagePlanList = data["data"];
@@ -1040,7 +1040,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('createPlans error $error');
     } finally {
       isLoading = false;
       update();
@@ -1089,7 +1089,7 @@ class PlanController extends GetxController {
         await loginController.sentMailPlan(
           userId,
           "Plan",
-          "Base Plan Purchased ",
+          "Base Plan Purchased",
           "basePlan",
           context,
         );
@@ -1123,7 +1123,7 @@ class PlanController extends GetxController {
         return false;
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('createUserPlans error $error');
       return false;
     } finally {
       isLoading = false;
@@ -1252,7 +1252,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('createAddonsPlans error $error');
     } finally {
       isLoading = false;
       update();
@@ -1322,7 +1322,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('createUserAddonsPlans error $error');
     } finally {
       isLoading = false;
       update();
@@ -1397,7 +1397,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('createJobPlans error $error');
     } finally {
       isLoading = false;
       update();
@@ -1427,6 +1427,7 @@ class PlanController extends GetxController {
       update();
       Get.snackbar("No Internet", "Please check your connection");
       return;
+
     }
     try {
       final response = await api.createWebinarPlan(
@@ -1434,8 +1435,8 @@ class PlanController extends GetxController {
         webinarPlanId,
         webinarPlanName,
         price,
-        duration,
         markPrice,
+        duration,
         isStateWise1,
         isDistrictWise1,
         isCityWise1,
@@ -1468,7 +1469,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('createWebinarPlans error $error');
     } finally {
       isLoading = false;
       update();
@@ -1536,7 +1537,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('createPostImagesPlans error $error');
     } finally {
       isLoading = false;
       update();
@@ -1605,7 +1606,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('createUserJobPlans error $error');
     } finally {
       isLoading = false;
       update();
@@ -1674,7 +1675,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('createUserWebinarPlans error $error');
     } finally {
       isLoading = false;
       update();
@@ -1743,7 +1744,7 @@ class PlanController extends GetxController {
         );
       }
     } catch (error) {
-      print('getBasePlanList list admin error $error');
+      print('createUserPostImagePlans error $error');
     } finally {
       isLoading = false;
       update();

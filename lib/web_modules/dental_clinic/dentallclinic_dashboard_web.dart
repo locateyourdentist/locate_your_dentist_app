@@ -639,10 +639,7 @@ class _DentalClinicDashboardWebPageState
                             webinars.isActive.toString(),
                             context,
                           );
-                          Get.toNamed(
-                            '/createJobWebPage',
-                            arguments: {"selectedString": "Webinar"},
-                          );
+                          Get.toNamed('/createWebinarWebPage');
                         },
                         context: context,
                       ),

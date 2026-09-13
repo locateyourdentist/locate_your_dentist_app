@@ -29,6 +29,7 @@ class AppRoutes {
   static const addExpenseWeb='/addExpenseWeb';
   static const settingsWebPage='/settingsWebPage';
   static const createJobWebPage='/createJobWebPage';
+  static const createWebinarWebPage='/createWebinarWebPage';
   static const myInvoiceListWebPage='/myInvoiceListWebPage';
   static const myServicesListWebPage='/myServicesListWebPage';
   static const addServicesListWebPage='/addServicesListWebPage';

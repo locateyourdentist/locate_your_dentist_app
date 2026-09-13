@@ -21,7 +21,7 @@ class DashboardCarousel extends StatefulWidget {
 
 class _DashboardCarouselState extends State<DashboardCarousel> {
   int _currentIndex = 0;
-  final planController = Get.find<PlanController>();
+  final planController = Get.put(PlanController());
 
   @override
   Widget build(BuildContext context) {

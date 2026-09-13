@@ -110,10 +110,10 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
             amount.toString(),
             startDate,
             endDate,
-            null,
-            null,
-            null,
-            null,
+            '',
+            '',
+            '',
+            '',
             context,
           );
           break;
@@ -150,7 +150,7 @@ class _CheckoutScreenWebState extends State<CheckoutScreenWeb> {
             context,
           );
           break;
-        case 'postPlan':
+        case 'posterPlan':
           await planController.createUserPostImagePlans(
             userId,
             planId,

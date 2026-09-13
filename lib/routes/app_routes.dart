@@ -72,6 +72,7 @@ import 'package:locate_your_dentist/web_modules/dental_clinic/sale_post_list_web
 import 'package:locate_your_dentist/web_modules/dental_clinic/clinic_profile_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/contact_list_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/create_job_web.dart';
+import 'package:locate_your_dentist/web_modules/dental_clinic/create_webinar_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/dentallclinic_dashboard_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/edit_add_branch_details_web.dart';
 import 'package:locate_your_dentist/web_modules/dental_clinic/my_invoice_list_web.dart';
@@ -303,6 +304,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.createJobWebPage,
       page: () => const CreateJobPostWeb(),
+    ),
+    GetPage(
+      name: AppRoutes.createWebinarWebPage,
+      page: () => const CreateWebinarWebPage(),
     ),
     GetPage(
       name: AppRoutes.myInvoiceListWebPage,

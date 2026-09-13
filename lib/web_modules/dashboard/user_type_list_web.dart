@@ -42,7 +42,6 @@ class _ModernUserTableState extends State<ModernUserTable> {
     _horizontalScrollController.dispose();
     super.dispose();
   }
-
   Future<void> _refresh() async {
     await loginController.getProfileDetails(
       Api.userInfo.read('sUserType1') ?? "",
@@ -62,7 +61,6 @@ class _ModernUserTableState extends State<ModernUserTable> {
     loginController.selectedDistrict = null;
     loginController.selectedTaluka = null;
   }
-
   List<int>? generateExcel(List profiles) {
     final excel = Excel.createExcel();
     const sheetName = "Users";
@@ -104,7 +102,6 @@ class _ModernUserTableState extends State<ModernUserTable> {
     }
     return excel.encode();
   }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -112,7 +109,6 @@ class _ModernUserTableState extends State<ModernUserTable> {
     final bool isTablet = size >= 700 && size < 1100;
     final bool isMobile = size < 700;
     final bool isLoggedIn = Api.userInfo.read('token') != null;
-
     PreferredSizeWidget buildAppBar() {
       if (Api.userInfo.read('token') != null) {
         return CommonWebAppBar(
@@ -125,7 +121,6 @@ class _ModernUserTableState extends State<ModernUserTable> {
         return const CommonHeader();
       }
     }
-
     return WillPopScope(
       onWillPop: () async {
         Get.toNamed('/${pageUserTypeWeb(Api.userInfo.read('userType') ?? "")}');
@@ -176,11 +171,8 @@ class _ModernUserTableState extends State<ModernUserTable> {
             final filteredProfiles = (userType == null || userType!.isEmpty)
                 ? controller.profileList
                 : controller.profileList
-                      .where(
-                        (p) =>
-                            p.userType.toLowerCase() == userType!.toLowerCase(),
-                      )
-                      .toList();
+                      .where((p) => p.userType.toLowerCase() == userType!.toLowerCase(),
+                      ).toList();
             return Row(
               children: [
                 if (isDesktop && isLoggedIn) const AdminSideBar(),

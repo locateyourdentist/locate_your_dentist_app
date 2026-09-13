@@ -1261,7 +1261,6 @@ class Api {
     try {
       final String token = Api.userInfo.read('token') ?? "";
       final String userId = Api.userInfo.read('userId') ?? "";
-
       final response = await http.post(
         Uri.parse(url),
         headers: {

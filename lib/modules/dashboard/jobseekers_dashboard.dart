@@ -337,7 +337,6 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  /// HERO + FLOATING SEARCH CARD
                   Stack(
                     clipBehavior: Clip.none,
                     children: [

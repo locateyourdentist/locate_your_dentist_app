@@ -1040,6 +1040,227 @@ class _LandingPageState extends State<LandingPage>
     );
   }
 
+  Widget _buildPostContentSection(BuildContext context, bool isMobile) {
+    bool isLoggedIn() => Api.userInfo.read('token') != null;
+
+    void goTo(String route) {
+      Get.toNamed(isLoggedIn() ? route : '/webLoginPage');
+    }
+
+    final cards = [
+      _postPromoCard(
+        context: context,
+        icon: Icons.sell_rounded,
+        title: "Post a Sale Ad",
+        description:
+            "Selling dental equipment, instruments or supplies? List it and reach clinics, labs, shops & mechanics looking to buy.",
+        buttonText: "Post Sale Ad",
+        gradientColors: const [AppColors.primary, AppColors.secondary],
+        onTap: () => goTo('/salePostWebPage'),
+      ),
+      _postPromoCard(
+        context: context,
+        icon: Icons.campaign_rounded,
+        title: "Post Jobs & Webinars",
+        description:
+            "Hiring dental professionals or hosting a webinar? Reach thousands of dentists, labs, shops & mechanics on our platform.",
+        buttonText: "Post Job / Webinar",
+        gradientColors: const [Color(0xFF7C3AED), Color(0xFFC026D3)],
+        onTap: () => goTo('/createJobWebPage'),
+      ),
+    ];
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 20 : 60,
+        vertical: 10,
+      ),
+      child: _RevealIn(
+        child: Column(
+          children: [
+            const Center(
+              child: _SectionBadge(
+                text: "For Businesses",
+                icon: Icons.storefront_outlined,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Center(
+              child: Text(
+                "Post Your Ads, Jobs & Webinars",
+                textAlign: TextAlign.center,
+                style: AppTextStyles.headline1(
+                  context,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 0 : 220),
+              child: Text(
+                "Dental shops, labs, mechanics & dentists — grow your business by posting sale ads, job openings, or webinars for the community.",
+                textAlign: TextAlign.center,
+                style: AppTextStyles.body(context, color: AppColors.grey),
+              ),
+            ),
+            const SizedBox(height: 30),
+            isMobile
+                ? Column(
+                    children: [cards[0], const SizedBox(height: 20), cards[1]],
+                  )
+                : IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(child: cards[0]),
+                        const SizedBox(width: 24),
+                        Expanded(child: cards[1]),
+                      ],
+                    ),
+                  ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _postPromoCard({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String description,
+    required String buttonText,
+    required List<Color> gradientColors,
+    required VoidCallback onTap,
+  }) {
+    return _HoverLift(
+      liftScale: 1.02,
+      borderRadius: BorderRadius.circular(28),
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: Colors.grey.shade100),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 30,
+              offset: const Offset(0, 16),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: -50,
+              right: -50,
+              child: _GlowBlob(size: 170, color: gradientColors.first),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: gradientColors,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: gradientColors.first.withValues(alpha: 0.35),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: Icon(icon, color: Colors.white, size: 30),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: AppColors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 26),
+                  _HoverLift(
+                    liftScale: 1.04,
+                    borderRadius: BorderRadius.circular(30),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: gradientColors,
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: gradientColors.first.withValues(alpha: 0.35),
+                            blurRadius: 16,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: ElevatedButton.icon(
+                        onPressed: onTap,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 26,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        label: Text(
+                          buttonText,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -1142,12 +1363,25 @@ class _LandingPageState extends State<LandingPage>
                             padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
                             child: _buildSearchCard(context, size),
                           ),
+                        const SizedBox(height: 30),
+                        platformOverviewSection(context),
                         const SizedBox(height: 40),
+                        const SizedBox(height: 30),
+                        GetBuilder<ServiceController>(
+                          builder: (sController) {
+                            return SalesAdCarouselSection(
+                              posts: sController.salesList,
+                            );
+                          },
+                        ),
+
+                        //CompleteCareSection(),
+                        SizedBox(height: size * 0.01),
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 40,
-                            vertical: 80,
+                            vertical: 30,
                           ),
                           color: const Color(0xffF6FBFB),
                           child: Column(
@@ -1200,18 +1434,8 @@ class _LandingPageState extends State<LandingPage>
                                   },
                                 ),
 
-                              const SizedBox(height: 30),
-                              GetBuilder<ServiceController>(
-                                builder: (sController) {
-                                  return SalesAdCarouselSection(
-                                    posts: sController.salesList,
-                                  );
-                                },
-                              ),
-                              //CompleteCareSection(),
-                              const SizedBox(height: 30),
-                              platformOverviewSection(context),
-                              SizedBox(height: size * 0.01),
+                              const SizedBox(height: 40),
+                              _buildPostContentSection(context, isMobile),
                               isMobile
                                   ? _buildMobile(context)
                                   : CompleteCareSection(),
@@ -2006,7 +2230,7 @@ class _LandingPageState extends State<LandingPage>
           //width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
@@ -2028,7 +2252,7 @@ class _LandingPageState extends State<LandingPage>
           "Discover dental jobs, hire professionals, and join expert-led webinars to grow your career.",
           style: AppTextStyles.body(
             context,
-            color: Colors.white.withOpacity(0.9),
+            color: Colors.white.withValues(alpha: 0.9),
           ),
         ),
 
@@ -2530,7 +2754,7 @@ Widget _buildTransparentLoginCard(BuildContext context) {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      Get.toNamed('/forgotPasswordEmailWeb');
+                      Get.toNamed('/forgotMailWebScreen');
                     },
                     child: Text(
                       "Forgot Password?",

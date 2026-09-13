@@ -20,7 +20,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, Uint8List;
 import 'dart:io' show File;
-
 import '../../main.dart';
 
 class RegisterWebPage extends StatefulWidget {
@@ -175,7 +174,9 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     await loginController.fetchStates();
     if (loginController.userData.isNotEmpty) {
       await setProfileData(loginController.userData.first);
-      getPlanLimits();
+      await getPlanLimits();
+      if(Api.userInfo.read('token')==null)
+        loginController.clearProfileData();
       _syncSelectedUserTypeKey();
     }
     await jobController.getJobCategoryLists("", context);
@@ -836,6 +837,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
           ),
         ],
         const SizedBox(height: 15),
+        if(Api.userInfo.read('userType')!=null)
         _responsiveRow(
           isMobile,
           CustomTextField(
@@ -899,7 +901,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
         const SizedBox(height: 15),
 
         if (loginController.selectedUserType != 'Job Seekers' &&
-            loginController.selectedUserType != null)
+            loginController.selectedUserType != null&&Api.userInfo.read('token')!=null)
           Padding(
             padding: const EdgeInsets.only(top: 15, bottom: 15),
             child: CustomTextField(
@@ -1082,6 +1084,7 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
               );
             },
           ),
+        if (Api.userInfo.read('token')!=null)
         _buildRichTextEditor(),
       ],
     );
