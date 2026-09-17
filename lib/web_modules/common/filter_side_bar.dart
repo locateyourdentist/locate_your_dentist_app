@@ -29,13 +29,11 @@ class _FilterSidebarState extends State<FilterSidebar> {
     jobController.getJobCategoryLists("", context);
     _initSelectedStateFromLocation();
   }
-
   Future<void> _initSelectedStateFromLocation() async {
     if (loginController.selectedState != null &&
         loginController.selectedState!.isNotEmpty) {
       return;
     }
-
     if (!mounted) return;
     final position = await LocationService.getCurrentLocationWithPrompt(
       context,
@@ -254,10 +252,8 @@ class _FilterSidebarState extends State<FilterSidebar> {
                           _sectionTitle("Location"),
 
                           _dropdown(
-                            "State",
-                            loginController.states
-                                .map((e) => e.toString())
-                                .toList(),
+                            "${Api.userInfo.read('state')??""}",
+                            loginController.states.map((e) => e.toString()).toList(),
                             loginController.selectedState,
                             (val) {
                               loginController.selectedState = val;

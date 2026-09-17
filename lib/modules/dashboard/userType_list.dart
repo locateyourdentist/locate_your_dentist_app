@@ -284,18 +284,18 @@ class _userTypeListState extends State<userTypeList> {
                                     filteredProfiles.map((e) => searchController.text.toString());
                                     if( Api.userInfo.read('userType')=="superAdmin") {
                                       await   loginController.getProfileDetails('',  '',
-                                          [], [], [], '','',
-                                          '','',searchController.text.toString(),  context);
+                                          [], [], [], '',safeLat,
+                                          safeLng,distance,searchController.text.toString(),  context);
                                     }
                                     else if( Api.userInfo.read('userType')=="admin") {
                                       await   loginController.getProfileDetails('',  Api.userInfo.read('state') ?? "",
-                                          [], [], [], '','',
-                                          '','',searchController.text.toString(),  context);
+                                          [], [], [], '',safeLat,
+                                          safeLng,distance,searchController.text.toString(),  context);
                                     }
                                     else{
                                       await   loginController.getProfileDetails(userType, "",
-                                          [], [], [], '','',
-                                          '','',searchController.text.toString(),  context);
+                                          [], [], [], '',safeLat,
+                                          safeLng,distance,searchController.text.toString(),  context);
                                     }
                                     print("Search text: $value");
                                   },

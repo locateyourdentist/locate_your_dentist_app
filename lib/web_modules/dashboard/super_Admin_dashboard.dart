@@ -679,8 +679,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
+                        HighlightText(
                           "Name: ${clinic.name}",
+                          query: searchController.text,
                           textAlign: TextAlign.center,
                           style: AppTextStyles.caption(
                             context,
@@ -688,8 +689,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           ),
                         ),
                         const SizedBox(height: 5),
-                        Text(
+                        HighlightText(
                           "UserId: ${clinic.userId}",
+                          query: searchController.text,
                           textAlign: TextAlign.center,
                           style: AppTextStyles.caption(context),
                         ),
@@ -700,13 +702,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           style: AppTextStyles.caption(context),
                         ),
                         const SizedBox(height: 5),
-                        Text(
+                        HighlightText(
                           "Mobile : ${clinic.mobileNumber}",
+                          query: searchController.text,
                           style: AppTextStyles.caption(context),
                         ),
                         const SizedBox(height: 5),
-                        Text(
+                        HighlightText(
                           "Address: ${clinic.address['city'] ?? ""}, ${clinic.address['state'] ?? ""},${clinic.address['district'] ?? ""}",
+                          query: searchController.text,
                           style: AppTextStyles.caption(
                             context,
                             color: AppColors.grey,

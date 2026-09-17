@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
+import 'package:locate_your_dentist/common_widgets/common_widget_all.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../modules/auth/login_screen/login_controller.dart';
 
@@ -161,15 +162,25 @@ class GumDiseaseCard extends StatelessWidget {
                   elevation: 0,
                 ),
                 onPressed: ()async {
+                  String distance = (loginController.selectedDistance1 ?? 0).toString();
+                  bool useLocation = distance.isNotEmpty && distance != "0" && distance != "0.0";
+                  if (useLocation) {
+                    await getLocation();
+                  } else {
+                    loginController.latitude = null;
+                    loginController.longitude = null;
+                  }
+                  String safeLat = useLocation ? (loginController.latitude?.toString() ?? "") : "";
+                  String safeLng = useLocation ? (loginController.longitude?.toString() ?? "") : "";
                   await loginController.getProfileDetails(
                     "Dental Clinic",
                     loginController.selectedState,
                     loginController.selectedDistricts,
                     loginController.selectedTalukas,loginController.selectedVillages,
                     "true",
-                    '',
-                    '',
-                    loginController.selectedDistance.toString(),
+                    safeLat,
+                    safeLng,
+                    distance,
                     '',
                     context,
                   );

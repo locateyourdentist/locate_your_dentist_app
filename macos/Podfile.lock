@@ -5,7 +5,7 @@ PODS:
     - FlutterMacOS
   - file_picker (0.0.1):
     - FlutterMacOS
-  - file_saver (0.0.1):
+  - file_saver (0.3.1):
     - FlutterMacOS
   - file_selector_macos (0.0.1):
     - FlutterMacOS
@@ -104,9 +104,6 @@ PODS:
   - nanopb/encode (3.30910.0)
   - package_info_plus (0.0.1):
     - FlutterMacOS
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - printing (1.0.0):
     - FlutterMacOS
   - PromisesObjC (2.4.1)
@@ -141,7 +138,6 @@ DEPENDENCIES:
   - FlutterMacOS (from `Flutter/ephemeral`)
   - geolocator_apple (from `Flutter/ephemeral/.symlinks/plugins/geolocator_apple/darwin`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
-  - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
   - printing (from `Flutter/ephemeral/.symlinks/plugins/printing/macos`)
   - quill_native_bridge_macos (from `Flutter/ephemeral/.symlinks/plugins/quill_native_bridge_macos/macos`)
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
@@ -193,8 +189,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/geolocator_apple/darwin
   package_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
-  path_provider_foundation:
-    :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
   printing:
     :path: Flutter/ephemeral/.symlinks/plugins/printing/macos
   quill_native_bridge_macos:
@@ -216,7 +210,7 @@ SPEC CHECKSUMS:
   connectivity_plus: 0a976dfd033b59192912fa3c6c7b54aab5093802
   device_info_plus: ce1b7762849d3ec103d0e0517299f2db7ad60720
   file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
-  file_saver: 44e6fbf666677faf097302460e214e977fdd977b
+  file_saver: 110d50183c44973fba3b1d13e6e426e4c4608a81
   file_selector_macos: 3e56eaea051180007b900eacb006686fd54da150
   Firebase: d99ac19b909cd2c548339c2241ecd0d1599ab02e
   firebase_auth: a48c22017e8a04bdd95b0641f5c59cbdbf04440c
@@ -230,7 +224,7 @@ SPEC CHECKSUMS:
   FirebaseCoreInternal: 9afa45b1159304c963da48addb78275ef701c6b4
   FirebaseInstallations: 317270fec08a5d418fdbc8429282238cab3ac843
   FirebaseMessaging: 3b26e2cee503815e01c3701236b020aa9b576f09
-  flutter_local_notifications: 4ccab5b7a22835214a6672e3f9c5e8ae207dab36
+  flutter_local_notifications: 14e285ca39907db50704f7f46c9ab7a526bd7ead
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
   geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd
   GoogleDataTransport: a24e58982ab3ba2f64d79613e027fe7f57e88539
@@ -238,7 +232,6 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: fc75fc972958dceedee61cb662ae1da7a83a91cf
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
-  path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba
   printing: 1dd6a1fce2209ec240698e2439a4adbb9b427637
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
   quill_native_bridge_macos: 3a5f378bc757eb92825193853020b759b56cbb2c
@@ -246,7 +239,7 @@ SPEC CHECKSUMS:
   shared_preferences_foundation: 5086985c1d43c5ba4d5e69a4e8083a389e2909e6
   url_launcher_macos: 175a54c831f4375a6cf895875f716ee5af3888ce
   video_compress: c896234f100791b5fef7f049afa38f6d2ef7b42f
-  video_player_avfoundation: 7993f492ae0bd77edaea24d9dc051d8bb2cd7c86
+  video_player_avfoundation: e54d03b3b19f64f2c557354f72ce538387541ba6
   webview_flutter_wkwebview: 29eb20d43355b48fe7d07113835b9128f84e3af4
 
 PODFILE CHECKSUM: 54d867c82ac51cbd61b565781b9fada492027009

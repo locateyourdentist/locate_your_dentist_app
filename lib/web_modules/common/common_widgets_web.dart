@@ -1342,3 +1342,80 @@ class PostAdsBannerWeb extends StatelessWidget {
     );
   }
 }
+
+/// Renders [text] with every case-insensitive occurrence of [query]
+/// highlighted, so search results make it obvious why a result matched.
+/// Shared across the admin/superAdmin dashboards that filter user lists
+/// by a common search bar (name, userId, clinic, etc.).
+class HighlightText extends StatelessWidget {
+  final String text;
+  final String query;
+  final TextStyle? style;
+  final TextStyle? highlightStyle;
+  final TextAlign? textAlign;
+  final int? maxLines;
+  final TextOverflow? overflow;
+
+  const HighlightText(
+    this.text, {
+    super.key,
+    required this.query,
+    this.style,
+    this.highlightStyle,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final trimmedQuery = query.trim();
+    if (trimmedQuery.isEmpty) {
+      return Text(
+        text,
+        style: style,
+        textAlign: textAlign,
+        maxLines: maxLines,
+        overflow: overflow,
+      );
+    }
+
+    final effectiveHighlightStyle =
+        highlightStyle ??
+        (style ?? const TextStyle()).copyWith(
+          fontWeight: FontWeight.bold,
+          backgroundColor: AppColors.primary.withValues(alpha: 0.2),
+          color: AppColors.primary,
+        );
+
+    final lowerText = text.toLowerCase();
+    final lowerQuery = trimmedQuery.toLowerCase();
+    final spans = <TextSpan>[];
+    int start = 0;
+    int index = lowerText.indexOf(lowerQuery, start);
+
+    while (index != -1) {
+      if (index > start) {
+        spans.add(TextSpan(text: text.substring(start, index), style: style));
+      }
+      spans.add(
+        TextSpan(
+          text: text.substring(index, index + trimmedQuery.length),
+          style: effectiveHighlightStyle,
+        ),
+      );
+      start = index + trimmedQuery.length;
+      index = lowerText.indexOf(lowerQuery, start);
+    }
+    if (start < text.length) {
+      spans.add(TextSpan(text: text.substring(start), style: style));
+    }
+
+    return RichText(
+      textAlign: textAlign ?? TextAlign.start,
+      maxLines: maxLines,
+      overflow: overflow ?? TextOverflow.clip,
+      text: TextSpan(style: style, children: spans),
+    );
+  }
+}

@@ -545,7 +545,17 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                           hintText: "Search lab,shop,etc...",
                                           onSubmitted: (value)async {
                                             print("Search text: $value");
-                                            await  loginController.getProfileDetails('' ,'', [],[], [],'true','','','',value,context);
+                                            String distance = (loginController.selectedDistance1 ?? 0).toString();
+                                            bool useLocation = distance.isNotEmpty && distance != "0" && distance != "0.0";
+                                            if (useLocation) {
+                                              await getLocation();
+                                            } else {
+                                              loginController.latitude = null;
+                                              loginController.longitude = null;
+                                            }
+                                            String safeLat = useLocation ? (loginController.latitude?.toString() ?? "") : "";
+                                            String safeLng = useLocation ? (loginController.longitude?.toString() ?? "") : "";
+                                            await  loginController.getProfileDetails('' ,'', [],[], [],'true',safeLat,safeLng,distance,value,context);
                                             Get.toNamed('/filterResultPage');
                                           },
                                         )

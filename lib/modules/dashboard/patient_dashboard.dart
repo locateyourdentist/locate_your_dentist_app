@@ -830,7 +830,8 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     ),
                     SizedBox(height: 6),
                     Text(
-                      'Login or register to continue as a\nDental Professional',
+                      'Login or register to continue as a Dental Professional\n'
+                          'Buy & sell • Post jobs • Host webinars • Discover more',
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 12.5,

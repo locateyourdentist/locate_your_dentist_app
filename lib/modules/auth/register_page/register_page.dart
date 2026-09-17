@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/custom_toast.dart';
+import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
@@ -111,6 +112,28 @@ class _RegisterPageState extends State<RegisterPage> {
     if (value != passwordController.text) return "Passwords do not match";
     //if(passwordController.text.length>6) return "Password length must be 6 characters";
     return null;
+  }
+
+  Future<bool> _showConfirmDetailsDialog() {
+    final details = <String, String>{
+      "User Type": loginController.selectedUserType ?? '',
+      "Full Name": loginController.fullNameController.text,
+      "Date of Birth": loginController.dobController.text,
+      "Mobile": loginController.mobileController.text,
+      "Email": loginController.emailController.text,
+      "Name": loginController.typeNameController.text,
+      "Address Line 1": loginController.addressLine1Controller.text,
+      "Address Line 2": loginController.addressLine2Controller.text,
+      "State": loginController.selectedState ?? '',
+      "District": loginController.selectedDistrict ?? '',
+      "City": loginController.selectedTaluka ?? '',
+      "Area": loginController.selectedVillage ?? '',
+      "Pincode": loginController.pinCodeController.text,
+      "Website": loginController.websiteController.text,
+      "Description": loginController.descriptionController.text,
+    }..removeWhere((key, value) => value.trim().isEmpty);
+
+    return showConfirmRegistrationDialog(context, details);
   }
 
   final int maxFiles = 3;
@@ -1802,6 +1825,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                                         professionalTypeStorage,
                                                       );
                                                       //print('usertype${loginController.selectedUserType} married${loginController.selectedMartialStatus!}');
+                                                      final confirmed =
+                                                          await _showConfirmDetailsDialog();
+                                                      if (!confirmed) return;
                                                       await loginController.registerUser(
                                                         userId: "0",
                                                         userType: userType1,

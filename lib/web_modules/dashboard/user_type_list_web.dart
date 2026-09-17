@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
@@ -43,9 +44,14 @@ class _ModernUserTableState extends State<ModernUserTable> {
     super.dispose();
   }
   Future<void> _refresh() async {
+    loginController.selectedState = null;
+    loginController.selectedDistrict = null;
+    loginController.selectedTaluka = null;
+    await loginController.fetchStates();
+    await _initSelectedStateFromLocation();
     await loginController.getProfileDetails(
       Api.userInfo.read('sUserType1') ?? "",
-      loginController.selectedState,
+      Api.userInfo.read('state')??"",
       loginController.selectedDistricts,
       loginController.selectedTalukas,
       loginController.selectedVillages,
@@ -56,10 +62,41 @@ class _ModernUserTableState extends State<ModernUserTable> {
       '',
       context,
     );
-    await loginController.fetchStates();
-    loginController.selectedState = null;
-    loginController.selectedDistrict = null;
-    loginController.selectedTaluka = null;
+  }
+
+  Future<void> _initSelectedStateFromLocation() async {
+    if (!mounted) return;
+    final position = await LocationService.getCurrentLocationWithPrompt(
+      context,
+    );
+    if (position == null || !mounted) return;
+
+    try {
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      final area = placemarks.first.administrativeArea ?? '';
+      if (area.isEmpty) return;
+
+      if (loginController.states.isEmpty) {
+        await loginController.fetchStates();
+      }
+
+      final matchedState = loginController.states.cast<String>().firstWhere(
+        (s) =>
+            s.toLowerCase().contains(area.toLowerCase()) ||
+            area.toLowerCase().contains(s.toLowerCase()),
+        orElse: () => '',
+      );
+
+      if (matchedState.isEmpty || !mounted) return;
+
+      loginController.selectedState = matchedState;
+      await loginController.fetchDistricts(matchedState);
+    } catch (e) {
+      print('Error resolving state from location: $e');
+    }
   }
   List<int>? generateExcel(List profiles) {
     final excel = Excel.createExcel();
@@ -322,9 +359,9 @@ class _ModernUserTableState extends State<ModernUserTable> {
         [],
         [],
         '',
-        '',
-        '',
-        '',
+        safeLat,
+        safeLng,
+        distance,
         searchController.text.toString(),
         context,
       );
@@ -336,13 +373,12 @@ class _ModernUserTableState extends State<ModernUserTable> {
         [],
         [],
         '',
-        '',
-        '',
-        '',
+        safeLat,
+        safeLng,
+        distance,
         searchController.text.toString(),
         context,
       );
-      // await loginController.getProfileDetails('', Api.userInfo.read('state') ?? "", loginController.selectedDistrict, loginController.selectedTaluka, loginController.selectedArea,'',safeLat, safeLng, distance,  searchController.text, context);
     } else {
       loginController.getProfileDetails(
         "Dental Clinic",
@@ -351,13 +387,12 @@ class _ModernUserTableState extends State<ModernUserTable> {
         [],
         [],
         'true',
-        '',
-        '',
-        '',
+        safeLat,
+        safeLng,
+        distance,
         searchController.text.toString(),
         context,
       );
-      //await loginController.getProfileDetails(userType, loginController.selectedState, loginController.selectedDistrict, loginController.selectedTaluka,loginController.selectedArea, 'true',safeLat, safeLng, distance, searchController.text, context);
     }
   }
 

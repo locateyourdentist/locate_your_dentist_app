@@ -209,12 +209,6 @@ class LoginController extends GetxController {
   Map<String, TimeOfDay?> timingFrom = {};
   Map<String, TimeOfDay?> timingTo = {};
   final TextEditingController otherDegreeController = TextEditingController();
-
-  // Filter-sidebar state (browsing/admin user list). Kept separate from
-  // selectedDegree/selectedAvailableLocations/selectedAvailableTiming above
-  // since those represent the profile currently being viewed/edited -
-  // reusing them here would clobber that profile's data whenever the
-  // filter sidebar is opened.
   String? filterUserType;
   String? filterSelectedDegree;
   List<String> filterSelectedAvailableLocations = [];

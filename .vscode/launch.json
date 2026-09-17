@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "locate_your_dentist (Chrome)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "chrome",
+            "args": [
+                "--no-web-resources-cdn"
+            ]
+        },
+        {
+            "name": "locate_your_dentist (default device)",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}

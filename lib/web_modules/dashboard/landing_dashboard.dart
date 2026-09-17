@@ -1366,6 +1366,7 @@ class _LandingPageState extends State<LandingPage>
                         const SizedBox(height: 30),
                         platformOverviewSection(context),
                         const SizedBox(height: 40),
+                        _buildPostContentSection(context, isMobile),
                         const SizedBox(height: 30),
                         GetBuilder<ServiceController>(
                           builder: (sController) {
@@ -1433,9 +1434,6 @@ class _LandingPageState extends State<LandingPage>
                                     );
                                   },
                                 ),
-
-                              const SizedBox(height: 40),
-                              _buildPostContentSection(context, isMobile),
                               isMobile
                                   ? _buildMobile(context)
                                   : CompleteCareSection(),

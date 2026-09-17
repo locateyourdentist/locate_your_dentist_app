@@ -565,7 +565,7 @@ void showDeactivateConfirmDialog({
       content: Text(
         isActivating
             ? "Are you sure you want to activate?"
-            : "Are you sure you want to deactivate?",
+            : "Are you sure you want to Deactivate Temporarily?",
       ),
       actions: [
         TextButton(
@@ -657,6 +657,86 @@ void showMissingFieldsDialog(BuildContext context, List<String> missingFields) {
       ],
     ),
   );
+}
+
+/// Shown right before a registration form is submitted, summarizing the
+/// entered details so the user can catch mistakes before the request goes
+/// out. Returns true if the user confirmed, false if they chose to go back
+/// and edit.
+Future<bool> showConfirmRegistrationDialog(
+  BuildContext context,
+  Map<String, String> details,
+) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      title: Text(
+        "Confirm Your Details",
+        style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+      ),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Please review your details before submitting.",
+                style: AppTextStyles.caption(context, color: AppColors.grey),
+              ),
+              const SizedBox(height: 12),
+              ...details.entries.map(
+                (e) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: RichText(
+                    text: TextSpan(
+                      style: AppTextStyles.caption(
+                        context,
+                        color: AppColors.black,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "${e.key}: ",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(text: e.value),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(
+            "Edit",
+            style: AppTextStyles.caption(context, color: AppColors.grey),
+          ),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(
+            "Confirm & Submit",
+            style: AppTextStyles.caption(context, color: AppColors.white),
+          ),
+        ),
+      ],
+    ),
+  );
+  return confirmed ?? false;
 }
 
 /// Shown when location is blocked on web, where browsers deliberately don't

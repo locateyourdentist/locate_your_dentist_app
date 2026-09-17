@@ -621,13 +621,6 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
     }
     if ((loginController.selectedUserType ?? '').isEmpty) {
       missing.add("User Type");
-    } else if (loginController.selectedUserType != 'Job Seekers' &&
-        loginController.typeNameController.text.trim().isEmpty) {
-      missing.add(
-        loginController.selectedUserType == 'Dental Shop'
-            ? "Shop Name"
-            : "Business Name",
-      );
     }
     if (loginController.addressLine1Controller.text.trim().isEmpty)
       missing.add("Address Line 1");
@@ -661,6 +654,28 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
       setState(() => currentStep = 0);
       return;
     }
+
+    final details = <String, String>{
+      "User Type": loginController.selectedUserType ?? '',
+      "Full Name": loginController.fullNameController.text,
+      "Date of Birth": loginController.dobController.text,
+      "Mobile": loginController.mobileController.text,
+      "Email": loginController.emailController.text,
+      "Name": loginController.typeNameController.text,
+      "Address Line 1": loginController.addressLine1Controller.text,
+      "Address Line 2": loginController.addressLine2Controller.text,
+      "State": loginController.selectedState ?? '',
+      "District": loginController.selectedDistrict ?? '',
+      "City": loginController.selectedTaluka ?? '',
+      "Area": loginController.selectedVillage ?? '',
+      "Pincode": loginController.pinCodeController.text,
+      "Website": loginController.websiteController.text,
+      "Description": loginController.descriptionController.text,
+    }..removeWhere((key, value) => value.trim().isEmpty);
+
+    final confirmed = await showConfirmRegistrationDialog(context, details);
+    if (!confirmed) return;
+
     // final imageBytes = await _convertAppImages(loginController.editImages);
     final imageBytes = await _convertAppImage2s(loginController.images1);
     final logoBytes = await _convertAppImage2s(loginController.logoImages1);
@@ -906,8 +921,8 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
             padding: const EdgeInsets.only(top: 15, bottom: 15),
             child: CustomTextField(
               hint: loginController.selectedUserType == 'Dental Shop'
-                  ? "Shop Name"
-                  : "${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
+                  ? "Shop Name (Optional)"
+                  : "${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name (Optional)",
               icon: Icons.store,
               controller: loginController.typeNameController,
             ),

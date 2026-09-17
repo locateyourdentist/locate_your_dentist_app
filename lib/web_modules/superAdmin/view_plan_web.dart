@@ -240,12 +240,10 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
       ),
     );
   }
-
   bool isDesktop(BuildContext context) =>
       MediaQuery.of(context).size.width >= 1100;
   bool isMobile(BuildContext context) =>
       MediaQuery.of(context).size.width < 700;
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -253,14 +251,12 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
     final bool isDesktop = width >= 1100;
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
     final bool isMobile = width < 700;
-
     bool isPosterActive = false;
     if (planController.checkPlanList.isNotEmpty) {
       final firstPlanDetails =
           planController.checkPlanList[0]["details"]?["plan"];
       isPosterActive = firstPlanDetails?["posterPlan"]?["isActive"] ?? false;
     }
-
     return Scaffold(
       key: _scaffoldKeyPlan,
       backgroundColor: AppColors.scaffoldBg,
@@ -273,126 +269,129 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
         onLogout: () {},
         onNotification: () {},
       ),
-      body: Row(
-        children: [
-          if (isDesktop && isLoggedIn) const AdminSideBar(),
-          Expanded(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1200),
-                child: Padding(
-                  padding: EdgeInsets.all(isMobile ? 10 : 25.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Stack(
-                      children: [
-                        if (!isDesktop)
-                          Positioned(
-                            top: 10,
-                            left: 10,
-                            child: IconButton(
-                              icon: const Icon(Icons.menu),
-                              onPressed: () =>
-                                  _scaffoldKeyPlan.currentState?.openDrawer(),
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Row(
+          children: [
+            if (isDesktop && isLoggedIn) const AdminSideBar(),
+            Expanded(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1200),
+                  child: Padding(
+                    padding: EdgeInsets.all(isMobile ? 10 : 25.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Stack(
+                        children: [
+                          if (!isDesktop)
+                            Positioned(
+                              top: 10,
+                              left: 10,
+                              child: IconButton(
+                                icon: const Icon(Icons.menu),
+                                onPressed: () =>
+                                    _scaffoldKeyPlan.currentState?.openDrawer(),
+                              ),
+                            ),
+                          DefaultTabController(
+                            length: 5,
+                            child: Column(
+                              children: [
+                                if (!isDesktop) const SizedBox(height: 40),
+                                _buildPlanSelector(userType, context, width),
+                                if (userType != "admin" &&
+                                    userType != "superAdmin" &&
+                                    selectedString == "Buy Plans")
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    child: BlinkingText(
+                                      text: "Upgrade your Plan",
+                                      style: AppTextStyles.body(
+                                        context,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                if (isPosterActive &&
+                                    planController.editUploadImage.isNotEmpty &&
+                                    selectedString == "Buy Plans")
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                    ),
+                                    child: TextButton(
+                                      onPressed: () =>
+                                          Get.toNamed('/createPostImages'),
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: AppColors.primary,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 12,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'Scrolling Ads Pick Image',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                Expanded(
+                                  child: GetBuilder<PlanController>(
+                                    builder: (controller) {
+                                      if (controller.isLoading) {
+                                        return _buildPlanShimmer(width);
+                                      }
+                                      if (selectedString == "Active Plans") {
+                                        return SingleChildScrollView(
+                                          child: Container(
+                                            constraints: const BoxConstraints(
+                                              maxWidth: 700,
+                                            ),
+
+                                            child: PlanDetailsWidget(
+                                              planList: controller.checkPlanList,
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        return _buildBuyPlans(
+                                          userType,
+                                          context,
+                                          width,
+                                          controller,
+                                          isMobile,
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        DefaultTabController(
-                          length: 5,
-                          child: Column(
-                            children: [
-                              if (!isDesktop) const SizedBox(height: 40),
-                              _buildPlanSelector(userType, context, width),
-                              if (userType != "admin" &&
-                                  userType != "superAdmin" &&
-                                  selectedString == "Buy Plans")
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20),
-                                  child: BlinkingText(
-                                    text: "Upgrade your Plan",
-                                    style: AppTextStyles.body(
-                                      context,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              if (isPosterActive &&
-                                  planController.editUploadImage.isNotEmpty &&
-                                  selectedString == "Buy Plans")
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                  ),
-                                  child: TextButton(
-                                    onPressed: () =>
-                                        Get.toNamed('/createPostImages'),
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: AppColors.primary,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                        vertical: 12,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      'Scrolling Ads Pick Image',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                              Expanded(
-                                child: GetBuilder<PlanController>(
-                                  builder: (controller) {
-                                    if (controller.isLoading) {
-                                      return _buildPlanShimmer(width);
-                                    }
-                                    if (selectedString == "Active Plans") {
-                                      return SingleChildScrollView(
-                                        child: Container(
-                                          constraints: const BoxConstraints(
-                                            maxWidth: 700,
-                                          ),
-
-                                          child: PlanDetailsWidget(
-                                            planList: controller.checkPlanList,
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return _buildBuyPlans(
-                                        userType,
-                                        context,
-                                        width,
-                                        controller,
-                                        isMobile,
-                                      );
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
