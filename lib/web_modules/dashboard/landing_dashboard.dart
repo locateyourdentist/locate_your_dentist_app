@@ -734,28 +734,33 @@ class _LandingPageState extends State<LandingPage>
     return _RevealIn(
       offsetY: 36,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(20),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
           child: Container(
             width: double.infinity,
             margin: const EdgeInsets.symmetric(horizontal: 20),
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.white.withOpacity(0.18),
+                  Colors.white.withOpacity(0.22),
                   Colors.white.withOpacity(0.08),
                 ],
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withOpacity(0.35),
                 width: 1.5,
               ),
               boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.35),
+                  blurRadius: 40,
+                  offset: const Offset(0, 18),
+                ),
                 BoxShadow(
                   color: Colors.black.withOpacity(0.25),
                   blurRadius: 30,
@@ -768,25 +773,55 @@ class _LandingPageState extends State<LandingPage>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.search_rounded,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      "Find Nearby Dental Clinics Instantly",
-                      style: AppTextStyles.caption(
-                        context,
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [AppColors.primary, AppColors.secondary],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.5),
+                            blurRadius: 14,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.search_rounded,
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ).copyWith(letterSpacing: 0.3),
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Find Nearby Dental Clinics Instantly",
+                            style: AppTextStyles.body(
+                              context,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ).copyWith(letterSpacing: 0.2),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            "Filter by state, district, taluka & area",
+                            style: AppTextStyles.caption(
+                              context,
+                              color: Colors.white.withOpacity(0.75),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 22),
                 GetBuilder<LoginController>(
                   builder: (controller) {
                     return buildFilterBox(

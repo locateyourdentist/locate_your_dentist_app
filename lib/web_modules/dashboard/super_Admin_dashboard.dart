@@ -25,11 +25,22 @@ class _AdminDashboardState extends State<AdminDashboard> {
   final notificationController = Get.put(NotificationController());
   final PlanController planController = Get.put(PlanController());
   final TextEditingController searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  bool _isSearchFocused = false;
 
   @override
   void initState() {
     super.initState();
+    _searchFocusNode.addListener(() {
+      setState(() => _isSearchFocused = _searchFocusNode.hasFocus);
+    });
     _refresh();
+  }
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
   }
 
   Future<void> _refresh() async {
@@ -395,25 +406,39 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                       const SizedBox(height: 40),
                                       const PostAdsBannerWeb(),
                                       const SizedBox(height: 24),
-                                      Container(
+                                      AnimatedContainer(
+                                        duration: const Duration(
+                                          milliseconds: 200,
+                                        ),
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 15,
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius: BorderRadius.circular(
-                                            10,
+                                            14,
+                                          ),
+                                          border: Border.all(
+                                            color: AppColors.primary,
+                                            width: _isSearchFocused ? 2 : 1.5,
                                           ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.grey.withValues(
-                                                alpha: 0.15,
-                                              ),
-                                              blurRadius: 6,
+                                              color: AppColors.primary
+                                                  .withValues(
+                                                    alpha: _isSearchFocused
+                                                        ? 0.3
+                                                        : 0.18,
+                                                  ),
+                                              blurRadius: _isSearchFocused
+                                                  ? 16
+                                                  : 8,
+                                              offset: const Offset(0, 4),
                                             ),
                                           ],
                                         ),
                                         child: TextField(
+                                          focusNode: _searchFocusNode,
                                           onChanged: (value) async {
                                             if (Api.userInfo.read('userType') ==
                                                 "superAdmin") {
@@ -459,11 +484,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                           decoration: const InputDecoration(
                                             icon: Icon(
                                               Icons.search,
-                                              color: AppColors.grey,
+                                              color: AppColors.primary,
                                               size: 24,
                                             ),
                                             hintText:
-                                                "Search by name, userId, clinic...",
+                                                "Search for all user types (name, userId, clinic...)",
                                             hintStyle: TextStyle(
                                               color: AppColors.grey,
                                             ),

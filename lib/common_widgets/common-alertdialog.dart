@@ -677,38 +677,41 @@ Future<bool> showConfirmRegistrationDialog(
         style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
       ),
       content: SizedBox(
-        width: double.maxFinite,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Please review your details before submitting.",
-                style: AppTextStyles.caption(context, color: AppColors.grey),
-              ),
-              const SizedBox(height: 12),
-              ...details.entries.map(
-                (e) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: RichText(
-                    text: TextSpan(
-                      style: AppTextStyles.caption(
-                        context,
-                        color: AppColors.black,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: "${e.key}: ",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+        width: MediaQuery.of(context).size.width * 0.45,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 380),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Please review your details before submitting.",
+                  style: AppTextStyles.caption(context, color: AppColors.grey),
+                ),
+                const SizedBox(height: 12),
+                ...details.entries.map(
+                  (e) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: RichText(
+                      text: TextSpan(
+                        style: AppTextStyles.caption(
+                          context,
+                          color: AppColors.black,
                         ),
-                        TextSpan(text: e.value),
-                      ],
+                        children: [
+                          TextSpan(
+                            text: "${e.key}: ",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          TextSpan(text: e.value),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

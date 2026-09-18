@@ -496,6 +496,22 @@ class _RegisterWebPageState extends State<RegisterWebPage> {
                                               context,
                                               missing,
                                             );
+                                          } else {
+                                            // Every field is filled in, but a
+                                            // format validator on an earlier
+                                            // (now-collapsed) step failed -
+                                            // e.g. password missing a special
+                                            // character, mismatched confirm
+                                            // password, or an invalid mobile
+                                            // number. _missingRequiredFields()
+                                            // can't see that, so without this
+                                            // the user just sees nothing
+                                            // happen when they press Submit.
+                                            setState(() => currentStep = 0);
+                                            showCustomToast(
+                                              context,
+                                              "Please review the highlighted fields - one of them doesn't match the required format.",
+                                            );
                                           }
                                         }
                                       } else {

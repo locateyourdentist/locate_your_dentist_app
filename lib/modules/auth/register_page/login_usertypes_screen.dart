@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
+import '../../../api/api.dart';
 import 'register_page.dart';
 
 class DentalProfessionalRegisterPage extends StatefulWidget {
@@ -103,7 +104,7 @@ class _DentalProfessionalRegisterPageState
 
     try {
       final prefs = await SharedPreferences.getInstance();
-
+      Api.userInfo.write('userType',key);
       // Store KEY
       await prefs.setString(professionalKeyStorage, key);
 

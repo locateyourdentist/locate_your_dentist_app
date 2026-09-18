@@ -66,17 +66,41 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     return imageText;
   }
+  // List<Map<String, String>> get filteredItems {
+  //   final userType = Api.userInfo.read('userType');
+  //
+  //   if (userType == "superAdmin") {
+  //     return allItems;
+  //   } else if (userType == "admin") {
+  //     return allItems.where((e) => e["key"] != "Super Admin").toList();
+  //   } else {
+  //     return allItems
+  //         .where((e) => e["key"] != "Admin" && e["key"] != "Super Admin")
+  //         .toList();
+  //   }
+  // }
   List<Map<String, String>> get filteredItems {
-    final userType = Api.userInfo.read('userType');
+    final String? userType = Api.userInfo.read('userType');
 
-    if (userType == "superAdmin") {
-      return allItems;
-    } else if (userType == "admin") {
-      return allItems.where((e) => e["key"] != "Super Admin").toList();
-    } else {
-      return allItems
-          .where((e) => e["key"] != "Admin" && e["key"] != "Super Admin")
-          .toList();
+    if (userType == null) {
+      return [];
+    }
+
+    switch (userType) {
+      case "superAdmin":
+        return allItems;
+
+      case "admin":
+        return allItems
+            .where((e) => e["key"] != "superAdmin")
+            .toList();
+
+      default:
+        return allItems
+            .where((e) =>
+        e["key"] != "admin" &&
+            e["key"] != "superAdmin")
+            .toList();
     }
   }
   String userTypes(String userType) {
@@ -558,25 +582,25 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
 
                                   SizedBox(height: size * 0.03),
-                                  CustomDropdownField(
-                                    hint: "User Type",
-                                    items: filteredItems.map((e) => e["key"]!).toList(),
-                                    selectedValue: _selectedUserTypeKey,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _selectedUserTypeKey = value;
-
-                                        final selected = filteredItems.firstWhere(
-                                              (e) => e["key"] == value,
-                                        );
-
-                                        loginController.selectedUserType = selected["value"]!;
-
-                                        print(loginController.selectedUserType); // dentist
-                                      });
-                                    },
-                                  ),
-                                  const SizedBox(height: 15),
+                                  // CustomDropdownField(
+                                  //   hint: "User Type",
+                                  //   items: filteredItems.map((e) => e["key"]!).toList(),
+                                  //   selectedValue: _selectedUserTypeKey,
+                                  //   onChanged: (value) {
+                                  //     setState(() {
+                                  //       _selectedUserTypeKey = value;
+                                  //
+                                  //       final selected = filteredItems.firstWhere(
+                                  //             (e) => e["key"] == value,
+                                  //       );
+                                  //
+                                  //       loginController.selectedUserType = selected["value"]!;
+                                  //
+                                  //       print(loginController.selectedUserType); // dentist
+                                  //     });
+                                  //   },
+                                  // ),
+                                  // const SizedBox(height: 15),
 
                                   // if(userType!='superAdmin')
                                   // CustomDropdownField(
@@ -604,30 +628,30 @@ class _RegisterPageState extends State<RegisterPage> {
                                   //     });
                                   //   },
                                   // ),
-                                  if (loginController.selectedUserType !=
-                                          null &&
-                                      loginController
-                                          .selectedUserType!
-                                          .isNotEmpty &&
-                                      loginController.selectedUserType !=
-                                          'Job Seekers')
-                                    Column(
-                                      children: [
-                                        SizedBox(height: size * 0.03),
-                                        // if(loginController.selectedUserType !='Job Seekers')
-                                        CustomTextField(
-                                          hint:
-                                              loginController
-                                                      .selectedUserType ==
-                                                  'Dental Shop'
-                                              ? "College Name"
-                                              : "${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
-                                          icon: Icons.store,
-                                          controller: loginController
-                                              .typeNameController,
-                                        ),
-                                      ],
-                                    ),
+                                  // if (loginController.selectedUserType !=
+                                  //         null &&
+                                  //     loginController
+                                  //         .selectedUserType!
+                                  //         .isNotEmpty &&
+                                  //     loginController.selectedUserType !=
+                                  //         'Job Seekers')
+                                  //   Column(
+                                  //     children: [
+                                  //       SizedBox(height: size * 0.03),
+                                  //       // if(loginController.selectedUserType !='Job Seekers')
+                                  //       CustomTextField(
+                                  //         hint:
+                                  //             loginController
+                                  //                     .selectedUserType ==
+                                  //                 'Dental Shop'
+                                  //             ? "College Name"
+                                  //             : "${loginController.selectedUserType?.split(' ').sublist(1).join(' ')} Name",
+                                  //         icon: Icons.store,
+                                  //         controller: loginController
+                                  //             .typeNameController,
+                                  //       ),
+                                  //     ],
+                                  //   ),
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
                                     hint:
@@ -1809,13 +1833,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                                             loginController
                                                                 .certificates,
                                                           );
-                                                      final userType1 =
-                                                          loginController
-                                                              .selectedUserType ??
-                                                          "";
-                                                      print(
-                                                        'curreNT USER${userType1}',
-                                                      );
+                                                      // final userType1 =
+                                                      //     loginController
+                                                      //         .selectedUserType ??
+                                                      //     "";
+                                                      // print(
+                                                      //   'curreNT USER${userType1}',
+                                                      // );
                                                       final prefs =
                                                           await SharedPreferences.getInstance();
                                                       await prefs.remove(
@@ -1830,7 +1854,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                                       if (!confirmed) return;
                                                       await loginController.registerUser(
                                                         userId: "0",
-                                                        userType: userType1,
+                                                        userType:Api.userInfo.read('userType'),
+                                                        //userType1,
                                                         fullName: loginController
                                                             .fullNameController
                                                             .text,
@@ -1876,11 +1901,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                                         pinCode: loginController
                                                             .pinCodeController
                                                             .text,
-                                                        typeName:
-                                                            loginController
-                                                                .typeNameController
-                                                                .text ??
-                                                            "",
+                                                        // typeName:
+                                                        //     loginController
+                                                        //         .typeNameController
+                                                        //         .text ??
+                                                        //     "",
                                                         //image: loginController.selectedUserType=="Job Seekers"?controller.logoImages ?? []:loginController.images ?? [],
                                                         image:
                                                             loginController
