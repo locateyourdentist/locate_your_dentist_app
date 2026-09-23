@@ -490,9 +490,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                             hintText:
                                                 "Search for all user types (name, userId, clinic...)",
                                             hintStyle: TextStyle(
-                                              color: AppColors.grey,
-                                            ),
-                                            border: InputBorder.none,
+                                              color: AppColors.black,fontWeight: FontWeight.bold
+                                            ), border: InputBorder.none,
                                           ),
                                         ),
                                       ),

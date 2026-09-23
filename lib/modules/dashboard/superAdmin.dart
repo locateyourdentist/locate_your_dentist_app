@@ -21,7 +21,11 @@ class _HoverLift extends StatefulWidget {
   final Widget child;
   final double liftScale;
   final BorderRadius? borderRadius;
-  const _HoverLift({required this.child, this.liftScale = 1.02, this.borderRadius});
+  const _HoverLift({
+    required this.child,
+    this.liftScale = 1.02,
+    this.borderRadius,
+  });
 
   @override
   State<_HoverLift> createState() => _HoverLiftState();
@@ -91,13 +95,23 @@ class SuperAdminDashboardPage extends StatefulWidget {
   State<SuperAdminDashboardPage> createState() =>
       _SuperAdminDashboardPageState();
 }
+
 class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
   final LoginController loginController = Get.put(LoginController());
-  final notificationController=Get.put(NotificationController());
-  final planController=Get.put(PlanController());
-  final GlobalKey<ScaffoldState> _scaffoldKeySuperAdmin = GlobalKey<ScaffoldState>();
-  List<String> title=["Admin","Super Admin","Dental Clinic","Dental Shop","Dental Lab","Dental Mechanic","Dental Professionals"];
-  final TextEditingController searchController=TextEditingController();
+  final notificationController = Get.put(NotificationController());
+  final planController = Get.put(PlanController());
+  final GlobalKey<ScaffoldState> _scaffoldKeySuperAdmin =
+      GlobalKey<ScaffoldState>();
+  List<String> title = [
+    "Admin",
+    "Super Admin",
+    "Dental Clinic",
+    "Dental Shop",
+    "Dental Lab",
+    "Dental Mechanic",
+    "Dental Professionals",
+  ];
+  final TextEditingController searchController = TextEditingController();
   List<ProfileModel> filteredProfiles = [];
   Map<String, int> typeCounts = {};
 
@@ -136,15 +150,41 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
   void initState() {
     super.initState();
     _refresh();
-      }
+  }
+
   Future<void> _refresh() async {
     await loginController.fetchStates();
     await planController.getIncomeDetailsByPlan(context: context);
     //await planController.getExpense(month: "", year: "");
     await loginController.getAppLogoImage(context);
     await notificationController.getNotificationListAdmin(context);
-    Api.userInfo.read('userType')=="superAdmin"?
-    await loginController.getProfileDetails('', '', [], [],[], '','','','','', context): loginController.getProfileDetails('', Api.userInfo.read('state')??"", [],[], [], '','','','', '',context);
+    Api.userInfo.read('userType') == "superAdmin"
+        ? await loginController.getProfileDetails(
+            '',
+            '',
+            [],
+            [],
+            [],
+            '',
+            '',
+            '',
+            '',
+            '',
+            context,
+          )
+        : loginController.getProfileDetails(
+            '',
+            Api.userInfo.read('state') ?? "",
+            [],
+            [],
+            [],
+            '',
+            '',
+            '',
+            '',
+            '',
+            context,
+          );
     //await planController.getIncomeDetailsByPlan(context: context);
   }
 
@@ -155,7 +195,8 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
       userType,
       '',
       [],
-      [],[],
+      [],
+      [],
       'true',
       '',
       '',
@@ -225,14 +266,19 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
         Container(
           padding: const EdgeInsets.all(7),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
+            gradient: const LinearGradient(
+              colors: [AppColors.primary, AppColors.secondary],
+            ),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, size: 16, color: Colors.white),
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: Text(text, style: AppTextStyles.subtitle(context, color: AppColors.black)),
+          child: Text(
+            text,
+            style: AppTextStyles.subtitle(context, color: AppColors.black),
+          ),
         ),
       ],
     );
@@ -270,17 +316,28 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                       gradient: LinearGradient(colors: colors),
                       borderRadius: BorderRadius.circular(13),
                     ),
-                    child: Icon(_iconForCategory(category), color: Colors.white, size: 18),
+                    child: Icon(
+                      _iconForCategory(category),
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: colors.first.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       "$count",
-                      style: AppTextStyles.caption(context, color: colors.first, fontWeight: FontWeight.bold),
+                      style: AppTextStyles.caption(
+                        context,
+                        color: colors.first,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -290,7 +347,11 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                 category,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.bold),
+                style: AppTextStyles.caption(
+                  context,
+                  color: AppColors.black,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -315,11 +376,7 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(22)),
           ),
           leading: IconButton(
-            icon: Icon(
-              Icons.menu,
-              color: AppColors.white,
-              size: size * 0.06,
-            ),
+            icon: Icon(Icons.menu, color: AppColors.white, size: size * 0.06),
             onPressed: () {
               _scaffoldKeySuperAdmin.currentState!.openDrawer();
             },
@@ -328,34 +385,51 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(22)),
               gradient: LinearGradient(
-                colors: [AppColors.primary,AppColors.secondary],
+                colors: [AppColors.primary, AppColors.secondary],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
           ),
           title: Column(
-          mainAxisAlignment:MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Locate Your Dentist',
-              style: AppTextStyles.body(context,
-                color: AppColors.white,fontWeight: FontWeight.bold,),
-            ),
-            GetBuilder<PlanController>(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Locate Your Dentist',
+                style: AppTextStyles.body(
+                  context,
+                  color: AppColors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              GetBuilder<PlanController>(
                 builder: (controller) {
                   return Row(
                     children: [
-                      Icon(Icons.place_outlined,color: AppColors.white,size: size*0.05,),
-                      SizedBox(width: size*0.01,),
-                      Expanded(child: Text(planController.currentLocation??"",overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: size*0.03,fontWeight: FontWeight.normal,color: Colors.white),)),
+                      Icon(
+                        Icons.place_outlined,
+                        color: AppColors.white,
+                        size: size * 0.05,
+                      ),
+                      SizedBox(width: size * 0.01),
+                      Expanded(
+                        child: Text(
+                          planController.currentLocation ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: size * 0.03,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ],
                   );
-                }
-            ),
-          ],
-        ),
+                },
+              ),
+            ],
+          ),
           automaticallyImplyLeading: false,
           actions: [
             GetBuilder<NotificationController>(
@@ -364,60 +438,71 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                   liftScale: 1.1,
                   borderRadius: BorderRadius.circular(24),
                   child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-
-                    IconButton(
-                      icon: Icon(
-                        Icons.notifications_none,
-                        color: AppColors.white,
-                        size: size * 0.08,
-                      ),
-                      onPressed: () {
-                        notificationController.getNotificationListAdmin(context);
-                        notificationController.update();
-                        Get.toNamed('/notificationPage');
+                    clipBehavior: Clip.none,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.notifications_none,
+                          color: AppColors.white,
+                          size: size * 0.08,
+                        ),
+                        onPressed: () {
+                          notificationController.getNotificationListAdmin(
+                            context,
+                          );
+                          notificationController.update();
+                          Get.toNamed('/notificationPage');
                         },
-                    ),
-                 if (int.tryParse(notificationController.unreadCount ?? "0")! > 0)
-                    Positioned(
-                        top: 4,
-                        right: 8,
-                        child:  GetBuilder<NotificationController>(
+                      ),
+                      if (int.tryParse(
+                            notificationController.unreadCount ?? "0",
+                          )! >
+                          0)
+                        Positioned(
+                          top: 4,
+                          right: 8,
+                          child: GetBuilder<NotificationController>(
                             builder: (controller) {
                               return CircleAvatar(
-                              radius: size*0.022,backgroundColor: Colors.redAccent,child: Text(
-                              notificationController.unreadCount.toString(),style: TextStyle(color: AppColors.white,fontWeight: FontWeight.w500,fontSize: size*0.022),
-                            ),
-                            );
-                          }
-                        ))
-                  ],
+                                radius: size * 0.022,
+                                backgroundColor: Colors.redAccent,
+                                child: Text(
+                                  notificationController.unreadCount.toString(),
+                                  style: TextStyle(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: size * 0.022,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                    ],
                   ),
                 );
-              }
-            )
+              },
+            ),
           ],
         ),
-        drawer: !isDesktop ? Drawer(width: 250, child: SettingsSidebarDrawer()) : null,
+        drawer: !isDesktop
+            ? Drawer(width: 250, child: SettingsSidebarDrawer())
+            : null,
         body: GetBuilder<LoginController>(
           builder: (controller) {
             final int total = loginController.profileList.length;
-            final int active = loginController.profileList.where((p) => p.isActive).length;
+            final int active = loginController.profileList
+                .where((p) => p.isActive)
+                .length;
             final int inactive = total - active;
             return SingleChildScrollView(
               child: Center(
                 child: Column(
                   children: [
-                    if(loginController.profileList.isEmpty)
-                      Column(
-                        children: [
-                          dashboardShimmer()
-                        ],
-                      ),
-                    if(loginController.isLoading)
-                      dashboardShimmer(),
-                    if(loginController.profileList.isNotEmpty)
+                    if (loginController.profileList.isEmpty)
+                      Column(children: [dashboardShimmer()]),
+                    if (loginController.isLoading) dashboardShimmer(),
+                    if (loginController.profileList.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                         child: _RevealIn(
@@ -427,37 +512,51 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                                 icon: Icons.groups_rounded,
                                 label: "Total Users",
                                 value: "$total",
-                                colors: const [AppColors.primary, AppColors.secondary],
+                                colors: const [
+                                  AppColors.primary,
+                                  AppColors.secondary,
+                                ],
                               ),
                               const SizedBox(width: 12),
                               _statTile(
                                 icon: Icons.check_circle_outline_rounded,
                                 label: "Active",
                                 value: "$active",
-                                colors: const [Color(0xFF10B981), Color(0xFF6EE7B7)],
+                                colors: const [
+                                  Color(0xFF10B981),
+                                  Color(0xFF6EE7B7),
+                                ],
                               ),
                               const SizedBox(width: 12),
                               _statTile(
                                 icon: Icons.pause_circle_outline_rounded,
                                 label: "Inactive",
                                 value: "$inactive",
-                                colors: const [Color(0xFFFF6B6B), Color(0xFFFF9E9E)],
+                                colors: const [
+                                  Color(0xFFFF6B6B),
+                                  Color(0xFFFF9E9E),
+                                ],
                               ),
                             ],
                           ),
                         ),
                       ),
-                    SizedBox(height: size*0.01,),
-                    if(loginController.profileList.isNotEmpty)
+                    SizedBox(height: size * 0.01),
+                    if (loginController.profileList.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: _sectionHeading(icon: Icons.grid_view_rounded, text: 'What you Want?'),
+                                child: _sectionHeading(
+                                  icon: Icons.grid_view_rounded,
+                                  text: 'What you Want?',
+                                ),
                               ),
                             ),
                             SizedBox(height: size * 0.02),
@@ -466,215 +565,434 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                               child: _RevealIn(
                                 delay: const Duration(milliseconds: 80),
                                 child: Container(
-                                height: size * 0.13,
-                                padding: const EdgeInsets.symmetric(horizontal: 6),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(color: Colors.grey.shade200),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
+                                  height: size * 0.13,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: Border.all(
+                                      color: Colors.grey.shade200,
                                     ),
-                                  ],
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primary.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
                                       ),
-                                      child: const Icon(Icons.search, color: AppColors.primary, size: 18),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: TextField(
-                                        controller: searchController,
-                                        style: AppTextStyles.caption(
-                                          context,
-                                          color: AppColors.black,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        decoration: InputDecoration(
-                                          hintText: "Search users by name, area,mobile number...",
-                                          hintStyle: AppTextStyles.caption(
-                                            context,
-                                            color: AppColors.grey,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          border: InputBorder.none,
-                                          contentPadding:
-                                          const EdgeInsets.symmetric(vertical: 14),
-                                        ),
-                                        onSubmitted: (value)async {
-                                          String userType=  Api.userInfo.read('sUserType');
-                                          print("ssuser$userType");
-                                          String distance =
-                                          (loginController.selectedDistance1 ?? 0).toString();
-
-                                          bool useLocation =
-                                              distance.isNotEmpty &&
-                                                  distance != "0" &&
-                                                  distance != "0.0";
-                                          if (useLocation) {
-                                            await getLocation();
-                                          } else {
-                                            loginController.latitude = null;
-                                            loginController.longitude = null;
-                                          }
-                                          String safeLat =
-                                          useLocation ? (loginController.latitude?.toString() ?? "") : "";
-
-                                          String safeLng =
-                                          useLocation ? (loginController.longitude?.toString() ?? "") : "";
-                                          filteredProfiles.map((e) => searchController.text.toString());
-                                          if( Api.userInfo.read('userType')=="superAdmin") {
-                                            await   loginController.getProfileDetails('',  '',
-                                                [], [], [], '',safeLat,
-                                                safeLng,distance,searchController.text.toString(),  context);
-                                            Get.toNamed('/userTypeListPage');
-                                          }
-                                          else if( Api.userInfo.read('userType')=="admin") {
-                                            await   loginController.getProfileDetails('',  Api.userInfo.read('state') ?? "",
-                                                [], [], [], '',safeLat,
-                                                safeLng,distance,searchController.text.toString(),  context);
-                                          }
-                                          else{
-                                            await   loginController.getProfileDetails(userType, "",
-                                                [], [], [], '',safeLat,
-                                                safeLng,distance,searchController.text.toString(),  context);
-                                          }
-                                          print("Search text: $value");
-                                        },
-                                      ),
-                                    ),
-                                    _HoverLift(
-                                      liftScale: 1.06,
-                                      borderRadius: BorderRadius.circular(14),
-                                      child: Container(
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(6),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(14),
-                                          gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
-                                        ),
-                                        child: IconButton(
-                                          icon: Icon(
-                                            Icons.tune_rounded,
-                                            color: Colors.white,
-                                            size: size * 0.055,
+                                          color: AppColors.primary.withOpacity(
+                                            0.1,
                                           ),
-                                          onPressed: () {
-                                        showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          builder: (context) {
-                                            return FractionallySizedBox(
-                                              heightFactor: 0.75,
-                                              child: FilterDrawer(
-                                                onApply: () async{
-                                                  print("Selected State: ${loginController.selectedState}");
-                                                  print("Selected District: ${loginController.selectedDistrict}");
-                                                  print("Selected Area: ${loginController.selectedTaluka}");
-                                                  print('distance${loginController.selectedDistance}');
-
-                                                  String userType=  Api.userInfo.read('sUserType');
-                                                  print("ssuser$userType");
-                                                  if (loginController.selectedDistance != null) {
-                                                    final position = await LocationService.getCurrentLocation();
-
-                                                    if (position == null) {
-                                                      return;
-                                                    }
-
-                                                    loginController.latitude = position.latitude;
-                                                    loginController.longitude = position.longitude;
-
-                                                    print("LAT: ${loginController.latitude}");
-                                                    print("LNG: ${loginController.longitude}");
-                                                  }
-                                                  String distance =
-                                                  (loginController.selectedDistance1 ?? 0).toString();
-
-                                                  bool useLocation =
-                                                      distance.isNotEmpty &&
-                                                          distance != "0" &&
-                                                          distance != "0.0";
-                                                  if (useLocation) {
-                                                    await getLocation();
-                                                  } else {
-                                                    loginController.latitude = null;
-                                                    loginController.longitude = null;
-                                                  }
-                                                  String safeLat =
-                                                  useLocation ? (loginController.latitude?.toString() ?? "") : "";
-
-                                                  String safeLng =
-                                                  useLocation ? (loginController.longitude?.toString() ?? "") : "";
-                                                  filteredProfiles.map((e) => searchController.text.toString());
-                                                  final filterDegree = loginController.filterUserType == 'Dental Consultant'
-                                                      ? loginController.filterSelectedDegree
-                                                      : null;
-                                                  final filterLocations = loginController.filterUserType == 'Dental Consultant'
-                                                      ? loginController.filterSelectedAvailableLocations
-                                                      : null;
-                                                  final filterTiming = loginController.filterUserType == 'Dental Consultant'
-                                                      ? loginController.filterSelectedTimingSlots
-                                                      : null;
-                                                  if( Api.userInfo.read('userType')=="superAdmin") {
-                                                    await   loginController.getProfileDetails(loginController.filterUserType ?? '',  loginController.selectedState,
-                                                        loginController.selectedDistricts,
-                                                        loginController.selectedTalukas,[], '',safeLat,
-                                                        safeLng,distance,searchController.text.toString(),  context,
-                                                        degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming);
-                                                  }
-                                                  else if( Api.userInfo.read('userType')=="admin") {
-                                                    await loginController.getProfileDetails(loginController.filterUserType ?? '', Api.userInfo.read('state') ?? "", loginController.selectedDistricts,
-                                                        loginController.selectedTalukas,loginController.selectedVillages, '',safeLat,
-                                                        safeLng,distance,searchController.text.toString(), context,
-                                                        degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming);
-                                                  }
-                                                  else{
-                                                    await  loginController.getProfileDetails(
-                                                      loginController.filterUserType ?? userType,
-                                                      loginController.selectedState,
-                                                      loginController.selectedDistricts,
-                                                      loginController.selectedTalukas,loginController.selectedVillages,'true',safeLat,
-                                                      safeLng,distance, searchController.text.toString(),
-                                                      context,
-                                                      degreeName: filterDegree, availableLocations: filterLocations, availableTiming: filterTiming,
-                                                    );
-                                                  }
-                                                  Navigator.pop(context);
-                                                },
-                                                onReset: () {
-                                                  setState(() {
-                                                    loginController.selectedDistance = null;
-                                                    loginController.selectedDistrict = null;
-                                                    loginController.selectedArea = null;
-                                                    loginController.selectedUserType=null;
-                                                    loginController.selectedTaluka=null;
-                                                    loginController.selectedState=null;
-                                                    loginController.resetUserTypeFilters();
-                                                  });
-                                                },
-                                              ),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.search,
+                                          color: AppColors.primary,
+                                          size: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: searchController,
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: AppColors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          decoration: InputDecoration(
+                                            hintText:
+                                                "Search users by name, area,mobile number...",
+                                            hintStyle: const TextStyle(
+                                              color: AppColors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            border: InputBorder.none,
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                  vertical: 14,
+                                                ),
+                                          ),
+                                          onSubmitted: (value) async {
+                                            String userType = Api.userInfo.read(
+                                              'sUserType',
                                             );
-                                          },
-                                        );
+                                            print("ssuser$userType");
+                                            String distance =
+                                                (loginController
+                                                            .selectedDistance1 ??
+                                                        0)
+                                                    .toString();
+
+                                            bool useLocation =
+                                                distance.isNotEmpty &&
+                                                distance != "0" &&
+                                                distance != "0.0";
+                                            if (useLocation) {
+                                              await getLocation();
+                                            } else {
+                                              loginController.latitude = null;
+                                              loginController.longitude = null;
+                                            }
+                                            String safeLat = useLocation
+                                                ? (loginController.latitude
+                                                          ?.toString() ??
+                                                      "")
+                                                : "";
+
+                                            String safeLng = useLocation
+                                                ? (loginController.longitude
+                                                          ?.toString() ??
+                                                      "")
+                                                : "";
+                                            filteredProfiles.map(
+                                              (e) => searchController.text
+                                                  .toString(),
+                                            );
+                                            if (Api.userInfo.read('userType') ==
+                                                "superAdmin") {
+                                              await loginController
+                                                  .getProfileDetails(
+                                                    '',
+                                                    '',
+                                                    [],
+                                                    [],
+                                                    [],
+                                                    '',
+                                                    safeLat,
+                                                    safeLng,
+                                                    distance,
+                                                    searchController.text
+                                                        .toString(),
+                                                    context,
+                                                  );
+                                              Get.toNamed('/userTypeListPage');
+                                            } else if (Api.userInfo.read(
+                                                  'userType',
+                                                ) ==
+                                                "admin") {
+                                              await loginController
+                                                  .getProfileDetails(
+                                                    '',
+                                                    Api.userInfo.read(
+                                                          'state',
+                                                        ) ??
+                                                        "",
+                                                    [],
+                                                    [],
+                                                    [],
+                                                    '',
+                                                    safeLat,
+                                                    safeLng,
+                                                    distance,
+                                                    searchController.text
+                                                        .toString(),
+                                                    context,
+                                                  );
+                                            } else {
+                                              await loginController
+                                                  .getProfileDetails(
+                                                    userType,
+                                                    "",
+                                                    [],
+                                                    [],
+                                                    [],
+                                                    '',
+                                                    safeLat,
+                                                    safeLng,
+                                                    distance,
+                                                    searchController.text
+                                                        .toString(),
+                                                    context,
+                                                  );
+                                            }
+                                            print("Search text: $value");
                                           },
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                      _HoverLift(
+                                        liftScale: 1.06,
+                                        borderRadius: BorderRadius.circular(14),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                            gradient: const LinearGradient(
+                                              colors: [
+                                                AppColors.primary,
+                                                AppColors.secondary,
+                                              ],
+                                            ),
+                                          ),
+                                          child: IconButton(
+                                            icon: Icon(
+                                              Icons.tune_rounded,
+                                              color: Colors.white,
+                                              size: size * 0.055,
+                                            ),
+                                            onPressed: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                builder: (context) {
+                                                  return FractionallySizedBox(
+                                                    heightFactor: 0.75,
+                                                    child: FilterDrawer(
+                                                      onApply: () async {
+                                                        print(
+                                                          "Selected State: ${loginController.selectedState}",
+                                                        );
+                                                        print(
+                                                          "Selected District: ${loginController.selectedDistrict}",
+                                                        );
+                                                        print(
+                                                          "Selected Area: ${loginController.selectedTaluka}",
+                                                        );
+                                                        print(
+                                                          'distance${loginController.selectedDistance}',
+                                                        );
+
+                                                        String userType = Api
+                                                            .userInfo
+                                                            .read('sUserType');
+                                                        print(
+                                                          "ssuser$userType",
+                                                        );
+                                                        if (loginController
+                                                                .selectedDistance !=
+                                                            null) {
+                                                          final position =
+                                                              await LocationService.getCurrentLocation();
+
+                                                          if (position ==
+                                                              null) {
+                                                            return;
+                                                          }
+
+                                                          loginController
+                                                                  .latitude =
+                                                              position.latitude;
+                                                          loginController
+                                                                  .longitude =
+                                                              position
+                                                                  .longitude;
+
+                                                          print(
+                                                            "LAT: ${loginController.latitude}",
+                                                          );
+                                                          print(
+                                                            "LNG: ${loginController.longitude}",
+                                                          );
+                                                        }
+                                                        String distance =
+                                                            (loginController
+                                                                        .selectedDistance1 ??
+                                                                    0)
+                                                                .toString();
+
+                                                        bool useLocation =
+                                                            distance
+                                                                .isNotEmpty &&
+                                                            distance != "0" &&
+                                                            distance != "0.0";
+                                                        if (useLocation) {
+                                                          await getLocation();
+                                                        } else {
+                                                          loginController
+                                                                  .latitude =
+                                                              null;
+                                                          loginController
+                                                                  .longitude =
+                                                              null;
+                                                        }
+                                                        String safeLat =
+                                                            useLocation
+                                                            ? (loginController
+                                                                      .latitude
+                                                                      ?.toString() ??
+                                                                  "")
+                                                            : "";
+
+                                                        String safeLng =
+                                                            useLocation
+                                                            ? (loginController
+                                                                      .longitude
+                                                                      ?.toString() ??
+                                                                  "")
+                                                            : "";
+                                                        filteredProfiles.map(
+                                                          (e) =>
+                                                              searchController
+                                                                  .text
+                                                                  .toString(),
+                                                        );
+                                                        final filterDegree =
+                                                            loginController
+                                                                    .filterUserType ==
+                                                                'Dental Consultant'
+                                                            ? loginController
+                                                                  .filterSelectedDegree
+                                                            : null;
+                                                        final filterLocations =
+                                                            loginController
+                                                                    .filterUserType ==
+                                                                'Dental Consultant'
+                                                            ? loginController
+                                                                  .filterSelectedAvailableLocations
+                                                            : null;
+                                                        final filterTiming =
+                                                            loginController
+                                                                    .filterUserType ==
+                                                                'Dental Consultant'
+                                                            ? loginController
+                                                                  .filterSelectedTimingSlots
+                                                            : null;
+                                                        if (Api.userInfo.read(
+                                                              'userType',
+                                                            ) ==
+                                                            "superAdmin") {
+                                                          await loginController.getProfileDetails(
+                                                            loginController
+                                                                    .filterUserType ??
+                                                                '',
+                                                            loginController
+                                                                .selectedState,
+                                                            loginController
+                                                                .selectedDistricts,
+                                                            loginController
+                                                                .selectedTalukas,
+                                                            [],
+                                                            '',
+                                                            safeLat,
+                                                            safeLng,
+                                                            distance,
+                                                            searchController
+                                                                .text
+                                                                .toString(),
+                                                            context,
+                                                            degreeName:
+                                                                filterDegree,
+                                                            availableLocations:
+                                                                filterLocations,
+                                                            availableTiming:
+                                                                filterTiming,
+                                                          );
+                                                        } else if (Api.userInfo
+                                                                .read(
+                                                                  'userType',
+                                                                ) ==
+                                                            "admin") {
+                                                          await loginController.getProfileDetails(
+                                                            loginController
+                                                                    .filterUserType ??
+                                                                '',
+                                                            Api.userInfo.read(
+                                                                  'state',
+                                                                ) ??
+                                                                "",
+                                                            loginController
+                                                                .selectedDistricts,
+                                                            loginController
+                                                                .selectedTalukas,
+                                                            loginController
+                                                                .selectedVillages,
+                                                            '',
+                                                            safeLat,
+                                                            safeLng,
+                                                            distance,
+                                                            searchController
+                                                                .text
+                                                                .toString(),
+                                                            context,
+                                                            degreeName:
+                                                                filterDegree,
+                                                            availableLocations:
+                                                                filterLocations,
+                                                            availableTiming:
+                                                                filterTiming,
+                                                          );
+                                                        } else {
+                                                          await loginController.getProfileDetails(
+                                                            loginController
+                                                                    .filterUserType ??
+                                                                userType,
+                                                            loginController
+                                                                .selectedState,
+                                                            loginController
+                                                                .selectedDistricts,
+                                                            loginController
+                                                                .selectedTalukas,
+                                                            loginController
+                                                                .selectedVillages,
+                                                            'true',
+                                                            safeLat,
+                                                            safeLng,
+                                                            distance,
+                                                            searchController
+                                                                .text
+                                                                .toString(),
+                                                            context,
+                                                            degreeName:
+                                                                filterDegree,
+                                                            availableLocations:
+                                                                filterLocations,
+                                                            availableTiming:
+                                                                filterTiming,
+                                                          );
+                                                        }
+                                                        Navigator.pop(context);
+                                                      },
+                                                      onReset: () {
+                                                        setState(() {
+                                                          loginController
+                                                                  .selectedDistance =
+                                                              null;
+                                                          loginController
+                                                                  .selectedDistrict =
+                                                              null;
+                                                          loginController
+                                                                  .selectedArea =
+                                                              null;
+                                                          loginController
+                                                                  .selectedUserType =
+                                                              null;
+                                                          loginController
+                                                                  .selectedTaluka =
+                                                              null;
+                                                          loginController
+                                                                  .selectedState =
+                                                              null;
+                                                          loginController
+                                                              .resetUserTypeFilters();
+                                                        });
+                                                      },
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                            SizedBox(height: size*0.02,),
+                            SizedBox(height: size * 0.02),
 
                             _RevealIn(
                               delay: const Duration(milliseconds: 100),
@@ -686,38 +1004,44 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: size*0.02,),
+                            SizedBox(height: size * 0.02),
 
                             GetBuilder<LoginController>(
-                                builder: (controller) {
-                                  return _RevealIn(
-                                    delay: const Duration(milliseconds: 140),
-                                    child: GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: title.length,
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 12,
-                                    mainAxisSpacing: 12,
-                                    childAspectRatio: 1.0,
+                              builder: (controller) {
+                                return _RevealIn(
+                                  delay: const Duration(milliseconds: 140),
+                                  child: GridView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: title.length,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          crossAxisSpacing: 12,
+                                          mainAxisSpacing: 12,
+                                          childAspectRatio: 1.0,
+                                        ),
+                                    itemBuilder: (context, index) {
+                                      final String userType = title[index];
+                                      final count = loginController.profileList
+                                          .where(
+                                            (e) =>
+                                                e.userType
+                                                    .toLowerCase()
+                                                    .trim() ==
+                                                userType.toLowerCase().trim(),
+                                          )
+                                          .length;
+                                      return _categoryTile(
+                                        userType,
+                                        count,
+                                        _tileColors[index % _tileColors.length],
+                                      );
+                                    },
                                   ),
-                                  itemBuilder: (context, index) {
-                                    final String userType = title[index];
-                                    final count = loginController.profileList
-                                        .where((e) =>
-                                    e.userType.toLowerCase().trim() ==
-                                        userType.toLowerCase().trim())
-                                        .length;
-                                    return _categoryTile(
-                                      userType,
-                                      count,
-                                      _tileColors[index % _tileColors.length],
-                                    );
-                                  },
-                                ),
-                                  );
-                              }
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -730,59 +1054,77 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 6),
                             child: Align(
                               alignment: Alignment.centerLeft,
-                              child: _sectionHeading(icon: Icons.people_alt_rounded, text: 'Latest Users List'),
+                              child: _sectionHeading(
+                                icon: Icons.people_alt_rounded,
+                                text: 'Latest Users List',
+                              ),
                             ),
                           ),
                           const SizedBox(height: 10),
-                          if(controller.profileList.isEmpty)
-                          buildShimmerEmptyWidget(size),
-                          if(controller.profileList.isNotEmpty)
+                          if (controller.profileList.isEmpty)
+                            buildShimmerEmptyWidget(size),
+                          if (controller.profileList.isNotEmpty)
+                            AnimationLimiter(
+                              child: Column(
+                                children: controller.profileList
+                                    .take(10)
+                                    .toList()
+                                    .asMap()
+                                    .entries
+                                    .map((entry) {
+                                      final index = entry.key;
+                                      final profile = entry.value;
+                                      return AnimationConfiguration.staggeredList(
+                                        position: index,
+                                        duration: const Duration(
+                                          milliseconds: 1300,
+                                        ),
+                                        child: SlideAnimation(
+                                          verticalOffset: 120.0,
+                                          curve: Curves.easeOutBack,
+                                          child: FadeInAnimation(
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                print(
+                                                  'userlistId ${profile.userId}',
+                                                );
+                                                Api.userInfo.write(
+                                                  'selectUId',
+                                                  profile.userId ?? '',
+                                                );
 
-                          AnimationLimiter(
-                            child: Column(
-                              children:  controller.profileList
-                                  .take(10)
-                                  .toList()
-                                  .asMap()
-                                  .entries
-                                  .map((entry) {
-                                final index = entry.key;
-                                final profile = entry.value;
-                            return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: const Duration(milliseconds: 1300),
-                            child: SlideAnimation(
-                            verticalOffset: 120.0,
-                            curve: Curves.easeOutBack,
-                            child: FadeInAnimation(
-                            child: GestureDetector(
-                            onTap: () async{
-                            print('userlistId ${profile.userId}');
-                            Api.userInfo.write('selectUId',profile.userId ?? '');
+                                                print('ids${profile.userId}');
 
-                            print('ids${profile.userId}');
-
-                            await loginController.getProfileByUserId(
-                            profile.userId ?? '', context);
-                            if (PlatformHelper.platform != "Web") {
-                            Get.toNamed('/${profilePage(profile.userType)}');
-                            }
-                            },
-                            child: SuperAdminProfileCard(
-                            profile: profile,
-                            size: size,
-                            onCall: ()async {
-                            await launchCall(profile.mobileNumber);
-                            },
+                                                await loginController
+                                                    .getProfileByUserId(
+                                                      profile.userId ?? '',
+                                                      context,
+                                                    );
+                                                if (PlatformHelper.platform !=
+                                                    "Web") {
+                                                  Get.toNamed(
+                                                    '/${profilePage(profile.userType)}',
+                                                  );
+                                                }
+                                              },
+                                              child: SuperAdminProfileCard(
+                                                profile: profile,
+                                                size: size,
+                                                onCall: () async {
+                                                  await launchCall(
+                                                    profile.mobileNumber,
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    })
+                                    .toList(),
+                              ),
                             ),
-                            ),
-                            ),
-                            ),
-                            );
-                            }).toList(),
-                            ),
-                            )
-                            ],
+                        ],
                       ),
                     ),
                   ],
@@ -795,7 +1137,6 @@ class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
       ),
     );
   }
-
 }
 
 Widget dashboardShimmer() {
@@ -825,241 +1166,305 @@ class SuperAdminProfileCard extends StatelessWidget {
     this.onCall,
   });
   bool isBasePlanActive(ProfileModel profile) {
-    final isActive =
-    profile.details?["plan"]?["basePlan"]?["isActive"];
+    final isActive = profile.details?["plan"]?["basePlan"]?["isActive"];
     return isActive == true || isActive == "true";
   }
+
   @override
   Widget build(BuildContext context) {
     final planActive = isBasePlanActive(profile);
     final userType = Api.userInfo.read('userType')?.toString() ?? "";
     final bool isAdminUser = userType == 'admin' || userType == 'superAdmin';
     String firstImage = profile.images.firstWhere(
-          (img) =>
-      img.toLowerCase().endsWith('.jpg') ||
+      (img) =>
+          img.toLowerCase().endsWith('.jpg') ||
           img.toLowerCase().endsWith('.jpeg') ||
           img.toLowerCase().endsWith('.png') ||
           img.toLowerCase().endsWith('.webp'),
       orElse: () => "",
     );
     List<String> parts = [];
-    if ((profile.address["state"] ?? "").isNotEmpty) parts.add(profile.address["state"]);
-    if ((profile.address["district"] ?? "").isNotEmpty) parts.add(profile.address["district"]);
-    if ((profile.address["city"] ?? "").isNotEmpty) parts.add(profile.address["city"]);
+    if ((profile.address["state"] ?? "").isNotEmpty)
+      parts.add(profile.address["state"]);
+    if ((profile.address["district"] ?? "").isNotEmpty)
+      parts.add(profile.address["district"]);
+    if ((profile.address["city"] ?? "").isNotEmpty)
+      parts.add(profile.address["city"]);
     String address = parts.join(", ");
-    final loginController=Get.put(LoginController());
+    final loginController = Get.put(LoginController());
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       child: _HoverLift(
         liftScale: 1.012,
         borderRadius: BorderRadius.circular(20),
         child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: AppColors.white,
-          border: Border.all(color: Colors.grey.shade100),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 12, offset: const Offset(0, 5))
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            children: [
-              Row(children: [
-                Stack(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: AppColors.white,
+            border: Border.all(color: Colors.grey.shade100),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 12,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
-                      child: Image.network(
-                        (firstImage.isNotEmpty && isAdminUser||
-                            ((planActive == true &&
-                                profile.details["plan"]?["basePlan"]?["details"]?["images"] == true)))
-                            ? firstImage
-                            : "",
-                        width: size * 0.22,
-                        height: size * 0.22,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
+                    Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(14),
+                          child: Image.network(
+                            (firstImage.isNotEmpty && isAdminUser ||
+                                    ((planActive == true &&
+                                        profile.details["plan"]?["basePlan"]?["details"]?["images"] ==
+                                            true)))
+                                ? firstImage
+                                : "",
                             width: size * 0.22,
                             height: size * 0.22,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(colors: [AppColors.primary.withOpacity(0.12), AppColors.secondary.withOpacity(0.12)]),
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Icon(
-                              Icons.image_outlined,
-                              color: AppColors.primary.withOpacity(0.6),
-                              size: size * 0.08,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 4,
-                      right: 4,
-                      child: Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: profile.isActive ? Colors.green : Colors.redAccent,
-                          border: Border.all(color: Colors.white, width: 2),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                width: size * 0.22,
+                                height: size * 0.22,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColors.primary.withOpacity(0.12),
+                                      AppColors.secondary.withOpacity(0.12),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: Icon(
+                                  Icons.image_outlined,
+                                  color: AppColors.primary.withOpacity(0.6),
+                                  size: size * 0.08,
+                                ),
+                              );
+                            },
+                          ),
                         ),
+                        Positioned(
+                          bottom: 4,
+                          right: 4,
+                          child: Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: profile.isActive
+                                  ? Colors.green
+                                  : Colors.redAccent,
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  (profile.userType == "Dental Clinic" ||
+                                          profile.userType ==
+                                              "Dental Consultant")
+                                      ? "Dr. ${profile.name}"
+                                      : profile.name,
+                                  softWrap: true,
+                                  style: AppTextStyles.caption(
+                                    context,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 3,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      (profile.isActive
+                                              ? Colors.green
+                                              : Colors.redAccent)
+                                          .withOpacity(0.12),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color:
+                                        (profile.isActive
+                                                ? Colors.green
+                                                : Colors.redAccent)
+                                            .withOpacity(0.4),
+                                  ),
+                                ),
+                                child: Text(
+                                  profile.isActive ? 'Active' : 'Inactive',
+                                  style: TextStyle(
+                                    color: profile.isActive
+                                        ? Colors.green
+                                        : Colors.redAccent,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: size * 0.025,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            "UserId: ${profile.userId}",
+                            style: AppTextStyles.caption(
+                              context,
+                              color: AppColors.grey,
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              "${profile.userType}",
+                              style: AppTextStyles.caption(
+                                context,
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            "Address: $address",
+                            style: AppTextStyles.caption(
+                              context,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if ((planActive == true &&
+                                      profile.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] ==
+                                          true) ||
+                                  isAdminUser)
+                                Text(
+                                  "Mobile Number: ${profile.mobileNumber}",
+                                  style: AppTextStyles.caption(context),
+                                ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              (profile.userType == "Dental Clinic" ||
-                                  profile.userType == "Dental Consultant")
-                                  ? "Dr. ${profile.name}"
-                                  : profile.name,softWrap: true,
-                              style: AppTextStyles.caption(
-                                context,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: (profile.isActive ? Colors.green : Colors.redAccent).withOpacity(0.12),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: (profile.isActive ? Colors.green : Colors.redAccent).withOpacity(0.4)),
-                            ),
-                            child: Text(
-                              profile.isActive ? 'Active' : 'Inactive',
-                              style: TextStyle(
-                                color: profile.isActive ? Colors.green : Colors.redAccent,
-                                fontWeight: FontWeight.bold,
-                                fontSize: size*0.025,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 3),
-                      Text("UserId: ${profile.userId}",
-                          style: AppTextStyles.caption(context, color: AppColors.grey)),
-                      Container(
-                        margin: const EdgeInsets.only(top: 3),
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text("${profile.userType}",
-                            style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.w600)),
-                      ),
-                      const SizedBox(height: 3),
-                      Text("Address: $address",
-                          style: AppTextStyles.caption(context,
-                              color: Colors.grey)),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if ((planActive == true &&
-                                profile.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-                                isAdminUser)
-                            Text(
-                              "Mobile Number: ${profile.mobileNumber}",
-                              style: AppTextStyles.caption(context),
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
-                )
-              ]),
-              const SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-              Row(
-                children: [
-
-                  Expanded(
-                    child: _HoverLift(
-                      liftScale: 1.03,
-                      borderRadius: BorderRadius.circular(12),
-                      child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                      ),
-                      onPressed: ()async {
-                        Api.userInfo.write('selectUId',profile.userId ?? '');
-
-                        print('ids${profile.userId}');
-
-                        await loginController.getProfileByUserId(
-                            profile.userId ?? '', context);
-                        if (PlatformHelper.platform != "Web") {
-                          Get.toNamed('/${profilePage(profile.userType)}');
-                        }
-                      },
-                      child:  Text(
-                        "View Profile",
-                        style: AppTextStyles.caption(color: Colors.white,context,fontWeight: FontWeight.bold),
-                      ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 10),
-                  if ((planActive == true &&
-                      profile.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] == true) ||
-                      isAdminUser)
+                Row(
+                  children: [
                     Expanded(
                       child: _HoverLift(
                         liftScale: 1.03,
                         borderRadius: BorderRadius.circular(12),
-                        child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color:Colors.green),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                        ),
-                        onPressed: onCall,
-                        child: const Text(
-                          "Call Now",
-                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-                        ),
+                          onPressed: () async {
+                            Api.userInfo.write(
+                              'selectUId',
+                              profile.userId ?? '',
+                            );
+
+                            print('ids${profile.userId}');
+
+                            await loginController.getProfileByUserId(
+                              profile.userId ?? '',
+                              context,
+                            );
+                            if (PlatformHelper.platform != "Web") {
+                              Get.toNamed('/${profilePage(profile.userType)}');
+                            }
+                          },
+                          child: Text(
+                            "View Profile",
+                            style: AppTextStyles.caption(
+                              color: Colors.white,
+                              context,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                ],
-              ),
-            ],
+
+                    const SizedBox(width: 10),
+                    if ((planActive == true &&
+                            profile.details?["plan"]?["basePlan"]?["details"]?["mobileNumber"] ==
+                                true) ||
+                        isAdminUser)
+                      Expanded(
+                        child: _HoverLift(
+                          liftScale: 1.03,
+                          borderRadius: BorderRadius.circular(12),
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.green),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                            ),
+                            onPressed: onCall,
+                            child: const Text(
+                              "Call Now",
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
         ),
       ),
     );
   }
 }
 
-
 class AdminDashboardWidget extends StatelessWidget {
   final List<ProfileModel> profiles;
-  final loginController=Get.put(LoginController());
-   AdminDashboardWidget({super.key, required this.profiles});
+  final loginController = Get.put(LoginController());
+  AdminDashboardWidget({super.key, required this.profiles});
   @override
   Widget build(BuildContext context) {
     int total = profiles.length;
@@ -1071,74 +1476,89 @@ class AdminDashboardWidget extends StatelessWidget {
     }
     return Column(
       children: [
-        _header(context,total,active,inactive),
+        _header(context, total, active, inactive),
         const SizedBox(height: 20),
         AnimationLimiter(
-    child: Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            //height: MediaQuery.of(context).size.width * 0.8,
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.all(8),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
             child: Column(
-            children: typeCounts.entries.toList().asMap().entries.map((entry) {
-            final index = entry.key;
-            final e = entry.value;
-            return AnimationConfiguration.staggeredList(
-            position: index,
-            duration: const Duration(milliseconds: 1300),
-            child: SlideAnimation(
-              horizontalOffset: 80.0,
-            curve: Curves.easeOutBack,
-            child: FadeInAnimation(
-            child: Column(
-              children:[
-               _typeTile(
-              e.key,
-              e.value,
-              context,
-              onTap: () async{
-              Api.userInfo.write('selectedUserType', e.key);
-              Api.userInfo.write('sUserType', e.key);
-              Get.toNamed('/userTypeListPage');
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  //height: MediaQuery.of(context).size.width * 0.8,
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Column(
+                    children: typeCounts.entries.toList().asMap().entries.map((
+                      entry,
+                    ) {
+                      final index = entry.key;
+                      final e = entry.value;
+                      return AnimationConfiguration.staggeredList(
+                        position: index,
+                        duration: const Duration(milliseconds: 1300),
+                        child: SlideAnimation(
+                          horizontalOffset: 80.0,
+                          curve: Curves.easeOutBack,
+                          child: FadeInAnimation(
+                            child: Column(
+                              children: [
+                                _typeTile(
+                                  e.key,
+                                  e.value,
+                                  context,
+                                  onTap: () async {
+                                    Api.userInfo.write(
+                                      'selectedUserType',
+                                      e.key,
+                                    );
+                                    Api.userInfo.write('sUserType', e.key);
+                                    Get.toNamed('/userTypeListPage');
 
-             await  loginController.getProfileDetails(
-              Api.userInfo.read('selectedUserType'),
-              '',
-              [],
-              [],[],
-              '','','','','',
-                context,
-              );
-
-              },
-               ),
-              const Divider(color: Colors.grey,thickness: 0.3,)
-              ]
-            ),
-            ),
-            ),
-            );
-            }).toList(),
+                                    await loginController.getProfileDetails(
+                                      Api.userInfo.read('selectedUserType'),
+                                      '',
+                                      [],
+                                      [],
+                                      [],
+                                      '',
+                                      '',
+                                      '',
+                                      '',
+                                      '',
+                                      context,
+                                    );
+                                  },
+                                ),
+                                const Divider(
+                                  color: Colors.grey,
+                                  thickness: 0.3,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-    ),
-    ),
-
+        ),
       ],
     );
   }
+
   Widget _header(BuildContext context, int total, int active, int inactive) {
     double width = MediaQuery.of(context).size.width;
     double height = width * 0.35;
@@ -1174,10 +1594,7 @@ class AdminDashboardWidget extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 "Overview of user activity",
-                style: AppTextStyles.subtitle(
-                  context,
-                  color: Colors.white70,
-                ),
+                style: AppTextStyles.subtitle(context, color: Colors.white70),
               ),
             ],
           ),
@@ -1189,9 +1606,27 @@ class AdminDashboardWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _miniStatCard(context, "Total Users", total, AppColors.white, AppColors.primary),
-              _miniStatCard(context, "Active", active, AppColors.white, Colors.green),
-              _miniStatCard(context, "Inactive", inactive, AppColors.white, Colors.red),
+              _miniStatCard(
+                context,
+                "Total Users",
+                total,
+                AppColors.white,
+                AppColors.primary,
+              ),
+              _miniStatCard(
+                context,
+                "Active",
+                active,
+                AppColors.white,
+                Colors.green,
+              ),
+              _miniStatCard(
+                context,
+                "Inactive",
+                inactive,
+                AppColors.white,
+                Colors.red,
+              ),
             ],
           ),
         ),
@@ -1200,7 +1635,12 @@ class AdminDashboardWidget extends StatelessWidget {
   }
 
   Widget _miniStatCard(
-      BuildContext context, String label, int value, Color bgColor, Color textColor) {
+    BuildContext context,
+    String label,
+    int value,
+    Color bgColor,
+    Color textColor,
+  ) {
     double width = MediaQuery.of(context).size.width * 0.27;
     return Container(
       width: width,
@@ -1209,11 +1649,7 @@ class AdminDashboardWidget extends StatelessWidget {
         color: bgColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          )
+          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
         ],
       ),
       child: Column(
@@ -1230,17 +1666,19 @@ class AdminDashboardWidget extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             "$value",
-            style: AppTextStyles.subtitle(
-              context,
-              color: textColor,
-            ),
+            style: AppTextStyles.subtitle(context, color: textColor),
           ),
         ],
       ),
     );
   }
-  Widget _typeTile(String title, int count, BuildContext context,
-      {VoidCallback? onTap}) {
+
+  Widget _typeTile(
+    String title,
+    int count,
+    BuildContext context, {
+    VoidCallback? onTap,
+  }) {
     double size = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: onTap,
@@ -1253,10 +1691,12 @@ class AdminDashboardWidget extends StatelessWidget {
               child: Text(
                 "$title ($count)",
                 style: AppTextStyles.caption(
-                  context,color: AppColors.primary,
+                  context,
+                  color: AppColors.primary,
                   fontWeight: FontWeight.w500,
                 ),
-                overflow: TextOverflow.ellipsis,softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
               ),
             ),
 
@@ -1270,23 +1710,18 @@ class AdminDashboardWidget extends StatelessWidget {
       ),
     );
   }
-
 }
 
 Widget drawerTitle(
-    String title,
-    IconData icon,
-    String page,
-    BuildContext context,
-    ) {
+  String title,
+  IconData icon,
+  String page,
+  BuildContext context,
+) {
   double size = MediaQuery.of(context).size.width;
 
   return ListTile(
-    leading: Icon(
-      icon,
-      color: AppColors.white,
-      size: size * 0.055,
-    ),
+    leading: Icon(icon, color: AppColors.white, size: size * 0.055),
     title: Text(
       title,
       style: AppTextStyles.caption(

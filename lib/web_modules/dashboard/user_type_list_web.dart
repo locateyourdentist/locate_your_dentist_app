@@ -43,6 +43,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
     _horizontalScrollController.dispose();
     super.dispose();
   }
+
   Future<void> _refresh() async {
     loginController.selectedState = null;
     loginController.selectedDistrict = null;
@@ -51,7 +52,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
     await _initSelectedStateFromLocation();
     await loginController.getProfileDetails(
       Api.userInfo.read('sUserType1') ?? "",
-      Api.userInfo.read('state')??"",
+      Api.userInfo.read('state') ?? "",
       loginController.selectedDistricts,
       loginController.selectedTalukas,
       loginController.selectedVillages,
@@ -98,6 +99,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
       print('Error resolving state from location: $e');
     }
   }
+
   List<int>? generateExcel(List profiles) {
     final excel = Excel.createExcel();
     const sheetName = "Users";
@@ -139,6 +141,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
     }
     return excel.encode();
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -158,6 +161,7 @@ class _ModernUserTableState extends State<ModernUserTable> {
         return const CommonHeader();
       }
     }
+
     return WillPopScope(
       onWillPop: () async {
         Get.toNamed('/${pageUserTypeWeb(Api.userInfo.read('userType') ?? "")}');
@@ -208,8 +212,11 @@ class _ModernUserTableState extends State<ModernUserTable> {
             final filteredProfiles = (userType == null || userType!.isEmpty)
                 ? controller.profileList
                 : controller.profileList
-                      .where((p) => p.userType.toLowerCase() == userType!.toLowerCase(),
-                      ).toList();
+                      .where(
+                        (p) =>
+                            p.userType.toLowerCase() == userType!.toLowerCase(),
+                      )
+                      .toList();
             return Row(
               children: [
                 if (isDesktop && isLoggedIn) const AdminSideBar(),
@@ -313,6 +320,10 @@ class _ModernUserTableState extends State<ModernUserTable> {
               decoration: const InputDecoration(
                 icon: Icon(Icons.search, color: Colors.grey),
                 hintText: "Search...",
+                hintStyle: TextStyle(
+                  color: AppColors.black,
+                  fontWeight: FontWeight.bold,
+                ),
                 border: InputBorder.none,
               ),
             ),

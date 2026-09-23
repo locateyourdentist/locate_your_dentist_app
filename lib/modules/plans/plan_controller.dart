@@ -31,6 +31,7 @@ class AppImage2 {
   final bool isVideo;
   String? startDate;
   String? endDate;
+  String? userId;
   AppImage2({
     this.bytes,
     this.url,
@@ -42,6 +43,7 @@ class AppImage2 {
     this.isVideo = false,
     this.startDate,
     this.endDate,
+    this.userId,
   });
 }
 
@@ -1804,6 +1806,7 @@ class PlanController extends GetxController {
             isActive: activeValue,
             startDate: u["startDate"]?.toString() ?? "",
             endDate: u["endDate"]?.toString() ?? "",
+            userId: u["userId"]?.toString(),
           );
         }).toList();
         //  _posterImage = (data["data"] as List).map((e) => PosterImageModel.fromJson(e)).toList();

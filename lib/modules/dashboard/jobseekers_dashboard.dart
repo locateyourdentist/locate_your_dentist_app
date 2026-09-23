@@ -125,6 +125,7 @@ class JobSeekerDashboard extends StatefulWidget {
   @override
   State<JobSeekerDashboard> createState() => _JobSeekerDashboardState();
 }
+
 class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
   final List<Color> mildColors = [
     const Color(0xFFE8F0FE),
@@ -402,10 +403,9 @@ class _JobSeekerDashboardState extends State<JobSeekerDashboard> {
                                     decoration: InputDecoration(
                                       hintText:
                                           "Search your job by clinic name,area..",
-                                      hintStyle: AppTextStyles.caption(
-                                        context,
-                                        fontWeight: FontWeight.normal,
-                                        color: AppColors.grey,
+                                      hintStyle: const TextStyle(
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                       border: InputBorder.none,
                                       isDense: true,

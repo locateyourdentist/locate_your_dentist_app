@@ -179,6 +179,10 @@ class _JobSeekerFilterWebState extends State<JobSeekerFilterWeb> {
                 ),
                 decoration: const InputDecoration(
                   hintText: "Search jobs by name, area...",
+                  hintStyle: TextStyle(
+                    color: AppColors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
                   prefixIcon: Icon(Icons.search_rounded, color: AppColors.grey),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(vertical: 14),

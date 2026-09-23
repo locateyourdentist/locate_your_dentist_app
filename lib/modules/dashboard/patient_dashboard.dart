@@ -378,6 +378,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                                       child: CommonSearchTextField(
                                         controller: searchController,
                                         borderColor: Colors.transparent,
+                                        hintStyle: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
                                         hintText:
                                             "Search by clinic name or area...",
                                         onSubmitted: (value) async {

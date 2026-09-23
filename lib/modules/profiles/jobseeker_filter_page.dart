@@ -79,10 +79,9 @@ class _JobSeekerFilterState extends State<JobSeekerFilter> {
                   ),
                   decoration: InputDecoration(
                     hintText: "Search jobs by name, area...",
-                    hintStyle: AppTextStyles.caption(
-                      context,
-                      color: AppColors.grey,
-                      fontWeight: FontWeight.normal,
+                    hintStyle: const TextStyle(
+                      color: AppColors.black,
+                      fontWeight: FontWeight.bold,
                     ),
                     prefixIcon: Icon(
                       Icons.search_rounded,

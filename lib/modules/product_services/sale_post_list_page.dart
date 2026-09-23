@@ -15,7 +15,11 @@ class _HoverLift extends StatefulWidget {
   final Widget child;
   final double liftScale;
   final BorderRadius? borderRadius;
-  const _HoverLift({required this.child, this.liftScale = 1.02, this.borderRadius});
+  const _HoverLift({
+    required this.child,
+    this.liftScale = 1.02,
+    this.borderRadius,
+  });
 
   @override
   State<_HoverLift> createState() => _HoverLiftState();
@@ -52,7 +56,6 @@ class _HoverLiftState extends State<_HoverLift> {
     );
   }
 }
-
 
 class _SalePostRow {
   final String? id;
@@ -105,21 +108,22 @@ _SalePostRow _rowFromApiModel(SalePostModel model) {
 }
 
 void _openSaleImage(PickedSaleImage img) {
-  Get.toNamed('/viewImagePage', arguments: {
-    'bytes': img.bytes,
-    'file': img.file,
-    'url': null,
-    'isVideo': false,
-  });
+  Get.toNamed(
+    '/viewImagePage',
+    arguments: {
+      'bytes': img.bytes,
+      'file': img.file,
+      'url': null,
+      'isVideo': false,
+    },
+  );
 }
 
 void _openSaleImageUrl(String url) {
-  Get.toNamed('/viewImagePage', arguments: {
-    'bytes': null,
-    'file': null,
-    'url': url,
-    'isVideo': false,
-  });
+  Get.toNamed(
+    '/viewImagePage',
+    arguments: {'bytes': null, 'file': null, 'url': url, 'isVideo': false},
+  );
 }
 
 class SalePostListPage extends StatefulWidget {
@@ -158,24 +162,38 @@ class _SalePostListPageState extends State<SalePostListPage> {
     if (_query.trim().isEmpty) return all;
     final q = _query.toLowerCase();
     return all
-        .where((p) =>
-            p.message.toLowerCase().contains(q) ||
-            p.userType.toLowerCase().contains(q))
+        .where(
+          (p) =>
+              p.message.toLowerCase().contains(q) ||
+              p.userType.toLowerCase().contains(q),
+        )
         .toList();
   }
 
   Widget _userTypeIcon(String userType) {
     switch (userType) {
       case "Dental Clinic":
-        return const Icon(Icons.local_hospital_rounded, color: Colors.white, size: 26);
+        return const Icon(
+          Icons.local_hospital_rounded,
+          color: Colors.white,
+          size: 26,
+        );
       case "Dental Shop":
-        return const Icon(Icons.storefront_rounded, color: Colors.white, size: 26);
+        return const Icon(
+          Icons.storefront_rounded,
+          color: Colors.white,
+          size: 26,
+        );
       case "Dental Lab":
         return const Icon(Icons.biotech_rounded, color: Colors.white, size: 26);
       case "Dental Mechanic":
         return const Icon(Icons.build_rounded, color: Colors.white, size: 26);
       default:
-        return const Icon(Icons.support_agent_rounded, color: Colors.white, size: 26);
+        return const Icon(
+          Icons.support_agent_rounded,
+          color: Colors.white,
+          size: 26,
+        );
     }
   }
 
@@ -209,7 +227,11 @@ class _SalePostListPageState extends State<SalePostListPage> {
                   bottomRight: Radius.circular(28),
                 ),
                 boxShadow: [
-                  BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4)),
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
                 ],
               ),
               child: Row(
@@ -238,12 +260,19 @@ class _SalePostListPageState extends State<SalePostListPage> {
                       children: [
                         Text(
                           "Sale Listings",
-                          style: TextStyle(fontSize: size * 0.045, fontWeight: FontWeight.bold, color: Colors.white),
+                          style: TextStyle(
+                            fontSize: size * 0.045,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           "${posts.length} item(s) for sale",
-                          style: TextStyle(fontSize: size * 0.03, color: Colors.white.withOpacity(0.85)),
+                          style: TextStyle(
+                            fontSize: size * 0.03,
+                            color: Colors.white.withOpacity(0.85),
+                          ),
                         ),
                       ],
                     ),
@@ -277,7 +306,11 @@ class _SalePostListPageState extends State<SalePostListPage> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 5)),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 12,
+                      offset: const Offset(0, 5),
+                    ),
                   ],
                 ),
                 child: Row(
@@ -290,6 +323,10 @@ class _SalePostListPageState extends State<SalePostListPage> {
                         onChanged: (val) => setState(() => _query = val),
                         decoration: const InputDecoration(
                           hintText: "Search listings...",
+                          hintStyle: TextStyle(
+                            color: AppColors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                           border: InputBorder.none,
                           isDense: true,
                         ),
@@ -306,9 +343,19 @@ class _SalePostListPageState extends State<SalePostListPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.inventory_2_outlined, size: 70, color: Colors.grey.shade300),
+                          Icon(
+                            Icons.inventory_2_outlined,
+                            size: 70,
+                            color: Colors.grey.shade300,
+                          ),
                           const SizedBox(height: 12),
-                          Text("No listings found", style: AppTextStyles.caption(context, color: Colors.grey)),
+                          Text(
+                            "No listings found",
+                            style: AppTextStyles.caption(
+                              context,
+                              color: Colors.grey,
+                            ),
+                          ),
                         ],
                       ),
                     )
@@ -329,7 +376,11 @@ class _SalePostListPageState extends State<SalePostListPage> {
                                 borderRadius: BorderRadius.circular(18),
                                 border: Border.all(color: Colors.grey.shade100),
                                 boxShadow: [
-                                  BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 12, offset: const Offset(0, 5)),
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 5),
+                                  ),
                                 ],
                               ),
                               child: Column(
@@ -338,18 +389,35 @@ class _SalePostListPageState extends State<SalePostListPage> {
                                   Row(
                                     children: [
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 3,
+                                        ),
                                         decoration: BoxDecoration(
-                                          color: AppColors.primary.withOpacity(0.08),
-                                          borderRadius: BorderRadius.circular(8),
+                                          color: AppColors.primary.withOpacity(
+                                            0.08,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
                                         child: Text(
                                           post.userType,
-                                          style: AppTextStyles.caption(context, color: AppColors.primary, fontWeight: FontWeight.w600),
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: AppColors.primary,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                       ),
                                       const Spacer(),
-                                      Text(post.postedAgo, style: AppTextStyles.caption(context, color: Colors.grey.shade500)),
+                                      Text(
+                                        post.postedAgo,
+                                        style: AppTextStyles.caption(
+                                          context,
+                                          color: Colors.grey.shade500,
+                                        ),
+                                      ),
                                       const SizedBox(width: 6),
                                       InkWell(
                                         borderRadius: BorderRadius.circular(20),
@@ -358,12 +426,18 @@ class _SalePostListPageState extends State<SalePostListPage> {
                                           price: post.price,
                                           mobileNumber: post.mobileNumber,
                                           userType: post.userType,
-                                          imageUrl: post.imageUrls.isNotEmpty ? post.imageUrls.first : null,
+                                          imageUrl: post.imageUrls.isNotEmpty
+                                              ? post.imageUrls.first
+                                              : null,
                                           postId: post.id,
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(4.0),
-                                          child: Icon(Icons.share_outlined, size: 16, color: AppColors.primary),
+                                          child: Icon(
+                                            Icons.share_outlined,
+                                            size: 16,
+                                            color: AppColors.primary,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -373,7 +447,11 @@ class _SalePostListPageState extends State<SalePostListPage> {
                                     post.message,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppTextStyles.caption(context, color: AppColors.black, fontWeight: FontWeight.w600),
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      color: AppColors.black,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                   const SizedBox(height: 10),
                                   if (post.pickedImages.isNotEmpty)
@@ -384,24 +462,48 @@ class _SalePostListPageState extends State<SalePostListPage> {
                                         children: [
                                           for (final img in post.pickedImages)
                                             Padding(
-                                              padding: const EdgeInsets.only(right: 8),
+                                              padding: const EdgeInsets.only(
+                                                right: 8,
+                                              ),
                                               child: _HoverLift(
                                                 liftScale: 1.03,
-                                                borderRadius: BorderRadius.circular(12),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
                                                 child: GestureDetector(
-                                                  onTap: () => _openSaleImage(img),
+                                                  onTap: () =>
+                                                      _openSaleImage(img),
                                                   child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
                                                     child: img.bytes != null
-                                                        ? Image.memory(img.bytes!, width: 96, height: 96, fit: BoxFit.cover)
+                                                        ? Image.memory(
+                                                            img.bytes!,
+                                                            width: 96,
+                                                            height: 96,
+                                                            fit: BoxFit.cover,
+                                                          )
                                                         : img.file != null
-                                                            ? Image.file(img.file!, width: 96, height: 96, fit: BoxFit.cover)
-                                                            : Container(
-                                                                width: 96,
-                                                                height: 96,
-                                                                color: const Color(0xFFF1F3F6),
-                                                                child: const Icon(Icons.image_outlined, color: Colors.grey),
-                                                              ),
+                                                        ? Image.file(
+                                                            img.file!,
+                                                            width: 96,
+                                                            height: 96,
+                                                            fit: BoxFit.cover,
+                                                          )
+                                                        : Container(
+                                                            width: 96,
+                                                            height: 96,
+                                                            color: const Color(
+                                                              0xFFF1F3F6,
+                                                            ),
+                                                            child: const Icon(
+                                                              Icons
+                                                                  .image_outlined,
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
+                                                          ),
                                                   ),
                                                 ),
                                               ),
@@ -417,40 +519,74 @@ class _SalePostListPageState extends State<SalePostListPage> {
                                         children: [
                                           for (final url in post.imageUrls)
                                             Padding(
-                                              padding: const EdgeInsets.only(right: 8),
+                                              padding: const EdgeInsets.only(
+                                                right: 8,
+                                              ),
                                               child: _HoverLift(
                                                 liftScale: 1.03,
-                                                borderRadius: BorderRadius.circular(12),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
                                                 child: GestureDetector(
-                                                  onTap: () => _openSaleImageUrl(url),
+                                                  onTap: () =>
+                                                      _openSaleImageUrl(url),
                                                   child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
                                                     child: Image.network(
                                                       url,
                                                       width: 96,
                                                       height: 96,
                                                       fit: BoxFit.cover,
-                                                      loadingBuilder: (context, child, progress) {
-                                                        if (progress == null) return child;
-                                                        return Container(
-                                                          width: 96,
-                                                          height: 96,
-                                                          color: const Color(0xFFF1F3F6),
-                                                          child: const Center(
-                                                            child: SizedBox(
-                                                              width: 16,
-                                                              height: 16,
-                                                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                                                      loadingBuilder:
+                                                          (
+                                                            context,
+                                                            child,
+                                                            progress,
+                                                          ) {
+                                                            if (progress ==
+                                                                null)
+                                                              return child;
+                                                            return Container(
+                                                              width: 96,
+                                                              height: 96,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFFF1F3F6,
+                                                                  ),
+                                                              child: const Center(
+                                                                child: SizedBox(
+                                                                  width: 16,
+                                                                  height: 16,
+                                                                  child: CircularProgressIndicator(
+                                                                    strokeWidth:
+                                                                        2,
+                                                                    color: AppColors
+                                                                        .primary,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                      errorBuilder:
+                                                          (
+                                                            context,
+                                                            error,
+                                                            stackTrace,
+                                                          ) => Container(
+                                                            width: 96,
+                                                            height: 96,
+                                                            color: const Color(
+                                                              0xFFF1F3F6,
+                                                            ),
+                                                            child: const Icon(
+                                                              Icons
+                                                                  .image_outlined,
+                                                              color:
+                                                                  Colors.grey,
                                                             ),
                                                           ),
-                                                        );
-                                                      },
-                                                      errorBuilder: (context, error, stackTrace) => Container(
-                                                        width: 96,
-                                                        height: 96,
-                                                        color: const Color(0xFFF1F3F6),
-                                                        child: const Icon(Icons.image_outlined, color: Colors.grey),
-                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -467,15 +603,30 @@ class _SalePostListPageState extends State<SalePostListPage> {
                                         width: double.infinity,
                                         height: 96,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) => Container(
-                                          width: double.infinity,
-                                          height: 96,
-                                          decoration: BoxDecoration(
-                                            gradient: const LinearGradient(colors: [AppColors.primary, AppColors.secondary]),
-                                            borderRadius: BorderRadius.circular(14),
-                                          ),
-                                          child: Center(child: _userTypeIcon(post.userType)),
-                                        ),
+                                        errorBuilder:
+                                            (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) => Container(
+                                              width: double.infinity,
+                                              height: 96,
+                                              decoration: BoxDecoration(
+                                                gradient: const LinearGradient(
+                                                  colors: [
+                                                    AppColors.primary,
+                                                    AppColors.secondary,
+                                                  ],
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(14),
+                                              ),
+                                              child: Center(
+                                                child: _userTypeIcon(
+                                                  post.userType,
+                                                ),
+                                              ),
+                                            ),
                                       ),
                                     ),
                                   const SizedBox(height: 10),
@@ -485,29 +636,54 @@ class _SalePostListPageState extends State<SalePostListPage> {
                                         child: Text(
                                           "₹${post.price}",
                                           overflow: TextOverflow.ellipsis,
-                                          style: AppTextStyles.body(context, color: AppColors.primary, fontWeight: FontWeight.bold),
+                                          style: AppTextStyles.body(
+                                            context,
+                                            color: AppColors.primary,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                       if (post.negotiable) ...[
                                         const SizedBox(width: 8),
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: Colors.green.withOpacity(0.1),
-                                            borderRadius: BorderRadius.circular(20),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 2,
                                           ),
-                                          child: Text("Negotiable", style: AppTextStyles.caption(context, color: Colors.green, fontWeight: FontWeight.w600)),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.withOpacity(
+                                              0.1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            "Negotiable",
+                                            style: AppTextStyles.caption(
+                                              context,
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                       const Spacer(),
-                                      Icon(Icons.call, size: 14, color: Colors.grey.shade500),
+                                      Icon(
+                                        Icons.call,
+                                        size: 14,
+                                        color: Colors.grey.shade500,
+                                      ),
                                       const SizedBox(width: 4),
                                       Flexible(
                                         child: Text(
                                           post.mobileNumber,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
-                                          style: AppTextStyles.caption(context, color: Colors.grey.shade600),
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: Colors.grey.shade600,
+                                          ),
                                         ),
                                       ),
                                     ],

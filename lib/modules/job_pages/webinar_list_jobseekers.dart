@@ -67,10 +67,9 @@ class _WebinarCardState extends State<WebinarCard> {
                   ),
                   decoration: InputDecoration(
                     hintText: "Search webinar by name, area...",
-                    hintStyle: AppTextStyles.caption(
-                      context,
-                      color: AppColors.grey,
-                      fontWeight: FontWeight.normal,
+                    hintStyle: const TextStyle(
+                      color: AppColors.black,
+                      fontWeight: FontWeight.bold,
                     ),
                     prefixIcon: Icon(
                       Icons.search_rounded,
@@ -401,14 +400,15 @@ class _WebinarCardState extends State<WebinarCard> {
                                         child: Image.network(
                                           webinar.webinarImage ?? "",
                                           fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) => Container(
-                                            color: Colors.grey.shade100,
-                                            child: const Icon(
-                                              Icons.image_not_supported,
-                                              size: 40,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
+                                          errorBuilder: (_, __, ___) =>
+                                              Container(
+                                                color: Colors.grey.shade100,
+                                                child: const Icon(
+                                                  Icons.image_not_supported,
+                                                  size: 40,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
                                         ),
                                       ),
 
@@ -441,7 +441,8 @@ class _WebinarCardState extends State<WebinarCard> {
                                               Flexible(
                                                 child: Text(
                                                   webinar.place ?? "",
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: size * 0.03,
@@ -499,11 +500,13 @@ class _WebinarCardState extends State<WebinarCard> {
                                           width: double.infinity,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: AppColors.primary,
+                                              backgroundColor:
+                                                  AppColors.primary,
                                               elevation: 0,
-                                              padding: const EdgeInsets.symmetric(
-                                                vertical: 14,
-                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 14,
+                                                  ),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(14),

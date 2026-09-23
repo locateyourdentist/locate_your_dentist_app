@@ -102,7 +102,10 @@ class _ViewContactListState extends State<ViewContactList> {
                               controller: searchController,
                               decoration: InputDecoration(
                                 hintText: "Search contacts...",
-                                hintStyle: AppTextStyles.caption(context),
+                                hintStyle: const TextStyle(
+                                  color: AppColors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
                                 border: InputBorder.none,
                               ),
                               onSubmitted: (value) async {

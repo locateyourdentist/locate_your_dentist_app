@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
+import 'package:locate_your_dentist/common_widgets/common-alertdialog.dart';
 import 'package:locate_your_dentist/modules/contact_form/contact_controller.dart';
 import 'package:locate_your_dentist/web_modules/common/common_side_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -223,6 +224,17 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
     }
   }
 
+  void _confirmDeleteFeedback(dynamic item) {
+    showDeleteDialog(
+      context: context,
+      title: "Delete Feedback",
+      message: "This feedback will be permanently removed.",
+      onConfirm: () async {
+        await controller.deleteFeedbackContact(item.id, context);
+      },
+    );
+  }
+
   // 📱 Complete Modern Card Component (Used for Grid/List entries dynamically)
   Widget feedbackCard(dynamic item) {
     return Container(
@@ -283,6 +295,14 @@ class _ViewFeedbackFormsState extends State<ViewFeedbackForms> {
                     ),
                   ],
                 ),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.delete_outline,
+                  color: Colors.redAccent,
+                  size: 20,
+                ),
+                onPressed: () => _confirmDeleteFeedback(item),
               ),
             ],
           ),

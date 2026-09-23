@@ -240,6 +240,7 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
       ),
     );
   }
+
   bool isDesktop(BuildContext context) =>
       MediaQuery.of(context).size.width >= 1100;
   bool isMobile(BuildContext context) =>
@@ -341,7 +342,9 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                                           vertical: 12,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
                                       ),
                                       child: const Text(
@@ -364,7 +367,8 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
                                             ),
 
                                             child: PlanDetailsWidget(
-                                              planList: controller.checkPlanList,
+                                              planList:
+                                                  controller.checkPlanList,
                                             ),
                                           ),
                                         );
@@ -563,224 +567,235 @@ class _ViewPlanWebState extends State<ViewPlanWeb> {
       child: Listener(
         onPointerSignal: (event) {
           if (event is PointerScrollEvent && scrollController.hasClients) {
-            final target = (scrollController.offset + event.scrollDelta.dy)
-                .clamp(0.0, scrollController.position.maxScrollExtent);
+            final delta = event.scrollDelta.dx != 0
+                ? event.scrollDelta.dx
+                : event.scrollDelta.dy;
+            final target = (scrollController.offset + delta).clamp(
+              0.0,
+              scrollController.position.maxScrollExtent,
+            );
             scrollController.jumpTo(target);
           }
         },
-        child: AnimationLimiter(
-          child: ListView.builder(
-            controller: scrollController,
-            scrollDirection: Axis.horizontal,
-            physics: ScrollPhysics(),
-            itemCount: plans.length,
-            itemBuilder: (context, index) {
-              final plan = plans[index];
-              String name = "";
-              String price = "";
-              String? markPrice;
-              String duration = "";
-              List<String> features = [];
-              String planIdStr = "";
+        child: Scrollbar(
+          controller: scrollController,
+          thumbVisibility: true,
+          trackVisibility: true,
+          child: AnimationLimiter(
+            child: ListView.builder(
+              controller: scrollController,
+              scrollDirection: Axis.horizontal,
+              physics: const ClampingScrollPhysics(),
+              itemCount: plans.length,
+              itemBuilder: (context, index) {
+                final plan = plans[index];
+                String name = "";
+                String price = "";
+                String? markPrice;
+                String duration = "";
+                List<String> features = [];
+                String planIdStr = "";
 
-              if (plan is PlanModel) {
-                name = plan.planName ?? "";
-                price = plan.price ?? "0";
-                markPrice = plan.details?.markPrice;
-                duration = plan.duration ?? "0";
-                features = plan.features ?? [];
-                planIdStr = plan.planId?.toString() ?? "";
-              } else if (plan is AddOnsPlanModel) {
-                name = plan.addOnsPlanName ?? "";
-                price = plan.price ?? "0";
-                markPrice = plan.details?.markPrice;
-                duration = plan.duration ?? "0";
-                features = plan.features ?? [];
-                planIdStr = plan.addOnsPlanId?.toString() ?? "";
-              } else if (plan is JobPlanModel) {
-                name = plan.jobPlanName ?? "";
-                price = plan.price ?? "0";
-                markPrice = plan.details?.markPrice;
-                duration = plan.duration ?? "0";
-                features = plan.features ?? [];
-                planIdStr = plan.jobPlansId?.toString() ?? "";
-              } else if (plan is WebinarPlan) {
-                name = plan.webinarPlanName;
-                price = plan.price;
-                markPrice = _readMarkPrice(plan.details);
-                duration = plan.duration;
-                features = [];
-                planIdStr = plan.webinarPlanId.toString();
-              } else if (plan is PostImagePlan) {
-                name = plan.postPlanName ?? "";
-                price = plan.price;
-                markPrice = _readMarkPrice(plan.details);
-                duration = plan.duration;
-                features = plan.features ?? [];
-                planIdStr = plan.postImagesPlanId?.toString() ?? "";
-              }
+                if (plan is PlanModel) {
+                  name = plan.planName ?? "";
+                  price = plan.price ?? "0";
+                  markPrice = plan.details?.markPrice;
+                  duration = plan.duration ?? "0";
+                  features = plan.features ?? [];
+                  planIdStr = plan.planId?.toString() ?? "";
+                } else if (plan is AddOnsPlanModel) {
+                  name = plan.addOnsPlanName ?? "";
+                  price = plan.price ?? "0";
+                  markPrice = plan.details?.markPrice;
+                  duration = plan.duration ?? "0";
+                  features = plan.features ?? [];
+                  planIdStr = plan.addOnsPlanId?.toString() ?? "";
+                } else if (plan is JobPlanModel) {
+                  name = plan.jobPlanName ?? "";
+                  price = plan.price ?? "0";
+                  markPrice = plan.details?.markPrice;
+                  duration = plan.duration ?? "0";
+                  features = plan.features ?? [];
+                  planIdStr = plan.jobPlansId?.toString() ?? "";
+                } else if (plan is WebinarPlan) {
+                  name = plan.webinarPlanName;
+                  price = plan.price;
+                  markPrice = _readMarkPrice(plan.details);
+                  duration = plan.duration;
+                  features = [];
+                  planIdStr = plan.webinarPlanId.toString();
+                } else if (plan is PostImagePlan) {
+                  name = plan.postPlanName ?? "";
+                  price = plan.price;
+                  markPrice = _readMarkPrice(plan.details);
+                  duration = plan.duration;
+                  features = plan.features ?? [];
+                  planIdStr = plan.postImagesPlanId?.toString() ?? "";
+                }
 
-              return AnimationConfiguration.staggeredList(
-                position: index,
-                duration: const Duration(milliseconds: 500),
-                child: SlideAnimation(
-                  horizontalOffset: 50.0,
-                  child: FadeInAnimation(
-                    child: Container(
-                      width: 280,
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color: Colors.grey.shade200),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            name,
-                            style: AppTextStyles.body(
-                              context,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: const Duration(milliseconds: 500),
+                  child: SlideAnimation(
+                    horizontalOffset: 50.0,
+                    child: FadeInAnimation(
+                      child: Container(
+                        width: 280,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: Colors.grey.shade200),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              if (markPrice != null && markPrice.isNotEmpty)
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: Text(
-                                    "₹$markPrice",
-                                    style:
-                                        AppTextStyles.caption(
-                                          context,
-                                          color: Colors.grey,
-                                        ).copyWith(
-                                          decoration:
-                                              TextDecoration.lineThrough,
-                                        ),
-                                  ),
-                                ),
-                              Text(
-                                "₹$price",
-                                style: AppTextStyles.subtitle(context),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              style: AppTextStyles.body(
+                                context,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
                               ),
-                            ],
-                          ),
-                          Text(
-                            "Duration: $duration days",
-                            style: AppTextStyles.caption(
-                              context,
-                              color: Colors.grey,
                             ),
-                          ),
-                          const Divider(height: 10),
-                          Expanded(
-                            child: features.isNotEmpty
-                                ? ListView(
-                                    shrinkWrap: true,
-                                    children: features
-                                        .map<Widget>(
-                                          (f) => Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 4,
-                                            ),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Icon(
-                                                  Icons.check_circle,
-                                                  size: 16,
-                                                  color: Colors.green,
-                                                ),
-                                                const SizedBox(width: 8),
-                                                Expanded(
-                                                  child: Text(
-                                                    f,
-                                                    style:
-                                                        AppTextStyles.caption(
-                                                          context,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                  )
-                                : Center(
+                            const SizedBox(height: 6),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                if (markPrice != null && markPrice.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8),
                                     child: Text(
-                                      "No features listed",
-                                      style: AppTextStyles.caption(
-                                        context,
-                                        color: Colors.grey,
-                                      ),
+                                      "₹$markPrice",
+                                      style:
+                                          AppTextStyles.caption(
+                                            context,
+                                            color: Colors.grey,
+                                          ).copyWith(
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                          ),
                                     ),
                                   ),
-                          ),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                Text(
+                                  "₹$price",
+                                  style: AppTextStyles.subtitle(context),
                                 ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                ),
+                              ],
+                            ),
+                            Text(
+                              "Duration: $duration days",
+                              style: AppTextStyles.caption(
+                                context,
+                                color: Colors.grey,
                               ),
-                              onPressed: () {
-                                if (userType == "superAdmin") {
-                                  _onEditPlan(plan, planType);
-                                } else if (userType != "admin") {
-                                  _onBuyPlan(
-                                    plan,
-                                    planType,
-                                    userId,
-                                    name,
-                                    price,
-                                    duration,
-                                    planIdStr,
-                                  );
-                                }
-                              },
-                              child: Text(
-                                userType == "superAdmin"
-                                    ? "Edit Plan"
-                                    : "Buy Now",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                            ),
+                            const Divider(height: 10),
+                            Expanded(
+                              child: features.isNotEmpty
+                                  ? ListView(
+                                      shrinkWrap: true,
+                                      children: features
+                                          .map<Widget>(
+                                            (f) => Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 4,
+                                                  ),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const Icon(
+                                                    Icons.check_circle,
+                                                    size: 16,
+                                                    color: Colors.green,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Expanded(
+                                                    child: Text(
+                                                      f,
+                                                      style:
+                                                          AppTextStyles.caption(
+                                                            context,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                    )
+                                  : Center(
+                                      child: Text(
+                                        "No features listed",
+                                        style: AppTextStyles.caption(
+                                          context,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (userType == "superAdmin") {
+                                    _onEditPlan(plan, planType);
+                                  } else if (userType != "admin") {
+                                    _onBuyPlan(
+                                      plan,
+                                      planType,
+                                      userId,
+                                      name,
+                                      price,
+                                      duration,
+                                      planIdStr,
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  userType == "superAdmin"
+                                      ? "Edit Plan"
+                                      : "Buy Now",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),

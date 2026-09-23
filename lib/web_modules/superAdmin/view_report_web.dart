@@ -606,6 +606,10 @@ class _FinanceDashboardPageState extends State<FinanceDashboardPage> {
           child: TextField(
             decoration: InputDecoration(
               hintText: "Search transaction...",
+              hintStyle: const TextStyle(
+                color: AppColors.black,
+                fontWeight: FontWeight.bold,
+              ),
               prefixIcon: const Icon(Icons.search),
               filled: true,
               fillColor: Colors.white,

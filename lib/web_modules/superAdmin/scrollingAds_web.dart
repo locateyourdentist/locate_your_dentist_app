@@ -32,6 +32,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     "Job Seekers",
   ];
   final ImagePicker picker = ImagePicker();
+  String? selectedTargetUserId;
 
   @override
   void initState() {
@@ -40,21 +41,52 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     _initData();
   }
 
+  String _formatAddress(Map<String, dynamic>? address) {
+    if (address == null) return "";
+    final parts = [
+      address['addressLine1'],
+      address['area'],
+      address['city'],
+      address['district'],
+      address['state'],
+    ].where((e) => e != null && e.toString().trim().isNotEmpty).map((e) => e.toString());
+    return parts.join(', ');
+  }
+
   Future<void> _initData() async {
     String userType = Api.userInfo.read('userType') ?? "";
-    String userIdForFetch = userType == 'superAdmin'
-        ? ""
-        : Api.userInfo.read('userId') ?? "";
+    String currentUserId = Api.userInfo.read('userId') ?? "";
+
+    if (userType == 'superAdmin') {
+      await loginController.getProfileDetails(
+        planController.selectedUserType ?? "",
+        '',
+        [],
+        [],
+        [],
+        '',
+        '',
+        '',
+        '',
+        '',
+        context,
+      );
+      final bool stillValid = loginController.profileList.any(
+        (u) => u.userId == selectedTargetUserId,
+      );
+      if (!stillValid) {
+        selectedTargetUserId = null;
+      }
+    }
+
+    String userIdForFetch = userType == 'superAdmin' ? "" : currentUserId;
 
     await planController.getUploadImages(
       userId: userIdForFetch,
       userType: planController.selectedUserType!,
       context: context,
     );
-    await planController.checkPlansStatus(
-      Api.userInfo.read('userId') ?? "",
-      context,
-    );
+    await planController.checkPlansStatus(currentUserId, context);
     await planController.getPostImagePlanList(
       planController.selectedUserType.toString(),
       context,
@@ -66,6 +98,106 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
     await _initData();
   }
 
+  String _resolveUserLabel(String? userId) {
+    if (userId == null || userId.isEmpty) return "";
+    for (final user in loginController.profileList) {
+      if (user.userId == userId) {
+        return "${user.name} ($userId)";
+      }
+    }
+    return userId;
+  }
+
+  Future<String?> _pickTargetUserDialog(BuildContext context) async {
+    final users = loginController.profileList;
+    if (users.isEmpty) {
+      Get.snackbar("No Users", "No users found for the selected user type");
+      return null;
+    }
+    String? tempSelected =
+        users.any((u) => u.userId == selectedTargetUserId)
+        ? selectedTargetUserId
+        : null;
+
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              title: Text(
+                "Select User",
+                style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+              ),
+              content: SizedBox(
+                width: 400,
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  initialValue: tempSelected,
+                  hint: Text(
+                    "Select User",
+                    style: AppTextStyles.caption(context),
+                  ),
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 12,
+                    ),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: users.map((user) {
+                    final address = _formatAddress(user.address);
+                    final label = address.isNotEmpty
+                        ? "${user.name} (${user.userId}) - $address"
+                        : "${user.name} (${user.userId})";
+                    return DropdownMenuItem<String>(
+                      value: user.userId,
+                      child: Text(
+                        label,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.caption(context),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) =>
+                      setDialogState(() => tempSelected = value),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    "Cancel",
+                    style: AppTextStyles.caption(context, color: AppColors.grey),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: tempSelected == null
+                      ? null
+                      : () => Navigator.of(context).pop(tempSelected),
+                  child: Text(
+                    "Continue",
+                    style: AppTextStyles.caption(context, color: AppColors.white),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   Future<void> pickImages(BuildContext context) async {
     bool isBasePlanActive = false;
     bool isPosterPlanActive = false;
@@ -75,6 +207,7 @@ class _UploadImagesWebState extends State<UploadImagesWeb> {
       isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
     }
     final bool isSuperAdmin = Api.userInfo.read('userType') == 'superAdmin';
+    String? targetUserId = Api.userInfo.read('userId')?.toString() ?? "";
 if (!isSuperAdmin) {
   if (!isBasePlanActive) {
     showSuccessDialog(
@@ -98,13 +231,19 @@ if (!isSuperAdmin) {
     );
     return;
   }
+} else {
+  targetUserId = await _pickTargetUserDialog(context);
+  if (targetUserId == null || targetUserId.isEmpty) return;
+  selectedTargetUserId = targetUserId;
 }
 
+    if (!context.mounted) return;
     final List<XFile> pickedImages = await picker.pickMultiImage();
-    if (pickedImages == null || pickedImages.isEmpty) return;
+    if (pickedImages.isEmpty) return;
 
     for (var file in pickedImages) {
       final bytes = await file.readAsBytes();
+      if (!context.mounted) return;
       final result = await Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => CropScreen(imageBytes: bytes)),
@@ -113,7 +252,11 @@ if (!isSuperAdmin) {
       if (result == null) continue;
       final Uint8List croppedBytes = result;
 
-      final appImage2 = AppImage2(bytes: croppedBytes, isActive: true);
+      final appImage2 = AppImage2(
+        bytes: croppedBytes,
+        isActive: true,
+        userId: targetUserId,
+      );
 
       planController.editUploadImage1.add(appImage2);
     }
@@ -255,17 +398,8 @@ if (!isSuperAdmin) {
             onChanged: (value) async {
               if (value == null) return;
               controller.selectedUserType = value;
-              String userType = Api.userInfo.read('userType') ?? "";
-              String userIdForFetch = userType == 'superAdmin'
-                  ? ""
-                  : Api.userInfo.read('userId') ?? "";
-              await controller.getUploadImages(
-                userId: userIdForFetch,
-                userType: value,
-                context: context,
-              );
-              await controller.getPostImagePlanList(value, context);
-              controller.update();
+              selectedTargetUserId = null;
+              await _initData();
             },
           ),
         ),
@@ -368,6 +502,29 @@ if (!isSuperAdmin) {
                   : const Icon(Icons.image_not_supported),
             ),
           ),
+          if (userType == 'superAdmin')
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+              child: Row(
+                children: [
+                  const Icon(Icons.person, size: 14, color: Colors.indigo),
+                  const SizedBox(width: 5),
+                  Flexible(
+                    child: Text(
+                      _resolveUserLabel(image.userId).isNotEmpty
+                          ? _resolveUserLabel(image.userId)
+                          : "Unknown User",
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.indigo,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           if (image.startDate != null && image.startDate!.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -498,12 +655,15 @@ if (!isSuperAdmin) {
                           onPressed: () async {
                             controller.editUploadImage1.removeAt(index);
 
-                            String currentUserId =
-                                Api.userInfo.read('userId')?.toString() ?? "";
                             String storedUserType =
                                 Api.userInfo.read('userType')?.toString() ?? "";
-                            String targetUserType =
-                                (storedUserType.toLowerCase() == 'superadmin')
+                            bool isSuperAdmin =
+                                storedUserType.toLowerCase() == 'superadmin';
+                            String currentUserId = isSuperAdmin
+                                ? (image.userId ?? "")
+                                : Api.userInfo.read('userId')?.toString() ??
+                                      "";
+                            String targetUserType = isSuperAdmin
                                 ? (controller.selectedUserType ??
                                       "Dental Clinic")
                                 : storedUserType;
@@ -558,18 +718,25 @@ if (!isSuperAdmin) {
     print('ghgd$endDate');
     List<Uint8List> currentFile = image.bytes != null ? [image.bytes!] : [];
 
-    String currentUserId = Api.userInfo.read('userId')?.toString() ?? "";
+    String targetUserId = isSuperAdmin
+        ? (image.userId ?? "")
+        : Api.userInfo.read('userId')?.toString() ?? "";
     String targetUserType = isSuperAdmin
         ? (controller.selectedUserType ?? "Dental Clinic")
         : userType;
 
-    if (currentUserId.isEmpty || targetUserType.isEmpty) {
+    if (isSuperAdmin && targetUserId.isEmpty) {
+      Get.snackbar("Error", "Missing user for this image. Please re-upload.");
+      return;
+    }
+
+    if (targetUserId.isEmpty || targetUserType.isEmpty) {
       Get.snackbar("Error", "Missing session data. Please login again.");
       return;
     }
 
     await controller.uploadImagesUserType(
-      currentUserId,
+      targetUserId,
       targetUserType,
       image.id ?? "0",
       // "1",

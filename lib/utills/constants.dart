@@ -131,6 +131,7 @@ class AppConstants {
   static const String postContactFormUrl = 'postContactDetails';
   static const String postPublicContactFormUrl = 'createPublicContact';
   static const String feedbackContactListUrl = 'get_public_contacts';
+  static const String deleteFeedbackContactUrl = 'delete_public_contact';
   static const String senderContactListUrl = 'senderContactLists';
   static const String receiverContactListUrl = 'receiverIdContactLists';
   static const String contactFilterSearchUrl = 'filterContactLists';

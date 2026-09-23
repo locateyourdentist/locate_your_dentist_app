@@ -193,6 +193,11 @@ class _JobSeekerDashboardWebState extends State<JobSeekerDashboardWeb> {
                                                     const InputDecoration(
                                                       hintText:
                                                           "Search jobs...",
+                                                      hintStyle: TextStyle(
+                                                        color: AppColors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                       border: InputBorder.none,
                                                     ),
                                                 onSubmitted: (value) async {

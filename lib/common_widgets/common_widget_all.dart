@@ -349,6 +349,7 @@ class CommonSearchTextField extends StatelessWidget {
   final bool isDense;
   final EdgeInsetsGeometry? contentPadding;
   final Color? borderColor;
+  final TextStyle? hintStyle;
 
   const CommonSearchTextField({
     super.key,
@@ -358,6 +359,7 @@ class CommonSearchTextField extends StatelessWidget {
     this.isDense = true,
     this.contentPadding,
     this.borderColor,
+    this.hintStyle,
   });
 
   @override
@@ -366,11 +368,12 @@ class CommonSearchTextField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: AppTextStyles.caption(
-          context,
-          fontWeight: FontWeight.normal,
-          color: AppColors.grey,
-        ),
+        hintStyle:
+            hintStyle ??
+            const TextStyle(
+              color: AppColors.black,
+              fontWeight: FontWeight.bold,
+            ),
         // Outer border
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),

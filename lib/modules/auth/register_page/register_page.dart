@@ -66,19 +66,6 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     return imageText;
   }
-  // List<Map<String, String>> get filteredItems {
-  //   final userType = Api.userInfo.read('userType');
-  //
-  //   if (userType == "superAdmin") {
-  //     return allItems;
-  //   } else if (userType == "admin") {
-  //     return allItems.where((e) => e["key"] != "Super Admin").toList();
-  //   } else {
-  //     return allItems
-  //         .where((e) => e["key"] != "Admin" && e["key"] != "Super Admin")
-  //         .toList();
-  //   }
-  // }
   List<Map<String, String>> get filteredItems {
     final String? userType = Api.userInfo.read('userType');
 

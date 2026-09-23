@@ -2642,6 +2642,29 @@ class Api {
     }
   }
 
+  Future<http.Response> deleteFeedbackContact(String? id) async {
+    String url =
+        "${AppConstants.baseUrl}${AppConstants.contactUrl}${AppConstants.deleteFeedbackContactUrl}";
+    print('API deleteFeedbackContactUrl $url');
+    try {
+      final String token = Api.userInfo.read('token') ?? "";
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode({'id': id}),
+      );
+      print('api deleteFeedbackContact ${response.body}');
+      return response;
+    } catch (e) {
+      throw "Failed deleteFeedbackContactUrl: $e";
+    }
+  }
+
   Future<http.Response> getReceiverContactFormLists(
     String receiverId,
     String fromDate,

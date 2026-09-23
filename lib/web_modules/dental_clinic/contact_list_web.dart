@@ -187,6 +187,10 @@ class _ViewContactListWebState extends State<ViewContactListWeb> {
                   controller: searchController,
                   decoration: const InputDecoration(
                     hintText: "Search by name or org...",
+                    hintStyle: TextStyle(
+                      color: AppColors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                     border: InputBorder.none,
                     isDense: true,
                   ),

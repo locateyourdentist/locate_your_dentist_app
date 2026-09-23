@@ -243,9 +243,9 @@ class _DentalMechanicWebDashboardState
                                             size: 20,
                                           ),
                                           hintText: "Search contacts...",
-                                          hintStyle: AppTextStyles.caption(
-                                            context,
-                                            color: AppColors.grey,
+                                          hintStyle: const TextStyle(
+                                            color: AppColors.black,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                           border: InputBorder.none,
                                         ),

@@ -24,6 +24,7 @@ class _UploadImagesState extends State<UploadImages> {
   final PlanController controller = Get.put(PlanController());
   final LoginController loginController = Get.put(LoginController());
   final ImagePicker picker = ImagePicker();
+  String? selectedTargetUserId;
 
   final List<String> userTypes = const [
     "Dental Clinic",
@@ -53,9 +54,143 @@ class _UploadImagesState extends State<UploadImages> {
     await refreshData();
   }
 
+  String _formatAddress(Map<String, dynamic>? address) {
+    if (address == null) return "";
+    final parts = [
+      address['addressLine1'],
+      address['area'],
+      address['city'],
+      address['district'],
+      address['state'],
+    ].where((e) => e != null && e.toString().trim().isNotEmpty).map((e) => e.toString());
+    return parts.join(', ');
+  }
+
+  String _resolveUserLabel(String? userId) {
+    if (userId == null || userId.isEmpty) return "";
+    for (final user in loginController.profileList) {
+      if (user.userId == userId) {
+        return "${user.name} ($userId)";
+      }
+    }
+    return userId;
+  }
+
+  Future<String?> _pickTargetUserDialog() async {
+    final users = loginController.profileList;
+    if (users.isEmpty) {
+      Get.snackbar("No Users", "No users found for the selected user type");
+      return null;
+    }
+    String? tempSelected =
+        users.any((u) => u.userId == selectedTargetUserId)
+        ? selectedTargetUserId
+        : null;
+
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              title: Text(
+                "Select User",
+                style: AppTextStyles.body(context, fontWeight: FontWeight.bold),
+              ),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  initialValue: tempSelected,
+                  hint: Text(
+                    "Select User",
+                    style: AppTextStyles.caption(context),
+                  ),
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 12,
+                    ),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: users.map((user) {
+                    final address = _formatAddress(user.address);
+                    final label = address.isNotEmpty
+                        ? "${user.name} (${user.userId}) - $address"
+                        : "${user.name} (${user.userId})";
+                    return DropdownMenuItem<String>(
+                      value: user.userId,
+                      child: Text(
+                        label,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.caption(context),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) =>
+                      setDialogState(() => tempSelected = value),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    "Cancel",
+                    style: AppTextStyles.caption(context, color: AppColors.grey),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: tempSelected == null
+                      ? null
+                      : () => Navigator.of(context).pop(tempSelected),
+                  child: Text(
+                    "Continue",
+                    style: AppTextStyles.caption(context, color: AppColors.white),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   Future<void> refreshData() async {
     String userType = Api.userInfo.read('userType') ?? "";
     String targetUserType = controller.selectedUserType ?? userType;
+
+    if (userType == 'superAdmin') {
+      await loginController.getProfileDetails(
+        targetUserType,
+        '',
+        [],
+        [],
+        [],
+        '',
+        '',
+        '',
+        '',
+        '',
+        context,
+      );
+      final bool stillValid = loginController.profileList.any(
+        (u) => u.userId == selectedTargetUserId,
+      );
+      if (!stillValid) {
+        selectedTargetUserId = null;
+      }
+    }
 
     String userId = userType == 'superAdmin'
         ? ""
@@ -72,44 +207,58 @@ class _UploadImagesState extends State<UploadImages> {
   }
 
   Future<void> pickAndCropImage() async {
-    bool isBasePlanActive = false;
-    bool isPosterPlanActive = false;
-    if (controller.checkPlanList.isNotEmpty) {
-      final planDetails = controller.checkPlanList[0]["details"]?["plan"];
-      isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
-      isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
-    }
+    final bool isSuperAdmin = Api.userInfo.read('userType') == 'superAdmin';
 
-    if (!isBasePlanActive) {
-      showSuccessDialog(
-        context,
-        title: "Alert",
-        message: "Oops! Base plan not Activated.please activate base plan..",
-        onOkPressed: () {},
-      );
-      return;
-    }
+    if (!isSuperAdmin) {
+      bool isBasePlanActive = false;
+      bool isPosterPlanActive = false;
+      if (controller.checkPlanList.isNotEmpty) {
+        final planDetails = controller.checkPlanList[0]["details"]?["plan"];
+        isBasePlanActive = planDetails?["basePlan"]?["isActive"] ?? false;
+        isPosterPlanActive = planDetails?["posterPlan"]?["isActive"] ?? false;
+      }
 
-    if (!isPosterPlanActive) {
-      showSuccessDialog(
-        context,
-        title: "Poster Plan Required",
-        message:
-            "You need an active poster plan to post scrolling ads. Please choose a plan to continue.",
-        onOkPressed: () {
-          Get.toNamed('/viewPlanPage');
-        },
-      );
-      return;
+      if (!isBasePlanActive) {
+        showSuccessDialog(
+          context,
+          title: "Alert",
+          message: "Oops! Base plan not Activated.please activate base plan..",
+          onOkPressed: () {},
+        );
+        return;
+      }
+
+      if (!isPosterPlanActive) {
+        showSuccessDialog(
+          context,
+          title: "Poster Plan Required",
+          message:
+              "You need an active poster plan to post scrolling ads. Please choose a plan to continue.",
+          onOkPressed: () {
+            Get.toNamed('/viewPlanPage');
+          },
+        );
+        return;
+      }
     }
 
     if (controller.editUploadImage1.length >= 20) {
       Get.snackbar("Limit reached", "You can upload only 20 images total.");
       return;
     }
+
+    String? targetUserId = Api.userInfo.read('userId')?.toString() ?? "";
+    if (isSuperAdmin) {
+      targetUserId = await _pickTargetUserDialog();
+      if (targetUserId == null || targetUserId.isEmpty) return;
+      selectedTargetUserId = targetUserId;
+    }
+
+    if (!mounted) return;
     final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked == null) return;
     final bytes = await picked.readAsBytes();
+    if (!mounted) return;
     final croppedBytes = await Navigator.push<Uint8List>(
       context,
       MaterialPageRoute(builder: (_) => CropScreen(imageBytes: bytes)),
@@ -117,7 +266,12 @@ class _UploadImagesState extends State<UploadImages> {
 
     if (croppedBytes != null) {
       controller.editUploadImage1.add(
-        AppImage2(bytes: croppedBytes, isActive: true, id: "0"),
+        AppImage2(
+          bytes: croppedBytes,
+          isActive: true,
+          id: "0",
+          userId: targetUserId,
+        ),
       );
       controller.update();
     }
@@ -125,8 +279,8 @@ class _UploadImagesState extends State<UploadImages> {
 
   Future<void> saveAll() async {
     String userType = Api.userInfo.read('userType') ?? "";
+    bool isSuperAdmin = userType == 'superAdmin';
     String targetUserType = controller.selectedUserType ?? userType;
-    String currentUserId = Api.userInfo.read('userId') ?? "";
 
     Get.dialog(
       const Center(child: CircularProgressIndicator()),
@@ -141,6 +295,14 @@ class _UploadImagesState extends State<UploadImages> {
         if (img.planId == null || img.planId!.isEmpty) {
           allSuccess = false;
           lastError = "Plan ID missing";
+          continue;
+        }
+        final String targetUserId = isSuperAdmin
+            ? (img.userId ?? "")
+            : Api.userInfo.read('userId')?.toString() ?? "";
+        if (targetUserId.isEmpty) {
+          allSuccess = false;
+          lastError = "Missing user for an image";
           continue;
         }
         final String imageId = img.id ?? "0";
@@ -158,7 +320,7 @@ class _UploadImagesState extends State<UploadImages> {
         debugPrint("BYTES NULL: ${img.bytes == null}");
 
         final response = await controller.api.uploadImagesUserType(
-          currentUserId,
+          targetUserId,
           targetUserType,
           imageId,
           //planId,
@@ -266,6 +428,7 @@ class _UploadImagesState extends State<UploadImages> {
                               onChanged: (val) {
                                 if (val != null) {
                                   controller.selectedUserType = val;
+                                  selectedTargetUserId = null;
                                   refreshData();
                                 }
                               },
@@ -375,6 +538,29 @@ class _UploadImagesState extends State<UploadImages> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (Api.userInfo.read('userType') == 'superAdmin')
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  const Icon(Icons.person, size: 14, color: Colors.indigo),
+                  const SizedBox(width: 5),
+                  Flexible(
+                    child: Text(
+                      _resolveUserLabel(img.userId).isNotEmpty
+                          ? _resolveUserLabel(img.userId)
+                          : "Unknown User",
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.indigo,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Row(
             children: [
               Expanded(
@@ -545,8 +731,11 @@ class _UploadImagesState extends State<UploadImages> {
           print('jkdfsf${img.url}');
           await loginController.deleteAwsFile(img.url!, 'postImage', context);
           String userType = Api.userInfo.read('userType') ?? "";
+          bool isSuperAdmin = userType == 'superAdmin';
           String targetUserType = controller.selectedUserType ?? userType;
-          String currentUserId = Api.userInfo.read('userId') ?? "";
+          String currentUserId = isSuperAdmin
+              ? (img.userId ?? "")
+              : Api.userInfo.read('userId')?.toString() ?? "";
 
           Get.dialog(
             const Center(child: CircularProgressIndicator()),

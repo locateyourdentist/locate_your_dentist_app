@@ -321,6 +321,38 @@ class ContactController extends GetxController {
     }
   }
 
+  Future<void> deleteFeedbackContact(String? id, dynamic context) async {
+    isLoading = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
+    var connection = await Connectivity().checkConnectivity();
+    if (connection == ConnectivityResult.none) {
+      isLoading = false;
+      update();
+      Get.snackbar("No Internet", "Please check your connection");
+      return;
+    }
+    try {
+      final response = await api.deleteFeedbackContact(id);
+      var data = jsonDecode(response.body);
+      if (data["status"].toString().toLowerCase() == "success") {
+        _publicContactFormLists.removeWhere((item) => item.id == id);
+        showCustomToast(context, "Feedback Deleted Successfully");
+      } else {
+        showCustomToast(
+          context,
+          "can not delete feedback: ${data["message"]}",
+        );
+      }
+    } catch (e) {
+      print('deleteFeedbackContact error $e');
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
   Future<void> getReceiverContactFormLists(
     String receiverId,
     String fromDate,
