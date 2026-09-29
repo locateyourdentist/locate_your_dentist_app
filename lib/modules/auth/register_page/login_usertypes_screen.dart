@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 import '../../../api/api.dart';
+import '../../../common_widgets/color_code.dart';
+import '../../../common_widgets/common_textstyles.dart';
 import 'register_page.dart';
 
 class DentalProfessionalRegisterPage extends StatefulWidget {
@@ -255,6 +257,22 @@ class _DentalProfessionalRegisterPageState
                     _buildLoginLink(),
 
                     const SizedBox(height: 12),
+
+                    Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Get.toNamed('/patientDashboard');
+                        },
+                        child: Text(
+                          "Back To Home",
+                          style: AppTextStyles.body(
+                            context,
+                            color: primaryBlue,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

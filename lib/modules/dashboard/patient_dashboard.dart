@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:locate_your_dentist/api/api.dart';
@@ -13,9 +14,9 @@ import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.
 import 'package:locate_your_dentist/modules/dashboard/slider_images_dashboard.dart';
 import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../common_widgets/common_bottom_navigation.dart';
-import '../../common_widgets/common_drawer.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
@@ -113,17 +114,16 @@ class _PatientDashboardState extends State<PatientDashboard> {
     if (position != null) {
       loginController.latitude = position.latitude;
       loginController.longitude = position.longitude;
-
       final address = await getAddressFromLatLng(
         loginController.latitude!,
         loginController.longitude!,
       );
-
       print('latitude ${loginController.latitude.toString()}');
       print('longitude ${loginController.longitude.toString()}');
       Api.userInfo.write('latitude', loginController.latitude.toString());
       Api.userInfo.write('longitude', loginController.longitude.toString());
       loginController.update();
+      await loginController.fetchStates();
       planController.currentLocation = address;
     } else {
       Get.snackbar('Location', 'Unable to get location');
@@ -157,6 +157,9 @@ class _PatientDashboardState extends State<PatientDashboard> {
       userType: "Dental Clinic",
       context: context,
     );
+    if (Api.userInfo.read('token') != null) {
+      await notificationController.getNotificationListAdmin(context);
+    }
   }
 
   Future<String> getAddressFromLatLng(double lat, double lng) async {
@@ -167,6 +170,355 @@ class _PatientDashboardState extends State<PatientDashboard> {
     } catch (e) {
       return '';
     }
+  }
+
+  Future<void> _performLocationSearch() async {
+    String distance = loginController.selectedDistance1.toString();
+    bool useLocation =
+        distance.isNotEmpty && distance != "0" && distance != "0.0";
+    if (useLocation) {
+      await getLocation();
+    } else {
+      loginController.latitude = null;
+      loginController.longitude = null;
+    }
+
+    String safeLat = useLocation
+        ? (loginController.latitude?.toString() ?? "")
+        : "";
+    String safeLng = useLocation
+        ? (loginController.longitude?.toString() ?? "")
+        : "";
+
+    await loginController.getProfileDetails(
+      "Dental Clinic",
+      loginController.selectedState,
+      loginController.selectedDistricts,
+      loginController.selectedTalukas,
+      loginController.selectedVillages,
+      "true",
+      safeLat,
+      safeLng,
+      distance,
+      searchController.text.trim(),
+      context,
+    );
+    Get.toNamed('/filterResultPage');
+  }
+
+  Widget _buildLocationInfoRow() {
+    return GetBuilder<PlanController>(
+      builder: (controller) {
+        final bool hasLocation = controller.currentLocation?.isNotEmpty == true;
+        return Row(
+          children: [
+            const Icon(
+              Icons.location_on_rounded,
+              color: AppColors.secondary,
+              size: 18,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                hasLocation
+                    ? controller.currentLocation!
+                    : "Detecting location...",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.caption(
+                  context,
+                  color: AppColors.greyDark,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      height: 56,
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: AppColors.secondary, width: 2),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.secondary.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.search_rounded,
+              color: AppColors.secondary,
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: CommonSearchTextField(
+              controller: searchController,
+              borderColor: Colors.transparent,
+              hintStyle: const TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
+              hintText: "Search your nearby clinic",
+              onSubmitted: (value) => _performLocationSearch(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocationSearchCard() {
+    return GetBuilder<LoginController>(
+      builder: (controller) {
+        return Container(
+          margin: const EdgeInsets.only(top: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: Colors.grey.shade200, width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              const SizedBox(height: 4),
+              _searchCardRow(
+                icon: Icons.map_rounded,
+                child: SizedBox(
+                  height: 40,
+                  child: CustomDropdown<String>.search(
+                    key: ValueKey(loginController.selectedState),
+                    hintText: "State",
+                    textAlign: TextAlign.center,
+                    closedHeaderPadding: EdgeInsets.zero,
+                    items: loginController.states
+                        .map((s) => s.toString())
+                        .toList(),
+                    initialItem:
+                        loginController.selectedState != null &&
+                            loginController.states
+                                .map((s) => s.toString())
+                                .contains(loginController.selectedState)
+                        ? loginController.selectedState
+                        : null,
+                    onChanged: (val) {
+                      loginController.selectedState = val;
+                      loginController.districts.clear();
+                      loginController.talukas.clear();
+                      loginController.villages.clear();
+                      loginController.selectedDistricts = [];
+                      loginController.selectedTalukas = [];
+                      loginController.selectedVillages = [];
+                      if (val != null) {
+                        loginController.fetchDistricts(val);
+                      }
+                      loginController.update();
+                    },
+                    decoration: CustomDropdownDecoration(
+                      closedFillColor: Colors.transparent,
+                      expandedFillColor: Colors.white,
+                      closedBorder: Border.all(color: Colors.transparent),
+                      closedBorderRadius: BorderRadius.circular(12),
+                      expandedBorder: Border.all(color: Colors.transparent),
+                      expandedBorderRadius: BorderRadius.circular(12),
+                      closedSuffixIcon: const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: AppColors.grey,
+                      ),
+                      expandedSuffixIcon: const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: AppColors.grey,
+                      ),
+                      hintStyle: AppTextStyles.caption(
+                        context,
+                        color: AppColors.grey,
+                      ),
+                      headerStyle: AppTextStyles.caption(
+                        context,
+                        color: AppColors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              _rowDivider(),
+              _searchCardRow(
+                icon: Icons.location_city_rounded,
+                child: _multiSelectField(
+                  title: "Select districts",
+                  hint: "District",
+                  items: loginController.districts,
+                  selected: loginController.selectedDistricts,
+                  onConfirm: (values) async {
+                    loginController.selectedDistricts = values;
+                    await loginController.fetchTalukas(values);
+                    loginController.update();
+                  },
+                ),
+              ),
+              _rowDivider(),
+              _searchCardRow(
+                icon: Icons.holiday_village_rounded,
+                child: _multiSelectField(
+                  title: "Select Taluka",
+                  hint: "Taluka",
+                  items: loginController.talukas,
+                  selected: loginController.selectedTalukas,
+                  onConfirm: (values) async {
+                    loginController.selectedTalukas = values;
+                    await loginController.fetchVillages(values);
+                    loginController.update();
+                  },
+                ),
+              ),
+              _rowDivider(),
+              _searchCardRow(
+                icon: Icons.pin_drop_rounded,
+                child: _multiSelectField(
+                  title: "Select Areas",
+                  hint: "Area",
+                  items: loginController.villages,
+                  selected: loginController.selectedVillages,
+                  onConfirm: (values) {
+                    loginController.selectedVillages = values;
+                    loginController.update();
+                  },
+                ),
+              ),
+              const SizedBox(height: 6),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _searchCardRow({required IconData icon, required Widget child}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: AppColors.primary),
+          const SizedBox(width: 12),
+          Expanded(child: child),
+        ],
+      ),
+    );
+  }
+
+  Widget _rowDivider() =>
+      Divider(height: 1, thickness: 1, color: Colors.grey.shade200);
+
+  Widget _multiSelectField({
+    required String title,
+    required String hint,
+    required List items,
+    required List<String> selected,
+    required void Function(List<String>) onConfirm,
+  }) {
+    return MultiSelectDialogField<String>(
+      checkColor: AppColors.primary,
+      buttonIcon: const Icon(
+        Icons.keyboard_arrow_down_rounded,
+        color: AppColors.grey,
+      ),
+      items: items
+          .toSet()
+          .map((e) => MultiSelectItem<String>(e.toString(), e.toString()))
+          .toList(),
+      title: Center(child: Text(title, style: AppTextStyles.body(context))),
+      buttonText: Text(
+        selected.isEmpty
+            ? hint
+            : selected.length == 1
+            ? selected.first
+            : "${selected.first} +${selected.length - 1}",
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: AppTextStyles.caption(
+          context,
+          color: selected.isEmpty ? AppColors.grey : AppColors.black,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      decoration: const BoxDecoration(),
+      searchable: true,
+      dialogHeight: 400,
+      initialValue: selected,
+      onConfirm: (values) =>
+          onConfirm(values.map((e) => e.toString()).toList()),
+      chipDisplay: MultiSelectChipDisplay.none(),
+    );
+  }
+
+  Widget _buildSearchButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppColors.secondary, AppColors.primary],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(26),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.18),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(26),
+            onTap: _performLocationSearch,
+            child: const Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.search_rounded, color: Colors.white, size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    "Search",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _sectionHeading({
@@ -197,7 +549,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -220,80 +572,62 @@ class _PatientDashboardState extends State<PatientDashboard> {
       key: _scaffoldKeyUser1,
       backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         elevation: 0,
-        //backgroundColor: AppColors.primary,
         automaticallyImplyLeading: false,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.primary, AppColors.secondary],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        // leading: Padding(
-        //   padding:  const EdgeInsets.all(8.0),
-        //   child: CircleAvatar(
-        //     radius: size * 0.13,
-        //     child: ClipRRect(
-        //       borderRadius: BorderRadius.circular(50),
-        //       child: ProfileImageWidget(size: size),
-        //     ),
-        //   ),
-        // ),
-        centerTitle: false,
+        centerTitle: true,
+        toolbarHeight: 76,
         title: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'Locate Your Dentist',
-              style: TextStyle(
-                fontSize: size * 0.045,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.3,
-                color: AppColors.white,
-              ),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 50,
+                      width: 60,
+                      child: Image.asset(
+                        'assets/images/logolyd.jpg',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "LYD",
+                      style: TextStyle(
+                        fontSize: size * 0.09,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.secondary,
+                        letterSpacing: -0.5,
+                        height: 1,
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  right: -6,
+                  top: -4,
+                  child: Icon(
+                    Icons.location_on_rounded,
+                    color: AppColors.primary,
+                    size: size * 0.045,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 6),
-            GetBuilder<PlanController>(
-              builder: (controller) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.16),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.place_rounded,
-                        color: AppColors.white,
-                        size: size * 0.04,
-                      ),
-                      SizedBox(width: size * 0.01),
-                      Flexible(
-                        child: Text(
-                          planController.currentLocation?.isNotEmpty == true
-                              ? planController.currentLocation!
-                              : "Detecting location...",
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: size * 0.028,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+            const SizedBox(height: 2),
+            Text(
+              "Locate Your Dentist",
+              style: TextStyle(
+                fontSize: size * 0.03,
+                fontWeight: FontWeight.bold,
+                color: AppColors.black,
+              ),
             ),
           ],
         ),
@@ -307,239 +641,17 @@ class _PatientDashboardState extends State<PatientDashboard> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primary, AppColors.secondary],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(36),
-                        bottomRight: Radius.circular(36),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.28),
-                          blurRadius: 22,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 28),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Find Your Perfect Dentist",
-                          style: AppTextStyles.headline(
-                            context,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "Search trusted clinics near you in seconds",
-                          style: AppTextStyles.caption(
-                            context,
-                            color: Colors.white.withOpacity(0.85),
-                          ),
-                        ),
-                        const SizedBox(height: 18),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: 52,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(26),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.12),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.search_rounded,
-                                      color: AppColors.primary,
-                                      size: 22,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: CommonSearchTextField(
-                                        controller: searchController,
-                                        borderColor: Colors.transparent,
-                                        hintStyle: AppTextStyles.caption(context,fontWeight: FontWeight.bold),
-                                        hintText:
-                                            "Search by clinic name or area...",
-                                        onSubmitted: (value) async {
-                                          print("Search text: $value");
-                                          await loginController
-                                              .getProfileDetails(
-                                                "Dental Clinic",
-                                                '',
-                                                [],
-                                                [],
-                                                [],
-                                                "true",
-                                                '',
-                                                '',
-                                                '',
-                                                searchController.text
-                                                    .toString(),
-                                                context,
-                                              );
-                                          Get.toNamed('/filterResultPage');
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Container(
-                              height: 52,
-                              width: 52,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.12),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: IconButton(
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) {
-                                      return FractionallySizedBox(
-                                        heightFactor: 0.75,
-                                        child: FilterDrawer(
-                                          onApply: () async {
-                                            print(
-                                              "Selected State: ${loginController.selectedState}",
-                                            );
-                                            print(
-                                              "Selected District: ${loginController.selectedDistrict}",
-                                            );
-                                            print(
-                                              "Selected Area: ${loginController.selectedArea}",
-                                            );
-                                            print(
-                                              "Selected distance: ${loginController.selectedDistance}",
-                                            );
-                                            print(
-                                              'latit${Api.userInfo.read('latitude') ?? ""} long ${Api.userInfo.read('longitude') ?? ""}',
-                                            );
-                                            //String userType=  Api.userInfo.read('sUserType');
-                                            //print("ssuser$userType");
-                                            String distance =
-                                                (loginController
-                                                            .selectedDistance1 ??
-                                                        0)
-                                                    .toString();
-
-                                            bool useLocation =
-                                                distance.isNotEmpty &&
-                                                distance != "0" &&
-                                                distance != "0.0";
-                                            if (useLocation) {
-                                              await getLocation();
-                                            } else {
-                                              loginController.latitude = null;
-                                              loginController.longitude = null;
-                                            }
-
-                                            String safeLat = useLocation
-                                                ? (loginController.latitude
-                                                          ?.toString() ??
-                                                      "")
-                                                : "";
-
-                                            String safeLng = useLocation
-                                                ? (loginController.longitude
-                                                          ?.toString() ??
-                                                      "")
-                                                : "";
-                                            filteredProfiles.map(
-                                              (e) => searchController.text
-                                                  .toString(),
-                                            );
-                                            await loginController
-                                                .getProfileDetails(
-                                                  "Dental Clinic",
-                                                  loginController.selectedState,
-                                                  loginController
-                                                      .selectedDistricts,
-                                                  loginController
-                                                      .selectedTalukas,
-                                                  loginController
-                                                      .selectedVillages,
-                                                  "true",
-                                                  safeLat,
-                                                  safeLng,
-                                                  distance,
-                                                  '',
-                                                  context,
-                                                );
-                                            Get.toNamed('/filterResultPage');
-                                          },
-                                          onReset: () {
-                                            setState(() {
-                                              // loginController.selectedPlace = null;
-                                              // loginController.selectedDistrict = null;
-                                              loginController.selectedArea =
-                                                  null;
-                                              loginController.selectedUserType =
-                                                  null;
-                                              loginController.selectedState =
-                                                  null;
-                                              loginController.selectedDistrict =
-                                                  null;
-                                              loginController.selectedDistance =
-                                                  null;
-                                              loginController.selectedSalary =
-                                                  null;
-                                              loginController.selectedJobType =
-                                                  null;
-                                              loginController.selectedCategories
-                                                  .clear();
-                                              loginController
-                                                  .resetUserTypeFilters();
-                                              loginController.update();
-                                            });
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.tune_rounded,
-                                  color: AppColors.primary,
-                                  size: 24,
-                                ),
-                                splashRadius: 22,
-                              ),
-                            ),
-                          ],
-                        ),
+                        _buildLocationInfoRow(),
+                        const SizedBox(height: 10),
+                        _buildSearchBar(),
+                        const SizedBox(height: 12),
+                        _buildLocationSearchCard(),
+                        const SizedBox(height: 12),
+                        _buildSearchButton(),
                       ],
                     ),
                   ),
@@ -549,7 +661,9 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(height: size * 0.02),
                         _RevealIn(
+                          delay: const Duration(milliseconds: 120),
                           child: _sectionHeading(
                             icon: Icons.star_rounded,
                             text: "Top Dentist in your State",
@@ -557,7 +671,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         ),
                         SizedBox(height: size * 0.03),
                         _RevealIn(
-                          delay: const Duration(milliseconds: 60),
+                          delay: const Duration(milliseconds: 160),
                           child: Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
@@ -565,7 +679,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.06),
+                                  color: Colors.black.withValues(alpha: 0.06),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -587,16 +701,27 @@ class _PatientDashboardState extends State<PatientDashboard> {
                             ),
                           ),
                         ),
-
                         SizedBox(height: size * 0.05),
-                        _RevealIn(
-                          delay: const Duration(milliseconds: 120),
-                          child: _buildProfessionalCard(),
+                        Center(
+                          child: Text(
+                            "Login or Register to continue",
+                            style: AppTextStyles.body(
+                              context,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.black,
+                            ),
+                          ),
                         ),
                         SizedBox(height: size * 0.05),
 
                         _RevealIn(
-                          delay: const Duration(milliseconds: 180),
+                          delay: const Duration(milliseconds: 60),
+                          child: _buildProfessionalCard(),
+                        ),
+                        SizedBox(height: size * 0.02),
+
+                        _RevealIn(
+                          delay: const Duration(milliseconds: 200),
                           child: _sectionHeading(
                             icon: Icons.local_hospital_rounded,
                             text: "Popular Dental Clinics",
@@ -681,6 +806,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                       ],
                     ),
                   ),
+                  _buildFooterStrip(),
                 ],
               ),
             ),
@@ -751,7 +877,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
                 color: AppColors.primary,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(.35),
+                    color: AppColors.primary.withValues(alpha: .35),
                     blurRadius: 18,
                     spreadRadius: 4,
                   ),
@@ -771,138 +897,146 @@ class _PatientDashboardState extends State<PatientDashboard> {
   Widget _buildProfessionalCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 22, 20, 22),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.secondary],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+        color: AppColors.lightBlue,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Professional icon
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColors.secondary.withValues(alpha: 0.35),
+                width: 1.4,
+              ),
+            ),
+            child: const Icon(
+              Icons.medical_services_outlined,
+              color: AppColors.secondary,
+              size: 28,
+            ),
+          ),
+          const SizedBox(width: 14),
+
+          // Text
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'DENTAL PROFESSIONAL',
+                  style: TextStyle(
+                    color: AppColors.secondary,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.2,
+                    height: 1.15,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Login or Register to continue\nas Dental Professional',
+                  style: TextStyle(
+                    color: AppColors.greyDark,
+                    fontSize: 11.5,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 8),
+          Container(width: 1, height: 56, color: Colors.grey.shade300),
+          const SizedBox(width: 10),
+
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 92,
+                height: 34,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.toNamed('/loginPage');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.secondary,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: 92,
+                height: 34,
+                child: OutlinedButton(
+                  onPressed: () {
+                    Get.toNamed('/loginTypesPage');
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.secondary,
+                    backgroundColor: Colors.white,
+                    padding: EdgeInsets.zero,
+                    side: const BorderSide(
+                      color: AppColors.secondary,
+                      width: 1.2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Register',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Professional icon
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.18),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.5),
-                    width: 1.2,
-                  ),
-                ),
-                child: const Icon(
-                  Icons.medical_services_outlined,
-                  color: Colors.white,
-                  size: 32,
-                ),
-              ),
+    );
+  }
 
-              const SizedBox(width: 16),
-
-              // Text
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'DENTAL PROFESSIONAL',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.2,
-                        height: 1.15,
-                      ),
-                    ),
-                    SizedBox(height: 6),
-                    Text(
-                      'Login or register to continue as a Dental Professional\n'
-                          'Buy & sell • Post jobs • Host webinars • Discover more',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 12.5,
-                        height: 1.4,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 22),
-
-          Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: 48,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Get.toNamed('/loginPage');
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.transparent,
-                      side: const BorderSide(color: Colors.white, width: 1.4),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: SizedBox(
-                  height: 48,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Get.toNamed('/loginTypesPage');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.primary,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Register',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+  Widget _buildFooterStrip() {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 24),
+      padding: const EdgeInsets.symmetric(vertical: 18),
+      color: AppColors.lightBlue,
+      child: Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Your smile, our priority",
+              style: AppTextStyles.caption(context, color: AppColors.greyDark),
+            ),
+            const SizedBox(width: 8),
+            const Icon(
+              Icons.favorite_border_rounded,
+              color: AppColors.secondary,
+              size: 16,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1002,7 +1136,7 @@ class DentalMenu extends StatelessWidget {
                           vertical: 10,
                         ),
                         decoration: BoxDecoration(
-                          color: items[i]["color"].withOpacity(.15),
+                          color: items[i]["color"].withValues(alpha: .15),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(

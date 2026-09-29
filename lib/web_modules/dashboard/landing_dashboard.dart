@@ -262,6 +262,9 @@ class _LandingPageState extends State<LandingPage>
     );
 
     _fadeController.forward();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      precacheImage(const AssetImage('assets/images/img_banner.png'), context);
+    });
     _refresh();
   }
 
@@ -1324,6 +1327,20 @@ class _LandingPageState extends State<LandingPage>
                               clipBehavior: Clip.none,
                               children: [
                                 Positioned.fill(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          AppColors.primary.withOpacity(0.12),
+                                          AppColors.primary.withOpacity(0.04),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned.fill(
                                   child: TweenAnimationBuilder<double>(
                                     tween: Tween(begin: 1.08, end: 1.0),
                                     duration: const Duration(
@@ -1338,6 +1355,25 @@ class _LandingPageState extends State<LandingPage>
                                     child: Image.asset(
                                       'assets/images/img_banner.png',
                                       fit: BoxFit.cover,
+                                      frameBuilder:
+                                          (
+                                            context,
+                                            child,
+                                            frame,
+                                            wasSynchronouslyLoaded,
+                                          ) {
+                                            if (wasSynchronouslyLoaded) {
+                                              return child;
+                                            }
+                                            return AnimatedOpacity(
+                                              opacity: frame == null ? 0 : 1,
+                                              duration: const Duration(
+                                                milliseconds: 350,
+                                              ),
+                                              curve: Curves.easeOut,
+                                              child: child,
+                                            );
+                                          },
                                     ),
                                   ),
                                 ),

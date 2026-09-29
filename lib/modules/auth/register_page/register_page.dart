@@ -2020,6 +2020,23 @@ class _RegisterPageState extends State<RegisterPage> {
                                       ),
                                     ],
                                   ),
+                                  const SizedBox(height: 12),
+
+                                  Center(
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Get.toNamed('/patientDashboard');
+                                      },
+                                      child: Text(
+                                        "Back To Home",
+                                        style: AppTextStyles.body(
+                                          context,
+                                          color: AppColors.primary,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                   const SizedBox(height: 60),
                                 ],
                               ),

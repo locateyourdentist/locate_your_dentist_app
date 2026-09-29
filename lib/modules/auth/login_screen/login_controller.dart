@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -756,7 +757,7 @@ class LoginController extends GetxController {
         // print("read fcm token${Api.userInfo.read('fcmToken')}");
         // final token = await FirebaseMessaging.instance.getToken();
         // print('userid$userId1 usertype$userType1 token$fcmToken');
-        saveFcmToken(userId1, userType1, fcmToken, context);
+        await saveFcmToken(userId1, userType1, fcmToken, context);
         showCustomToast(
           context,
           "Login successful",
@@ -968,7 +969,28 @@ class LoginController extends GetxController {
       return;
     }
     try {
-      final response = await api.saveFcmToken(userId, userType, fcmToken);
+      String tokenToSave = fcmToken;
+      if (tokenToSave.isEmpty) {
+        // The cached token can still be empty right after app start if
+        // setupFCM() hasn't resolved getToken() yet (it's fire-and-forget
+        // from main()). Fetch it live rather than sending an empty token
+        // the backend will just reject, leaving the user's FCM token stale.
+        try {
+          tokenToSave = await FirebaseMessaging.instance.getToken() ?? "";
+          if (tokenToSave.isNotEmpty) {
+            Api.userInfo.write('fcmToken', tokenToSave);
+          }
+        } catch (e) {
+          print('fcm token live fetch failed: $e');
+        }
+      }
+
+      if (tokenToSave.isEmpty) {
+        print("fcm token not saved: no token available yet");
+        return;
+      }
+
+      final response = await api.saveFcmToken(userId, userType, tokenToSave);
       var data = jsonDecode(response.body);
       if (data["status"] == "success") {
         print("token saved successful");
