@@ -15,6 +15,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final bool readOnly;
   final VoidCallback? onTap;
+  final IconData? prefixIcon;
   const CustomTextField({
     super.key,
     required this.hint,
@@ -29,6 +30,7 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType,
     this.readOnly = false,
     this.onTap,
+    this.prefixIcon
   });
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -60,6 +62,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
         hintStyle: AppTextStyles.caption(context, color: AppColors.grey),
         labelText: widget.hint,
         labelStyle: AppTextStyles.caption(context, color: AppColors.grey),
+        prefixIcon: widget.prefixIcon != null
+            ? Icon(
+          widget.prefixIcon,
+          color: AppColors.grey,
+        )
+            : null,
         suffixIcon: widget.isPassword
             ? IconButton(
                 icon: Icon(
@@ -125,6 +133,7 @@ class CustomDropdownField extends StatelessWidget {
   final ValueChanged<String?>? onChanged;
   final Color? fillColor;
   final Color? borderColor;
+  final IconData? prefixIcon;
   const CustomDropdownField({
     super.key,
     required this.hint,
@@ -134,6 +143,8 @@ class CustomDropdownField extends StatelessWidget {
     required this.onChanged,
     this.fillColor,
     this.borderColor,
+    this.prefixIcon,
+
   });
   @override
   Widget build(BuildContext context) {
@@ -159,6 +170,12 @@ class CustomDropdownField extends StatelessWidget {
             color: AppColors.grey,
           ),
           //prefixIcon: Icon(icon, color: AppColors.grey),
+          prefixIcon: prefixIcon != null
+              ? Icon(
+            prefixIcon,
+            color: AppColors.grey,
+          )
+              : null,
           filled: true,
           fillColor: fill,
           border: OutlineInputBorder(

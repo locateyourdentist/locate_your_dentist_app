@@ -147,77 +147,67 @@ class _InvoiceListPageWebState extends State<InvoiceListPageWeb> {
                                               ),
                                               Expanded(
                                                 flex: 2,
-                                                child: Center(
-                                                  child: Text(
-                                                    "Plan Name",
-                                                    style:
-                                                        AppTextStyles.caption(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          context,
-                                                        ),
-                                                  ),
+                                                child: Text(
+                                                  "Plan Name",
+                                                  style:
+                                                      AppTextStyles.caption(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        context,
+                                                      ),
                                                 ),
                                               ),
                                               Expanded(
                                                 flex: 3,
-                                                child: Center(
-                                                  child: Text(
-                                                    "Invoice ID",
-                                                    style:
-                                                        AppTextStyles.caption(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          context,
-                                                        ),
-                                                  ),
+                                                child: Text(
+                                                  "Invoice ID",
+                                                  style:
+                                                      AppTextStyles.caption(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        context,
+                                                      ),
                                                 ),
                                               ), // 💡 More space allocated
                                               Expanded(
                                                 flex: 2,
-                                                child: Center(
-                                                  child: Text(
-                                                    "Amount",
-                                                    style:
-                                                        AppTextStyles.caption(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          context,
-                                                        ),
-                                                  ),
+                                                child: Text(
+                                                  "Amount",
+                                                  style:
+                                                      AppTextStyles.caption(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        context,
+                                                      ),
                                                 ),
                                               ),
                                               Expanded(
                                                 flex: 2,
-                                                child: Center(
-                                                  child: Text(
-                                                    "Date",
-                                                    style:
-                                                        AppTextStyles.caption(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          context,
-                                                        ),
-                                                  ),
+                                                child: Text(
+                                                  "Date",
+                                                  style:
+                                                      AppTextStyles.caption(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        context,
+                                                      ),
                                                 ),
                                               ),
                                               Expanded(
                                                 flex: 2,
-                                                child: Center(
-                                                  child: Text(
-                                                    "Action",
-                                                    style:
-                                                        AppTextStyles.caption(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          context,
-                                                        ),
-                                                  ),
+                                                child: Text(
+                                                  "Action",
+                                                  style:
+                                                      AppTextStyles.caption(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        context,
+                                                      ),
                                                 ),
                                               ),
                                             ],

@@ -485,6 +485,7 @@ class Api {
     String url =
         "${AppConstants.baseUrl}${AppConstants.userUrl}${AppConstants.verifyOtpPasswordUrl}";
     print('API create Mail $url');
+    print('verifyOtpPassword request: mail="$mail" otp="$otp" (length ${otp.length})');
     String? token = Api.userInfo.read('token');
     try {
       final response = await http.post(

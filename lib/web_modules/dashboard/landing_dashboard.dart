@@ -11,6 +11,7 @@ import 'package:locate_your_dentist/model/profile_model.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:locate_your_dentist/modules/dashboard/jobController.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
+import 'package:locate_your_dentist/utills/search_history.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:locate_your_dentist/web_modules/common/common_widgets_web.dart';
@@ -185,6 +186,8 @@ class _LandingPageState extends State<LandingPage>
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   final TextEditingController searchController = TextEditingController();
+  static const String _searchHistoryKey = 'dentalClinicSearchHistory';
+  List<SearchHistoryEntry> searchHistory = [];
   final dentalProblems = [
     {
       "title": "Tooth Decay",
@@ -252,6 +255,7 @@ class _LandingPageState extends State<LandingPage>
   @override
   void initState() {
     super.initState();
+    searchHistory = SearchHistoryStore.getHistory(_searchHistoryKey);
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -348,6 +352,10 @@ class _LandingPageState extends State<LandingPage>
       );
       print("Latitude: ${position.latitude}");
       print("Longitude: ${position.longitude}");
+      loginController.latitude = position.latitude;
+      loginController.longitude = position.longitude;
+      Api.userInfo.write('latitude', position.latitude.toString());
+      Api.userInfo.write('longitude', position.longitude.toString());
       String address = await getAddressFromLatLng(
         position.latitude,
         position.longitude,
@@ -733,7 +741,72 @@ class _LandingPageState extends State<LandingPage>
     );
   }
 
-  Widget _buildSearchCard(BuildContext context, double size) {
+  void _selectClinicSearchHistory(SearchHistoryEntry entry) {
+    searchController.text = entry.term;
+    loginController.selectedState = entry.state;
+    if (entry.state != null) {
+      _stateCtrl.value = entry.state;
+      loginController.fetchDistricts(entry.state!);
+    }
+    loginController.selectedDistricts = entry.districts;
+    loginController.selectedTalukas = entry.talukas;
+    loginController.selectedVillages = entry.villages;
+    loginController.selectedDistance1 = entry.distanceKm;
+    loginController.update();
+    _performClinicSearch();
+  }
+
+  Future<void> _performClinicSearch() async {
+    final term = searchController.text.trim();
+    setState(() {
+      searchHistory = SearchHistoryStore.addSearch(
+        _searchHistoryKey,
+        term: term,
+        state: loginController.selectedState,
+        districts: loginController.selectedDistricts,
+        talukas: loginController.selectedTalukas,
+        villages: loginController.selectedVillages,
+        distanceKm: loginController.selectedDistance1,
+      );
+    });
+
+    final double distance = loginController.selectedDistance1;
+    final bool useLocation = distance > 0;
+    if (useLocation) {
+      await getLocation();
+    } else {
+      loginController.latitude = null;
+      loginController.longitude = null;
+    }
+    final String safeLat = useLocation
+        ? (loginController.latitude?.toString() ?? "")
+        : "";
+    final String safeLng = useLocation
+        ? (loginController.longitude?.toString() ?? "")
+        : "";
+
+    Api.userInfo.write('sUserType', 'Dental Clinic');
+    await loginController.getProfileDetails(
+      "Dental Clinic",
+      loginController.selectedState,
+      loginController.selectedDistricts,
+      loginController.selectedTalukas,
+      loginController.selectedVillages,
+      "true",
+      safeLat,
+      safeLng,
+      distance.toString(),
+      term,
+      context,
+    );
+    Get.toNamed('/viewPatientsListWeb');
+  }
+
+  Widget _buildSearchCard(
+    BuildContext context,
+    double size, {
+    bool isFixedHeight = false,
+  }) {
     return _RevealIn(
       offsetY: 36,
       child: ClipRRect(
@@ -773,7 +846,7 @@ class _LandingPageState extends State<LandingPage>
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: isFixedHeight ? MainAxisSize.max : MainAxisSize.min,
               children: [
                 Row(
                   children: [
@@ -825,10 +898,42 @@ class _LandingPageState extends State<LandingPage>
                   ],
                 ),
                 const SizedBox(height: 22),
-                GetBuilder<LoginController>(
-                  builder: (controller) {
-                    return buildFilterBox(
-                      icon: Icons.map,
+                Flexible(
+                  flex: isFixedHeight ? 1 : 0,
+                  fit: isFixedHeight ? FlexFit.tight : FlexFit.loose,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        buildFilterBox(
+                          icon: Icons.search,
+                          child: CommonSearchTextField(
+                            controller: searchController,
+                            borderColor: Colors.transparent,
+                            hintText: "Search by clinic name or area",
+                            hintStyle: const TextStyle(
+                              color: AppColors.grey,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            onSubmitted: (_) => _performClinicSearch(),
+                          ),
+                        ),
+                        if (searchHistory.isNotEmpty) ...[
+                          const SizedBox(height: 10),
+                          SearchHistoryChips(
+                            history: searchHistory,
+                            chipColor: Colors.white.withOpacity(0.16),
+                            textColor: Colors.white,
+                            iconColor: Colors.white70,
+                            onSelect: _selectClinicSearchHistory,
+                          ),
+                        ],
+                        const SizedBox(height: 16),
+                        GetBuilder<LoginController>(
+                          builder: (controller) {
+                            return buildFilterBox(
+                              icon: Icons.map,
                       child: CustomDropdown<String>.search(
                         hintText: "State",
                         items: controller.states
@@ -869,7 +974,7 @@ class _LandingPageState extends State<LandingPage>
                             .toList(),
                         title: Center(
                           child: Text(
-                            "Select districts",
+                            "Select Districts",
                             style: AppTextStyles.body(context),
                           ),
                         ),
@@ -1014,6 +1119,29 @@ class _LandingPageState extends State<LandingPage>
                     );
                   },
                 ),
+                        const SizedBox(height: 16),
+                        GetBuilder<LoginController>(
+                          builder: (controller) {
+                            return Align(
+                              alignment: Alignment.centerLeft,
+                              child: DistanceFilterChips(
+                                selectedKm: controller.selectedDistance1,
+                                onSelect: (km) {
+                                  controller.selectedDistance1 = km;
+                                  controller.update();
+                                },
+                                unselectedChipColor: Colors.white.withOpacity(
+                                  0.16,
+                                ),
+                                unselectedTextColor: Colors.black,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 20),
                 SizedBox(
                   height: 54,
@@ -1049,23 +1177,7 @@ class _LandingPageState extends State<LandingPage>
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () async {
-                          Api.userInfo.write('sUserType', 'Dental Clinic');
-                          await loginController.getProfileDetails(
-                            "Dental Clinic",
-                            loginController.selectedState,
-                            loginController.selectedDistricts,
-                            loginController.selectedTalukas,
-                            loginController.selectedVillages,
-                            "true",
-                            '',
-                            '',
-                            '',
-                            '',
-                            context,
-                          );
-                          Get.toNamed('/viewPatientsListWeb');
-                        },
+                        onPressed: _performClinicSearch,
                       ),
                     ),
                   ),
@@ -1298,7 +1410,6 @@ class _LandingPageState extends State<LandingPage>
       ),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -1419,6 +1530,7 @@ class _LandingPageState extends State<LandingPage>
                                           child: _buildSearchCard(
                                             context,
                                             size,
+                                            isFixedHeight: true,
                                           ),
                                         ),
                                         _buildTransparentLoginCard(context),

@@ -1,6 +1,7 @@
 
 class AppRoutes {
   static const splashScreen = '/splashScreen';
+  static const welcomeEntryPage = '/welcomeEntryPage';
   static const loginPage = '/loginPage';
   static const loginTypesPage = '/loginTypesPage';
   static const forgotPasswordWebScreen = '/forgotPasswordWebScreen';

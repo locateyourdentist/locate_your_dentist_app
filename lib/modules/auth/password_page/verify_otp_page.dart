@@ -1,14 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:locate_your_dentist/api/api.dart';
 import 'package:locate_your_dentist/common_widgets/color_code.dart';
 import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/login_controller.dart';
 import 'package:get/get.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:http/http.dart' as http;
 
 class VerifyOtpPassword extends StatefulWidget {
   const VerifyOtpPassword({super.key});
@@ -21,48 +19,6 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
   final loginController = Get.put(LoginController());
   final _formKeyForgotPassword = GlobalKey<FormState>();
   bool isLoading = false;
-  int resendCooldown = 60;
-  late Timer timer;
-  @override
-  void dispose() {
-    timer.cancel();
-    super.dispose();
-  }
-
-  void startCooldown() {
-    resendCooldown = 60;
-    timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      setState(() {
-        if (resendCooldown > 0) {
-          resendCooldown--;
-        } else {
-          t.cancel();
-        }
-      });
-    });
-  }
-
-  Future<void> resendOtp() async {
-    if (resendCooldown > 0) return;
-
-    setState(() => isLoading = true);
-
-    final response = await http.post(
-      Uri.parse('https://your-api.com/resend-registration-otp'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': Api.userInfo.read('otpMail') ?? ""}),
-    );
-
-    final data = jsonDecode(response.body);
-    setState(() => isLoading = false);
-
-    if (data['status'] == 'success') {
-      Get.snackbar('Success', data['message']);
-      startCooldown();
-    } else {
-      Get.snackbar('Error', data['message']);
-    }
-  }
 
   DateTime? currentBackPressTime;
 
@@ -80,32 +36,100 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
   final otp2 = TextEditingController();
   final otp3 = TextEditingController();
   final otp4 = TextEditingController();
+  late final List<TextEditingController> _otpControllers = [
+    otp1,
+    otp2,
+    otp3,
+    otp4,
+  ];
+  late final List<FocusNode> _otpFocusNodes = List.generate(
+    4,
+    (_) => FocusNode(),
+  );
 
+  void _clearOtpBoxes() {
+    for (final controller in _otpControllers) {
+      controller.clear();
+    }
+    FocusScope.of(context).requestFocus(_otpFocusNodes.first);
+  }
 
-  Widget otpBox(TextEditingController controller) {
+  // Handles both normal single-digit typing and a full code landing at once
+  // (SMS autofill suggestion or a paste) by distributing digits across boxes
+  // instead of letting a single field's maxLength silently truncate it.
+  void _handleOtpChanged(int index, String rawValue) {
+    final digits = rawValue.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (digits.length <= 1) {
+      _otpControllers[index].value = TextEditingValue(
+        text: digits,
+        selection: TextSelection.collapsed(offset: digits.length),
+      );
+      if (digits.length == 1) {
+        if (index < _otpControllers.length - 1) {
+          FocusScope.of(context).requestFocus(_otpFocusNodes[index + 1]);
+        } else {
+          _otpFocusNodes[index].unfocus();
+        }
+      }
+      return;
+    }
+
+    // Multiple digits arrived at once: fill every box from the start so an
+    // autofilled/pasted code is distributed correctly instead of truncated.
+    for (var i = 0; i < _otpControllers.length; i++) {
+      final digit = i < digits.length ? digits[i] : '';
+      _otpControllers[i].value = TextEditingValue(
+        text: digit,
+        selection: TextSelection.collapsed(offset: digit.length),
+      );
+    }
+    final lastIndex = (digits.length - 1).clamp(0, _otpControllers.length - 1);
+    if (lastIndex < _otpControllers.length - 1) {
+      FocusScope.of(context).requestFocus(_otpFocusNodes[lastIndex + 1]);
+    } else {
+      _otpFocusNodes[lastIndex].unfocus();
+    }
+  }
+
+  Widget otpBox(int index) {
     return SizedBox(
       width: 50,
       height: 60,
       child: TextField(
-        controller: controller,
+        controller: _otpControllers[index],
+        focusNode: _otpFocusNodes[index],
         keyboardType: TextInputType.number,
-        maxLength: 1,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         decoration: InputDecoration(
           counterText: "",
           filled: true,
-          fillColor: Colors.grey.shade200,
+          fillColor: Colors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
+            borderSide: const BorderSide(
+              color: AppColors.primaryLight2,
+              width: 1.5,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              color: AppColors.primaryLight2,
+              width: 1.5,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              color: AppColors.primary,
+              width: 2,
+            ),
           ),
         ),
-        onChanged: (value) {
-          if (value.length == 1) {
-            FocusScope.of(context).nextFocus();
-          }
-        },
+        onChanged: (value) => _handleOtpChanged(index, value),
       ),
     );
   }
@@ -115,37 +139,36 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
       isLoading = true;
     });
 
-    String otp =
-        otp1.text +
-        otp2.text +
-        otp3.text +
-        otp4.text +
-        //otp5.text +
-        //otp6.text;
-        await Future.delayed(const Duration(seconds: 2));
+    final String otp = otp1.text + otp2.text + otp3.text + otp4.text;
 
-    setState(() {
-      isLoading = false;
-    });
-
-    print("OTP => $otp");
-    Api.userInfo.read('otpMail');
-    loginController.verifyOtpPassword(
+    await loginController.verifyOtpPassword(
       Api.userInfo.read('otpMail') ?? "",
       otp,
       context,
     );
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   const SnackBar(
-    //     content: Text("OTP Verified Successfully"),
-    //   ),
-    // );
+
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
     loginController.getAppLogoImage(context);
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _otpControllers) {
+      controller.dispose();
+    }
+    for (final node in _otpFocusNodes) {
+      node.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -259,10 +282,10 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        otpBox(otp1),
-                        otpBox(otp2),
-                        otpBox(otp3),
-                        otpBox(otp4),
+                        otpBox(0),
+                        otpBox(1),
+                        otpBox(2),
+                        otpBox(3),
                       ],
                     ),
 
@@ -296,6 +319,7 @@ class _VerifyOtpPasswordState extends State<VerifyOtpPassword> {
 
                     TextButton(
                       onPressed: () async {
+                        _clearOtpBoxes();
                         await loginController.forgotPassword(
                           Api.userInfo.read('otpMail') ?? "",
                           context,

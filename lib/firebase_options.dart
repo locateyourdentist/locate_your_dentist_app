@@ -25,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -58,7 +55,6 @@ class DefaultFirebaseOptions {
     projectId: 'locate-your-dentist',
     storageBucket: 'locate-your-dentist.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyA2PClpFAAxcePIVPGMP1ukEVR6d1XPlNM',
     appId: '1:540179202432:ios:b587e52f416ba1ae3b8165',
@@ -67,7 +63,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'locate-your-dentist.firebasestorage.app',
     iosBundleId: 'com.lyd.locateYourDentist',
   );
-
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyA2PClpFAAxcePIVPGMP1ukEVR6d1XPlNM',
     appId: '1:540179202432:ios:b587e52f416ba1ae3b8165',
@@ -77,4 +72,13 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.lyd.locateYourDentist',
   );
 
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyAXxg4D1aX6vQg1s19r5Pb_uO9OuIAvNNk',
+    appId: '1:540179202432:web:01c22ae3ddb68dc53b8165',
+    messagingSenderId: '540179202432',
+    projectId: 'locate-your-dentist',
+    authDomain: 'locate-your-dentist.firebaseapp.com',
+    storageBucket: 'locate-your-dentist.firebasestorage.app',
+    measurementId: 'G-CDFWQJH215',
+  );
 }

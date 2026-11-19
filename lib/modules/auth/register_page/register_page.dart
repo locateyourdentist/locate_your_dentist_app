@@ -114,6 +114,43 @@ class _RegisterPageState extends State<RegisterPage> {
     return prefix;
   }
 
+  String registrationTitle(String? userType) {
+    switch (userType) {
+      case "Dental Clinic":
+        return "Dentist Registration";
+      case "Dental Shop":
+        return "Shop Registration";
+      case "Dental Lab":
+        return "Lab Registration";
+      case "Dental Mechanic":
+        return "Mechanic Registration";
+      case "Dental Consultant":
+        return "Consultant Registration";
+      case "Job Seekers":
+        return "Job Seeker Registration";
+      default:
+        return "Create an Account";
+    }
+  }
+
+  String registrationSubtitle(String? userType) {
+    switch (userType) {
+      case "Dental Clinic":
+        return "Join our network and make your services accessible to more people.";
+      case "Dental Shop":
+      case "Dental Lab":
+        return "Register your shop or lab with us and be a part of our trusted dental network.";
+      case "Dental Mechanic":
+        return "Register your workshop and connect with dental professionals near you.";
+      case "Dental Consultant":
+        return "Share your expertise and get discovered by clinics and patients.";
+      case "Job Seekers":
+        return "Create your profile and get matched with dental job opportunities.";
+      default:
+        return "Let's get started by filling out the form below";
+    }
+  }
+
   String? confirmPasswordValidator(
     String? value,
     TextEditingController passwordController,
@@ -289,6 +326,85 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  Widget _fileUploadCard({
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.primaryLight.withOpacity(0.35),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.primaryLight2, width: 1.2),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.description_outlined,
+              color: AppColors.primary,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.caption(
+                    context,
+                    color: AppColors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: AppTextStyles.caption(context, color: AppColors.grey),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          OutlinedButton.icon(
+            onPressed: onTap,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.primary,
+              side: const BorderSide(color: AppColors.primary, width: 1.2),
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+            ),
+            icon: const Icon(Icons.upload_outlined, size: 16),
+            label: Text(
+              "Choose File",
+              style: AppTextStyles.caption(
+                context,
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSingleImageWidget1({File? file, String? url}) {
     return Stack(
       children: [
@@ -387,18 +503,6 @@ class _RegisterPageState extends State<RegisterPage> {
     final userType = Api.userInfo.read('userType') ?? "";
     print('dgsw$userType');
     loginController.selectedUserType;
-    //=final adminItems = allItems;
-    // final otherItems = allItems.where((e) => e != "admin" && e != "superAdmin").toList();
-    // List<String> dropdownItems;
-    // if (userType == "superAdmin") {
-    //   dropdownItems = allItems;
-    // } else if (userType == "admin") {
-    //   dropdownItems =
-    //       allItems.where((e) => e != "superAdmin").toList();
-    // } else {
-    //   dropdownItems =
-    //       allItems.where((e) => e != "admin" && e != "superAdmin").toList();
-    // }
     List<Map<String, String>> dropdownItems;
 
     if (userType == "superAdmin") {
@@ -444,48 +548,112 @@ class _RegisterPageState extends State<RegisterPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(height: size * 0.05),
+                                  SizedBox(height: size * 0.03),
 
-                                  Text(
-                                    "LYD",
-                                    style: AppTextStyles.headline1(
-                                      context,
-                                      color: AppColors.black,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(height: size * 0.01),
-                                  Text(
-                                    "Create an Account",
-                                    style: AppTextStyles.subtitle(
-                                      context,
-                                      color: AppColors.black,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(height: size * 0.01),
-                                  Text(
-                                    "Let's get started by filling out the form below",
-                                    textAlign: TextAlign.center,
-                                    style: AppTextStyles.caption(
-                                      context,
-                                      color: AppColors.grey,
-                                    ),
+                                  Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Positioned(
+                                        top: -6,
+                                        right: 0,
+                                        child: Icon(
+                                          Icons.local_hospital_outlined,
+                                          size: size * 0.12,
+                                          color: AppColors.primaryLight2
+                                              .withOpacity(0.5),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              width: size * 0.18,
+                                              height: size * 0.18,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: AppColors.primary,
+                                                  width: 2,
+                                                ),
+                                              ),
+                                              child: ClipOval(
+                                                child: Image.asset(
+                                                  'assets/images/logolyd.jpg',
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder:
+                                                      (context, error, stackTrace) =>
+                                                          const Icon(
+                                                    Icons.local_hospital,
+                                                    color: AppColors.primary,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: size * 0.015),
+                                            Text(
+                                              "LYD",
+                                              style: AppTextStyles.headline1(
+                                                context,
+                                                color: AppColors.black,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            Text(
+                                              "Locate Your Dentist",
+                                              style: AppTextStyles.caption(
+                                                context,
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(height: size * 0.04),
+                                            Text(
+                                              registrationTitle(
+                                                loginController
+                                                    .selectedUserType,
+                                              ),
+                                              style: AppTextStyles.subtitle(
+                                                context,
+                                                color: AppColors.black,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(height: size * 0.01),
+                                            Text(
+                                              registrationSubtitle(
+                                                loginController
+                                                    .selectedUserType,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                              style: AppTextStyles.caption(
+                                                context,
+                                                color: AppColors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   SizedBox(height: size * 0.04),
 
                                   CustomTextField(
                                     hint: "Name",
-                                    icon: Icons.person,
+                                    prefixIcon: Icons.person_outline,
+                                    fillColor: Colors.white,
+                                    borderColor: AppColors.primaryLight2,
                                     controller:
                                         loginController.fullNameController,
                                   ),
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
                                     hint: "Date of Birth",
+                                    prefixIcon: Icons.calendar_today_outlined,
                                     controller: loginController.dobController,
-                                    fillColor: Colors.grey[100],
-                                    borderColor: AppColors.white,
+                                    fillColor: Colors.white,
+                                    borderColor: AppColors.primaryLight2,
                                     readOnly: true,
                                     onTap: () async {
                                       DateTime? pickedDate =
@@ -504,7 +672,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
                                     hint: "Email",
-                                    icon: Icons.email,
+                                    prefixIcon: Icons.email_outlined,
+                                    fillColor: Colors.white,
+                                    borderColor: AppColors.primaryLight2,
                                     controller: loginController.emailController,
                                     keyboardType: TextInputType.emailAddress,
                                   ),
@@ -512,7 +682,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                   CustomTextField(
                                     hint: "Mobile Number",
-                                    icon: Icons.phone,
+                                    prefixIcon: Icons.phone_outlined,
+                                    fillColor: Colors.white,
+                                    borderColor: AppColors.primaryLight2,
                                     controller:
                                         loginController.mobileController,
                                     keyboardType: TextInputType.number,
@@ -532,7 +704,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
                                     hint: "Password",
-                                    icon: Icons.lock,
+                                    prefixIcon: Icons.lock_outline,
+                                    fillColor: Colors.white,
+                                    borderColor: AppColors.primaryLight2,
                                     isPassword: true,
                                     controller:
                                         loginController.passwordController,
@@ -557,8 +731,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                   CustomTextField(
                                     hint: "Confirm Password",
-                                    icon: Icons.lock,
                                     isPassword: true,
+                                    prefixIcon: Icons.lock_outline,
+                                    fillColor: Colors.white,
+                                    borderColor: AppColors.primaryLight2,
                                     controller: loginController
                                         .confirmPasswordController,
                                     validator: (value) =>
@@ -643,21 +819,21 @@ class _RegisterPageState extends State<RegisterPage> {
                                   CustomTextField(
                                     hint:
                                         "Address Line 1 (House No, Street Name)",
-                                    icon: Icons.location_on,
+                                    prefixIcon: Icons.location_on_outlined,
+                                    fillColor: Colors.white,
+                                    borderColor: AppColors.primaryLight2,
                                     controller:
                                         loginController.addressLine1Controller,
-                                    // fillColor: AppColors.white,
-                                    // borderColor: AppColors.grey,
                                   ),
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
                                     hint:
                                         "Address Line 2 (Landmark, Area, Building)",
-                                    icon: Icons.location_on,
+                                    prefixIcon: Icons.location_on_outlined,
+                                    fillColor: Colors.white,
+                                    borderColor: AppColors.primaryLight2,
                                     controller:
                                         loginController.addressLine2Controller,
-                                    // fillColor: AppColors.white,
-                                    // borderColor: AppColors.grey,
                                   ),
                                   SizedBox(height: size * 0.03),
 
@@ -666,20 +842,24 @@ class _RegisterPageState extends State<RegisterPage> {
                                       return CustomDropdown<String>.search(
                                         hintText: "Select State",
                                         decoration: CustomDropdownDecoration(
-                                          closedFillColor: Colors.grey[100],
+                                          closedFillColor: Colors.white,
                                           expandedFillColor: Colors.white,
                                           closedBorder: Border.all(
-                                            color: AppColors.white,
+                                            color: AppColors.primaryLight2,
                                             width: 1.5,
                                           ),
                                           expandedBorder: Border.all(
                                             color: AppColors.primary,
-                                            width: 1.5,
+                                            width: 2,
                                           ),
                                           closedBorderRadius:
                                               BorderRadius.circular(10),
                                           expandedBorderRadius:
                                               BorderRadius.circular(10),
+                                          prefixIcon: const Icon(
+                                            Icons.map_outlined,
+                                            color: AppColors.grey,
+                                          ),
                                           hintStyle: AppTextStyles.caption(
                                             context,
                                             color: AppColors.grey,
@@ -750,15 +930,23 @@ class _RegisterPageState extends State<RegisterPage> {
                                             context,
                                             color: Colors.black,
                                           ),
-                                          closedFillColor: Colors.grey[100],
+                                          closedFillColor: Colors.white,
                                           expandedFillColor: Colors.white,
                                           closedBorder: Border.all(
-                                            color: AppColors.white,
+                                            color: AppColors.primaryLight2,
                                             width: 1.5,
                                           ),
                                           expandedBorder: Border.all(
                                             color: AppColors.primary,
-                                            width: 1.5,
+                                            width: 2,
+                                          ),
+                                          closedBorderRadius:
+                                              BorderRadius.circular(10),
+                                          expandedBorderRadius:
+                                              BorderRadius.circular(10),
+                                          prefixIcon: const Icon(
+                                            Icons.location_city_outlined,
+                                            color: AppColors.grey,
                                           ),
                                         ),
                                         onChanged: (val) async {
@@ -821,15 +1009,23 @@ class _RegisterPageState extends State<RegisterPage> {
                                                   context,
                                                   color: Colors.black,
                                                 ),
-                                            closedFillColor: Colors.grey[100],
+                                            closedFillColor: Colors.white,
                                             expandedFillColor: Colors.white,
                                             closedBorder: Border.all(
-                                              color: AppColors.white,
+                                              color: AppColors.primaryLight2,
                                               width: 1.5,
                                             ),
                                             expandedBorder: Border.all(
                                               color: AppColors.primary,
-                                              width: 1.5,
+                                              width: 2,
+                                            ),
+                                            closedBorderRadius:
+                                                BorderRadius.circular(10),
+                                            expandedBorderRadius:
+                                                BorderRadius.circular(10),
+                                            prefixIcon: const Icon(
+                                              Icons.holiday_village_outlined,
+                                              color: AppColors.grey,
                                             ),
                                           ),
                                           onChanged: (val) async {
@@ -893,15 +1089,23 @@ class _RegisterPageState extends State<RegisterPage> {
                                                   context,
                                                   color: Colors.black,
                                                 ),
-                                            closedFillColor: Colors.grey[100],
+                                            closedFillColor: Colors.white,
                                             expandedFillColor: Colors.white,
                                             closedBorder: Border.all(
-                                              color: AppColors.white,
+                                              color: AppColors.primaryLight2,
                                               width: 1.5,
                                             ),
                                             expandedBorder: Border.all(
                                               color: AppColors.primary,
-                                              width: 1.5,
+                                              width: 2,
+                                            ),
+                                            closedBorderRadius:
+                                                BorderRadius.circular(10),
+                                            expandedBorderRadius:
+                                                BorderRadius.circular(10),
+                                            prefixIcon: const Icon(
+                                              Icons.pin_drop_outlined,
+                                              color: AppColors.grey,
                                             ),
                                           ),
                                           onChanged: (val) {
@@ -923,7 +1127,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   SizedBox(height: size * 0.03),
                                   CustomTextField(
                                     hint: "PinCode",
-                                    icon: Icons.pin,
+                                    prefixIcon: Icons.pin_outlined,
+                                    fillColor: Colors.white,
+                                    borderColor: AppColors.primaryLight2,
                                     controller:
                                         loginController.pinCodeController,
                                     keyboardType: TextInputType.number,
@@ -996,7 +1202,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                       "Job Seekers"&&Api.userInfo.read('userType')!=null)
                                     CustomTextField(
                                       hint: "location Link",
-                                      icon: Icons.pin,
+                                      prefixIcon: Icons.pin_drop_outlined,
+                                      fillColor: Colors.white,
+                                      borderColor: AppColors.primaryLight2,
                                       controller:
                                           loginController.locationController,
                                     ),
@@ -1005,11 +1213,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                       "Job Seekers"&&Api.userInfo.read('userType')!=null)
                                   CustomTextField(
                                     hint: "Website Link",
-                                    icon: Icons.web,
+                                    prefixIcon: Icons.language_outlined,
+                                    fillColor: Colors.white,
+                                    borderColor: AppColors.primaryLight2,
                                     controller:
                                         loginController.websiteController,
-                                    // fillColor: AppColors.white,
-                                    // borderColor: AppColors.grey,
                                   ),
                                   Text(
                                     '**Not Mandatory **',
@@ -1174,7 +1382,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                                   Expanded(
                                                     child: CustomTextField(
                                                       hint: "Add a location",
-                                                      icon: Icons.location_on,
+                                                      prefixIcon:
+                                                          Icons.location_on_outlined,
+                                                      fillColor: Colors.white,
+                                                      borderColor:
+                                                          AppColors.primaryLight2,
                                                       controller: loginController
                                                           .availableLocationController,
                                                     ),
@@ -1259,7 +1471,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                               SizedBox(height: size * 0.03),
                                               CustomTextField(
                                                 hint: "Specify Speciality",
-                                                icon: Icons.edit,
+                                                prefixIcon:
+                                                    Icons.edit_outlined,
+                                                fillColor: Colors.white,
+                                                borderColor:
+                                                    AppColors.primaryLight2,
                                                 controller: controller
                                                     .otherDegreeController,
                                               ),
@@ -1275,54 +1491,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                       loginController.selectedUserType !=
                                           "Dental Mechanic") ...[
                                     SizedBox(height: size * 0.02),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        //Get.toNamed('/registerPage');
+                                    _fileUploadCard(
+                                      title: userTypes(
+                                        loginController.selectedUserType
+                                            .toString(),
+                                      ),
+                                      subtitle:
+                                          "PDF, JPG or PNG • up to 3 files",
+                                      onTap: () async {
                                         pickCertificates();
-                                        // loginController.certificates.clear();
                                       },
-                                      style: ElevatedButton.styleFrom(
-                                        side: const BorderSide(
-                                          color: AppColors.primary,
-                                          width: 0.34,
-                                        ),
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            5,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.upload,
-                                              color: AppColors.primary,
-                                              size: size * 0.05,
-                                            ),
-                                            const SizedBox(width: 5),
-                                            Flexible(
-                                              child: Text(
-                                                userTypes(
-                                                  loginController
-                                                      .selectedUserType
-                                                      .toString(),
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: size * 0.025,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.primary,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
                                     ),
                                     SizedBox(height: size * 0.01),
                                   ],
@@ -1463,55 +1641,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                       loginController.selectedUserType ==
                                           'Dental Lab') ...[
                                     SizedBox(height: size * 0.02),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        //Get.toNamed('/registerPage');
+                                    _fileUploadCard(
+                                      title: uploadImages(
+                                        loginController.selectedUserType
+                                            .toString(),
+                                      ),
+                                      subtitle:
+                                          "JPG or PNG • up to 3 images",
+                                      onTap: () async {
                                         pickImages();
-                                        //loginController.images.clear();
                                       },
-                                      style: ElevatedButton.styleFrom(
-                                        side: const BorderSide(
-                                          color: AppColors.primary,
-                                          width: 0.34,
-                                        ),
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            5,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.upload,
-                                              color: AppColors.primary,
-                                              size: size * 0.05,
-                                            ),
-                                            const SizedBox(width: 5),
-                                            Flexible(
-                                              child: Text(
-                                                uploadImages(
-                                                  loginController
-                                                      .selectedUserType
-                                                      .toString(),
-                                                ),
-                                                // "Upload Proof / Certificate / Resume",
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: size * 0.025,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.primary,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
                                     ),
                                     SizedBox(height: size * 0.03),
                                   ],
@@ -1659,18 +1798,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                   SizedBox(
                                     width: double.infinity,
-                                    height: 50,
+                                    height: 54,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            AppColors.primary,
-                                            AppColors.secondary,
-                                          ],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                        ),
+                                        borderRadius: BorderRadius.circular(14),
+                                        color: AppColors.primary,
                                       ),
                                       child: GetBuilder<LoginController>(
                                         builder: (controller) {
@@ -1849,97 +1981,37 @@ class _RegisterPageState extends State<RegisterPage> {
                                                         dob: loginController
                                                             .dobController
                                                             .text,
-                                                        mobile: loginController
-                                                            .mobileController
-                                                            .text,
-                                                        email: loginController
-                                                            .emailController
-                                                            .text,
-                                                        confirmPassword:
-                                                            loginController
-                                                                .confirmPasswordController
-                                                                .text,
-                                                        addressLine1:
-                                                            loginController
-                                                                .addressLine1Controller
-                                                                .text ??
-                                                            '',
-                                                        addressLine2:
-                                                            loginController
-                                                                .addressLine2Controller
-                                                                .text ??
-                                                            '',
-                                                        taluk:
-                                                            loginController
-                                                                .selectedState ??
-                                                            '',
-                                                        district:
-                                                            loginController
-                                                                .selectedDistrict ??
-                                                            '',
-                                                        city:
-                                                            loginController
-                                                                .selectedTaluka ??
-                                                            '',
-                                                        area:
-                                                            loginController
-                                                                .selectedVillage ??
-                                                            '',
-                                                        pinCode: loginController
-                                                            .pinCodeController
-                                                            .text,
+                                                        mobile: loginController.mobileController.text,
+                                                        email: loginController.emailController.text,
+                                                        confirmPassword: loginController.confirmPasswordController.text,
+                                                        addressLine1: loginController.addressLine1Controller.text ?? '',
+                                                        addressLine2: loginController.addressLine2Controller.text ?? '',
+                                                        taluk: loginController.selectedState ?? '',
+                                                        district: loginController.selectedDistrict ?? '',
+                                                        city: loginController.selectedTaluka ?? '',
+                                                        area: loginController.selectedVillage ?? '',
+                                                        pinCode: loginController.pinCodeController.text,
                                                         // typeName:
                                                         //     loginController
                                                         //         .typeNameController
                                                         //         .text ??
                                                         //     "",
                                                         //image: loginController.selectedUserType=="Job Seekers"?controller.logoImages ?? []:loginController.images ?? [],
-                                                        image:
-                                                            loginController
-                                                                    .selectedUserType ==
-                                                                "Job Seekers"
-                                                            ? logoBytes ?? []
-                                                            : imageBytes ?? [],
+                                                        image: loginController.selectedUserType == "Job Seekers" ? logoBytes ?? [] : imageBytes ?? [],
                                                         certificate: certBytes,
                                                         //loginController.certificates ?? [],
-                                                        location: loginController
-                                                            .locationController
-                                                            .text,
-                                                        website: loginController
-                                                            .websiteController
-                                                            .text,
-                                                        description:
-                                                            loginController
-                                                                .descriptionController
-                                                                .text ??
-                                                            "N/A",
+                                                        location: loginController.locationController.text,
+                                                        website: loginController.websiteController.text,
+                                                        description: loginController.descriptionController.text ?? "N/A",
                                                         //logoImage: loginController.selectedUserType!="Job Seekers"?controller.logoImages ?? []:[],
-                                                        logoImage:
-                                                            loginController
-                                                                    .selectedUserType !=
-                                                                "Job Seekers"
-                                                            ? logoBytes ?? []
-                                                            : [],
-                                                        latitude:
-                                                            loginController
-                                                                .latitude
-                                                                .toString() ??
-                                                            "",
-                                                        longitude:
-                                                            loginController
-                                                                .longitude
-                                                                .toString() ??
-                                                            "",
-                                                        jobCategory: loginController
-                                                            .selectedCategories,
+                                                        logoImage: loginController.selectedUserType != "Job Seekers" ? logoBytes ?? [] : [],
+                                                        latitude: loginController.latitude.toString() ?? "",
+                                                        longitude: loginController.longitude.toString() ?? "",
+                                                        jobCategory: loginController.selectedCategories,
                                                         isAdmin: "false",
                                                         details:
-                                                            (loginController
-                                                                        .selectedUserType ==
-                                                                    'Dental Consultant' ||
-                                                                loginController
-                                                                        .selectedUserType ==
-                                                                    'Dental Lab')
+                                                            (loginController.selectedUserType == 'Dental Consultant' ||
+                                                                loginController.selectedUserType == 'Dental Lab')
                                                             ? {
                                                                 "availableTiming":
                                                                     loginController
@@ -1964,7 +2036,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                             style: ElevatedButton.styleFrom(
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(12),
+                                                    BorderRadius.circular(14),
                                               ),
                                               backgroundColor:
                                                   AppColors.transparent,
@@ -1979,19 +2051,65 @@ class _RegisterPageState extends State<RegisterPage> {
                                                           color: Colors.white,
                                                         ),
                                                   )
-                                                : Text(
-                                                    "Create Account",
-                                                    style: AppTextStyles.body(
-                                                      context,
-                                                      color: AppColors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                                : Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        "Register",
+                                                        style: AppTextStyles.body(
+                                                          context,
+                                                          color:
+                                                              AppColors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 8),
+                                                      const Icon(
+                                                        Icons.arrow_forward_rounded,
+                                                        color: AppColors.white,
+                                                        size: 18,
+                                                      ),
+                                                    ],
                                                   ),
                                           );
                                         },
                                       ),
                                     ),
+                                  ),
+                                  SizedBox(height: size * 0.03),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Divider(
+                                          color: AppColors.primaryLight2,
+                                          thickness: 1,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        child: Text(
+                                          "Your information is safe with us",
+                                          textAlign: TextAlign.center,
+                                          style: AppTextStyles.caption(
+                                            context,
+                                            color: AppColors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Divider(
+                                          color: AppColors.primaryLight2,
+                                          thickness: 1,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   SizedBox(height: size * 0.03),
 

@@ -102,6 +102,7 @@ import 'package:locate_your_dentist/web_modules/superAdmin/view_report_web.dart'
 import '../modules/auth/login_screen/login_screen.dart';
 import '../modules/auth/password_page/forgot_change_password.dart';
 import '../modules/auth/password_page/forgot_password_page.dart';
+import '../modules/auth/entry_choice_screen.dart';
 import '../modules/auth/register_page/login_usertypes_screen.dart';
 import '../modules/contact_form/view_feedback_forms.dart';
 import '../modules/dashboard/superAdmin.dart';
@@ -119,6 +120,10 @@ import '../web_modules/dental_clinic/sale_post_detail_web.dart';
 class AppPages {
   static final List<GetPage> page = [
     GetPage(name: AppRoutes.splashScreen, page: () => const SplashScreen()),
+    GetPage(
+      name: AppRoutes.welcomeEntryPage,
+      page: () => const EntryChoiceScreen(),
+    ),
     GetPage(name: AppRoutes.loginPage, page: () => const LoginPage()),
     GetPage(
       name: AppRoutes.forgotPasswordWebScreen,

@@ -88,6 +88,7 @@ class DentalClinicDashboard extends StatefulWidget {
   State<DentalClinicDashboard> createState() => _DentalClinicDashboardState();
 }
 class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController searchController=TextEditingController();
   final jobController=Get.put(JobController());
   final loginController=Get.put(LoginController());
@@ -426,8 +427,9 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
     final bool isDesktop = size >= 1100;
     final otherCategories = title.where((t) => t != "Job Posts/Webinars").toList();
     return  Scaffold(
+      key: _scaffoldKey,
       backgroundColor: const Color(0xFFF6F8FC),
-      drawer: !isDesktop ? Drawer(width: 250, child: SettingsSidebarDrawer()) : null,
+      drawer: Drawer(width: 280, child: SettingsSidebarDrawer()),
       body:  GetBuilder<JobController>(
         builder: (controller) {
           return RefreshIndicator(
@@ -436,7 +438,10 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
               length: 2,
               child: SafeArea(
                 child: SingleChildScrollView(
-                    child: Column(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 900),
+                        child: Column(
                       children: [
                         Stack(
                           clipBehavior: Clip.none,
@@ -464,6 +469,20 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                               ),
                               child: Row(
                                 children: [
+                                  InkWell(
+                                    onTap: () =>
+                                        _scaffoldKey.currentState?.openDrawer(),
+                                    customBorder: const CircleBorder(),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.18),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(Icons.menu_rounded, color: Colors.white, size: 22),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
                                   Container(
                                     padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
@@ -648,11 +667,11 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: otherCategories.length,
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: isDesktop ? 4 : 2,
                                     crossAxisSpacing: 14,
                                     mainAxisSpacing: 14,
-                                    childAspectRatio: 1.5,
+                                    childAspectRatio: isDesktop ? 1.8 : 1.5,
                                   ),
                                   itemBuilder: (context, index) {
                                     return _categoryTile(
@@ -854,6 +873,8 @@ class _DentalClinicDashboardState extends State<DentalClinicDashboard> {
                         ),
                         const SizedBox(height: 20),
                       ],
+                    ),
+                      ),
                     ),
                 ),
               ),

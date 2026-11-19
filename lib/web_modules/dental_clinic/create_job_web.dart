@@ -981,6 +981,16 @@ class _CreateJobPostWebState extends State<CreateJobPostWeb> {
                                                   }
 
                                                   if (loginController
+                                                      .typeNameController.text
+                                                      .trim()
+                                                      .isEmpty) {
+                                                    showCustomToast(
+                                                      context,
+                                                      "Please update your profile name before posting a job",
+                                                    );
+                                                    return;
+                                                  }
+                                                  if (loginController
                                                       .selectedSalary ==
                                                       null) {
                                                     showCustomToast(

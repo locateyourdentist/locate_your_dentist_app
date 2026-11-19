@@ -20,7 +20,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   void initState() {
     super.initState();
-    loginController.getAppLogoImage(context);
+    //loginController.getAppLogoImage(context);
+    loginController.isLoading = false;
   }
 
   @override
@@ -47,8 +48,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         border: Border.all(color: AppColors.primary, width: 3),
                       ),
                       child: ClipOval(
-                        child: Image.network(
-                          loginController.appLogoUrl ?? "",
+                        child: Image.asset(
+                          'assets/images/logolyd.jpg',
+                          // loginController.appLogoUrl ?? "",
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
@@ -95,59 +97,64 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                   SizedBox(height: size * 0.1),
 
-                  Center(
-                    child: Container(
-                      width: size,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [AppColors.primary, AppColors.secondary],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.transparent,
-                          shadowColor: AppColors.transparent,
-                          shape: RoundedRectangleBorder(
+                  GetBuilder<LoginController>(
+                    init: loginController,
+                    builder: (controller) {
+                      return Center(
+                        child: Container(
+                          width: size,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [AppColors.primary, AppColors.secondary],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                        ),
-                        onPressed: loginController.isLoading
-                            ? null
-                            : () async {
-                                if (_formKeyForgotPassword.currentState!
-                                    .validate()) {
-                                  Api.userInfo.write(
-                                    'otpMail',
-                                    loginController.emailController.text,
-                                  );
-                                  await loginController.forgotPassword(
-                                    loginController.emailController.text,
-                                    context,
-                                  );
-                                }
-                              },
-                        child: loginController.isLoading
-                            ? const SizedBox(
-                                height: 22,
-                                width: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : Text(
-                                'Send OTP',
-                                style: AppTextStyles.caption(
-                                  context,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.white,
-                                ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.transparent,
+                              shadowColor: AppColors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                      ),
-                    ),
+                            ),
+                            onPressed: controller.isLoading
+                                ? null
+                                : () async {
+                                    if (_formKeyForgotPassword.currentState!
+                                        .validate()) {
+                                      Api.userInfo.write(
+                                        'otpMail',
+                                        loginController.emailController.text,
+                                      );
+                                      await loginController.forgotPassword(
+                                        loginController.emailController.text,
+                                        context,
+                                      );
+                                    }
+                                  },
+                            child: controller.isLoading
+                                ? const SizedBox(
+                                    height: 22,
+                                    width: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text(
+                                    'Send OTP',
+                                    style: AppTextStyles.caption(
+                                      context,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   SizedBox(height: size * 0.06),
 

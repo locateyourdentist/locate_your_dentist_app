@@ -14,6 +14,7 @@ import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.
 import 'package:locate_your_dentist/modules/dashboard/slider_images_dashboard.dart';
 import 'package:locate_your_dentist/modules/notification_page/notificationController.dart';
 import 'package:locate_your_dentist/modules/plans/plan_controller.dart';
+import 'package:locate_your_dentist/utills/search_history.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../common_widgets/common_bottom_navigation.dart';
@@ -58,6 +59,8 @@ class _PatientDashboardState extends State<PatientDashboard> {
   String? selectedDistrict;
   String? selectedArea;
   final TextEditingController searchController = TextEditingController();
+  static const String _searchHistoryKey = 'dentalClinicSearchHistory';
+  List<SearchHistoryEntry> searchHistory = [];
   List<ProfileModel> filteredProfiles = [];
   final notificationController = Get.put(NotificationController());
   final GlobalKey<ScaffoldState> _scaffoldKeyUser1 = GlobalKey<ScaffoldState>();
@@ -133,6 +136,7 @@ class _PatientDashboardState extends State<PatientDashboard> {
   @override
   void initState() {
     super.initState();
+    searchHistory = SearchHistoryStore.getHistory(_searchHistoryKey);
     _refresh();
   }
 
@@ -172,7 +176,30 @@ class _PatientDashboardState extends State<PatientDashboard> {
     }
   }
 
+  void _selectSearchHistory(SearchHistoryEntry entry) {
+    searchController.text = entry.term;
+    loginController.selectedState = entry.state;
+    loginController.selectedDistricts = entry.districts;
+    loginController.selectedTalukas = entry.talukas;
+    loginController.selectedVillages = entry.villages;
+    loginController.selectedDistance1 = entry.distanceKm;
+    loginController.update();
+    _performLocationSearch();
+  }
+
   Future<void> _performLocationSearch() async {
+    final term = searchController.text.trim();
+    setState(() {
+      searchHistory = SearchHistoryStore.addSearch(
+        _searchHistoryKey,
+        term: term,
+        state: loginController.selectedState,
+        districts: loginController.selectedDistricts,
+        talukas: loginController.selectedTalukas,
+        villages: loginController.selectedVillages,
+        distanceKm: loginController.selectedDistance1,
+      );
+    });
     String distance = loginController.selectedDistance1.toString();
     bool useLocation =
         distance.isNotEmpty && distance != "0" && distance != "0.0";
@@ -404,6 +431,20 @@ class _PatientDashboardState extends State<PatientDashboard> {
                     loginController.selectedVillages = values;
                     loginController.update();
                   },
+                ),
+              ),
+              _rowDivider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: DistanceFilterChips(
+                    selectedKm: loginController.selectedDistance1,
+                    onSelect: (km) {
+                      loginController.selectedDistance1 = km;
+                      loginController.update();
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 6),
@@ -648,6 +689,27 @@ class _PatientDashboardState extends State<PatientDashboard> {
                         _buildLocationInfoRow(),
                         const SizedBox(height: 10),
                         _buildSearchBar(),
+                        if (searchHistory.isNotEmpty) ...[
+                          const SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: SearchHistoryChips(
+                              history: searchHistory,
+                              onSelect: _selectSearchHistory,
+                              onRemove: (entry) {
+                                SearchHistoryStore.removeEntry(
+                                  _searchHistoryKey,
+                                  entry,
+                                );
+                                setState(() {
+                                  searchHistory = SearchHistoryStore.getHistory(
+                                    _searchHistoryKey,
+                                  );
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 12),
                         _buildLocationSearchCard(),
                         const SizedBox(height: 12),

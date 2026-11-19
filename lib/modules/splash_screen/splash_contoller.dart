@@ -120,7 +120,7 @@ class SplashController extends GetxController
     if (token == null || token.isEmpty) {
       platform == "Web"
           ? Get.offAllNamed("/")
-          : Get.offAllNamed("/patientDashboard");
+          : Get.offAllNamed("/welcomeEntryPage");
     } else {
       String? userType = Api.userInfo.read('userType');
       platform == "Web"

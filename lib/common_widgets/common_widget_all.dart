@@ -5,6 +5,7 @@ import 'package:locate_your_dentist/common_widgets/common_textstyles.dart';
 import 'package:locate_your_dentist/common_widgets/platform_helper.dart';
 import 'package:locate_your_dentist/modules/auth/login_screen/service_locations.dart';
 import 'package:locate_your_dentist/utills/constants.dart';
+import 'package:locate_your_dentist/utills/search_history.dart';
 import '../modules/auth/login_screen/login_controller.dart';
 import 'color_code.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -342,6 +343,52 @@ void confirmRemoveImage(BuildContext context, int index, VoidCallback onTap) {
   );
 }
 
+class DistanceFilterChips extends StatelessWidget {
+  final double selectedKm;
+  final ValueChanged<double> onSelect;
+  final List<double> options;
+  final Color unselectedChipColor;
+  final Color unselectedTextColor;
+
+  const DistanceFilterChips({
+    super.key,
+    required this.selectedKm,
+    required this.onSelect,
+    this.options = const [5, 10, 15, 20],
+    this.unselectedChipColor = const Color(0xFFF8FAFC),
+    this.unselectedTextColor = AppColors.black,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: options.map((km) {
+        final bool isSelected = selectedKm == km;
+        return ChoiceChip(
+          label: Text("Around ${km.round()} Km"),
+          selected: isSelected,
+          selectedColor: AppColors.primary,
+          backgroundColor: unselectedChipColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: isSelected ? AppColors.primary : Colors.grey.shade300,
+            ),
+          ),
+          labelStyle: AppTextStyles.caption(
+            context,
+            color: isSelected ? AppColors.white : unselectedTextColor,
+            fontWeight: FontWeight.w600,
+          ),
+          onSelected: (_) => onSelect(isSelected ? 0 : km),
+        );
+      }).toList(),
+    );
+  }
+}
+
 class CommonSearchTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
@@ -396,6 +443,66 @@ class CommonSearchTextField extends StatelessWidget {
       ),
       cursorColor: AppColors.primary,
       onSubmitted: onSubmitted,
+    );
+  }
+}
+
+class SearchHistoryChips extends StatelessWidget {
+  final List<SearchHistoryEntry> history;
+  final ValueChanged<SearchHistoryEntry> onSelect;
+  final ValueChanged<SearchHistoryEntry>? onRemove;
+  final Color chipColor;
+  final Color textColor;
+  final Color iconColor;
+
+  const SearchHistoryChips({
+    super.key,
+    required this.history,
+    required this.onSelect,
+    this.onRemove,
+    this.chipColor = const Color(0xFFF8FAFC),
+    this.textColor = AppColors.black,
+    this.iconColor = AppColors.grey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (history.isEmpty) return const SizedBox.shrink();
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: history.map((entry) {
+        return InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () => onSelect(entry),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            decoration: BoxDecoration(
+              color: chipColor,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.history, size: 14, color: iconColor),
+                const SizedBox(width: 6),
+                Text(
+                  entry.label,
+                  style: AppTextStyles.caption(context, color: textColor),
+                ),
+                if (onRemove != null) ...[
+                  const SizedBox(width: 6),
+                  InkWell(
+                    onTap: () => onRemove!(entry),
+                    child: Icon(Icons.close, size: 14, color: iconColor),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }

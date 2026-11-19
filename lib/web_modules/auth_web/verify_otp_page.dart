@@ -187,9 +187,9 @@ class _VerifyWebPasswordPageState extends State<VerifyWebPasswordPage> {
                           borderWidth: 3.0,
                           borderRadius: BorderRadius.circular(20),
                           onCodeChanged: (String code) {},
-                          onSubmit: (String verificationCode) {
+                          onSubmit: (String verificationCode)async {
                             Api.userInfo.read('otpMail');
-                            loginController.verifyOtpPassword(
+                          await loginController.verifyOtpPassword(
                               Api.userInfo.read('otpMail') ?? "",
                               verificationCode,
                               context,

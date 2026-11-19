@@ -696,7 +696,8 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      Container(
+                                                      Flexible(
+                                                        child: Container(
                                                         padding:
                                                             const EdgeInsets.symmetric(
                                                               horizontal: 8,
@@ -715,6 +716,10 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                                                         ),
                                                         child: Text(
                                                           post.userType,
+                                                          maxLines: 1,
+                                                          overflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
                                                           style:
                                                               AppTextStyles.caption(
                                                                 context,
@@ -724,6 +729,7 @@ class _SalePostListWebPageState extends State<SalePostListWebPage> {
                                                                     FontWeight
                                                                         .w600,
                                                               ),
+                                                        ),
                                                         ),
                                                       ),
                                                       const Spacer(),

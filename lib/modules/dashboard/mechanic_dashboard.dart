@@ -78,95 +78,9 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
       drawer: !isDesktop
           ? Drawer(width: 250, child: SettingsSidebarDrawer())
           : null,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        automaticallyImplyLeading: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            radius: size * 0.13,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(50),
-              child: ProfileImageWidget(size: size),
-            ),
-          ),
-        ),
-        centerTitle: false,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.primary, AppColors.secondary],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Welcome Back',
-              style: AppTextStyles.body(
-                context,
-                color: AppColors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              Api.userInfo.read('name') ?? "",
-              style: TextStyle(
-                fontSize: size * 0.03,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          GetBuilder<NotificationController>(
-            builder: (controller) {
-              return Stack(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.notifications_none,
-                      color: AppColors.white,
-                      size: size * 0.08,
-                    ),
-                    onPressed: () async {
-                      await notificationController.getNotificationListAdmin(
-                        context,
-                      );
-                      Get.toNamed('/notificationPage');
-                    },
-                  ),
-                  if (int.tryParse(notificationController.unreadCount ?? "0")! >
-                      0)
-                    Positioned(
-                      top: 0,
-                      right: 15,
-                      child: CircleAvatar(
-                        radius: size * 0.024,
-                        backgroundColor: Colors.redAccent,
-                        child: Text(
-                          notificationController.unreadCount.toString() ?? "",
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: size * 0.025,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
       //endDrawer:  DateFilterPopup(selectedContactType: 'sender'),
-      body: GetBuilder<ContactController>(
+      body: SafeArea(
+        child: GetBuilder<ContactController>(
         builder: (controller) {
           return RefreshIndicator(
             onRefresh: _refresh,
@@ -193,7 +107,9 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
                       ),
                     ],
                   ),
-                  child: Padding(
+                  child: Stack(
+                    children: [
+                      Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       margin: const EdgeInsets.symmetric(
@@ -271,6 +187,28 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
                         ],
                       ),
                     ),
+                  ),
+                      Positioned(
+                        top: 4,
+                        left: 4,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(24),
+                          onTap: () => Get.back(),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -960,6 +898,7 @@ class _MechanicDashboardState extends State<MechanicDashboard> {
             ),
           );
         },
+      ),
       ),
       bottomNavigationBar: const CommonBottomNavigation(currentIndex: 0),
     );

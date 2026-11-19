@@ -16,11 +16,11 @@ class DentalProfessionalRegisterPage extends StatefulWidget {
 
 class _DentalProfessionalRegisterPageState
     extends State<DentalProfessionalRegisterPage> {
-  static const Color primaryBlue = Color(0xFF0759C9);
-  static const Color darkText = Color(0xFF101828);
-  static const Color secondaryText = Color(0xFF667085);
-  static const Color lightBlue = Color(0xFFF4F8FF);
-  static const Color borderColor = Color(0xFFE5E7EB);
+  static const Color primaryBlue = AppColors.primary;
+  static const Color darkText = AppColors.black;
+  static const Color secondaryText = AppColors.grey;
+  static const Color lightBlue = AppColors.primaryLight;
+  static const Color borderColor = AppColors.primaryLight2;
   static const String professionalKeyStorage = 'professional_key';
 
   static const String professionalTypeStorage = 'professional_type';
@@ -163,16 +163,16 @@ class _DentalProfessionalRegisterPageState
   IconData _getCategoryIcon(String key) {
     switch (key) {
       case "dentist":
-        return Icons.event_seat_outlined;
+        return Icons.medical_services_outlined;
 
       case "dentalLab":
         return Icons.biotech_outlined;
 
       case "dentalShop":
-        return Icons.shopping_cart_outlined;
+        return Icons.storefront_outlined;
 
       case "dentalMechanic":
-        return Icons.build_outlined;
+        return Icons.event_seat_outlined;
 
       case "Dental jobSeekers":
         return Icons.person_search_outlined;
@@ -185,32 +185,25 @@ class _DentalProfessionalRegisterPageState
     }
   }
 
-  // ============================================================
-  // GET SUBTITLE
-  // ============================================================
-
-  String _getCategorySubtitle(String key) {
+  // Short label shown on the category card. Kept separate from the
+  // stored "value" (e.g. "Dental Shop") so saved/registered data stays
+  // unchanged while the card text matches the reference design.
+  String _getDisplayLabel(String key, String fallbackValue) {
     switch (key) {
       case "dentist":
-        return "General Dentist, Specialist, etc.";
-
-      case "dentalLab":
-        return "Dental Laboratory / Technician";
+        return "Dentist";
 
       case "dentalShop":
-        return "Dental Products & Materials";
+        return "Shop Owners";
+
+      case "dentalLab":
+        return "Dental Lab";
 
       case "dentalMechanic":
-        return "Chair, Equipment Repair & Service";
-
-      case "Dental jobSeekers":
-        return "Dental Jobs / Employment";
-
-      case "Dental Professionals":
-        return "Consultant / Advisor";
+        return "Chair & Instrument\nMechanic";
 
       default:
-        return "";
+        return fallbackValue;
     }
   }
 
@@ -238,10 +231,10 @@ class _DentalProfessionalRegisterPageState
                   children: [
                     const SizedBox(height: 12),
 
-                    // PROGRESS
-                    _buildProgressIndicator(),
+                    // LOGO
+                    _buildLogoBlock(),
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 24),
 
                     // TITLE
                     _buildTitleSection(),
@@ -289,7 +282,7 @@ class _DentalProfessionalRegisterPageState
 
   Widget _buildHeader() {
     return SizedBox(
-      height: 62,
+      height: 46,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -311,60 +304,58 @@ class _DentalProfessionalRegisterPageState
               ),
             ),
           ),
-
-          // TITLE
-          const Text(
-            "Dental Professional\nRegister",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
-              height: 1.2,
-              fontWeight: FontWeight.w700,
-              color: darkText,
-              letterSpacing: -0.25,
-            ),
-          ),
         ],
       ),
     );
   }
 
   // ============================================================
-  // PROGRESS BAR
+  // LOGO
   // ============================================================
 
-  Widget _buildProgressIndicator() {
-    return Row(
+  Widget _buildLogoBlock() {
+    return Column(
       children: [
-        _buildProgressLine(true),
-        const SizedBox(width: 7),
-        _buildProgressLine(false),
-        const SizedBox(width: 7),
-        _buildProgressLine(false),
-        const SizedBox(width: 7),
-        _buildProgressLine(false),
+        Container(
+          width: 72,
+          height: 72,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: primaryBlue, width: 2),
+          ),
+          child: ClipOval(
+            child: Image.asset(
+              'assets/images/logolyd.jpg',
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => const Icon(
+                Icons.local_hospital,
+                color: primaryBlue,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          "LYD",
+          style: AppTextStyles.headline1(context, color: darkText),
+        ),
+        Text(
+          "Locate Your Dentist",
+          style: AppTextStyles.caption(
+            context,
+            color: primaryBlue,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildProgressLine(bool active) {
-    return Expanded(
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        height: 5,
-        decoration: BoxDecoration(
-          color: active ? primaryBlue : const Color(0xFFD9DEE5),
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-    );
-  }
-
   Widget _buildTitleSection() {
-    return const Column(
+    return Column(
       children: [
-        Text(
-          "Select Your Category",
+        const Text(
+          "Dental Professional Entry",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 20,
@@ -373,10 +364,10 @@ class _DentalProfessionalRegisterPageState
           ),
         ),
 
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
 
-        Text(
-          "Choose the option that best describes you",
+        const Text(
+          "Choose your professional category",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 14,
@@ -384,21 +375,35 @@ class _DentalProfessionalRegisterPageState
             color: secondaryText,
           ),
         ),
+
+        const SizedBox(height: 12),
+
+        Container(
+          width: 40,
+          height: 3,
+          decoration: BoxDecoration(
+            color: primaryBlue,
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
       ],
     );
   }
 
   // ============================================================
-  // CATEGORY LIST
+  // CATEGORY GRID
   // ============================================================
 
   Widget _buildCategoryList() {
-    return Column(
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      mainAxisSpacing: 14,
+      crossAxisSpacing: 14,
+      childAspectRatio: 0.95,
       children: registrationItems.map((item) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: _buildCategoryCard(item),
-        );
+        return _buildCategoryCard(item);
       }).toList(),
     );
   }
@@ -428,10 +433,8 @@ class _DentalProfessionalRegisterPageState
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
 
-          height: 96,
-
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFFF4F8FF) : Colors.white,
+            color: isSelected ? lightBlue : Colors.white,
 
             borderRadius: BorderRadius.circular(16),
 
@@ -449,87 +452,57 @@ class _DentalProfessionalRegisterPageState
             ],
           ),
 
-          child: Row(
-            children: [
-              const SizedBox(width: 16),
-
-              // ICON
-              Container(
-                width: 58,
-                height: 58,
-
-                decoration: const BoxDecoration(
-                  color: lightBlue,
-                  shape: BoxShape.circle,
-                ),
-
-                child: Icon(
-                  _getCategoryIcon(key),
-                  size: 31,
-                  color: primaryBlue,
-                ),
-              ),
-
-              const SizedBox(width: 17),
-
-              // TEXT
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-
-                  crossAxisAlignment: CrossAxisAlignment.start,
-
-                  children: [
-                    Text(
-                      value,
-
-                      maxLines: 1,
-
-                      overflow: TextOverflow.ellipsis,
-
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: darkText,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // ICON / LOADING
+                if (isLoading && isSelected)
+                  const SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: primaryBlue,
+                        ),
                       ),
                     ),
-
-                    const SizedBox(height: 5),
-
-                    Text(
-                      _getCategorySubtitle(key),
-
-                      maxLines: 2,
-
-                      overflow: TextOverflow.ellipsis,
-
-                      style: const TextStyle(
-                        fontSize: 13,
-                        height: 1.2,
-                        color: secondaryText,
-                      ),
+                  )
+                else
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: const BoxDecoration(
+                      color: lightBlue,
+                      shape: BoxShape.circle,
                     ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(width: 6),
-
-              // ARROW / LOADING
-              if (isLoading && isSelected)
-                const SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: primaryBlue,
+                    child: Icon(
+                      _getCategoryIcon(key),
+                      size: 29,
+                      color: primaryBlue,
+                    ),
                   ),
-                )
-              else
-                const Icon(Icons.chevron_right, size: 28, color: darkText),
 
-              const SizedBox(width: 12),
-            ],
+                const SizedBox(height: 10),
+
+                Text(
+                  _getDisplayLabel(key, value),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: darkText,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

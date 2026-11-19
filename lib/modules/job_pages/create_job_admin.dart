@@ -41,12 +41,6 @@ class _CreateJobPostState extends State<CreateJobPost> {
   late QuillController _controller;
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
-  // The Job and Webinar sections are mutually exclusive (toggled by
-  // selectedString), but Flutter still swaps one QuillEditor out for the
-  // other within the same build. Sharing a single ScrollController/FocusNode
-  // between them let the outgoing editor's scroll position still be attached
-  // when the incoming one attached, tripping "ScrollController attached to
-  // multiple scroll views". Each editor now gets its own.
   final FocusNode _focusNodeWebinar = FocusNode();
   final ScrollController _scrollControllerWebinar = ScrollController();
 
@@ -1012,9 +1006,7 @@ class _CreateJobPostState extends State<CreateJobPost> {
                                     print(
                                       "selectedExperience = ${loginController.selectedExperience.toString()}",
                                     );
-                                    print(
-                                      "name = ${loginController.typeNameController.text.toString()}",
-                                    );
+                                  //  print("name = ${loginController.typeNameController.text.toString()}",);
                                     print(
                                       "CERTIFICATES = ${loginController.certificates}",
                                     );
@@ -1083,6 +1075,15 @@ class _CreateJobPostState extends State<CreateJobPost> {
                                       return;
                                     }
 
+                                    if (loginController.typeNameController.text
+                                        .trim()
+                                        .isEmpty) {
+                                      showCustomToast(
+                                        context,
+                                        "Please update your profile name before posting a job",
+                                      );
+                                      return;
+                                    }
                                     if (loginController.selectedSalary ==
                                         null) {
                                       showCustomToast(

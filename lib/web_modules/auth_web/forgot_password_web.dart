@@ -38,8 +38,6 @@ class _ForgotPasswordPageWebState extends State<ForgotPasswordPageWeb> {
       },
     );
   }
-
-  // Submit Button
   Widget submitButton() {
     return Center(
       child: SizedBox(
